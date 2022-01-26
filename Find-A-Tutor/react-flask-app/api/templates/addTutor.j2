@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Find-A-Tutor</title>
+</head>
+<body>
+    <form method="POST">
+      {# CSRF Protection #}
+      {{ form.hidden_tag() }}
+      {# add class field's label and input elements #}
+      {{ form.tutorID.label }} {{ form.tutorID() }} <br>
+      {{ form.studentID.label }} {{ form.studentID() }} <br>
+      {{ form.payment_info.label }} {{ form.payment_info() }} <br>
+      {{ form.payment_type.label }} {{ form.payment_type() }} <br>
+      {{ form.fname.label }} {{ form.fname() }} <br>
+      {{ form.lname.label }} {{ form.lname() }} <br>
+      {# add submit button #}
+      {{ form.submit() }}
+    </form>
+</body>
+</html>
