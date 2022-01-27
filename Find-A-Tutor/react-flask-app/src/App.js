@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 
+import Calendar from './calendar'
+
 function App() {
   const  [initialData, setInitialData] = useState([{}])
   
@@ -11,7 +13,7 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <h1>Yay</h1>
+      <Calendar />
     </div>
   );
 }
