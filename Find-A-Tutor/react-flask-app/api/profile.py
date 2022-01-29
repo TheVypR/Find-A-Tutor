@@ -1,4 +1,3 @@
-from threading import local
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -12,14 +11,14 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # Have locality set to 1 if you want to test on your local machine
-if (locality == 1):
+locality = 1 # Use 1 for local testing and 0 for vm
+if(locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
     app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 else:
-    app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+    app.config['MYSQL__DATABASE_HOST'] = 'localhost'
     app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
     app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
@@ -27,17 +26,24 @@ else:
 mysql.init_app(app)
 #end database stuff
 
-#class ProfileForm(FlaskForm):
-    #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
-
 @app.route('/myProfile/')
 def profile():
-    #form=ProfileForm()
-    
+
+    #Code for name stored in database from signup screen
+    #info = {'name': 'Jerry', 'email': 'Springer@thebest.best'} #request.get_json()
+    #print(info)    
+    #conn = mysql.connect()
+    #conn.autocommit(True)
+    #cursor = conn.cursor()
+    #data = cursor.execute("INSERT INTO Student(student_id, email, name) values(2, \"" + info['name'] + "\", \"" + info['email'] + "\")")
+
+    #Code for user can see their email on their screen
     conn = mysql.connect()
+    conn.autocommit(True)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Professors")
-    data = cursor.fetchone()
+    cursor.execute("SELECT name, email from Student where student_id = 4;")
+    data = cursor.fetchall()
+
     print(data)
     
     return "yay"  
