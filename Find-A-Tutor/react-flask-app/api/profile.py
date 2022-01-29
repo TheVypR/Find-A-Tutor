@@ -81,5 +81,6 @@ def profile():
     print(payment_method)
     print(payment_details)
     
+    
     return {'title': "A Lemon", 'name': payment_method}  
     

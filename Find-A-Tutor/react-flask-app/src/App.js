@@ -43,7 +43,7 @@ function App() {
 			'Content-Type' : 'application/json'
 			},
 			body: JSON.stringify(todo)
-			})}}>Submit
+			})}}>Next
 			</button>
 		</form>
 	</div>

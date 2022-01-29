@@ -32,12 +32,17 @@ mysql.init_app(app)
 
 @app.route('/signup/', methods=['POST'])
 def profile():
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
     info = request.get_json()    
     print(info)
     print(info['name'])
     print(info['email'])
+    cursor.execute("insert into Student(student_id, email, name) values (1, \"" + info['email'] + "\", \"" + info['name'] +"\")")
     
-    
+    conn.close()
+
     return 'Done'
 
     
