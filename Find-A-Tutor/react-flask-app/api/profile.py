@@ -31,7 +31,7 @@ mysql.init_app(app)
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
 @app.route('/myProfile/')
-def profile():
+def retrieve_profile():
     tutor_id = 1
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -80,7 +80,36 @@ def profile():
     payment_details = payment[1] #payment_info
     print(payment_method)
     print(payment_details)
-    
-    
+        
     return {'title': "A Lemon", 'name': payment_method}  
     
+@app.route('/editProfile/')
+def edit_profile():
+    tutor_id = 1
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #get the new information
+    submission = request.get_json()
+    info = submission[0]
+    classes = submission[1]
+    
+    #update the profile
+    cursor.execute("update Tutor set name = \"" 
+                    + info['name'] + "\", log_in_as_tutor = \"" 
+                    + info['login_pref'] + "\", contact_me = \"" 
+                    + info['contact_me'] + "\", payment_type = \"" 
+                    + info['payment_type'] + "\", payment_details = \"" 
+                    + info['payment_details'] + "\" where tutor_id = " 
+                    + tutor_id)
+                    
+    #delete the classes and rates
+    cursor.execute("delete from TutorRates where tutor_id = " + tutor_id; 
+    
+    #add the new classes and rates
+    for c in classes:
+        cursor.execute("insert into TutorRates(tutor_id, class_code, rate) values(" 
+                    + tutor_id + ", class_code = \"" 
+                    + c['class_code'] + "\", rate = \"" 
+                    + c[rate] + "\")")
