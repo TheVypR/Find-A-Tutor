@@ -3,6 +3,7 @@ import './components/App.css';
 
 import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
+import SignUp from "./components/SignUp"
 
 function App() {
   const  [initialData, setInitialData] = useState([{}])
@@ -14,7 +15,7 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <SignIn />
+      <SignUp />
     </div>
   );
 }
