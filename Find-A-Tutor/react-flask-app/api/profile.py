@@ -105,7 +105,7 @@ def edit_profile():
                     + tutor_id)
                     
     #delete the classes and rates
-    cursor.execute("delete from TutorRates where tutor_id = " + tutor_id; 
+    cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
     
     #add the new classes and rates
     for c in classes:

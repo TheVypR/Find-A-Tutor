@@ -92,6 +92,18 @@ const Header = () => {
                         <button type="button" classname="removeTime"> Remove </button>
                         <button classname="dropBtn"> 5:00PM </button>
                     </div>
+					
+					<button 
+						type="submit" 
+						value="todo"
+						onClick={async () => {
+						const response = await fetch("/editProfile/", {
+						method: "POST",
+						headers: {
+						'Content-Type' : 'application/json'
+						},
+					})}}>Submit
+					</button>
                 </div>
             </body>
         </div>
