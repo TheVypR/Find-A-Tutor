@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import './App.css';
+import './components/App.css';
+
+import Calendar from './components/calendar'
 
 function App() {
   const  [initialData, setInitialData] = useState([{}])
@@ -11,7 +13,7 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <h1>Yippie</h1>
+      <Calendar />
     </div>
   );
 }

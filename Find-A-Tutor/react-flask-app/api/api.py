@@ -12,6 +12,7 @@ app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
 
+#Add comment for test commit and push
 @app.route('/start', methods=['GET'])
 def start():
 
