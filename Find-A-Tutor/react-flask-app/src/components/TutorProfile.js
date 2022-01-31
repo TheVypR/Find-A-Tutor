@@ -82,7 +82,7 @@ const Header = () => {
                     </div>
 
                     <div>
-                        <p> Firday </p>
+                        <p> Friday </p>
                         <button type="button" classname="removeTime"> Remove </button>
                         <button classname="dropBtn"> 5:00PM </button>
                     </div>
