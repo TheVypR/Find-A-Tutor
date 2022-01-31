@@ -15,7 +15,7 @@ const Header = () => {
                         <h6 id="paymentLabel"> Payment Info </h6>
                         <button id="paymentType"> Payment </button>
                         {/*TODO: Dropdown Button */}
-                        <input type="text" id="vemoUser" placeholder="Venmo Username"/>
+                        <input type="text" id="venmoUser" placeholder="Venmo Username"/>
                     
 
                     {/*Login Info*/}

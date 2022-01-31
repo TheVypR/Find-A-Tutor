@@ -30,7 +30,7 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-@app.route('/myProfile/')
+@app.route('/myProfile/', 'method'='GET')
 def retrieve_profile():
     tutor_id = 1
     conn = mysql.connect()
@@ -83,7 +83,7 @@ def retrieve_profile():
         
     return {'title': "A Lemon", 'name': payment_method}  
     
-@app.route('/editProfile/')
+@app.route('/myProfile/', 'method'='POST')
 def edit_profile():
     tutor_id = 1
     conn = mysql.connect()
