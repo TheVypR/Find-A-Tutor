@@ -11,7 +11,7 @@ import TutorProfile from "./components/TutorProfile"
 function App() {
   return (
     <div className="App">
-		<TutorProfile />
+		<SignUp />
     </div>
   );
 }

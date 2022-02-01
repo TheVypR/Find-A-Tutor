@@ -33,9 +33,9 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-	const info = data.get('email')
-	fetch("/sign/", {
-		method: "POST",
+  const info = [data.get('firstName'), data.get('lastName'), data.get('email'), data.get('password')]
+	fetch("/signup/", {
+		method: 'POST',
 		headers: {
 		'Content-Type' : 'application/json'
 		},

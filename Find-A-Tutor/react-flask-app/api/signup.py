@@ -30,7 +30,7 @@ app = Flask(__name__)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-@app.route('/sign/', methods=['POST'])
+@app.route('/signup/', methods=['POST'])
 def profile():
     #conn = mysql.connect()
     #conn.autocommit(True)
