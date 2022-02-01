@@ -1,45 +1,48 @@
-import { DropdownButton, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
+import { BsFillTrashFill } from "react-icons/bs";
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import TextField from '@mui/material/TextField';
 
-const Header = () => {
+import "./TutorProfile.css"
+
+const TutorProfile = () => {
     return (
         <div>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <body>
-                    <div id="UserInfo">
+                    <p class="text-end pe-2"><i> Logged in as a Tutor </i></p>
+
+                    <div class="container-fluid text-center">
                         {/* User Info */}
-                        <p id="loginType"><i> Logged in as a Tutor </i></p>
                         <h1 id="name"> Tim Warner </h1>
                         <h6 id="email"> WarnerTR18@gcc.edu </h6>
                     </div>
 
-                    <div id="flex-container">
-                        {/* Payment Info*/}
-                        <div id="paymentAndLogin">
-                            <h6 id="paymentLabel"> Payment Info </h6>
-
-                            <div>
-                                {[DropdownButton].map((DropdownType, idx) => (
-                                    <DropdownType
-                                        as={ButtonGroup}
-                                        key={idx}
-                                        id={`dropdown-button-drop-${idx}`}
-                                        size="sm"
-                                        variant="secondary"
-                                        title="Payment Info"
-                                    >
-                                        <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">Cash</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                    </DropdownType>
-                                ))}
+                    {/* Payment Info*/}
+                    <div class="d-flex justify-content-around">
+                        <div class="p-2">
+                            <h6> Payment Info </h6>
+                            <div class="paymentType">
+                            {[DropdownButton].map((DropdownType, idx) => (
+                                <DropdownType
+                                    as={ButtonGroup}
+                                    key={idx}
+                                    id={`dropdown-button-drop-${idx}`}
+                                    size="sm"
+                                    variant="primary"
+                                    title="Payment Type"
+                                >
+                                    <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
+                                    <Dropdown.Item eventKey="2">Cash</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                </DropdownType>
+                            ))}
                             </div>
 
-                            <input type="text" id="vemoUser" placeholder="Venmo Username" />
+                            <input type="text" id="venmoUser" placeholder="Venmo Username" />
 
 
                             {/*Login Info*/}
@@ -54,74 +57,73 @@ const Header = () => {
 
 
                         {/*Classes*/}
-                        <div id="ClassesLabels">
+                        <div class="p-2">
                             <h6 id="tutoringFor"> Tutoring For </h6>
-                            <div id="Classes">
+                            <div id="classes">
                                 Verified
                                 HUMA 200 A
-                                <label for="rate"> Hourly Rate: $</label>
+                                <label id="rate" for="rate"> Hourly Rate: $</label>
                                 <input type="number" id="hourlyRate" size="2" />
-                                <button type="button" classname="RemoveClass"> Remove </button> <br />
+                                <Button variant="danger">
+                                    <BsFillTrashFill/>
+                                </Button>
                             </div>
-                            <button type="button" id="AddClass"> Add Class </button>
+                            <Button type="button" id="AddClass" variant="primary"> Add Class </Button>
                         </div>
                     </div>
 
                     {/*Available Times*/}
-                    <div id="AvailableTimes">
-                        <input id="" type="checkbox" id="contactMe" />
-                        <label for="contactMe"> Contact Me For Availability </label>
-                        <h6 id="timesLabel"> Available Times</h6>
+                    <div class="container-fluid pt-5">
+                        <div class="row justify-content-start">
+                            <div class="col-4">
+                                <input class="" type="checkbox" id="contactMe" />
+                                <label for="contactMe"> Contact Me For Avalability </label>
+                            </div>
+                            <h6 class="col-4 text-center"> Available Times</h6>
+                        </div>
                     </div>
 
-                    <div id="WeekDays">
+                    <div class="d-flex justify-content-around pt-3">
                         <div>
                             <p> Sunday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <TimePicker
-                                label="Basic example"
-                                value={value}
-                                onChange={(newValue) => {
-                                    setValue(newValue);
-                                }}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
 
                         <div>
                             <p> Monday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <button classname="dropBtn"> 5:00PM </button>
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
 
                         <div>
                             <p> Tuesday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <button classname="dropBtn"> 5:00PM </button>
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
 
                         <div>
                             <p> Wednesday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <button classname="dropBtn"> 5:00PM </button>
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
 
                         <div>
                             <p> Thursday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <button classname="dropBtn"> 5:00PM </button>
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
 
                         <div>
                             <p> Firday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <button classname="dropBtn"> 5:00PM </button>
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
 
                         <div>
                             <p> Saturday </p>
-                            <button type="button" classname="removeTime"> Remove </button>
-                            <button classname="dropBtn"> 5:00PM </button>
+                            <Button type="button" classname="removeTime"> Remove </Button>
+                            <Button classname="dropBtn"> 5:00PM </Button>
                         </div>
                     </div>
                 </body>
@@ -130,4 +132,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default TutorProfile
