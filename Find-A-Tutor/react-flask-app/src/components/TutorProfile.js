@@ -1,169 +1,154 @@
-import React, {useState, useEffect} from 'react';
-import { DropdownButton, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
+import { BsFillTrashFill } from "react-icons/bs";
 
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import TextField from '@mui/material/TextField';
 
-const Header = () => {
-	const  [info, setInfo] = useState({})
-	const  [payType, setPayType] = useState("")
-	const  [payVal, setPayVal] = useState("")
-	const  [loginPref, setLoginPref] = useState(false)
-	const  [classes, setClasses] = useState([{}])
-	const  [contact, setContact] = useState(false)
-	const  [times, setTimes] = useState({})
-	const  [values, setValues] = useState([[{}]])
-	
-    useEffect(()=> {
-    fetch('/myProfile/', {'method':'GET'}).then(
-      response => response.json()
-    ).then(data => setInfo(data))
-    }, []);
-	
-    return (
-        <div>
-            <body>
-                <div id="UserInfo"> 
-                    {/* User Info */}
-                    <p id="loginType"><i> Logged in as a Tutor </i></p>
-					<h1 id="name"> {info['name']} </h1>
-                    <h6 id="email"> {info['email']} </h6>
-                </div>
+import "./TutorProfile.css"
 
-                <div id="flex-container">
-                    {/* Payment Info*/}
-                    <div id="paymentAndLogin">
-                        <h6 id="paymentLabel"> Payment Info </h6>
-                        <button id="paymentType" onChange={(e)=>setPayType(e.target.value)}> Payment </button>
-                        {/*TODO: Dropdown Button */}
-                        <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e)=>setPayVal(e.target.value)}/>
-                    
+const TutorProfile = () => {
+
+    return (
+        <>
+            <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
+
+            <div className="container-fluid text-center">
+                {/* User Info */}
+                <h1 id="name"> Tim Warner </h1>
+                <p id="email"> WarnerTR18@gcc.edu </p>
+            </div>
+
+            {/* Payment Info*/}
+            <div id="center" className="d-flex justify-content-around">
+                <div className="p-2">
+                    <p id="header"> Payment Info </p>
+                    <div className="paymentType">
+                        {[DropdownButton].map((DropdownType, idx) => (
+                            <DropdownType
+                                as={ButtonGroup}
+                                key={idx}
+                                id={`dropdown-button-drop-${idx}`}
+                                size="sm"
+                                variant="primary"
+                                title="Payment Type"
+                            >
+                                <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
+                                <Dropdown.Item eventKey="2">Cash</Dropdown.Item>
+                                <Dropdown.Divider />
+                            </DropdownType>
+                        ))}
+                    </div>
+
+                    <input type="text" id="venmoUser" placeholder="Venmo Username" />
+
 
                     {/*Login Info*/}
-                        <div id="loginInfo" onChange={(e)=>setLoginPref(!e.target.value)}>
-                            <input type="radio" id="studentView" value="StudentView" name="logInPref"/> Student View
-                            <input type="radio" id="tutorView" value="TutorView" name="logInPref"/> Tutor View
-                        </div>
-                    </div>
-                
-
-                    {/*Classes*/}
-                    <div id="ClassesLabels">
-                        <h6 id="tutoringFor"> Tutoring For </h6>
-                        <div id="Classes">
-                            <input type="text" id="class_name" placeholder="Enter Class" onChange={(e)=>setClasses([classes, {'class':e.target.value}])}/>
-                            <label htmlFor="rate"> Hourly Rate: $</label>
-                            <input type="number" id="hourlyRate" size="2" onChange={(e)=>setClasses([classes, {'rate':e.target.value}])}/>
-                            <button type="button" className="RemoveClass"> Remove </button> <br/>
-                        </div>
-                        <button type="button" id="AddClass"> Add Class </button>
+                    <div id="loginInfo">
+                        <p id="loginPreferences"> Login Preferences </p>
+                        <input type="radio" id="studentView" value="StudentView" />
+                        <label htmlFor="stuentView"> Student View </label><br />
+                        <input type="radio" id="tutorView" value="TutorView" />
+                        <label htmlFor="tutorView"> Tutor View </label>
                     </div>
                 </div>
 
-                {/*Available Times*/}
-                <div id="AvailableTimes">
-                    <input id="" type="checkbox" id="contactMe" onChange={(e)=>setContact(e.target.value)}/>
-                    <label htmlFor="contactMe"> Contact Me For Availability </label>
-                    <h6 id="timesLabel"> Available Times</h6>
-                </div>
 
-                <div id="WeekDays">
+                {/*Classes*/}
+                <div className="p-2">
+                    <p id="header"> Tutoring For </p>
+                    <div id="classes">
+                        Verified
+                        HUMA 200 A
+                        <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
+                        <input type="number" id="hourlyRate" size="2" />
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
+                    </div>
+                    <Button type="button" id="AddClass" variant="primary"> Add Class </Button>
+                </div>
+            </div>
+
+            {/*Available Times*/}
+            <div id="availiableTimesFlex" className="container-fluid pt-5">
+                <div className="row justify-content-start">
+                    <div className="col-4">
+                        <input type="checkbox" id="contactMe" />
+                        <label htmlFor="contactMe"> Contact Me For Avalability </label>
+                    </div>
+                    <h6 id="header" className="col-4 text-center"> Available Times</h6>
+                </div>
+            </div>
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <div id="days" className="d-flex justify-content-around pt-3">
                     <div>
-                        <p> Sunday </p>
-                        <button type="button" className="removeTime"> Remove </button>
-                        <button className="dropBtn"> 5:00PM </button>
+                        <p id="day"> Sunday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
                     </div>
 
-
-                        {/*Classes*/}
-                        <div id="ClassesLabels">
-                            <h6 id="tutoringFor"> Tutoring For </h6>
-                            <div id="Classes">
-                                Verified
-                                HUMA 200 A
-                                <label htmlFor="rate"> Hourly Rate: $</label>
-                                <input type="number" id="hourlyRate" size="2" />
-                                <button type="button" className="RemoveClass"> Remove </button> <br />
-                            </div>
-                            <button type="button" id="AddClass"> Add Class </button>
-                        </div>
+                    <div>
+                        <p id="day"> Monday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
                     </div>
 
-                    {/*Available Times*/}
-                    <div id="AvailableTimes">
-                        <input id="" type="checkbox" id="contactMe" />
-                        <label htmlFor="contactMe"> Contact Me For Availability </label>
-                        <h6 id="timesLabel"> Available Times</h6>
+                    <div>
+                        <p id="day"> Tuesday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
                     </div>
 
-                    <div id="WeekDays">
-                        <div>
-                            <p> Sunday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <TimePicker
-                                label="Basic example"
-                                value={values}
-                                onChange={(newValue) => {
-                                    setValues(newValue);
-                                }}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </div>
-
-                        <div>
-                            <p> Monday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <button className="dropBtn"> 5:00PM </button>
-                        </div>
-
-                        <div>
-                            <p> Tuesday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <button className="dropBtn"> 5:00PM </button>
-                        </div>
-
-                        <div>
-                            <p> Wednesday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <button className="dropBtn"> 5:00PM </button>
-                        </div>
-
-                        <div>
-                            <p> Thursday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <button className="dropBtn"> 5:00PM </button>
-                        </div>
-
-                        <div>
-                            <p> Firday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <button className="dropBtn"> 5:00PM </button>
-                        </div>
-
-                        <div>
-                            <p> Saturday </p>
-                            <button type="button" className="removeTime"> Remove </button>
-                            <button className="dropBtn"> 5:00PM </button>
-                        </div>
+                    <div>
+                        <p id="day"> Wednesday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
                     </div>
-					
-					<button 
-						type="submit" 
-						value="todo"
-						onClick={async () => {
-						setValues([payType, payVal, loginPref],classes)
-						const response = await fetch("/myProfile/", {
-						method: "POST",
-						headers: {
-						'Content-Type' : 'application/json'
-						},
-					})}}>Submit
-					</button>
-            </body>
-        </div>
+
+                    <div>
+                        <p id="day"> Thursday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
+                    </div>
+
+                    <div>
+                        <p id="day"> Firday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
+                    </div>
+
+                    <div>
+                        <p id="day"> Saturday </p>
+                        <Button id="dropBtn"> 5:00PM </Button>
+                        <Button variant="danger">
+                            <BsFillTrashFill />
+                        </Button>
+                    </div>
+                </div>
+            </LocalizationProvider>
+
+            {/* Bottom Buttons */}
+            <div id="bottom">
+                <Button id="edit"> Edit </Button>
+                <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+            </div>
+        </>
     )
 }
 
-export default Header
+export default TutorProfile
