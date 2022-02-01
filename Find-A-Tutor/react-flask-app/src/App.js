@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import Calendar from './calendar';
+import Calendar from './components/calendar';
 
 function App() {
   const  [initialData, setInitialData] = useState([{}])

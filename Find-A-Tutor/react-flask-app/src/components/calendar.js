@@ -9,6 +9,8 @@ const appointments = [
   {
     id: 1,
     title: 'Isaac Apel',
+    tutorName: 'Isaac Apel',
+    studentName: 'Aaron Sickafuse',
     start: '2022-01-30T10:00:00',
     end: '2022-01-30T12:00:00',
   },
@@ -16,19 +18,19 @@ const appointments = [
 ];
 
 function FullCalendarApp() {
-  // function updateEvent() {
+  function updateEvent() {
 
-  // }
-  // function addEvent(id, tutorName, studentName, startTime, endTime) {
-  //   var myEvent = {
-  //     id: id,
-  //     tutorName : tutorName,
-  //     studentName : studentName,
-  //     start : startTime,
-  //     end : endTime
-  //   };
-  //   initialAppointments.push(myEvent)
-  // }
+  }
+  function addEvent(id, tutorName, studentName, startTime, endTime) {
+    var myEvent = {
+      id: id,
+      tutorName : tutorName,
+      studentName : studentName,
+      start : startTime,
+      end : endTime
+    };
+    appointments.push(myEvent)
+  }
 
   return (
     <div className="App">
@@ -47,7 +49,7 @@ function FullCalendarApp() {
           
           editAppointmentButton: {
             text: 'Edit Appointment',
-            click: () => console.log('new event'),
+            click: () => console.log('edit event'),
             //updateEvent();
           },
         
