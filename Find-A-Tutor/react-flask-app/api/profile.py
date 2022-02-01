@@ -27,9 +27,6 @@ mysql = MySQL()
 #mysql.init_app(app)
 #end database stuff
 
-@app.route('/StudentProfile/', methods=['GET','POST'])
-def StudentProfile():
-
 @app.route('/myProfile/', methods=['GET'])
 def retrieve_profile():
     tutor_id = 1
@@ -86,9 +83,9 @@ def retrieve_profile():
 @app.route('/myProfile/', methods=['POST'])
 def edit_profile():
     tutor_id = 1
-    conn = mysql.connect()
-    conn.autocommit(True)
-    cursor = conn.cursor()
+    # conn = mysql.connect()
+    # conn.autocommit(True)
+    # cursor = conn.cursor()
     
     #get the new information
     submission = request.get_json()

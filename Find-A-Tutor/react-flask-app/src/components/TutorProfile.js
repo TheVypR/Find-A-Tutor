@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 const Header = () => {
+    const  [isTutorView, setTutorView] = useState(false)
 	const  [info, setInfo] = useState({})
 	const  [payment, setPayment] = useState({})
 	const  [loginPref, setLoginPref] = useState(false)
@@ -8,7 +9,12 @@ const Header = () => {
 	const  [contact, setContact] = useState(false)
 	const  [times, setTimes] = useState({})
 	const  [values, setValues] = useState([{}])
-	
+
+    const handleViewChange = () => {
+        setTutorView(isTutorView => !isTutorView);
+        console.log(isTutorView);
+    }
+
     useEffect(()=> {
     fetch('/myProfile/', {'method':'GET'}).then(
       response => response.json()
@@ -108,6 +114,10 @@ const Header = () => {
                         <button classname="dropBtn"> 5:00PM </button>
                     </div>
 					
+                    <button type="button" onClick={handleViewChange}>
+                        Switch View
+                    </button>
+
 					<button 
 						type="submit" 
 						value="todo"
