@@ -33,6 +33,15 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
+	const info = data.get('email')
+	fetch("/sign/", {
+		method: "POST",
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify(info)
+	})
+	
     console.log({
       email: data.get('email'),
       password: data.get('password'),

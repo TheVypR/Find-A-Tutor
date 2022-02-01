@@ -10,38 +10,39 @@ from flaskext.mysql import MySQL
 
 app = Flask(__name__)
 
-mysql = MySQL()
+# mysql = MySQL()
 
-locality = 1 # Have locality set to 1 if you want to test on your local machine
-if (locality == 1):
-    app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
-    app.config['MYSQL_DATABASE_USER'] = 'test'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
-    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
-else:
-    app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-    app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
-    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
+# locality = 1 # Have locality set to 1 if you want to test on your local machine
+# if (locality == 1):
+    # app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
+    # app.config['MYSQL_DATABASE_USER'] = 'test'
+    # app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
+    # app.config['MYSQL_DATABASE_DB'] = 'findatutor'
+# else:
+    # app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+    # app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
+    # app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
+    # app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
-mysql.init_app(app)
+# mysql.init_app(app)
 #end database stuff
 
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-@app.route('/signup/', methods=['POST'])
+@app.route('/sign/', methods=['POST'])
 def profile():
-    conn = mysql.connect()
-    conn.autocommit(True)
-    cursor = conn.cursor()
+    #conn = mysql.connect()
+    #conn.autocommit(True)
+    #cursor = conn.cursor()
     info = request.get_json()    
     print(info)
-    print(info['name'])
+    print(info['firstName'])
     print(info['email'])
-    cursor.execute("insert into Student(student_id, email, name) values (1, \"" + info['email'] + "\", \"" + info['name'] +"\")")
+    print(info['password'])
+    #cursor.execute("insert into Student(student_id, email, name) values (1, \"" + info['email'] + "\", \"" + info['name'] +"\")")
     
-    conn.close()
+    #conn.close()
 
     return 'Done'
 
