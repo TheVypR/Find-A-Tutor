@@ -16,7 +16,7 @@ const Header = () => {
     }
 
     useEffect(()=> {
-    fetch('/myProfile/', {'method':'GET'}).then(
+    fetch('/start/', {'method':'GET'}).then(
       response => response.json()
     ).then(data => setInfo(data))
     }, []);
