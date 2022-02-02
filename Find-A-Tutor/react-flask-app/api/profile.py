@@ -82,7 +82,7 @@ def retrieve_profile():
     
 @app.route('/myProfile/', methods=['POST'])
 def edit_profile():
-    tutor_id = 1
+    # tutor_id = 1
     # conn = mysql.connect()
     # conn.autocommit(True)
     # cursor = conn.cursor()
@@ -90,7 +90,7 @@ def edit_profile():
     #get the new information
     submission = request.get_json()
     info = submission[0]
-    classes = submission[1]
+    #classes = submission[1]
     
     #update the profile
     # cursor.execute("update Tutor set name = \"" 
@@ -111,4 +111,4 @@ def edit_profile():
                     # + c['class_code'] + "\", rate = \"" 
                     # + c[rate] + "\")")
                     
-    print(info['pay_info'])
+    print(info['payInfo'])
