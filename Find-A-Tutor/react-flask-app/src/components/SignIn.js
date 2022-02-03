@@ -1,5 +1,4 @@
 /*https://mui.com/getting-started/templates/*/
-
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -34,6 +33,13 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+	const info = [data.get('email'), data.get('password')]
+	fetch("/login/", {method: 'GET'})
+		.then((response) => response.json())
+		.then((responseData)=> {
+			let email=info[0];
+			let pass=info[1];
+		});
     // eslint-disable-next-line no-console
     console.log({
       email: data.get('email'),

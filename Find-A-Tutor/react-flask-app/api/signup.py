@@ -18,10 +18,10 @@ if (locality == 1):
     app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 else:
-  app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-  app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
-  app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
-  app.config['MYSQL_DATABASE_DB'] = 'findatutor'
+    app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+    app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
+    app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
+    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
 #end database stuff
@@ -30,7 +30,7 @@ mysql.init_app(app)
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
 @app.route('/signup/', methods=['POST'])
-def profile():
+def signup():
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
