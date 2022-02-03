@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # have locality set to 1 if you want to test on your local machine
+locality = 0 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -25,7 +25,7 @@ else:
 
 mysql.init_app(app)
 
-@app.route('/login/', methods=['GET'])
+@app.route('/login/', methods=['POST'])
 def login():
     #sql setup
     conn = mysql.connect()
@@ -34,10 +34,13 @@ def login():
     #get the login provided
     info = request.get_json()
     sql = cursor.execute("select student_id from Student where email = \""
-                            + info['email'] + "\" and password = \""
-                            + info['pass'] + "\"")
-    user = cursor.fetchone(sql)
+                            + info[0] + "\" and password = \""
+                            + info[1] + "\"")
+    user = cursor.fetchone()
     print(user)
     conn.close()
 
-    return JSON.stringify(user)
+    if(user):
+      return {'id': user[0]}
+    else:
+      return {'error': "NOT FOUND"}

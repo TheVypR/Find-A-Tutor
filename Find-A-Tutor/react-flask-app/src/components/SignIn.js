@@ -34,12 +34,13 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 	const info = [data.get('email'), data.get('password')]
-	fetch("/login/", {method: 'GET'})
-		.then((response) => response.json())
-		.then((responseData)=> {
-			let email=info[0];
-			let pass=info[1];
-		});
+	fetch("/login/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify(info)
+	})
     // eslint-disable-next-line no-console
     console.log({
       email: data.get('email'),
