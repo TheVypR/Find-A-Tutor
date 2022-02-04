@@ -14,7 +14,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route exact path='/' element={<SignUp/>}>
+          <Route exact path='/' element={<SignIn/>}>
           </Route>
           <Route exact path='/myProfile' element={<TutorProfile/>}>
           </Route>
