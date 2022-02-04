@@ -1,5 +1,5 @@
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
-import { BsFillTrashFill, BsFillPlusCircleFill} from "react-icons/bs";
+import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 
 import React, { useState } from "react";
 
@@ -11,6 +11,7 @@ import "./TutorProfile.css"
 
 const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
+const buttonSize = 14;
 
 const NewClass = () => {
     return (
@@ -111,6 +112,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Sunday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -118,7 +120,11 @@ const TutorProfile = () => {
                         format={format}
                         use12Hours
                         inputReadOnly
+                        minuteStep={30}
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
@@ -127,6 +133,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Monday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -135,6 +142,9 @@ const TutorProfile = () => {
                         use12Hours
                         inputReadOnly
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
@@ -143,6 +153,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Tuesday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -151,6 +162,9 @@ const TutorProfile = () => {
                         use12Hours
                         inputReadOnly
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
@@ -159,6 +173,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Wednesday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -167,6 +182,9 @@ const TutorProfile = () => {
                         use12Hours
                         inputReadOnly
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
@@ -175,6 +193,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Thursday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -183,6 +202,9 @@ const TutorProfile = () => {
                         use12Hours
                         inputReadOnly
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
@@ -191,6 +213,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Friday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -199,6 +222,9 @@ const TutorProfile = () => {
                         use12Hours
                         inputReadOnly
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
@@ -207,6 +233,7 @@ const TutorProfile = () => {
                 <div>
                     <p id="day"> Saturday </p>
                     <Time
+                        id="timepicker"
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
@@ -215,6 +242,9 @@ const TutorProfile = () => {
                         use12Hours
                         inputReadOnly
                     />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
                     </Button>
