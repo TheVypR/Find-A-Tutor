@@ -1,6 +1,8 @@
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill } from "react-icons/bs";
 
+import React, { useState } from "react";
+
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
@@ -8,8 +10,33 @@ import TextField from '@mui/material/TextField';
 
 import "./TutorProfile.css"
 
+const NewClass = () => {
+    return (
+        <div id="newClass">
+            Verified
+            HUMA 200 A
+            <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
+            <input type="number" id="hourlyRate" size="2" />
+            <Button variant="danger">
+                <BsFillTrashFill />
+            </Button>
+        </div>
+    )
+}
+
 const TutorProfile = () => {
 
+    const [inputList, setInputList] = useState([]);
+
+    const AddNewClass = event => {
+        // const newDiv = document.createElement("div");
+        // newDiv.append(<NewClass />);
+        // const currentDiv = document.getElementById("AddClass");
+        // let parentDiv = currentDiv.parentNode
+        // parentDiv.insertBefore(newDiv, currentDiv);
+        setInputList(inputList.concat(<NewClass key={inputList.length} />));
+
+    }
     return (
         <>
             <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
@@ -59,15 +86,10 @@ const TutorProfile = () => {
                 <div className="p-2">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
-                        Verified
-                        HUMA 200 A
-                        <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
-                        <input type="number" id="hourlyRate" size="2" />
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
+                        <NewClass />
+                        {inputList}
                     </div>
-                    <Button type="button" id="AddClass" variant="primary"> Add Class </Button>
+                    <Button type="button" id="AddClass" variant="primary" onClick={AddNewClass}> Add Class </Button>
                 </div>
             </div>
 
@@ -125,7 +147,7 @@ const TutorProfile = () => {
                     </div>
 
                     <div>
-                        <p id="day"> Firday </p>
+                        <p id="day"> Friday </p>
                         <Button id="dropBtn"> 5:00PM </Button>
                         <Button variant="danger">
                             <BsFillTrashFill />
@@ -144,11 +166,11 @@ const TutorProfile = () => {
 
             {/* Bottom Buttons */}
             <div id="bottom">
-                <Button id="edit"> Edit </Button>
+                <Button id="edit"> Apply Changes </Button>
                 <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
             </div>
         </>
     )
 }
 
-export default TutorProfile
+export default TutorProfile;
