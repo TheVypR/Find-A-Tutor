@@ -30,8 +30,8 @@ mysql.init_app(app)
 @app.route('/myProfile/', methods=['GET'])
 def retrieve_profile():
     tutor_id = 1
-#    conn = mysql.connect()
-   cursor = conn.cursor()
+    conn = mysql.connect()
+    cursor = conn.cursor()
     
     #get the tutor information from the DB
     #get the name
@@ -87,12 +87,12 @@ def edit_profile():
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    get the new information
+    #get the new information
     submission = request.get_json()
     info = submission[0]
     classes = submission[1]
     
-    update the profile
+    #update the profile
     cursor.execute("update Tutor set name = \"" 
                     + info['name'] + "\", log_in_as_tutor = \"" 
                     + info['login_pref'] + "\", contact_me = \"" 
@@ -101,7 +101,7 @@ def edit_profile():
                     + info['payment_details'] + "\" where tutor_id = " 
                     + tutor_id)
                     
-    delete the classes and rates
+    #delete the classes and rates
     cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
     
     #add the new classes and rates
@@ -109,6 +109,6 @@ def edit_profile():
         cursor.execute("insert into TutorRates(tutor_id, class_code, rate) values(" 
                     + tutor_id + ", class_code = \"" 
                     + c['class_code'] + "\", rate = \"" 
-                    + c[rate] + "\")")
+                    + c['rate'] + "\")")
                     
     print(info['payInfo'])
