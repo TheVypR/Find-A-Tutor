@@ -1,3 +1,4 @@
+import imp
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -30,7 +31,7 @@ mysql.init_app(app)
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
 @app.route('/signup/', methods=['POST'])
-def profile():
+def signup():
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -45,5 +46,3 @@ def profile():
     conn.close()
 
     return 'Done'
-
-    

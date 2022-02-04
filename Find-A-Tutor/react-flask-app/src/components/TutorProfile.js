@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 
 import "./TutorProfile.css"
 
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
 const TutorProfile = () => {
     const [isTutorView, setTutorView] = useState(false)
 	const [info, setInfo] = useState({})
