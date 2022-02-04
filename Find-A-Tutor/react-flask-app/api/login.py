@@ -33,8 +33,8 @@ def login():
     cursor = conn.cursor()
     #get the login provided
     info = request.get_json()
-    sql = cursor.execute("select student_id from Student where email = \""
-                            + info[0] + "\" and password = \""
+    sql = cursor.execute("select stu_email from Student where stu_email = \""
+                            + info[0] + "\" and stu_pass = \""
                             + info[1] + "\"")
     user = cursor.fetchone()
     print(user)

@@ -2,8 +2,6 @@ import React, {useState, useEffect} from 'react';
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 
-import React, { useState } from "react";
-
 import moment from 'moment';
 import Time from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
