@@ -1,38 +1,47 @@
 import React, {useState, useEffect} from 'react'; 
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
-import { BsFillTrashFill } from "react-icons/bs";
+import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import TimePicker from '@mui/lab/TimePicker';
-import TextField from '@mui/material/TextField';
+import React, { useState } from "react";
+
+import moment from 'moment';
+import Time from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
 
 import "./TutorProfile.css"
 
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+const format = 'h:mm a';
+const now = moment().hour(0).minute(0);
+const buttonSize = 14;
+
+const NewClass = () => {
+    return (
+        <div id="newClass">
+            Verified
+            HUMA 200 A
+            <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
+            <input type="number" id="hourlyRate" size="2" />
+            <Button variant="danger">
+                <BsFillTrashFill />
+            </Button>
+        </div>
+    )
+}
 
 const TutorProfile = () => {
-    const [isTutorView, setTutorView] = useState(false)
-	const [info, setInfo] = useState({})
-	const [payType, setPayType] = useState("")
-	const [payVal, setPayVal] = useState("")
-	const [loginPref, setLoginPref] = useState(false)
-	const [classes, setClasses] = useState([])
-	const [rates, setRates] = useState([])
-	const [contact, setContact] = useState(false)
-	const [times, setTimes] =useState([[]])
-	
-    const handleViewChange = () => {
-        setTutorView(isTutorView => !isTutorView);
-        console.log(isTutorView);
+
+    const [inputList, setInputList] = React.useState(null);
+    const [value, setValue] = React.useState(null);
+
+    function onChange(value) {
+        console.log(value && value.format(format));
     }
 
-	useEffect(()=> {
-		fetch('/myProfile', {method:"GET"}).then(
-			response => response.json()
-		).then(data => setInfo(data))
-	}, []);
-	
+
+    const AddNewClass = event => {
+        setInputList(inputList.concat(<NewClass key={inputList.length} />));
+
+    }
     return (
         <>
             <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
@@ -80,15 +89,10 @@ const TutorProfile = () => {
                 <div className="p-2">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
-						<label id="rate" htmlFor="rate"> Class </label>
-                        <input type="text" id="class" onChange={(e)=>setClasses([classes, e.target.value])}/>
-						<label id="rate" htmlFor="rate"> Hourly Rate: $</label>
-                        <input type="number" id="hourlyRate" size="2" onChange={(e)=>setRates([rates, e.target.value])}/>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
+                        <NewClass />
+                        {inputList}
                     </div>
-                    <Button type="button" id="AddClass" variant="primary"> Add Class </Button>
+                    <Button type="button" id="AddClass" variant="primary" onClick={AddNewClass}> Add Class </Button>
                 </div>
             </div>
 
@@ -103,69 +107,148 @@ const TutorProfile = () => {
                 </div>
             </div>
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <div id="days" className="d-flex justify-content-around pt-3">
-                    <div>
-                        <p id="day"> Sunday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-
-                    <div>
-                        <p id="day"> Monday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-
-                    <div>
-                        <p id="day"> Tuesday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-
-                    <div>
-                        <p id="day"> Wednesday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-
-                    <div>
-                        <p id="day"> Thursday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-
-                    <div>
-                        <p id="day"> Friday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-
-                    <div>
-                        <p id="day"> Saturday </p>
-                        <Button id="dropBtn"> 5:00PM </Button>
-                        <Button variant="danger">
-                            <BsFillTrashFill />
-                        </Button>
-                    </div>
-					
-                    <button type="button" onClick={handleViewChange}>
-                        Switch View
-                    </button>
+            <div id="days" className="d-flex justify-content-around pt-3">
+                <div>
+                    <p id="day"> Sunday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                        minuteStep={30}
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
                 </div>
-            </LocalizationProvider>
+
+                <div>
+                    <p id="day"> Monday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
+                </div>
+
+                <div>
+                    <p id="day"> Tuesday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
+                </div>
+
+                <div>
+                    <p id="day"> Wednesday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
+                </div>
+
+                <div>
+                    <p id="day"> Thursday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
+                </div>
+
+                <div>
+                    <p id="day"> Friday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
+                </div>
+
+                <div>
+                    <p id="day"> Saturday </p>
+                    <Time
+                        id="timepicker"
+                        showSecond={false}
+                        defaultValue={now}
+                        className="xxx"
+                        onChange={onChange}
+                        format={format}
+                        use12Hours
+                        inputReadOnly
+                    />
+                    <Button id="removeTime" variant="danger">
+                        <BsFillTrashFill size={buttonSize} />
+                    </Button>
+                    <Button id="addHour">
+                        <BsFillPlusCircleFill />
+                    </Button>
+                </div>
+            </div>
 
             {/* Bottom Buttons */}
             <div id="bottom">
@@ -186,4 +269,4 @@ const TutorProfile = () => {
     )
 }
 
-export default TutorProfile
+export default TutorProfile;
