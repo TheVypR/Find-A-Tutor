@@ -1,8 +1,6 @@
-import React, {useState, useEffect} from 'react'; 
+import React, { useState } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
-
-import React, { useState } from "react";
 
 import moment from 'moment';
 import Time from 'rc-time-picker';
@@ -32,6 +30,16 @@ const TutorProfile = () => {
 
     const [inputList, setInputList] = React.useState(null);
     const [value, setValue] = React.useState(null);
+
+    const [isTutorView, setTutorView] = useState(false)
+	const [info, setInfo] = useState({})
+	const [payType, setPayType] = useState("")
+	const [payVal, setPayVal] = useState("")
+	const [loginPref, setLoginPref] = useState(false)
+	const [classes, setClasses] = useState([])
+	const [rates, setRates] = useState([])
+	const [contact, setContact] = useState(false)
+	const [times, setTimes] =useState([[]])
 
     function onChange(value) {
         console.log(value && value.format(format));
