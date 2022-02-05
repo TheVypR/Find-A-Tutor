@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # Have locality set to 1 if you want to test on your local machine
+locality = 0 # Have locality set to 1 if you want to test on your local machine
 if (locality == 1):
    app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
    app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -38,41 +38,41 @@ def retrieve_profile():
     
     #get the tutor information from the DB
     #get the name
-    cursor.execute("select name from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select tut_name from Tutor where tut_email = (%s)", (tut_email))
     name = cursor.fetchone()
     print(name)
     
     #get the email
-    cursor.execute("select email from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select tut_email from Tutor where tut_email = (%s)", (tut_email))
     email = cursor.fetchone()
     print(email)
     
     #get the classes and rates
-    cursor.execute("select class_code, rate from TutorRates where tut_email = (%s)", (tut_email))
-    classes_rates = cursor.fetchall()
+    #cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
+    #classes_rates = cursor.fetchall()
     
-    for classCode in classes_rates:
-        print(classCode[0])
-        print(classCode[1])        
+    #for classCode in classes_rates:
+    #    print(classCode[0])
+    #    print(classCode[1])        
         # #do something with the tuple (print it?)
     
     #get the times
-    cursor.execute("select * from TutorTimes where tut_email = (%s)", (tut_email))
-    times = cursor.fetchall()
-    print(times)
+    #cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
+    #times = cursor.fetchall()
+    #print(times)
     
     #get the login preference
-    cursor.execute("select log_in_as_tutor from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
     loginPref = cursor.fetchone()
     print(loginPref)
     
     #get the contactability
-    cursor.execute("select contact_me from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
     contactable = cursor.fetchone()
     print(contactable)
     
     #get the payment
-    cursor.execute("select payment_type, payment_info from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
     payment = cursor.fetchone()   
     
     #split the payment details
