@@ -27,7 +27,10 @@ const NewClass = () => {
 }
 
 const TutorProfile = () => {
+	const [data, setData] = useState(null);
+	const [info, setInfo] = useState({})
 	const [payType, setPayType] = useState("")
+	const [inputList, setInputList] = React.useState(null);
 	const [payVal, setPayVal] = useState("")
 	const [loginPref, setLoginPref] = useState(false)
 	const [classes, setClasses] = useState([])
@@ -35,10 +38,20 @@ const TutorProfile = () => {
 	const [contact, setContact] = useState(false)
 	const [times, setTimes] =useState([[]])
 	
-	useEffect(()=> {
-		fetch('/myProfile', {method:"GET"}).then(
-			response => response.json()
-		).then(data => setInfo(data))
+	useEffect(() => {
+		fetch('/myProfile/')
+			.then(response => {
+				if(response.ok) {
+					return response.json()
+				}
+				throw response;
+			})
+			.then(data => {
+				setData(data);
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			})
 	}, []);
 	
 
@@ -51,7 +64,6 @@ const TutorProfile = () => {
 
     const AddNewClass = event => {
         setInputList(inputList.concat(<NewClass key={inputList.length} />));
-
     }
     return (
         <>

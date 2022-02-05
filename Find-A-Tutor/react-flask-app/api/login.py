@@ -41,6 +41,6 @@ def login():
     conn.close()
 
     if(user):
-      return {'id': user[0]}
+      return user[0]
     else:
-      return {'error': "NOT FOUND"}
+      return "USER NOT FOUND"

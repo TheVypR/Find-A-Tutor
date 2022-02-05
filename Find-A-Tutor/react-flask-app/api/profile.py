@@ -32,23 +32,23 @@ mysql.init_app(app)
 
 @app.route('/myProfile/', methods=['GET'])
 def retrieve_profile():
-    tutor_id = 1
-#    conn = mysql.connect()
-   cursor = conn.cursor()
+    tut_email = "apelia18@gcc.edu"
+    conn = mysql.connect()
+    cursor = conn.cursor()
     
     #get the tutor information from the DB
     #get the name
-    cursor.execute("select name from Tutor where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select name from Tutor where tut_email = (%s)", (tut_email))
     name = cursor.fetchone()
     print(name)
     
     #get the email
-    cursor.execute("select email from Tutor where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select email from Tutor where tut_email = (%s)", (tut_email))
     email = cursor.fetchone()
     print(email)
     
     #get the classes and rates
-    cursor.execute("select class_code, rate from TutorRates where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select class_code, rate from TutorRates where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
     
     for classCode in classes_rates:
@@ -57,22 +57,22 @@ def retrieve_profile():
         # #do something with the tuple (print it?)
     
     #get the times
-    cursor.execute("select * from TutorTimes where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select * from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
     print(times)
     
     #get the login preference
-    cursor.execute("select log_in_as_tutor from Tutor where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select log_in_as_tutor from Tutor where tut_email = (%s)", (tut_email))
     loginPref = cursor.fetchone()
     print(loginPref)
     
     #get the contactability
-    cursor.execute("select contact_me from Tutor where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select contact_me from Tutor where tut_email = (%s)", (tut_email))
     contactable = cursor.fetchone()
     print(contactable)
     
     #get the payment
-    cursor.execute("select payment_type, payment_info from Tutor where tutor_id = (%s)", (tutor_id))
+    cursor.execute("select payment_type, payment_info from Tutor where tut_email = (%s)", (tut_email))
     payment = cursor.fetchone()   
     
     #split the payment details
@@ -85,17 +85,17 @@ def retrieve_profile():
     
 @app.route('/myProfile/', methods=['POST'])
 def edit_profile():
-    tutor_id = 1
+    tut_email = "apelia18@gcc.edu"
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    get the new information
+    #get the new information
     submission = request.get_json()
     info = submission[0]
     classes = submission[1]
     
-    update the profile
+    #update the profile
     cursor.execute("update Tutor set name = \"" 
                     + info['name'] + "\", log_in_as_tutor = \"" 
                     + info['login_pref'] + "\", contact_me = \"" 
@@ -104,7 +104,7 @@ def edit_profile():
                     + info['payment_details'] + "\" where tutor_id = " 
                     + tutor_id)
                     
-    delete the classes and rates
+    #delete the classes and rates
     cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
     
     #add the new classes and rates
