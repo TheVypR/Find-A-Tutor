@@ -4,6 +4,8 @@ from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import BooleanField
 
+import profile
+
 #Database stuff
 from flaskext.mysql import MySQL
 
@@ -44,3 +46,7 @@ def login():
       return {'id': user[0]}
     else:
       return {'error': "NOT FOUND"}
+
+@app.route('/myProfile/', methods=['GET', 'POST'])
+def myProfile():
+  profile.edit_profile()

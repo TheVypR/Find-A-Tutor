@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 
 function App() {
@@ -15,6 +16,11 @@ function App() {
         <span className='bold'>Selected Date:</span>{' '}
         {date.toDateString()}
       </p>
+      <Link to='/myProfile'>
+        <button>
+          To myProfile
+        </button>
+      </Link>
     </div>
   );
 }

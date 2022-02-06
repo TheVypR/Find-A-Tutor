@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 import moment from 'moment';
 import Time from 'rc-time-picker';
@@ -272,6 +273,9 @@ const TutorProfile = () => {
 					})}}
 				> Save and Close </Button>
                 <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                <Link to='/calendar'>
+                    <Button id="submit"> To Calendar </Button>
+                </Link>
             </div>
         </>
     )
