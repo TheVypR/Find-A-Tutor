@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 
@@ -16,7 +16,6 @@ const buttonSize = 14;
 
 const TutorProfile = () => {
 
-    const [inputList, setInputList] = React.useState(null);
     const [value, setValue] = React.useState(null);
 
     const [isTutorView, setTutorView] = useState(false)
@@ -30,7 +29,7 @@ const TutorProfile = () => {
 	const [times, setTimes] = useState([])
 	
 	useEffect(() => {
-		fetch('/myProfile/')
+		fetch('/myProfile')
 			.then(response => {
 				if(response.ok) {
 					return response.json()
@@ -57,8 +56,6 @@ const TutorProfile = () => {
 		)
 	}
 	
-    const [value, setValue] = React.useState(null);
-
     const handleChange=(value)=>{
         console.log(value && value.format(format));
 		setTimes(times.concat([{start:value.format(format), end:value.format(format)}]));

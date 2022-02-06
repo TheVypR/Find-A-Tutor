@@ -1,3 +1,4 @@
+import profile
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -9,35 +10,34 @@ from flaskext.mysql import MySQL
 
 app = Flask(__name__)
 
-mysql = MySQL()
+# mysql = MySQL()
+tut_email = ""
+# locality = 0 # have locality set to 1 if you want to test on your local machine
+# if (locality == 1):
+    # app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
+    # app.config['MYSQL_DATABASE_USER'] = 'test'
+    # app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
+    # app.config['MYSQL_DATABASE_DB'] = 'findatutor'
+# else:
+    # app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+    # app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
+    # app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
+    # app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
-locality = 0 # have locality set to 1 if you want to test on your local machine
-if (locality == 1):
-    app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
-    app.config['MYSQL_DATABASE_USER'] = 'test'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
-    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
-else:
-    app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-    app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
-    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
-
-mysql.init_app(app)
+# mysql.init_app(app)
 
 @app.route('/login/', methods=['POST'])
 def login():
     #sql setup
-    conn = mysql.connect()
-    conn.autocommit(True)
-    cursor = conn.cursor()
+    # conn = mysql.connect()
+    # conn.autocommit(True)
+    # cursor = conn.cursor()
     #get the login provided
     info = request.get_json()
     
     #get the salt
-    cursor.execute("select stu_salt from Student where stu_email = \""
-                            + info[0] + "\")"
-    result = cursor.fetchone()
+    # cursor.execute("select stu_salt from Student where stu_email = \"" + info[0] + "\")"
+    # result = cursor.fetchone()
     salt = result[0]
     
     hash = hashlib.pbkdf2_hmac(
@@ -49,14 +49,21 @@ def login():
     
     password = salt + hash
     
-    cursor.execute("select stu_email from Student where stu_email = \""
-                            + info[0] + "\" and stu_pass = \""
-                            + password + "\"")
-    user = cursor.fetchone()
+    # cursor.execute("select stu_email from Student where stu_email = \""
+                            # + info[0] + "\" and stu_pass = \""
+                            # + password + "\"")
+    # user = cursor.fetchone()
     print(user)
-    conn.close()
+    # conn.close()
 
     if(user):      
+      tut_email = user[0]
       return user[0]
     else:
       return "USER NOT FOUND"
+      
+      
+      
+@app.route('/myProfile', methods=['GET', 'POST'])
+def myProfile():
+    return profile.retrieve_profile(tut_email)

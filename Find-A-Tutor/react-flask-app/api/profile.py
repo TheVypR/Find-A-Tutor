@@ -28,8 +28,8 @@ app = Flask(__name__)
 #end database stuff
 
 @app.route('/myProfile/', methods=['GET'])
-def retrieve_profile():
-    tut_email = "apelia18@gcc.edu"
+def retrieve_profile(tut_email):
+    #tut_email = "apelia18@gcc.edu"
     # conn = mysql.connect()
     # cursor = conn.cursor()
     
