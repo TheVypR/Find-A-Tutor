@@ -1,5 +1,5 @@
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
-import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
+import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
 import React, { useState } from "react";
 
@@ -11,25 +11,25 @@ import "./TutorProfile.css"
 
 const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
-const buttonSize = 14;
-
-const NewClass = () => {
-    return (
-        <div id="newClass">
-            Verified
-            HUMA 200 A
-            <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
-            <input type="number" id="hourlyRate" size="2" />
-            <Button variant="danger">
-                <BsFillTrashFill />
-            </Button>
-        </div>
-    )
-}
+const removeTimeSize = 14;
 
 const TutorProfile = () => {
 
-    const [inputList, setInputList] = React.useState(null);
+    const NewClass = () => {
+        return (
+            <div id="newClass">
+                <BsPatchCheckFill id="verified" size="22"/>
+                <input id="courseCode" type="text" placeholder='HUMA 200 A' size="8"></input>
+                <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
+                <input type="number" id="hourlyRate" size="2" />
+                <Button variant="danger">
+                    <BsFillTrashFill />
+                </Button>
+            </div>
+        )
+    }
+
+    const [inputList, setInputList] = React.useState([]);
     const [value, setValue] = React.useState(null);
 
     function onChange(value) {
@@ -123,7 +123,8 @@ const TutorProfile = () => {
                         minuteStep={30}
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -143,7 +144,8 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -163,7 +165,8 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -183,7 +186,8 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -203,7 +207,8 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -223,7 +228,8 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -243,7 +249,8 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={removeTimeSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
