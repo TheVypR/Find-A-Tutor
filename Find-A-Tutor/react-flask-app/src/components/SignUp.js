@@ -5,13 +5,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TutorProfile from './TutorProfile';
+
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -33,6 +35,15 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
+  const info = [data.get('firstName'), data.get('lastName'), data.get('email'), data.get('password')]
+	fetch("/signup/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify(info)
+	})
+	
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -102,17 +113,18 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
+            <Link to='/'>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}>
+                Sign Up
+              </Button>
+            </Link>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link to="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
