@@ -1,4 +1,6 @@
 import os
+import hashlib
+from base64 import b64encode
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -38,17 +40,18 @@ def signup():
     info = request.get_json()    
     print(info)
     #get salt
-    salt = os.random(32)
+    salt = os.urandom(32)
     
     #hash password
-    key = hashlib.pbkdf2_hmac(
+    password = (hashlib.pbkdf2_hmac(
         'sha256', # The hash digest algorithm for HMAC
         info[3].encode('utf-8'), # Convert the password to bytes
         salt, # Provide the salt
         100000 #100,000 iterations of SHA-256 
-    )
+    ))
     
-    password = salt + key
+    #password = password.decode('utf-8')
+    salt = b64encode(salt).decode()
     
     cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt) values (\"" 
                     + info[2] + "\", \"" 
