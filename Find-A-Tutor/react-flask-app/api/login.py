@@ -33,14 +33,30 @@ def login():
     cursor = conn.cursor()
     #get the login provided
     info = request.get_json()
-    sql = cursor.execute("select stu_email from Student where stu_email = \""
+    
+    #get the salt
+    cursor.execute("select stu_salt from Student where stu_email = \""
+                            + info[0] + "\")"
+    result = cursor.fetchone()
+    salt = result[0]
+    
+    hash = hashlib.pbkdf2_hmac(
+        'sha256', # The hash digest algorithm for HMAC
+        info[1].encode('utf-8'), # Convert the password to bytes
+        salt, # Provide the salt
+        100000 #100,000 iterations of SHA-256 
+    )
+    
+    password = salt + hash
+    
+    cursor.execute("select stu_email from Student where stu_email = \""
                             + info[0] + "\" and stu_pass = \""
-                            + info[1] + "\"")
+                            + password + "\"")
     user = cursor.fetchone()
     print(user)
     conn.close()
 
-    if(user):
+    if(user):      
       return user[0]
     else:
       return "USER NOT FOUND"

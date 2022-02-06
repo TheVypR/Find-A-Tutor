@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -36,11 +37,24 @@ def signup():
     cursor = conn.cursor()
     info = request.get_json()    
     print(info)
-    print(info[0])
-    print(info[1])
-    print(info[2])
-    print(info[3])
-    cursor.execute("insert into Student(student_id, email, name, password) values (8576489, \"" + info[2] + "\", \"" + info[0] + " " + info[1] +"\", \"" + info[3] + "\")")
+    #get salt
+    salt = os.random(32)
+    
+    #hash password
+    key = hashlib.pbkdf2_hmac(
+        'sha256', # The hash digest algorithm for HMAC
+        info[3].encode('utf-8'), # Convert the password to bytes
+        salt, # Provide the salt
+        100000 #100,000 iterations of SHA-256 
+    )
+    
+    password = salt + key
+    
+    cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt) values (\"" 
+                    + info[2] + "\", \"" 
+                    + info[0] + " " + info[1] +"\", \"" 
+                    + password + "\", \"" 
+                    + salt + "\")")
     
     conn.close()
 
