@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'; 
+import React, { useState } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 
@@ -15,6 +15,11 @@ const buttonSize = 14;
 
 
 const TutorProfile = () => {
+
+    const [inputList, setInputList] = React.useState(null);
+    const [value, setValue] = React.useState(null);
+
+    const [isTutorView, setTutorView] = useState(false)
 	const [info, setInfo] = useState({})
 	const [payType, setPayType] = useState("")
 	const [inputList, setInputList] = React.useState([]);

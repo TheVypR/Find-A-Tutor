@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 0 # have locality set to 1 if you want to test on your local machine
+locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -62,5 +62,3 @@ def signup():
     conn.close()
 
     return 'Done'
-
-    

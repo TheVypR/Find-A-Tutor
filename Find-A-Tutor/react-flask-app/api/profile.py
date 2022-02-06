@@ -27,9 +27,6 @@ app = Flask(__name__)
 # mysql.init_app(app)
 #end database stuff
 
-#class ProfileForm(FlaskForm):
-    #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
-
 @app.route('/myProfile/', methods=['GET'])
 def retrieve_profile():
     tut_email = "apelia18@gcc.edu"
@@ -90,7 +87,7 @@ def edit_profile():
     # conn.autocommit(True)
     # cursor = conn.cursor()
     
-    # #get the new information
+    #get the new information
     submission = request.get_json()
     info = submission[0]
     print(info['payVal'])
