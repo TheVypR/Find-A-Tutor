@@ -15,7 +15,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path='/' element={<SignIn/>}></Route>
-          <Route exact path='/myProfile' element={<TutorProfile/>}></Route>
+          <Route exact path='/myProfile' element={
+              <TutorProfile/>
+            }>
+          </Route>
           <Route exact path='/signup' element={<SignUp/>}></Route>
           <Route exact path='/calendar' element={<Calendar/>}></Route>
         </Routes>
