@@ -245,51 +245,50 @@ class TutorProfile extends React.Component {
                         <p id="day"> Monday </p>
                         {this.state.mondayTimeSlots.map((thisTime, index) => {
                             return (
-                                <div>
-                                    <label className="timeLabel"> Start Time </label><br />
-                                    <Time
-                                        style={{ width: "50%" }}
-                                        name="startTime"
-                                        id={index}
-                                        className="timepicker"
-                                        showSecond={false}
-                                        defaultValue={now}
-                                        className="xxx"
-                                        onChange={this.onChange}
-                                        format={format}
-                                        use12Hours
-                                        inputReadOnly
-                                        minuteStep={30}
-                                        name="startTime"
-                                    /> <br />
-
+                                <>
+                                    <div className="d-flex justify-content-center" id="timeSlot">
+                                        <label id="startTimeLabel" className="timeLabel"> Start Time </label>
+                                        <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
+                                    </div>
                                     <div className="d-flex justify-content-center">
-                                        <div className="align-self-end flex-grow-1">
-                                            <label id={index} className="timeLabel"> End Time </label><br />
-                                        </div>
+                                        <Time
+                                            style={{ width: "33%" }}
+                                            name="startTime"
+                                            id={index}
+                                            className="timepicker"
+                                            showSecond={false}
+                                            defaultValue={now}
+                                            className="startTime"
+                                            onChange={this.onChange}
+                                            format={format}
+                                            use12Hours
+                                            inputReadOnly
+                                            minuteStep={30}
+                                            name="startTime"
+                                        />
 
-                                        <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "monday")}>
-                                            <BsFillTrashFill size={removeTimeSize} />
-                                        </Button> <br />
+                                        <Time
+                                            style={{ width: "33%" }}
+                                            name="endTime"
+                                            id={index}
+                                            className="timepicker"
+                                            showSecond={false}
+                                            defaultValue={now}
+                                            className="endTime"
+                                            onChange={this.onChange}
+                                            format={format}
+                                            use12Hours
+                                            inputReadOnly
+                                            minuteStep={30}
+                                            name="endTime"
+                                        />
                                     </div>
 
-                                    <Time
-                                        style={{ width: "50%" }}
-                                        name="endTime"
-                                        id={index}
-                                        className="timepicker"
-                                        showSecond={false}
-                                        defaultValue={now}
-                                        className="xxx"
-                                        onChange={this.onChange}
-                                        format={format}
-                                        use12Hours
-                                        inputReadOnly
-                                        minuteStep={30}
-                                        name="endTime"
-                                    />
+                                    <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "monday")}>
+                                        <BsFillTrashFill size={removeTimeSize} />
+                                    </Button> <br />
                                     <hr />
-                                </div>
+                                </>
                             );
                         })}
                         <Button className="AddTimeSlot" onClick={() => this.AddTimeSlot("monday")}>
