@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
 import moment from 'moment';
 import Time from 'rc-time-picker';
@@ -13,47 +14,65 @@ const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
 const buttonSize = 14;
 
-const NewClass = () => {
-    return (
-        <div id="newClass">
-            Verified
-            HUMA 200 A
-            <label id="rate" htmlFor="rate"> Hourly Rate: $</label>
-            <input type="number" id="hourlyRate" size="2" />
-            <Button variant="danger">
-                <BsFillTrashFill />
-            </Button>
-        </div>
-    )
-}
+
 
 const TutorProfile = () => {
 
-    const [inputList, setInputList] = React.useState(null);
     const [value, setValue] = React.useState(null);
 
     const [isTutorView, setTutorView] = useState(false)
 	const [info, setInfo] = useState({})
 	const [payType, setPayType] = useState("")
+	const [inputList, setInputList] = React.useState([]);
 	const [payVal, setPayVal] = useState("")
 	const [loginPref, setLoginPref] = useState(false)
-	const [classes, setClasses] = useState([])
-	const [rates, setRates] = useState([])
+	const [rates, setRates] = useState([{}])
 	const [contact, setContact] = useState(false)
-	const [times, setTimes] =useState([[]])
-
-    function onChange(value) {
+	const [times, setTimes] = useState([])
+	
+	useEffect(() => {
+		fetch('/myProfile')
+			.then(response => {
+				if(response.ok) {
+					return response.json()
+				}
+				throw response;
+			})
+			.then(data => {
+				setInfo(data);
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			})
+	}, []);
+	
+	const NewClass = () => {
+		return (
+			<div id="newClass">
+				<input type="text" id="class" placeholder="Class Code" />
+				<input type="number" id="hourlyRate" placeholder="Rate" size="2" />
+				<Button variant="danger">
+					<BsFillTrashFill />
+				</Button>
+			</div>
+		)
+	}
+	
+    const handleChange=(value)=>{
         console.log(value && value.format(format));
+		setTimes(times.concat([{start:value.format(format), end:value.format(format)}]));
+		console.log(times);
     }
 
+	const handleSelect=(value)=>{
+		setPayType(value);
+	}
 
     const AddNewClass = event => {
         setInputList(inputList.concat(<NewClass key={inputList.length} />));
-
     }
     return (
         <>
-            <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
 
             <div className="container-fluid text-center">
                 {/* User Info */}
@@ -65,31 +84,30 @@ const TutorProfile = () => {
             <div id="center" className="d-flex justify-content-around">
                 <div className="p-2">
                     <p id="header"> Payment Info </p>
-                    <div className="paymentType" onChange={(e)=>setPayType(e.target.value)}>
+                    <div className="paymentType" >
                         {[DropdownButton].map((DropdownType, idx) => (
-                            <DropdownType
+                            <DropdownButton
                                 as={ButtonGroup}
                                 key={idx}
                                 id={`dropdown-button-drop-${idx}`}
                                 size="sm"
                                 variant="primary"
                                 title="Payment Type"
+								onSelect={handleSelect}
                             >
-                                <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
-                                <Dropdown.Divider />
-								<Dropdown.Item eventKey="2">Cash</Dropdown.Item>
-                                
-                            </DropdownType>
+								<Dropdown.Item eventKey="Venmo">Venmo</Dropdown.Item>
+								<Dropdown.Divider />
+								<Dropdown.Item eventKey="Cash">Cash</Dropdown.Item>
+                            </DropdownButton>
                         ))}
                     </div>
 
                     <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e)=>setPayVal(e.target.value)}/>
 
-
                     {/*Login Info*/}
                     <div id="loginInfo" onChange={(e)=>setLoginPref(e.target.value)}>
-                        <input type="radio" id="studentView" value="StudentView " name="logInPref"/> Student View <br/>
-                        <input type="radio" id="tutorView" value="TutorView " name="logInPref"/> Tutor View
+                        <input type="radio" id="studentView" value="false" name="logInPref"/> Student View <br/>
+                        <input type="radio" id="tutorView" value="true" name="logInPref"/> Tutor View
                     </div>
                 </div>
 
@@ -124,14 +142,15 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                         minuteStep={30}
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -145,13 +164,14 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -165,13 +185,14 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -185,13 +206,14 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -205,13 +227,14 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -225,13 +248,14 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -245,13 +269,14 @@ const TutorProfile = () => {
                         showSecond={false}
                         defaultValue={now}
                         className="xxx"
-                        onChange={onChange}
+                        onChange={handleChange}
                         format={format}
                         use12Hours
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={buttonSize} />
+                        <BsFillTrashFill size={buttonSize
+                    } />
                     </Button>
                     <Button id="addHour">
                         <BsFillPlusCircleFill />
@@ -263,7 +288,7 @@ const TutorProfile = () => {
             <div id="bottom">
                 <Button type = "submit" id="save"
 					onClick={async () => {
-					const values = [{payType, payVal, loginPref, contact, times}];
+						const values = [{'payType':payType, 'payVal':payVal, 'loginPref':loginPref, 'contact':contact, 'times':times}, rates];
 						const response = await fetch("/myProfile/", {
 						method: "POST",
 						headers: {

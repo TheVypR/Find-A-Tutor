@@ -1,3 +1,5 @@
+import hashlib
+
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -35,17 +37,35 @@ def login():
     cursor = conn.cursor()
     #get the login provided
     info = request.get_json()
-    sql = cursor.execute("select student_id from Student where email = \""
-                            + info[0] + "\" and password = \""
-                            + info[1] + "\"")
+    
+    #get the salt
+    cursor.execute("select stu_salt from Student where stu_email = \""
+                            + info[0] + "\"")
+                            
+    result = cursor.fetchone()
+    
+    salt = bytes.fromhex(result[0])
+    
+    password = hashlib.pbkdf2_hmac(
+        'sha256', # The hash digest algorithm for HMAC
+        info[1].encode('utf-8'), # Convert the password to bytes
+        salt, # Provide the salt
+        100000 #100,000 iterations of SHA-256 
+    )
+    
+    password = salt + password
+    
+    cursor.execute("select stu_email from Student where stu_email = \""
+                            + info[0] + "\" and stu_pass = \""
+                            + password.hex() + "\"")
     user = cursor.fetchone()
     print(user)
     conn.close()
 
-    if(user):
-      return {'id': user[0]}
+    if(user):      
+      return user[0]
     else:
-      return {'error': "NOT FOUND"}
+      return "USER NOT FOUND"
 
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
