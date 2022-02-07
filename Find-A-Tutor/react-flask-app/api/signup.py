@@ -1,5 +1,6 @@
+import os
 import hashlib
-
+from base64 import b64encode
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -13,7 +14,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 0 # have locality set to 1 if you want to test on your local machine
+locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -26,41 +27,37 @@ else:
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
+#end database stuff
 
-@app.route('/login/', methods=['POST'])
-def login():
-    #sql setup
+#class ProfileForm(FlaskForm):
+    #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
+
+@app.route('/signup/', methods=['POST'])
+def signup():
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    #get the login provided
-    info = request.get_json()
+    info = request.get_json()    
+    print(info)
     
-    #get the salt
-    cursor.execute("select stu_salt from Student where stu_email = \""
-                            + info[0] + "\"")
-                            
-    result = cursor.fetchone()
-    
-    salt = bytes.fromhex(result[0])
+    #get salt
+    salt = os.urandom(32)
     
     password = hashlib.pbkdf2_hmac(
         'sha256', # The hash digest algorithm for HMAC
-        info[1].encode('utf-8'), # Convert the password to bytes
+        info[3].encode('utf-8'), # Convert the password to bytes
         salt, # Provide the salt
         100000 #100,000 iterations of SHA-256 
     )
     
     password = salt + password
+       
+    cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt) values (\"" 
+                    + info[2] + "\", \"" 
+                    + info[0] + " " + info[1] +"\", \"" 
+                    + password.hex() + "\", \"" 
+                    + salt.hex() + "\")")
     
-    cursor.execute("select stu_email from Student where stu_email = \""
-                            + info[0] + "\" and stu_pass = \""
-                            + password.hex() + "\"")
-    user = cursor.fetchone()
-    print(user)
     conn.close()
 
-    if(user):      
-      return user[0]
-    else:
-      return "USER NOT FOUND"
+    return 'Done'

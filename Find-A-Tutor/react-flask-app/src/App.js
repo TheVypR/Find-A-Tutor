@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,16 +10,15 @@ import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 
 function App() {
-  const  [initialData, setInitialData] = useState([{}])
-  
-  useEffect(()=> {
-    fetch('/myProfile/').then(
-      response => response.json()
-    ).then(data => setInitialData(data))
-  }, []);
   return (
     <div className="App">
-      <TutorProfile />
+      <BrowserRouter>
+        <Routes>
+          <Route exact path='/' element={<SignIn/>}></Route>
+          <Route exact path='/myProfile' element={<TutorProfile/>}></Route>
+          <Route exact path='/signup' element={<SignUp/>}></Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

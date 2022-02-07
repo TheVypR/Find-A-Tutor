@@ -1,7 +1,6 @@
+import React, { useState, useEffect } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
-
-import React, { useState } from "react";
 
 import moment from 'moment';
 import Time from 'rc-time-picker';
@@ -11,9 +10,20 @@ import "./TutorProfile.css"
 
 const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
-const removeTimeSize = 14;
+const buttonSize = 14;
 
 class TutorProfile extends React.Component {
+
+    // const [isTutorView, setTutorView] = useState(false)
+	// const [info, setInfo] = useState({})
+	// const [payType, setPayType] = useState("")
+	// const [inputList, setInputList] = React.useState([]);
+	// const [payVal, setPayVal] = useState("")
+	// const [loginPref, setLoginPref] = useState(false)
+	// const [rates, setRates] = useState([{}])
+	// const [contact, setContact] = useState(false)
+	// const [times, setTimes] = useState([])
+
     constructor(props) {
         super(props)
         this.state = {
@@ -25,7 +35,17 @@ class TutorProfile extends React.Component {
             wednesdayTimeSlots: [{ startTime: "", endTime: "" }],
             thursdayTimeSlots: [{ startTime: "", endTime: "" }],
             fridayTimeSlots: [{ startTime: "", endTime: "" }],
-            saturdayTimeSlots: [{ startTime: "", endTime: "" }]
+            saturdayTimeSlots: [{ startTime: "", endTime: "" }],
+
+            isTutorView: false,
+            info: "",
+            payType: "",
+            inputList: "",
+            payVal: "",
+            loginPref: "",
+            rates: "",
+            contact: "",
+            times: ""
         }
 
         this.onChange = this.onChange.bind(this);
@@ -33,7 +53,40 @@ class TutorProfile extends React.Component {
         this.RemoveClass = this.RemoveClass.bind(this);
         this.AddTimeSlot = this.AddTimeSlot.bind(this);
         this.RemoveTImeSlot = this.RemoveTimeSlot.bind(this);
+        
+        this.userEffect = this.useEffect.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
+
+    handleSelect = (value) =>{
+		setPayType(value);
+	}
+
+    handleChange = (value) => {
+        console.log(value && value.format(format));
+		setTimes(times.concat([{start:value.format(format), end:value.format(format)}]));
+		console.log(times);
+    }
+
+    useEffect() {
+		fetch('/myProfile')
+			.then(response => {
+				if(response.ok) {
+					return response.json()
+				}
+				throw response;
+			})
+			.then(data => {
+				setInfo(data);
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			})
+	}
+
+
+
 
     onChange(time) {
         console.log(time && time.format(format));
@@ -102,8 +155,8 @@ class TutorProfile extends React.Component {
 
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> Tim Warner </h1>
-                    <p id="email"> WarnerTR18@gcc.edu </p>
+                    <h1 id="name"> {info['name']} </h1>
+                    <p id="email"> {info['email']} </p>
                 </div>
 
                 {/* Payment Info*/}
@@ -120,6 +173,7 @@ class TutorProfile extends React.Component {
                                         size="sm"
                                         variant="primary"
                                         title="Payment Type"
+                                        onSelect={this.handleSelect}
                                     >
                                         <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
                                         <Dropdown.Item eventKey="2">Cash</Dropdown.Item>
@@ -128,11 +182,11 @@ class TutorProfile extends React.Component {
                                 ))}
                             </div>
 
-                            <input type="text" id="venmoUser" placeholder="Venmo Username" />
+                            <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e)=>this.setState({payType: e.target.value})}/>
 
 
                             {/*Login Info*/}
-                            <div id="loginInfo">
+                            <div id="loginInfo" onChange={(e)=>this.setState({loginPrefs: e.target.value})}>
                                 <p id="loginPreferences"> Login Preferences </p>
                                 <input type="radio" id="studentView" value="StudentView" />
                                 <label htmlFor="stuentView"> Student View </label><br />
@@ -170,12 +224,11 @@ class TutorProfile extends React.Component {
                         </div>
                     </fieldset>
                 </div>
-
                 {/*Available Times*/}
                 <div id="availiableTimesFlex" className="container-fluid pt-5">
                     <div className="row justify-content-start">
                         <div className="col-4">
-                            <input type="checkbox" id="contactMe" />
+                            <input type="checkbox" id="contactMe" onChange={this.setState({contact: e.target.value})}/>
                             <label htmlFor="contactMe"> Contact Me For Avalability </label>
                         </div>
                         <h6 id="header" className="col-4 text-center"> Available Times</h6>
