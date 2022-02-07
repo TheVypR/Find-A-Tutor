@@ -147,7 +147,7 @@ const TutorProfile = () => {
                         minuteStep={30}
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">
@@ -168,7 +168,7 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">
@@ -189,7 +189,7 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">
@@ -210,7 +210,7 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">
@@ -231,7 +231,7 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">
@@ -252,7 +252,7 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">
@@ -273,7 +273,7 @@ const TutorProfile = () => {
                         inputReadOnly
                     />
                     <Button id="removeTime" variant="danger">
-                        <BsFillTrashFill size={removeTimeSize
+                        <BsFillTrashFill size={buttonSize
                     } />
                     </Button>
                     <Button id="addHour">

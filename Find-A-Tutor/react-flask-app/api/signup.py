@@ -39,25 +39,24 @@ def signup():
     cursor = conn.cursor()
     info = request.get_json()    
     print(info)
+    
     #get salt
     salt = os.urandom(32)
     
-    #hash password
-    password = (hashlib.pbkdf2_hmac(
+    password = hashlib.pbkdf2_hmac(
         'sha256', # The hash digest algorithm for HMAC
         info[3].encode('utf-8'), # Convert the password to bytes
         salt, # Provide the salt
         100000 #100,000 iterations of SHA-256 
-    ))
+    )
     
-    #password = password.decode('utf-8')
-    salt = b64encode(salt).decode()
-    
+    password = salt + password
+       
     cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt) values (\"" 
                     + info[2] + "\", \"" 
                     + info[0] + " " + info[1] +"\", \"" 
-                    + password + "\", \"" 
-                    + salt + "\")")
+                    + password.hex() + "\", \"" 
+                    + salt.hex() + "\")")
     
     conn.close()
 
