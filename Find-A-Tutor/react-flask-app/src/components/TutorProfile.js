@@ -17,7 +17,6 @@ const buttonSize = 14;
 const TutorProfile = () => {
 
     const [value, setValue] = React.useState(null);
-
     const [isTutorView, setTutorView] = useState(false)
 	const [info, setInfo] = useState({})
 	const [payType, setPayType] = useState("")
