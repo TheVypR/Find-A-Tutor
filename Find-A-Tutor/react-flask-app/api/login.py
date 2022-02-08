@@ -6,6 +6,8 @@ from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import BooleanField
 
+import profile, signup, appointment
+
 #Database stuff
 from flaskext.mysql import MySQL
 
@@ -26,6 +28,8 @@ else:
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
+
+email = ''
 
 @app.route('/login/', methods=['POST'])
 def login():
@@ -60,7 +64,27 @@ def login():
     print(user)
     conn.close()
 
-    if(user):      
+    if(user): 
+      email = user[0]     
       return user[0]
     else:
       return "USER NOT FOUND"
+
+@app.route('/email/', methods=['GET'])
+def getAuth():
+  return {'authTag':email}
+
+#signUp page
+@app.route('/signUp/', methods=['POST'])
+def signUp():
+  return signup.signup()
+
+#profile page
+@app.route('/myProfile/', methods=['GET', 'POST'])
+def myProfile():
+  return profile.retrieve_profile()
+
+#add appointments on calendar screen
+@app.route('/addAppointment/', methods=['GET', 'POST'])
+def addAppointment():
+  return appointment.appointment()
