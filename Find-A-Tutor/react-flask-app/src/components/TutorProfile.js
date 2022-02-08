@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
@@ -9,6 +9,7 @@ import 'rc-time-picker/assets/index.css';
 import "./TutorProfile.css"
 
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 const format = 'h:mm a';
@@ -77,7 +78,7 @@ class TutorProfile extends React.Component {
 
 
     handleSelect = (value) => {
-        setPayType(value);
+        this.setState({ payType: value });
     }
 
     handleChange = (value) => {
@@ -455,8 +456,33 @@ class TutorProfile extends React.Component {
 
                 {/* Bottom Buttons */}
                 <div id="bottom">
-                    <Button id="edit"> Apply Changes </Button>
+                    <Button type="submit" id="save"
+                        onClick={async () => {
+                            const values = [{
+                                'payType': this.state.payType,
+                                'payVal': this.state.payVal,
+                                'loginPref': this.state.loginPref,
+                                'contact': this.state.contact,
+                                'times': this.state.times
+                            }, this.state.rates];
+                            try {
+                                const response = await axios({
+                                    method: "POST",
+                                    url: "/myProfile",
+                                    data: values,
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                })
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }}
+                    > Save and Close </Button>
                     <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                    <Link to='/calendar'>
+                        <Button id="submit"> To Calendar </Button>
+                    </Link>
                 </div>
             </>
         );
