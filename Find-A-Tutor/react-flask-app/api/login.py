@@ -29,6 +29,8 @@ else:
 
 mysql.init_app(app)
 
+email = ''
+
 @app.route('/login/', methods=['POST'])
 def login():
     #sql setup
@@ -62,14 +64,19 @@ def login():
     print(user)
     conn.close()
 
-    if(user):      
+    if(user): 
+      email = user[0]     
       return user[0]
     else:
       return "USER NOT FOUND"
 
+@app.route('/email/', methods=['GET'])
+def getAuth():
+  return {'authTag':email}
+
 #signUp page
 @app.route('/signUp/', methods=['POST'])
-def signup():
+def signUp():
   return signup.signup()
 
 #profile page
