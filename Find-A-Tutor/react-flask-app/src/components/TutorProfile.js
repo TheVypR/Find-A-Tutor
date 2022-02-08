@@ -18,17 +18,6 @@ const buttonSize = 14;
 const removeTimeSize = 14;
 
 class TutorProfile extends React.Component {
-
-    // const [isTutorView, setTutorView] = useState(false)
-    // const [items, setInfo] = useState({})
-    // const [payType, setPayType] = useState("")
-    // const [inputList, setInputList] = React.useState([]);
-    // const [payVal, setPayVal] = useState("")
-    // const [loginPref, setLoginPref] = useState(false)
-    // const [rates, setRates] = useState([{}])
-    // const [contact, setContact] = useState(false)
-    // const [times, setTimes] = useState([]s)
-
     constructor(props) {
         super(props)
         this.state = {
@@ -64,15 +53,14 @@ class TutorProfile extends React.Component {
     }
 
     componentDidMount() {
-        axios.post('/myProfile')
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result.items
-                    });
-                },
+        axios.get('/myProfile')
+            .then(res => {
+                const result = res.data
+                this.setState({
+                    isLoaded: true,
+                    items: result.items
+                });
+            },
             )
     }
 
@@ -85,6 +73,27 @@ class TutorProfile extends React.Component {
         console.log(value && value.format(format));
         setTimes(times.concat([{ start: value.format(format), end: value.format(format) }]));
         console.log(times);
+    }
+
+    handleSubmit = event => {
+        event.preventDefault();
+
+        const returnInfo = {
+            payType: this.state.payType,
+            inputList: this.state.inputList,
+            payVal: this.state.payVal,
+            loginPref: this.state.payVal,
+            rates: this.state.payVal,
+            contact: this.state.payVal,
+            times: this.state.times
+        };
+
+        axios.post('/myProfile', { returnInfo })
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+            })
+
     }
 
     onChange(time) {
@@ -457,27 +466,7 @@ class TutorProfile extends React.Component {
                 {/* Bottom Buttons */}
                 <div id="bottom">
                     <Button type="submit" id="save"
-                        onClick={async () => {
-                            const values = [{
-                                'payType': this.state.payType,
-                                'payVal': this.state.payVal,
-                                'loginPref': this.state.loginPref,
-                                'contact': this.state.contact,
-                                'times': this.state.times
-                            }, this.state.rates];
-                            try {
-                                const response = await axios({
-                                    method: "POST",
-                                    url: "/myProfile",
-                                    data: values,
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                })
-                            } catch (error) {
-                                console.log(error);
-                            }
-                        }}
+                        onClick={this.handleSubmit}
                     > Save and Close </Button>
                     <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
                     <Link to='/calendar'>
