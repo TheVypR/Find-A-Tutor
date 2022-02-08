@@ -9,12 +9,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 const appointments = [
   {
     id: 1,
-    title: 'Isaac Apel',
+    title: 'tutoring session 1',
     start: '2022-02-10T16:00:00',
     end: '2022-02-10T18:00:00',
   },
 ];
-
 
 function FullCalendarApp() {
   return (
@@ -25,8 +24,7 @@ function FullCalendarApp() {
         //user defaults to week view
         initialView="dayGridMonth"
 
-        /* 
-          set up tab bar at top of calendar
+        /* set up tab bar at top of calendar
           current allignment: switch to month view - switch to week view - 
           switch to day view - add appointment button
         */
@@ -63,7 +61,7 @@ function FullCalendarApp() {
         nowIndicator
 
         //ability to click dates
-        dateClick={(e) => alert(e.dateStr)}
+        dateClick={(e) => console.log(e.dateStr)}
 
         //ability to click appointments
         //TODO: add ability to open up more information about appointment via click
