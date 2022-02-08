@@ -54,23 +54,25 @@ class TutorProfile extends React.Component {
     }
 
     componentDidMount() {
-        fetch('/myProfile')
-            .then(async response => {
-                const data = await response.json();
-
-                if (!response.ok) {
-                    const error = (data && data.message) || response.statusText;
-                    console.log(error);
+        fetch("/myProfile")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        items: result.items
+                    });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
                 }
-
-                this.setState({
-                    isLoaded: true,
-                    items: data.total
-                });
-            })
-            .catch(error => {
-                console.error('There was an error', error)
-            })
+            )
     }
 
 
