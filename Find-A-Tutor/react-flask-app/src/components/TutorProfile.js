@@ -50,6 +50,7 @@ class TutorProfile extends React.Component {
         this.RemoveTImeSlot = this.RemoveTimeSlot.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -83,26 +84,24 @@ class TutorProfile extends React.Component {
         // console.log(times);
     }
 
-    handleSubmit = event => {
-        async () => {
-            const values = [{
-                "payType": this.state.payType,
-                "inputList": this.state.inputList,
-                "payVal": this.state.payVal,
-                "loginPref": this.state.payVal,
-                "rates": this.state.payVal,
-                "contact": this.state.payVal,
-                "times": this.state.times
-            }];
+    async = () => {
+        const values = [{
+            "payType": this.state.payType,
+            "inputList": this.state.inputList,
+            "payVal": this.state.payVal,
+            "loginPref": this.state.payVal,
+            "rates": this.state.payVal,
+            "contact": this.state.payVal,
+            "times": this.state.times
+        }];
 
-            const response = await fetch("/myProfile/", {
+        const response = await fetch("/myProfile/", {
             method: "POST",
             headers: {
-            'Content-Type' : 'application/json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(values)
-        })}
-
+        })
     }
 
     onChange(time) {
