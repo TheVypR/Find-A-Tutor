@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
-import { BsFillTrashFill, BsFillPlusCircleFill } from "react-icons/bs";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
@@ -18,9 +17,8 @@ const buttonSize = 14;
 
 const TutorProfile = () => {
 
-    const [value, setValue] = React.useState(null);
-
-    const [isTutorView, setTutorView] = useState(false)
+  const [value, setValue] = React.useState(null);
+  const [isTutorView, setTutorView] = useState(false)
 	const [info, setInfo] = useState({})
 	const [payType, setPayType] = useState("")
 	const [inputList, setInputList] = React.useState([]);
@@ -31,7 +29,7 @@ const TutorProfile = () => {
 	const [times, setTimes] = useState([])
 	
 	useEffect(() => {
-		fetch('/myProfile')
+		fetch('/myProfile/')
 			.then(response => {
 				if(response.ok) {
 					return response.json()

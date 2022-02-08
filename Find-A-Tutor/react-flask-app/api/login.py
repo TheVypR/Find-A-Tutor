@@ -82,9 +82,10 @@ def signUp():
 #profile page
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
-  return profile.retrieve_profile()
+  return profile.retrieve_profile("apelia18@gcc.edu")
 
 #add appointments on calendar screen
 @app.route('/addAppointment/', methods=['GET', 'POST'])
 def addAppointment():
-  return appointment.appointment()
+  data = request.json()
+  return appointment.appointment(data[0]['title'], data[0]['start_time'], data[0]['end_time'])

@@ -8,8 +8,9 @@ import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
+import './components/App.css';
 
-function requireAuth() {
+function RequireAuth() {
   useEffect(() => {
 		fetch('/email')
 			.then(response => {
@@ -29,9 +30,7 @@ function requireAuth() {
   const[email, setEmail] = useState('');
 
   if (email == "") {
-    replace({
-      pathname: '/'
-    });
+    console.log("BOO")
   }
 }
 
@@ -41,7 +40,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path='/' element={<SignIn/>}></Route>
-          <Route exact path='/myProfile' element={<TutorProfile/> } onEnter={requireAuth} />
+          <Route exact path='/myProfile' element={<TutorProfile/> } onEnter={RequireAuth} />
           <Route exact path='/signup' element={<SignUp/>}></Route>
           <Route exact path='/calendar' element={<Calendar/>}></Route>
         </Routes>
