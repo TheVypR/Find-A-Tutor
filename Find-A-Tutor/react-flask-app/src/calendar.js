@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-const axios = require('axios').default;
+
+//list of appointments to add to calendar
+//TODO: dynamically load appointments into list via database
+const appointments = [
+  {
+    id: 1,
+    title: 'tutoring session 1',
+    start: '2022-02-10T16:00:00',
+    end: '2022-02-10T18:00:00',
+  },
+];
 
 function FullCalendarApp() {
-  const [times, setTimes] = useState([{}])
-  
-  useEffect(() => {
-		fetch('/getTimes/')
-			.then(response => {
-				if(response.ok) {
-					return response.json()
-				}
-				throw response;
-			})
-			.then(data => {
-				setTimes(data['times']);
-			})
-			.catch(error => {
-				console.error("Error fetching data:", error);
-			})
-	}, []);
-
   return (
     <div className="App">
       <FullCalendar
@@ -33,13 +24,12 @@ function FullCalendarApp() {
         //user defaults to week view
         initialView="dayGridMonth"
 
-        /* 
-          set up tab bar at top of calendar
+        /* set up tab bar at top of calendar
           current allignment: switch to month view - switch to week view - 
           switch to day view - add appointment button
         */
         headerToolbar={{
-          center: 'dayGridMonth,timeGridWeek,timeGridDay, new, profile',
+          center: 'dayGridMonth,timeGridWeek,timeGridDay, new',
         }}
 
         //create buttons
@@ -51,35 +41,27 @@ function FullCalendarApp() {
             text: 'create appointment',
 
             //define function for on click
-            click: () => {
-            times.push(
+            click: () => appointments.push(
               {
+                id: 2,
                 title: 'test',
                 start: '2022-01-27T10:00:00',
                 end: '2022-02-27T12:00:00',
-            })
-            console.log(times)
-            },
-          },
-          profile: {
-            text: 'To Profile',
+            }),
 
-            click: function() {
-              window.location.href = '/myProfile'
-            }
           },
 
         }}//end button setup
 
         //add appointments to calendar
-        events={times}
+        events={appointments}
 
         //formatting of appointments
         eventColor="green"
         nowIndicator
 
         //ability to click dates
-        dateClick={(e) => alert(e.dateStr)}
+        dateClick={(e) => console.log(e.dateStr)}
 
         //ability to click appointments
         //TODO: add ability to open up more information about appointment via click

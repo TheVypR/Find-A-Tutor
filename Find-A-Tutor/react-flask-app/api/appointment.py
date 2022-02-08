@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # Have locality set to 1 if you want to test on your local machine
+locality = 0 # Have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -30,25 +30,33 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-@app.route('/addAppointment/', methods=['POST'])
-def profile():
+def appointment(title, start_time, end_time):
     conn = mysql.connect()
     conn.autocommit(True)
-    cursor = conn.cursor()
-    info = request.get_json()   
+    cursor = conn.cursor()  
     
-    print(info)
-    print(info['name'])
-    print(info['email'])
+    print(title)
     
-    cursor.execute("insert into Appointments(student_id, tutor_id, start_time, end_time) values(" 
-                    + info['student_id'] + ", " 
-                    + info['tutor_id'] + ", '" 
-                    + info['start_time'] + "', '"
-                    + info['end_time'] + "')")
+    cursor.execute("insert into Appointments(appointment_id, stu_email, tut_email, class_code, start_time, end_time, title)" 
+                    + " values(25, \"apelia18@gcc.edu\", \"sickafuseaj18@gcc.edu\", \"COMP447A\",'" 
+                    + start_time + "', '"
+                    + end_time + "', \""
+                    + title + "\")")
     
     conn.close()
 
     return 'Done'
 
+def getTimes():
+    availTimes = [{}]
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()  
     
+    cursor.execute("select * from TutorTimes")
+    times = cursor.fetchall()
+    
+    for time in times:
+        availTimes.append({'title':time[0], 'start':time[1], 'end':time[2]})
+    
+    return {'times':availTimes}
