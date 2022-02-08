@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import BooleanField
 
-import profile
+import profile, signup, appointment
 
 #Database stuff
 from flaskext.mysql import MySQL
@@ -67,6 +67,17 @@ def login():
     else:
       return "USER NOT FOUND"
 
+#signUp page
+@app.route('/signUp/', methods=['POST'])
+def signup():
+  return signup.signup()
+
+#profile page
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
-  profile.edit_profile()
+  return profile.retrieve_profile()
+
+#add appointments on calendar screen
+@app.route('/addAppointment/', methods=['GET', 'POST'])
+def addAppointment():
+  return appointment.appointment()
