@@ -47,4 +47,16 @@ def appointment(title, start_time, end_time):
 
     return 'Done'
 
+def getTimes():
+    availTimes = [{}]
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()  
     
+    cursor.execute("select * from TutorTimes")
+    times = cursor.fetchall()
+    
+    for time in times:
+        availTimes.append({'title':time[0], 'start':time[1], 'end':time[2]})
+    
+    return availTimes

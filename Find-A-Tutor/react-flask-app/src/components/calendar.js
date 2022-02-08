@@ -4,6 +4,20 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
+const axios = require('axios').default;
+
+function loadTimes() {
+	axios.get('/getTimes/')
+		.then(function (response) {
+			//success
+			console.log(response);
+			return response;
+		})
+		.catch(function(error) {
+			//handle error
+			console.log(error);
+		});
+}
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
@@ -17,8 +31,7 @@ const appointments = [
 
 
 function FullCalendarApp() {
-  const [info, setInfo] = useState({})
-  
+  appointments = loadTimes()
   return (
     <div className="App">
       <FullCalendar
