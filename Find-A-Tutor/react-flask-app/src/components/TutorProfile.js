@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
@@ -15,14 +15,14 @@ const buttonSize = 14;
 class TutorProfile extends React.Component {
 
     // const [isTutorView, setTutorView] = useState(false)
-	// const [info, setInfo] = useState({})
-	// const [payType, setPayType] = useState("")
-	// const [inputList, setInputList] = React.useState([]);
-	// const [payVal, setPayVal] = useState("")
-	// const [loginPref, setLoginPref] = useState(false)
-	// const [rates, setRates] = useState([{}])
-	// const [contact, setContact] = useState(false)
-	// const [times, setTimes] = useState([])
+    // const [info, setInfo] = useState({})
+    // const [payType, setPayType] = useState("")
+    // const [inputList, setInputList] = React.useState([]);
+    // const [payVal, setPayVal] = useState("")
+    // const [loginPref, setLoginPref] = useState(false)
+    // const [rates, setRates] = useState([{}])
+    // const [contact, setContact] = useState(false)
+    // const [times, setTimes] = useState([]s)
 
     constructor(props) {
         super(props)
@@ -37,8 +37,10 @@ class TutorProfile extends React.Component {
             fridayTimeSlots: [{ startTime: "", endTime: "" }],
             saturdayTimeSlots: [{ startTime: "", endTime: "" }],
 
-            isTutorView: false,
+            error: null,
+            isLoaded: false,
             info: "",
+            isTutorView: false,
             payType: "",
             inputList: "",
             payVal: "",
@@ -53,40 +55,39 @@ class TutorProfile extends React.Component {
         this.RemoveClass = this.RemoveClass.bind(this);
         this.AddTimeSlot = this.AddTimeSlot.bind(this);
         this.RemoveTImeSlot = this.RemoveTimeSlot.bind(this);
-        
-        this.userEffect = this.useEffect.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
     }
 
-    handleSelect = (value) =>{
-		setPayType(value);
-	}
+    componentDidMount() {
+        console.log("HERE");
+        fetch('/myProfile')
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        info: result.items
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+
+    handleSelect = (value) => {
+        setPayType(value);
+    }
 
     handleChange = (value) => {
         console.log(value && value.format(format));
-		setTimes(times.concat([{start:value.format(format), end:value.format(format)}]));
-		console.log(times);
+        setTimes(times.concat([{ start: value.format(format), end: value.format(format) }]));
+        console.log(times);
     }
-
-    useEffect() {
-		fetch('/myProfile')
-			.then(response => {
-				if(response.ok) {
-					return response.json()
-				}
-				throw response;
-			})
-			.then(data => {
-				setInfo(data);
-			})
-			.catch(error => {
-				console.error("Error fetching data:", error);
-			})
-	}
-
-
-
 
     onChange(time) {
         console.log(time && time.format(format));
@@ -182,11 +183,11 @@ class TutorProfile extends React.Component {
                                 ))}
                             </div>
 
-                            <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e)=>this.setState({payType: e.target.value})}/>
+                            <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e) => this.setState({ payType: e.target.value })} />
 
 
                             {/*Login Info*/}
-                            <div id="loginInfo" onChange={(e)=>this.setState({loginPrefs: e.target.value})}>
+                            <div id="loginInfo" onChange={(e) => this.setState({ loginPrefs: e.target.value })}>
                                 <p id="loginPreferences"> Login Preferences </p>
                                 <input type="radio" id="studentView" value="StudentView" />
                                 <label htmlFor="stuentView"> Student View </label><br />
@@ -228,7 +229,7 @@ class TutorProfile extends React.Component {
                 <div id="availiableTimesFlex" className="container-fluid pt-5">
                     <div className="row justify-content-start">
                         <div className="col-4">
-                            <input type="checkbox" id="contactMe" onChange={this.setState({contact: e.target.value})}/>
+                            <input type="checkbox" id="contactMe" onChange={this.setState({ contact: e.target.value })} />
                             <label htmlFor="contactMe"> Contact Me For Avalability </label>
                         </div>
                         <h6 id="header" className="col-4 text-center"> Available Times</h6>
