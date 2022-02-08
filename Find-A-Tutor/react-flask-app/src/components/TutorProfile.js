@@ -86,7 +86,7 @@ class TutorProfile extends React.Component {
         // console.log(times);
     }
 
-    async = () => {
+    handleSubmit = () => {
         const values = [{
             "payType": this.state.payType,
             "inputList": this.state.inputList,
