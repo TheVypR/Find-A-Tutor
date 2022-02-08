@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # Have locality set to 1 if you want to test on your local machine
+locality = 0 # Have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -59,4 +59,4 @@ def getTimes():
     for time in times:
         availTimes.append({'title':time[0], 'start':time[1], 'end':time[2]})
     
-    return availTimes
+    return {'times':availTimes}
