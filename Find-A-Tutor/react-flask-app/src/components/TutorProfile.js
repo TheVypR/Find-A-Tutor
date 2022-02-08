@@ -79,7 +79,7 @@ class TutorProfile extends React.Component {
 
     handleChange = (value) => {
         console.log(value && value.format(format));
-        setTimes(times.concat([{ start: value.format(format), end: value.format(format) }]));
+        this.setState({times: (times.concat([{ start: value.format(format), end: value.format(format) }]))});
         console.log(times);
     }
 
