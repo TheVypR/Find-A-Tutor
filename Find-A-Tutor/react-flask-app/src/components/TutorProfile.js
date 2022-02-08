@@ -53,15 +53,23 @@ class TutorProfile extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('/myProfile')
-            .then(res => {
-                const result = res.data
+        fetch('/myProfile')
+            .then(async response => {
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const error = (data && data.message) || response.statusText;
+                    console.log(error);
+                }
+
                 this.setState({
                     isLoaded: true,
-                    items: result.items
+                    items: data.total
                 });
-            },
-            )
+            })
+            .catch(error => {
+                console.error('There was an error', error)
+            })
     }
 
 
@@ -76,23 +84,24 @@ class TutorProfile extends React.Component {
     }
 
     handleSubmit = event => {
-        event.preventDefault();
+        async () => {
+            const values = [{
+                "payType": this.state.payType,
+                "inputList": this.state.inputList,
+                "payVal": this.state.payVal,
+                "loginPref": this.state.payVal,
+                "rates": this.state.payVal,
+                "contact": this.state.payVal,
+                "times": this.state.times
+            }];
 
-        const returnInfo = {
-            payType: this.state.payType,
-            inputList: this.state.inputList,
-            payVal: this.state.payVal,
-            loginPref: this.state.payVal,
-            rates: this.state.payVal,
-            contact: this.state.payVal,
-            times: this.state.times
-        };
-
-        axios.post('/myProfile', { returnInfo })
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-            })
+            const response = await fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+            'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(values)
+        })}
 
     }
 
