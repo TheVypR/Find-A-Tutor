@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
@@ -8,14 +8,18 @@ import 'rc-time-picker/assets/index.css';
 
 import "./TutorProfile.css"
 
+import axios from 'axios';
+
+
 const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
 const buttonSize = 14;
+const removeTimeSize = 14;
 
 class TutorProfile extends React.Component {
 
     // const [isTutorView, setTutorView] = useState(false)
-    // const [info, setInfo] = useState({})
+    // const [items, setInfo] = useState({})
     // const [payType, setPayType] = useState("")
     // const [inputList, setInputList] = React.useState([]);
     // const [payVal, setPayVal] = useState("")
@@ -37,9 +41,8 @@ class TutorProfile extends React.Component {
             fridayTimeSlots: [{ startTime: "", endTime: "" }],
             saturdayTimeSlots: [{ startTime: "", endTime: "" }],
 
-            error: null,
             isLoaded: false,
-            info: "",
+            items: "",
             isTutorView: false,
             payType: "",
             inputList: "",
@@ -60,24 +63,18 @@ class TutorProfile extends React.Component {
     }
 
     componentDidMount() {
-        console.log("HERE");
-        fetch('/myProfile')
+        axios.post('/myProfile')
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        info: result.items
+                        items: result.items
                     });
                 },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
             )
     }
+
 
     handleSelect = (value) => {
         setPayType(value);
@@ -156,8 +153,8 @@ class TutorProfile extends React.Component {
 
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {info['name']} </h1>
-                    <p id="email"> {info['email']} </p>
+                    <h1 id="name"> {this.state.items['name']} </h1>
+                    <p id="email"> {this.state.items['email']} </p>
                 </div>
 
                 {/* Payment Info*/}
@@ -229,7 +226,7 @@ class TutorProfile extends React.Component {
                 <div id="availiableTimesFlex" className="container-fluid pt-5">
                     <div className="row justify-content-start">
                         <div className="col-4">
-                            <input type="checkbox" id="contactMe" onChange={this.setState({ contact: e.target.value })} />
+                            <input type="checkbox" id="contactMe" onChange={(e) => this.setState({ contact: e.target.value })} />
                             <label htmlFor="contactMe"> Contact Me For Avalability </label>
                         </div>
                         <h6 id="header" className="col-4 text-center"> Available Times</h6>
