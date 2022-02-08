@@ -8,6 +8,8 @@ import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
+import './App.css';
+import Calendar from './components/calendar';
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
           <Route exact path='/signup' element={<SignUp/>}></Route>
         </Routes>
       </BrowserRouter>
+      <Calendar/>
     </div>
   );
 }
