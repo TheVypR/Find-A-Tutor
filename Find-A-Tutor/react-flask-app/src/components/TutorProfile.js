@@ -86,24 +86,26 @@ class TutorProfile extends React.Component {
         // console.log(times);
     }
 
-    async = () => {
-        const values = [{
-            "payType": this.state.payType,
-            "inputList": this.state.inputList,
-            "payVal": this.state.payVal,
-            "loginPref": this.state.payVal,
-            "rates": this.state.payVal,
-            "contact": this.state.payVal,
-            "times": this.state.times
-        }];
+    handleSubmit() {
+        async () => {
+            const values = [{
+                "payType": this.state.payType,
+                "inputList": this.state.inputList,
+                "payVal": this.state.payVal,
+                "loginPref": this.state.payVal,
+                "rates": this.state.payVal,
+                "contact": this.state.payVal,
+                "times": this.state.times
+            }];
 
-        const response = await fetch("/myProfile/", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(values)
-        })
+            const response = await fetch("/myProfile/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(values)
+            })
+        }
     }
 
     onChange(time) {
