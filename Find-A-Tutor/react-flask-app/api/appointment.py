@@ -31,7 +31,7 @@ mysql.init_app(app)
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
 @app.route('/addAppointment/', methods=['POST'])
-def profile():
+def appointment():
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
