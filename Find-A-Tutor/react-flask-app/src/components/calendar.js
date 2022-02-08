@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -8,7 +9,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 //TODO: dynamically load appointments into list via database
 const appointments = [
   {
-    id: 1,
     title: 'Isaac Apel',
     start: '2022-02-10T16:00:00',
     end: '2022-02-10T18:00:00',
@@ -17,6 +17,8 @@ const appointments = [
 
 
 function FullCalendarApp() {
+  const [info, setInfo] = useState({})
+  
   return (
     <div className="App">
       <FullCalendar
@@ -31,7 +33,7 @@ function FullCalendarApp() {
           switch to day view - add appointment button
         */
         headerToolbar={{
-          center: 'dayGridMonth,timeGridWeek,timeGridDay, new',
+          center: 'dayGridMonth,timeGridWeek,timeGridDay, new, profile',
         }}
 
         //create buttons
@@ -43,14 +45,28 @@ function FullCalendarApp() {
             text: 'create appointment',
 
             //define function for on click
-            click: () => appointments.push(
+            click: () => {
+            appointments.push(
               {
-                id: 2,
                 title: 'test',
                 start: '2022-01-27T10:00:00',
                 end: '2022-02-27T12:00:00',
-            }),
+            })
+            fetch("/addAppointment/", {
+						method: "POST",
+						headers: {
+						'Content-Type' : 'application/json'
+						},
+						body: JSON.stringify(appointments)
+					  })},
 
+          },
+          profile: {
+            text: 'To Profile',
+
+            click: function() {
+              window.location.href = '/myProfile'
+            }
           },
 
         }}//end button setup
