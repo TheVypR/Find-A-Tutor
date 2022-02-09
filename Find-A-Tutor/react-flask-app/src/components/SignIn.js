@@ -13,8 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate, Link } from 'react-router-dom';
-import UseAuth from './UseAuth'
-import AuthProvider from './UseAuth';
+import useProvideAuth from '../App'
 
 function Copyright(props) {
   return (
@@ -99,7 +98,7 @@ export default function SignIn() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}>
+                sx={{ mt: 3, mb: 2 }} onClick={ useProvideAuth.signin }>
                 Sign In
               </Button>
             </Link>
