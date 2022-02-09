@@ -32,6 +32,7 @@ const theme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -42,9 +43,9 @@ export default function SignUp() {
 		headers: {
 		'Content-Type' : 'application/json'
 		},
-		body:JSON.stringify(info)
+		body:JSON.stringify(info)    
 	})
-	
+	navigate("/")
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -118,8 +119,7 @@ export default function SignUp() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate('/')}>
+                sx={{ mt: 3, mb: 2 }}>
                 Sign Up
               </Button>
             <Grid container justifyContent="flex-end">
