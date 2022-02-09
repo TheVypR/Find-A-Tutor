@@ -16,7 +16,11 @@ const buttonSize = 14;
 
 
 const TutorProfile = () => {
-
+  const [profile, setProfile] = useState({})
+  const [tutorInfo, setTutorInfo] = useState({})
+  const [classes, setClasses] = useState({})
+  const [times, setTimes] = useState({})
+  
   const [value, setValue] = React.useState(null);
   const [isTutorView, setTutorView] = useState(false)
 	const [info, setInfo] = useState({})
@@ -26,7 +30,6 @@ const TutorProfile = () => {
 	const [loginPref, setLoginPref] = useState(false)
 	const [rates, setRates] = useState([{}])
 	const [contact, setContact] = useState(false)
-	const [times, setTimes] = useState([])
 	
 	useEffect(() => {
 		fetch('/myProfile/')
@@ -37,13 +40,61 @@ const TutorProfile = () => {
 				throw response;
 			})
 			.then(data => {
-				setInfo(data);
+				setProfile(data);
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error);
 			})
 	}, []);
 	
+  useEffect(() => {
+  		fetch('/myTutoring/')
+  			.then(response => {
+  				if(response.ok) {
+  					return response.json()
+  				}
+  				throw response;
+  			})
+  			.then(data => {
+  				setTutor(data);
+  			})
+  			.catch(error => {
+  				console.error("Error fetching data:", error);
+  			})
+  	}, []);
+   
+   useEffect(() => {
+  		fetch('/myClasses/')
+  			.then(response => {
+  				if(response.ok) {
+  					return response.json()
+  				}
+  				throw response;
+  			})
+  			.then(data => {
+  				setClasses(data);
+  			})
+  			.catch(error => {
+  				console.error("Error fetching data:", error);
+  			})
+  	}, []);
+   
+   useEffect(() => {
+  		fetch('/myTimes/')
+  			.then(response => {
+  				if(response.ok) {
+  					return response.json()
+  				}
+  				throw response;
+  			})
+  			.then(data => {
+  				setTimes(data);
+  			})
+  			.catch(error => {
+  				console.error("Error fetching data:", error);
+  			})
+  	}, []);
+ 
 	const NewClass = () => {
 		return (
 			<div id="newClass">
@@ -62,16 +113,15 @@ const TutorProfile = () => {
 		console.log(times);
     }
 
-	const handleSelect=(value)=>{
-		setPayType(value);
-	}
+  	const handleSelect=(value)=>{
+  		setPayType(value);
+  	}
 
     const AddNewClass = event => {
         setInputList(inputList.concat(<NewClass key={inputList.length} />));
     }
     return (
         <>
-
             <div className="container-fluid text-center">
                 {/* User Info */}
                 <h1 id="name"> {info['name']} </h1>
@@ -100,12 +150,12 @@ const TutorProfile = () => {
                         ))}
                     </div>
 
-                    <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e)=>setPayVal(e.target.value)}/>
+                    <input type="text" id="venmoUser" placeholder="Venmo Username" value=tutorInfo['pay_info'] onChange={(e)=>setPayVal(e.target.value)}/>
 
                     {/*Login Info*/}
                     <div id="loginInfo" onChange={(e)=>setLoginPref(e.target.value)}>
-                        <input type="radio" id="studentView" value="false" name="logInPref"/> Student View <br/>
-                        <input type="radio" id="tutorView" value="true" name="logInPref"/> Tutor View
+                        <input type="radio" id="studentView" value=false name="logInPref"/> Student View <br/>
+                        <input type="radio" id="tutorView" value=true name="logInPref"/> Tutor View
                     </div>
                 </div>
 
