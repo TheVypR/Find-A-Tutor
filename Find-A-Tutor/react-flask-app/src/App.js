@@ -9,6 +9,7 @@ import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 import './components/App.css';
+import UseAuth from "./components/UseAuth"
 
 function RequireAuth() {
   useEffect(() => {

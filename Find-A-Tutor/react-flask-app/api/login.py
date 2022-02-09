@@ -18,7 +18,7 @@ mysql = MySQL()
 locality = 0 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
-    app.config['MYSQL_DATABASE_USER'] = 'test'
+    app.config['MYSQL_DATABASE_USER'] = 'root'
     app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 else:
@@ -75,7 +75,7 @@ def getAuth():
   return {'authTag':email}
 
 #signUp page
-@app.route('/signUp/', methods=['POST'])
+@app.route('/signup/', methods=['POST'])
 def signUp():
   return signup.signup()
 
