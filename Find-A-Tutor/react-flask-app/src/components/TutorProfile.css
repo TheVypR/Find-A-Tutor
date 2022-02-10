@@ -110,3 +110,7 @@ fieldset {
     width: 200px;
     max-width: 200px;
 }
+
+.vr {
+    border-left: thin solid black;
+}

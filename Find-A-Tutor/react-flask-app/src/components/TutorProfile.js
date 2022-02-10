@@ -371,6 +371,8 @@ class TutorProfile extends React.Component {
                         </Button>
                     </div>
 
+                    <div className="vr"></div>
+
                     <div>
                         <text id="day"> Monday </text>
                         {this.state.mondayTimeSlots.map((thisTime, index) => {
@@ -423,6 +425,8 @@ class TutorProfile extends React.Component {
                             <BsFillPlusCircleFill />
                         </Button>
                     </div>
+
+                    <div className="vr"></div>
 
                     <div>
                         <text id="day"> Tuesday </text>
@@ -477,6 +481,8 @@ class TutorProfile extends React.Component {
                         </Button>
                     </div>
 
+                    <div className="vr"></div>
+
                     <div>
                         <text id="day"> Wednesday </text>
                         {this.state.wednesdayTimeSlots.map((thisTime, index) => {
@@ -529,6 +535,8 @@ class TutorProfile extends React.Component {
                             <BsFillPlusCircleFill />
                         </Button>
                     </div>
+
+                    <div className="vr"></div>
 
                     <div>
                         <text id="day"> Thursday </text>
@@ -583,6 +591,8 @@ class TutorProfile extends React.Component {
                         </Button>
                     </div>
 
+                    <div className="vr"></div>
+
                     <div>
                         <text id="day"> Friday </text>
                         {this.state.fridayTimeSlots.map((thisTime, index) => {
@@ -635,6 +645,8 @@ class TutorProfile extends React.Component {
                             <BsFillPlusCircleFill />
                         </Button>
                     </div>
+
+                    <div className="vr"></div>
 
                     <div>
                         <text id="day"> Saturday </text>
