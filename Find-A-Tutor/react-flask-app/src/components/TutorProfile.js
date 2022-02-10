@@ -9,9 +9,6 @@ import 'rc-time-picker/assets/index.css';
 
 import "./TutorProfile.css"
 
-import { Link } from 'react-router-dom';
-
-
 const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
 const buttonSize = 14;
