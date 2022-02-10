@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect  } from "react";
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
 import moment from 'moment';
@@ -8,8 +8,6 @@ import Time from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
 
 import "./TutorProfile.css"
-
-import { Link } from 'react-router-dom';
 
 
 const format = 'h:mm a';
@@ -84,7 +82,7 @@ const TutorProfile = () => {
   				throw response;
   			})
   			.then(data => {
-  				setTutor(data);
+  				setTutorView(data);
   			})
   			.catch(error => {
   				console.error("Error fetching data:", error);
@@ -177,17 +175,17 @@ const TutorProfile = () => {
     }
 
 
-    handleSelect = (value) => {
+    const handleSelect = (value) => {
         this.setState({ payType: value });
     }
 
-    handleChange = (value) => {
+    const handleChange = (value) => {
         // console.log(value && value.format(format));
         // this.setState({times: (this.state.times.concat([{ start: value.format(format), end: value.format(format) }]))});
         // console.log(times);
     }
 
-    handleSubmit = () => {
+    const handleSubmit = () => {
         const values = [{
             "payType": this.state.payType,
             "inputList": this.state.inputList,
@@ -221,7 +219,7 @@ const TutorProfile = () => {
         });
     }
 
-    RemoveClass = index => {
+    const RemoveClass = index => {
         this.state.classesList.splice(index, 1);
 
         this.setState({
@@ -229,7 +227,7 @@ const TutorProfile = () => {
         })
     }
 
-    AddTimeSlot = day => {
+    const AddTimeSlot = day => {
         if (day == "sunday") {
             this.setState({
                 sundayTimeSlots: [
@@ -249,7 +247,7 @@ const TutorProfile = () => {
         }
     }
 
-    RemoveTimeSlot = (index, day) => {
+    const RemoveTimeSlot = (index, day) => {
         if (day == "sunday") {
             this.state.sundayTimeSlots.splice(index, 1);
 
