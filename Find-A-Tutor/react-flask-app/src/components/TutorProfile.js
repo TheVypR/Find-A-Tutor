@@ -30,7 +30,7 @@ class TutorProfile extends React.Component {
 
             isLoaded: false,
             items: "",
-            isTutorView: false,
+            isTutorView: true,
             payType: "",
             inputList: "",
             payVal: "",
