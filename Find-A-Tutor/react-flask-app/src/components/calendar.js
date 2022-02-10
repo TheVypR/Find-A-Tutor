@@ -1,26 +1,22 @@
-<<<<<<< HEAD
-=======
+
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
->>>>>>> asickafuse
+import React, { useState, useEffect } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-<<<<<<< HEAD
 import React, { Component } from "react";
 
 
+//list of appointments to add to calendar
+//TODO: dynamically load appointments into list via database
 const appointments = [
   {
-    id: 1,
     title: 'Isaac Apel',
-    tutorName: 'Isaac Apel',
-    studentName: 'Aaron Sickafuse',
-    start: '2022-01-30T10:00:00',
-    end: '2022-01-30T12:00:00',
+    start: '2022-02-10T16:00:00',
+    end: '2022-02-10T18:00:00',
   },
-  
 ];
 
 function FullCalendarApp() {
@@ -37,9 +33,7 @@ function FullCalendarApp() {
     };
     appointments.push(myEvent)
   }
-=======
 
->>>>>>> asickafuse
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
@@ -53,11 +47,12 @@ const appointments = [
 ];
 
 function FullCalendarApp() {
+  const [info, setInfo] = useState({})
+  
   return (
     <div className="App">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-<<<<<<< HEAD
         initialView="timeGridWeek"
         headerToolbar={{
           center: 'dayGridMonth,timeGridWeek,timeGridDay, addAppointmentButton, editAppointmentButton',
@@ -80,17 +75,17 @@ function FullCalendarApp() {
         eventColor="green"
         nowIndicator
         dateClick={(e) => console.log(e.dateStr)}
-=======
 
         //user defaults to week view
         initialView="dayGridMonth"
 
-        /* set up tab bar at top of calendar
+        /* 
+          set up tab bar at top of calendar
           current allignment: switch to month view - switch to week view - 
           switch to day view - add appointment button
         */
         headerToolbar={{
-          center: 'dayGridMonth,timeGridWeek,timeGridDay new, profile',
+          center: 'dayGridMonth,timeGridWeek,timeGridDay, new, profile',
         }}
 
         //create buttons
@@ -102,13 +97,20 @@ function FullCalendarApp() {
             text: 'create appointment',
 
             //define function for on click
-            click: () => appointments.push(
+            click: () => {
+            appointments.push(
               {
-                id: 2,
                 title: 'test',
                 start: '2022-01-27T10:00:00',
                 end: '2022-02-27T12:00:00',
-            }),
+            })
+            fetch("/addAppointment/", {
+						method: "POST",
+						headers: {
+						'Content-Type' : 'application/json'
+						},
+						body: JSON.stringify(appointments)
+					  })},
 
           },
           profile: {
@@ -129,20 +131,17 @@ function FullCalendarApp() {
         nowIndicator
 
         //ability to click dates
-        dateClick={(e) => console.log(e.dateStr)}
+        dateClick={(e) => alert(e.dateStr)}
 
         //ability to click appointments
         //TODO: add ability to open up more information about appointment via click
         //TODO: add ability to sign up for appointment via click/on loaded modal
->>>>>>> asickafuse
         eventClick={(e) => console.log(e.event.id)}
+        eventClick={(e) => 
+          alert('Appointment With: ' + e.event.title)}
       />
     </div>
   );
-}
+}}
 
-<<<<<<< HEAD
-export default FullCalendarApp
-=======
 export default FullCalendarApp;
->>>>>>> asickafuse

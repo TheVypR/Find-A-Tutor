@@ -1,6 +1,8 @@
+from multiprocessing import connection
 import os
 import hashlib
 from base64 import b64encode
+from sqlite3 import connect
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -14,7 +16,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # have locality set to 1 if you want to test on your local machine
+locality = 0 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -29,10 +31,6 @@ else:
 mysql.init_app(app)
 #end database stuff
 
-#class ProfileForm(FlaskForm):
-    #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
-
-@app.route('/signup/', methods=['POST'])
 def signup():
     conn = mysql.connect()
     conn.autocommit(True)
