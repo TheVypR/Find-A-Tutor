@@ -1,6 +1,8 @@
+from multiprocessing import connection
 import os
 import hashlib
 from base64 import b64encode
+from sqlite3 import connect
 from flask import Flask, request
 
 from flask_wtf import FlaskForm
@@ -29,10 +31,6 @@ else:
 mysql.init_app(app)
 #end database stuff
 
-#class ProfileForm(FlaskForm):
-    #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
-
-@app.route('/signup/', methods=['POST'])
 def signup():
     conn = mysql.connect()
     conn.autocommit(True)

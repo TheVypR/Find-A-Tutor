@@ -249,7 +249,7 @@ class TutorProfile extends React.Component {
                                     <DropdownType
                                         as={ButtonGroup}
                                         key={idx}
-                                        id={`dropdown-button-drop-${idx}`}
+                                        id={'dropdown-button-drop-${idx}'}
                                         size="sm"
                                         variant="primary"
                                         title="Payment Type"

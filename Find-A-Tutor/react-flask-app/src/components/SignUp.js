@@ -13,7 +13,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TutorProfile from './TutorProfile';
 
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -31,6 +31,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -41,9 +43,9 @@ export default function SignUp() {
 		headers: {
 		'Content-Type' : 'application/json'
 		},
-		body:JSON.stringify(info)
+		body:JSON.stringify(info)    
 	})
-	
+	navigate("/")
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -113,7 +115,6 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
-            <Link to='/'>
               <Button
                 type="submit"
                 fullWidth
@@ -121,7 +122,6 @@ export default function SignUp() {
                 sx={{ mt: 3, mb: 2 }}>
                 Sign Up
               </Button>
-            </Link>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link to="/" variant="body2">
