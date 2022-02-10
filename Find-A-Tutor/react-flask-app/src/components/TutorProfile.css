@@ -47,20 +47,56 @@
     margin-right: 5px;
 }
 
-#addHour {
+.AddTimeSlot {
     margin-top: 5px;
 }
 
-#removeTime{
+.removeTime{
     padding: 3px 3px;
     font-size: 50%;
 }
 
-#timepicker {
-    padding: 1px 2px;
+.verified {
+    margin-right: 5px;
 }
 
-#verified {
+.removeClass {
+    padding: 2px 4px;
+    margin-left: 5px;
+}
+
+.hourlyRate {
+    margin-left: 5px;
+}
+
+.rateLabel {
+    margin-right: 5px;
+}
+
+.courseCode {
+    margin-right: 5px;
+}
+
+.timeLabel {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+fieldset {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;    
+    border-radius: 4px;
+}
+
+#startTimeLabel {
+    margin-right: 20px;
+}
+
+.startTime {
     margin-right: 3px;
 }
 
+#timeSlot {
+    margin: 0px;
+}

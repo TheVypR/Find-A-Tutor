@@ -4,21 +4,27 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-
-//list of appointments to add to calendar
-//TODO: dynamically load appointments into list via database
-const appointments = [
-  {
-    title: 'Isaac Apel',
-    start: '2022-02-10T16:00:00',
-    end: '2022-02-10T18:00:00',
-  },
-];
-
+const axios = require('axios').default;
 
 function FullCalendarApp() {
-  const [info, setInfo] = useState({})
+  const [times, setTimes] = useState([{}])
   
+  useEffect(() => {
+		fetch('/getTimes/')
+			.then(response => {
+				if(response.ok) {
+					return response.json()
+				}
+				throw response;
+			})
+			.then(data => {
+				setTimes(data['times']);
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			})
+	}, []);
+
   return (
     <div className="App">
       <FullCalendar
@@ -46,20 +52,14 @@ function FullCalendarApp() {
 
             //define function for on click
             click: () => {
-            appointments.push(
+            times.push(
               {
                 title: 'test',
                 start: '2022-01-27T10:00:00',
                 end: '2022-02-27T12:00:00',
             })
-            fetch("/addAppointment/", {
-						method: "POST",
-						headers: {
-						'Content-Type' : 'application/json'
-						},
-						body: JSON.stringify(appointments)
-					  })},
-
+            console.log(times)
+            },
           },
           profile: {
             text: 'To Profile',
@@ -72,7 +72,7 @@ function FullCalendarApp() {
         }}//end button setup
 
         //add appointments to calendar
-        events={appointments}
+        events={times}
 
         //formatting of appointments
         eventColor="green"
