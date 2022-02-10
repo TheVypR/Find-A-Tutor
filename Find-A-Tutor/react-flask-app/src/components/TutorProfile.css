@@ -95,8 +95,22 @@ fieldset {
 
 .startTime {
     margin-right: 3px;
+    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
 }
 
-#timeSlot {
-    margin: 0px;
+.endTime {
+    max-width:  75px;
+    width: 75px;
+    min-width: 75px;
+}
+
+#day {
+    width: 200px;
+    max-width: 200px;
+}
+
+.vr {
+    border-left: thin solid black;
 }
