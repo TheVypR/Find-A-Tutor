@@ -8,6 +8,7 @@ import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
+import StudentProfile from "./components/StudentProfile"
 import './components/App.css';
 import { createContext } from 'react';
 
@@ -20,7 +21,7 @@ export default function App() {
             <Route exact path='/' element={<SignIn/>}></Route>
             <Route exact path='/myProfile' element={
               <PrivateRoute>
-                <TutorProfile />
+                <StudentProfile />
               </PrivateRoute>
             } />
             <Route exact path='/signup' element={<SignUp/>}></Route>
