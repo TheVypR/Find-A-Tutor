@@ -37,7 +37,6 @@ export default function App() {
 }
 
 const authenticate = {
-  isAuth: false,
   signin(cb) {
     authenticate.isAuth = true;
     setTimeout(cb, 100);
@@ -64,8 +63,21 @@ function ProvideAuth({ children }) {
 }
 
 function useProvideAuth() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
 
+  useEffect(() => {
+    fetch("/email/", {
+      method: 'GET',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      })
+      .then(res => res.json())
+      .then(res => setUser(res))
+      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
+  }, []);
+
+  console.log(user);
   
 
   const signin = cb =>{
@@ -92,6 +104,6 @@ function useProvideAuth() {
 function PrivateRoute({ children }) {
   let auth = useAuth();
   return (
-    auth.user == null ? children : <SignIn />
+    auth.user != null ? children : <SignIn />
   );
 }
