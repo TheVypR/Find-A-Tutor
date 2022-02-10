@@ -150,12 +150,12 @@ const TutorProfile = () => {
                         ))}
                     </div>
 
-                    <input type="text" id="venmoUser" placeholder="Venmo Username" value=tutorInfo['pay_info'] onChange={(e)=>setPayVal(e.target.value)}/>
+                    <input type="text" id="venmoUser" placeholder="Venmo Username" value={tutorInfo['pay_info']} onChange={(e)=>setPayVal(e.target.value)}/>
 
                     {/*Login Info*/}
                     <div id="loginInfo" onChange={(e)=>setLoginPref(e.target.value)}>
-                        <input type="radio" id="studentView" value=false name="logInPref"/> Student View <br/>
-                        <input type="radio" id="tutorView" value=true name="logInPref"/> Tutor View
+                        <input type="radio" id="studentView" value='false' name="logInPref"/> Student View <br/>
+                        <input type="radio" id="tutorView" value='true' name="logInPref"/> Tutor View
                     </div>
                 </div>
 
