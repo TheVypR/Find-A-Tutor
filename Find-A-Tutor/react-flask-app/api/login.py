@@ -89,3 +89,7 @@ def myProfile():
 def addAppointment():
   data = request.json()
   return appointment.appointment(data[0]['title'], data[0]['start_time'], data[0]['end_time'])
+  
+@app.route('/getTimes/', methods=['GET'])
+def getTimes():
+    return appointment.getTimes()

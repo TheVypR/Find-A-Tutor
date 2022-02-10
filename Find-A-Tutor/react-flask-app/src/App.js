@@ -92,6 +92,6 @@ function useProvideAuth() {
 function PrivateRoute({ children }) {
   let auth = useAuth();
   return (
-    auth.user != null ? children : <SignIn />
+    auth.user == null ? children : <SignIn />
   );
 }

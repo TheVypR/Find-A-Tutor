@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 mysql = MySQL()
 
-locality = 1 # Have locality set to 1 if you want to test on your local machine
+locality = 0 # Have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -47,4 +47,16 @@ def appointment(title, start_time, end_time):
 
     return 'Done'
 
+def getTimes():
+    availTimes = [{}]
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()  
     
+    cursor.execute("select * from TutorTimes")
+    times = cursor.fetchall()
+    
+    for time in times:
+        availTimes.append({'title':time[0], 'start':time[1], 'end':time[2]})
+    
+    return {'times':availTimes}
