@@ -315,9 +315,9 @@ class TutorProfile extends React.Component {
                     </div>
                 </div>
 
-                <div id="days" className="d-flex justify-content-around pt-3">
+                <div id="days" className="d-flex justify-content-center">
                     <div>
-                        <p id="day"> Sunday </p>
+                        <text id="day"> Sunday </text>
 
                         {this.state.sundayTimeSlots.map((thisTime, index) => {
                             return (
@@ -328,7 +328,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -344,7 +343,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
@@ -374,7 +372,7 @@ class TutorProfile extends React.Component {
                     </div>
 
                     <div>
-                        <p id="day"> Monday </p>
+                        <text id="day"> Monday </text>
                         {this.state.mondayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -384,7 +382,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -400,7 +397,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
@@ -429,7 +425,7 @@ class TutorProfile extends React.Component {
                     </div>
 
                     <div>
-                        <p id="day"> Tuesday </p>
+                        <text id="day"> Tuesday </text>
                         {this.state.tuesdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -439,7 +435,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -455,7 +450,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
@@ -484,7 +478,7 @@ class TutorProfile extends React.Component {
                     </div>
 
                     <div>
-                        <p id="day"> Wednesday </p>
+                        <text id="day"> Wednesday </text>
                         {this.state.wednesdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -494,7 +488,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -510,7 +503,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
@@ -539,7 +531,7 @@ class TutorProfile extends React.Component {
                     </div>
 
                     <div>
-                        <p id="day"> Thursday </p>
+                        <text id="day"> Thursday </text>
                         {this.state.thursdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -549,7 +541,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -565,7 +556,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
@@ -594,7 +584,7 @@ class TutorProfile extends React.Component {
                     </div>
 
                     <div>
-                        <p id="day"> Friday </p>
+                        <text id="day"> Friday </text>
                         {this.state.fridayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -604,7 +594,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -620,7 +609,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
@@ -649,7 +637,7 @@ class TutorProfile extends React.Component {
                     </div>
 
                     <div>
-                        <p id="day"> Saturday </p>
+                        <text id="day"> Saturday </text>
                         {this.state.saturdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -659,7 +647,6 @@ class TutorProfile extends React.Component {
                                     </div>
                                     <div className="d-flex justify-content-center">
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="startTime"
                                             id={index}
                                             className="timepicker"
@@ -675,7 +662,6 @@ class TutorProfile extends React.Component {
                                         />
 
                                         <Time
-                                            style={{ width: "33%" }}
                                             name="endTime"
                                             id={index}
                                             className="timepicker"
