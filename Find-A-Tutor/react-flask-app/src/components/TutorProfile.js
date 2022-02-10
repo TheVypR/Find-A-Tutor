@@ -317,7 +317,7 @@ class TutorProfile extends React.Component {
 
                 <div id="days" className="d-flex justify-content-center">
                     <div>
-                        <text id="day"> Sunday </text>
+                        <text id="day"> Sunday </text> <br/>
 
                         {this.state.sundayTimeSlots.map((thisTime, index) => {
                             return (
@@ -374,7 +374,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Monday </text>
+                        <text id="day"> Monday </text><br/>
                         {this.state.mondayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -429,7 +429,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Tuesday </text>
+                        <text id="day"> Tuesday </text><br/>
                         {this.state.tuesdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -484,7 +484,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Wednesday </text>
+                        <text id="day"> Wednesday </text><br/>
                         {this.state.wednesdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -539,7 +539,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Thursday </text>
+                        <text id="day"> Thursday </text><br/>
                         {this.state.thursdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -594,7 +594,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Friday </text>
+                        <text id="day"> Friday </text><br/>
                         {this.state.fridayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -649,7 +649,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Saturday </text>
+                        <text id="day"> Saturday </text><br/>
                         {this.state.saturdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
