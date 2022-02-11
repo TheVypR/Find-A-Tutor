@@ -64,14 +64,14 @@ function ProvideAuth({ children }) {
 }
 
 function useProvideAuth() {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
 
   
 
   const signin = cb =>{
     return authenticate.signin(() => {
       setUser("Good");
-      //cb();
+      cb();
     });
   };
 
@@ -92,6 +92,6 @@ function useProvideAuth() {
 function PrivateRoute({ children }) {
   let auth = useAuth();
   return (
-    auth.user != null ? children : <SignIn />
+    auth.user == null ? children : <SignIn />
   );
 }

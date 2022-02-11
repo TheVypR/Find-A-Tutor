@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import React, { useState, useEffect, Component } from "react";
@@ -21,6 +20,24 @@ const appointments = [
 
 function FullCalendarApp() {
   const [times, setTimes] = useState([{}])
+  
+  //loads in the times currently available in the DB -IAA
+  useEffect(() => { fetch("/getTimes/")
+            .then(res => res.json())
+            .then(
+                result => {
+					console.log("Result: " + result);
+                    setTimes(result['times']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
+  }, []);
+  
   function updateEvent() {
 
   }
@@ -34,7 +51,6 @@ function FullCalendarApp() {
     };
     appointments.push(myEvent)
   }
-
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database

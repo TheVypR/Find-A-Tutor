@@ -93,4 +93,5 @@ def addAppointment():
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
+    print("Times")
     return appointment.getTimes()
