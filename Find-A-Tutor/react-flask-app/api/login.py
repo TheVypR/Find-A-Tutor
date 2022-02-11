@@ -65,7 +65,8 @@ def login():
     conn.close()
 
     if(user): 
-      email = user[0]     
+      email = user[0]   
+      print(email)      
       return user[0]
     else:
       return "USER NOT FOUND"

@@ -9,7 +9,6 @@ import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 import StudentProfile from "./components/StudentProfile"
-import './components/App.css';
 import { createContext } from 'react';
 
 export default function App() {
@@ -65,14 +64,14 @@ function ProvideAuth({ children }) {
 }
 
 function useProvideAuth() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState("");
 
   
 
   const signin = cb =>{
     return authenticate.signin(() => {
       setUser("Good");
-      cb();
+      //cb();
     });
   };
 
@@ -93,6 +92,6 @@ function useProvideAuth() {
 function PrivateRoute({ children }) {
   let auth = useAuth();
   return (
-    auth.user == null ? children : <SignIn />
+    auth.user != null ? children : <SignIn />
   );
 }

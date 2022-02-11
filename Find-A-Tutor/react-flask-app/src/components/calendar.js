@@ -20,6 +20,7 @@ const appointments = [
 ];
 
 function FullCalendarApp() {
+  const [times, setTimes] = useState([{}])
   function updateEvent() {
 
   }
@@ -45,25 +46,6 @@ const appointments = [
     end: '2022-01-25T12:00:00',
   }
 ];
-
-function FullCalendarApp() {
-  const [times, setTimes] = useState([{}])
-  
-  useEffect(() => {
-		fetch('/getTimes/')
-			.then(response => {
-				if(response.ok) {
-					return response.json()
-				}
-				throw response;
-			})
-			.then(data => {
-				setTimes(data['times']);
-			})
-			.catch(error => {
-				console.error("Error fetching data:", error);
-			})
-	}, []);
 
   return (
     <div className="App">
@@ -152,6 +134,6 @@ function FullCalendarApp() {
       />
     </div>
   );
-}}
+}
 
 export default FullCalendarApp;
