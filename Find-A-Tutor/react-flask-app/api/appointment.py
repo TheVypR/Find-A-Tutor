@@ -74,7 +74,7 @@ def getAppointments():
     appts = cursor.fetchall()
     
     for appt in appts:
-        availAppts.append({'stu_email':appt[1], 'tut_email':appt[2], 'class_code':appt[3], 'start_time':appt[4], 'end_time':appt[5], 'title':appt[6]})
+        availAppts.append({'stu_email':appt[1], 'tut_email':appt[2], 'class_code':appt[3], 'start':appt[4], 'end':appt[5], 'title':appt[6]})
     
     conn.close()
     

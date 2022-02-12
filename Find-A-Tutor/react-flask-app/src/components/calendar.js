@@ -68,6 +68,7 @@ function FullCalendarApp() {
 
 
 console.log(appts)
+console.log(times)
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
@@ -115,7 +116,7 @@ console.log(appts)
 		
 		
         //add appointments to calendar
-        events={times.concat(appts)}
+        events={appts}
 
         //formatting of appointments
         eventColor="green"
