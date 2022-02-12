@@ -86,12 +86,18 @@ def myProfile():
   return profile.retrieve_profile("apelia18@gcc.edu")
 
 #add appointments on calendar screen
-@app.route('/addAppointment/', methods=['GET', 'POST'])
+@app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
-  data = request.json()
-  return appointment.appointment(data[0]['title'], data[0]['start_time'], data[0]['end_time'])
+  #data = request.json()
+  return appointment.appointment()
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     print("Times")
     return appointment.getTimes()
+    
+@app.route('/getAppointments/', methods=['GET'])
+def getAppointments():
+    print("Appointments")
+    appts = appointment.getAppointments()
+    return appts

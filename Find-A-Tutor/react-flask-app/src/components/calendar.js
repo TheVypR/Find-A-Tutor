@@ -5,29 +5,33 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-//import React, { Component } from "react";
-
-
-//list of appointments to add to calendar
-//TODO: dynamically load appointments into list via database
-const appointments = [
-  {
-    title: 'Isaac Apel',
-    start: '2022-02-10T16:00:00',
-    end: '2022-02-10T18:00:00',
-  },
-];
 
 function FullCalendarApp() {
-  const [times, setTimes] = useState([{}])
+  const [times, setTimes] = useState([])
+  const [appts, setAppts] = useState([])
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
             .then(res => res.json())
             .then(
                 result => {
-					console.log("Result: " + result);
                     setTimes(result['times']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
+  }, []);
+  
+  //loads in the appts currently created in the DB - IAA
+  useEffect(() => { fetch("/getAppointments/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setAppts(result['appts']);
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
@@ -41,57 +45,41 @@ function FullCalendarApp() {
   function updateEvent() {
 
   }
-  function addEvent(id, tutorName, studentName, startTime, endTime) {
-    var myEvent = {
-      id: id,
-      tutorName : tutorName,
-      studentName : studentName,
-      start : startTime,
-      end : endTime
+  
+  //create appointment
+  function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
+    const myEvent = {
+      stu_email: stuEmail,
+      tut_email: tutEmail,
+	  class_code: classCode,
+      start: startTime,
+      end: endTime,
+	  title: title
     };
-    appointments.push(myEvent)
+	
+	fetch("/addAppointment/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify([myEvent])    
+	})
   }
 
+
+console.log(appts)
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-const appointments = [
-  {
-    id: 1,
-    title: 'tutoring session 1',
-    start: '2022-01-25T10:00:00',
-    end: '2022-01-25T12:00:00',
-  }
-];
-
   return (
     <div className="App">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
-        headerToolbar={{
-          center: 'dayGridMonth,timeGridWeek,timeGridDay, addAppointmentButton, editAppointmentButton',
-        }}
-        customButtons={{
-          addAppointmentButton: {
-            text: 'Add New Appointment',
-            click: () => console.log('new event'),
-              //addEvent('2', 'Nathan Beam', 'Tim Warner', '2022-02-02T10:00:00', '2022-02-02T12:00:00');
-            },
-          
-          editAppointmentButton: {
-            text: 'Edit Appointment',
-            click: () => console.log('edit event'),
-            //updateEvent();
-          },
-        
-        }}
-        events={appointments}
         eventColor="green"
         nowIndicator
         dateClick={(e) => console.log(e.dateStr)}
 
         //user defaults to week view
-        initialView="dayGridMonth"
+        initialView="timeGridWeek"
 
         /* 
           set up tab bar at top of calendar
@@ -106,20 +94,13 @@ const appointments = [
         //TODO: decide if any buttons at top of screen are necessary
         customButtons={{
           new: {
-
             //set text for button
             text: 'create appointment',
 
             //define function for on click
-            click: () => {
-            times.push(
-              {
-                title: 'test',
-                start: '2022-01-27T10:00:00',
-                end: '2022-02-27T12:00:00',
-            })
-            console.log(times)
-            },
+            click: addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
+						"COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
+						"Test Appointment")
           },
           profile: {
             text: 'To Profile',
@@ -130,9 +111,11 @@ const appointments = [
           },
 
         }}//end button setup
-
+		
+		
+		
         //add appointments to calendar
-        events={times}
+        events={times.concat(appts)}
 
         //formatting of appointments
         eventColor="green"
