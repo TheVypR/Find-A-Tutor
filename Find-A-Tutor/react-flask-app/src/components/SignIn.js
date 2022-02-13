@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate, Link } from 'react-router-dom';
-import useProvideAuth from '../App'
 
 function Copyright(props) {
   return (
@@ -29,6 +28,18 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
+
+function Redirect() {
+  let navigate = useNavigate();
+  function handleClick() {
+    navigate('/calendar');
+  }
+  return (
+    <div>
+      <button onClick={handleClick}>go calendar</button> 
+    </div>
+  );
+}
 
 export default function SignIn() {
 
@@ -48,7 +59,9 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     });
-	console.log("SignedIn")
+	console.log("SignedIn");
+
+  Redirect();
   };
   return (
     <ThemeProvider theme={theme}>
@@ -93,15 +106,13 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Link to='/calendar'>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }} onClick={ useProvideAuth.signin }>
-                Sign In
-              </Button>
-            </Link>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }} onClick={Redirect()}>
+              Sign In
+            </Button>
             <Grid container>
               <Grid item xs>
                 <Link to='/' variant="body2">

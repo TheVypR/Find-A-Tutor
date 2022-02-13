@@ -13,37 +13,33 @@ import { createContext } from 'react';
 
 export default function App() {
   return (
-    <ProvideAuth>
       <div className="App">
         <BrowserRouter>
           <Routes>
             <Route exact path='/' element={<SignIn/>}></Route>
             <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/myProfile' element={
-              <PrivateRoute>
-                <StudentProfile />
-              </PrivateRoute>
+              <StudentProfile />
             } />
             <Route exact path='/calendar' element={
-              <PrivateRoute>
-                <Calendar/>
-              </PrivateRoute>
+              <Calendar/>
             }/>
           </Routes>
         </BrowserRouter>
       </div>
-    </ProvideAuth>
   );
 }
 
-const authContext = createContext();
+const authContext = createContext({
+  authenticated: false,
+});
 
 function useAuth() {
   return useContext(authContext);
 }
 
 function ProvideAuth({ children }) {
-  const auth = useProvideAuth();
+  const auth = useAuth()
   return (
     <authContext.Provider value={auth}>
       {children}
@@ -64,7 +60,7 @@ function useProvideAuth() {
       .then(res => res.json())
       .then(res => setUser(res))
       .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
-  }, []);
+  });
 
   console.log(user);
 
@@ -90,9 +86,11 @@ function PrivateRoute({ children }) {
       .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
   }, []);
 
+  if (user['authTag'].value == "USER NOT FOUND")
+
   console.log(user);
 
   return (
-    auth.user != "" ? children : <SignIn />
+    user['authTag'] != "USER NOT FOUND" ? children : <SignIn />
   );
 }
