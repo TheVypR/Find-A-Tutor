@@ -8,7 +8,7 @@ import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
-import './components/App.css';
+import StudentProfile from "./components/StudentProfile"
 import { createContext } from 'react';
 
 export default function App() {
@@ -18,12 +18,12 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route exact path='/' element={<SignIn/>}></Route>
+            <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/myProfile' element={
               <PrivateRoute>
-                <TutorProfile />
+                <StudentProfile />
               </PrivateRoute>
             } />
-            <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/calendar' element={
               <PrivateRoute>
                 <Calendar/>
@@ -32,20 +32,9 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </div>
-      </ProvideAuth>
+    </ProvideAuth>
   );
 }
-
-const authenticate = {
-  signin(cb) {
-    authenticate.isAuth = true;
-    setTimeout(cb, 100);
-  },
-  signout(cb) {
-    authenticate.isAuth = false;
-    setTimeout(cb, 100);
-  }
-};
 
 const authContext = createContext();
 
@@ -78,32 +67,32 @@ function useProvideAuth() {
   }, []);
 
   console.log(user);
-  
-
-  const signin = cb =>{
-    return authenticate.signin(() => {
-      setUser("Good");
-      cb();
-    });
-  };
-
-  const signout = cb =>{
-    return authenticate.signout(() => {
-      setUser(null);
-      cb();
-    });
-  };
 
   return {
-    user,
-    signin,
-    signout
+    user
   };
 }
 
 function PrivateRoute({ children }) {
   let auth = useAuth();
+
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    fetch("/email/", {
+      method: 'GET',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      })
+      .then(res => res.json())
+      .then(res => setUser(res))
+      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
+  }, []);
+
+  console.log(user);
+
   return (
-    auth.user != null ? children : <SignIn />
+    auth.user != "" ? children : <SignIn />
   );
 }

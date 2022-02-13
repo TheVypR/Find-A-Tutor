@@ -48,8 +48,8 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     });
+	console.log("SignedIn")
   };
-
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">

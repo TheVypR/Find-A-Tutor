@@ -1,7 +1,6 @@
-
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -19,6 +18,25 @@ const appointments = [
 ];
 
 function FullCalendarApp() {
+  const [times, setTimes] = useState([{}])
+  
+  //loads in the times currently available in the DB -IAA
+  useEffect(() => { fetch("/getTimes/")
+            .then(res => res.json())
+            .then(
+                result => {
+					console.log("Result: " + result);
+                    setTimes(result['times']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
+  }, []);
+  
   function updateEvent() {
 
   }
@@ -33,7 +51,6 @@ function FullCalendarApp() {
     appointments.push(myEvent)
   }
 
-
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
 const appointments = [
@@ -44,25 +61,6 @@ const appointments = [
     end: '2022-01-25T12:00:00',
   }
 ];
-
-function FullCalendarApp() {
-  const [times, setTimes] = useState([{}])
-  
-  useEffect(() => {
-		fetch('/getTimes/')
-			.then(response => {
-				if(response.ok) {
-					return response.json()
-				}
-				throw response;
-			})
-			.then(data => {
-				setTimes(data['times']);
-			})
-			.catch(error => {
-				console.error("Error fetching data:", error);
-			})
-	}, []);
 
   return (
     <div className="App">
@@ -151,6 +149,6 @@ function FullCalendarApp() {
       />
     </div>
   );
-}}
+}
 
 export default FullCalendarApp;
