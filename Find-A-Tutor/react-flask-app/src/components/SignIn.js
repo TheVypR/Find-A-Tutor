@@ -29,19 +29,8 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-function Redirect() {
-  let navigate = useNavigate();
-  function handleClick() {
-    navigate('/calendar');
-  }
-  return (
-    <div>
-      <button onClick={handleClick}>go calendar</button> 
-    </div>
-  );
-}
-
 export default function SignIn() {
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -54,14 +43,13 @@ export default function SignIn() {
 		},
 		body:JSON.stringify(info)
 	})
+  .then(navigate('/calendar'))
     // eslint-disable-next-line no-console
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
 	console.log("SignedIn");
-
-  Redirect();
   };
   return (
     <ThemeProvider theme={theme}>
@@ -110,7 +98,7 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }} onClick={Redirect()}>
+              sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
             <Grid container>
