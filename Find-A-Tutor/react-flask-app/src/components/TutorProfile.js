@@ -278,9 +278,9 @@ class TutorProfile extends React.Component {
                             {/*Login Info*/}
                             <div id="loginInfo" onChange={(e) => this.setState({ loginPrefs: e.target.value })}>
                                 <p id="loginPreferences"> Login Preferences </p>
-                                <input type="radio" id="studentView" value="StudentView" />
+                                <input name="loginPrefs" type="radio" id="studentView" value="StudentView" />
                                 <label htmlFor="stuentView"> Student View </label><br />
-                                <input type="radio" id="tutorView" value="TutorView" />
+                                <input name="loginPrefs" type="radio" id="tutorView" value="TutorView" />
                                 <label htmlFor="tutorView"> Tutor View </label>
                             </div>
                         </div>
