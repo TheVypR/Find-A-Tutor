@@ -72,17 +72,6 @@ class StudentProfile extends React.Component {
                 </div>
 
                 <div className="d-flex justify-content-center">
-                    {/*Login Info*/}
-                    <fieldset id="loginPrefs">
-                        <div id="loginInfo" onChange={(e) => this.setState({ loginPrefs: e.target.value })}>
-                            <p id="loginPreferences"> Login Preferences </p>
-                            <input type="radio" id="studentView" value="StudentView" />
-                            <label htmlFor="stuentView"> Student View </label><br />
-                            <input type="radio" id="tutorView" value="TutorView" />
-                            <label htmlFor="tutorView"> Tutor View </label>
-                        </div>
-                    </fieldset>
-
                     {/*Classes*/}
                     <fieldset>
                         <div className="p-2">
@@ -107,6 +96,16 @@ class StudentProfile extends React.Component {
                             <Button type="button" id="AddClass" variant="primary" onClick={this.AddNewClass}> Add Class </Button>
                         </div>
                     </fieldset>
+                </div>
+
+                {/* Bottom Buttons */}
+                <div id="bottom">
+                    <Button type="submit" id="save"
+                        onClick={this.handleSubmit}
+                    > Apply </Button>
+                    <Link to='/calendar'>
+                        <Button id="submit"> To Calendar </Button>
+                    </Link>
                 </div>
             </>
         )
