@@ -90,7 +90,7 @@ const appointments = [
         dateClick={(e) => console.log(e.dateStr)}
 
         //user defaults to week view
-        initialView="dayGridMonth"
+        initialView="timeGridWeek"
 
         /* 
           set up tab bar at top of calendar
