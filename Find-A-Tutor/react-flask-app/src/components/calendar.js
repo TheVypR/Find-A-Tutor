@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import React, { useState, useEffect, Component } from "react";
 import FullCalendar from '@fullcalendar/react';
@@ -7,8 +8,13 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
 function FullCalendarApp() {
-  const [times, setTimes] = useState([])
-  const [appts, setAppts] = useState([])
+  const [times, setTimes] = useState([]);
+  const [appts, setAppts] = useState([]);
+  const [show, setShow] = useState(false);
+  
+  //handle the modal on/off
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -67,12 +73,29 @@ function FullCalendarApp() {
   }
 
 
-console.log(appts)
-console.log(times)
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
     <div className="App">
+		<Button variant="primary" onClick={handleShow}>
+			Launch demo modal
+		</Button>	
+		
+		<Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+	  
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         eventColor="green"
@@ -87,14 +110,12 @@ console.log(times)
           current allignment: switch to month view - switch to week view - 
           switch to day view - add appointment button
         */
-        headerToolbar={{
-          center: 'dayGridMonth,timeGridWeek,timeGridDay, new, profile',
-        }}
+        
 
         //create buttons
         //TODO: decide if any buttons at top of screen are necessary
         customButtons={{
-          new: {
+          addAppointment: {
             //set text for button
             text: 'create appointment',
 
@@ -113,10 +134,12 @@ console.log(times)
 
         }}//end button setup
 		
-		
+		headerToolbar={{
+          center: 'dayGridMonth,timeGridWeek,timeGridDay,addAppointment,profile',
+        }}
 		
         //add appointments to calendar
-        events={appts}
+        events={times.concat(appts)}
 
         //formatting of appointments
         eventColor="green"
