@@ -7,32 +7,13 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-//create appointment
-function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
-    const myEvent = {
-      stu_email: stuEmail,
-      tut_email: tutEmail,
-	  class_code: classCode,
-      start: startTime,
-      end: endTime,
-	  title: title
-    };
-	
-	fetch("/addAppointment/", {
-		method: 'POST',
-		headers: {
-		'Content-Type' : 'application/json'
-		},
-		body:JSON.stringify([myEvent])    
-	})
-	
-	console.log("Add");
-  }
+
 
 function FullCalendarApp() {
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
   const [show, setShow] = useState(false);
+  const [chosen, setChosen] = useState({});
   
   //handle the modal on/off
   const handleClose = () => setShow(false);
@@ -70,6 +51,34 @@ function FullCalendarApp() {
             )
   }, []);
 
+
+//create appointment
+function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
+    const myEvent = {
+      stu_email: stuEmail,
+      tut_email: tutEmail,
+	  class_code: classCode,
+      start: startTime,
+      end: endTime,
+	  title: title
+    };
+	
+	fetch("/addAppointment/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify([myEvent])    
+	})
+	
+	console.log("Add");
+  }
+
+	const handleEventClick = (event, el) => {
+		//handleShow;
+		setChosen(event);
+	};
+
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
@@ -78,16 +87,23 @@ function FullCalendarApp() {
         <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Select Time and Class For Appointment</Modal.Body>
+        <Modal.Body>
+			{chosen.title}
+		</Modal.Body>
+		
         <Modal.Footer>
-		  //close button
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-		  //save changes button
-          <Button variant="primary" onClick={addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
-						"COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
-		  "Test Appointment")}>
+          <Button 
+			variant="primary" 
+			onClick= {
+				() => {
+					addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
+							"COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
+							"Test Appointment")
+				}
+			}>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -112,20 +128,21 @@ function FullCalendarApp() {
         //create buttons
         //TODO: decide if any buttons at top of screen are necessary
         customButtons={{
-          // addAppointment: {
-            // //set text for button
-            // text: 'create appointment',
+			addAppointment: {
+				//set text for button
+				text: 'create appointment',
 
-            // //define function for on click
-            // click: addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
-						// "COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
-						// "Test Appointment")
-          // },
-          profile: {
-            text: 'To Profile',
+				//define function for on click
+				click: () => {addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
+								"COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
+								"Test Appointment")
+				}		
+            },
+			profile: {
+				text: 'To Profile',
 
-            click: function() {
-              window.location.href = '/myProfile'
+				click: function() {
+					window.location.href = '/myProfile'
             }
           },
 
@@ -149,8 +166,7 @@ function FullCalendarApp() {
         //TODO: add ability to open up more information about appointment via click
         //TODO: add ability to sign up for appointment via click/on loaded modal
         eventClick={handleShow}
-        // eventClick={(e) => 
-          // alert('Appointment With: ' + e.event.title)}
+		//eventClick= {handleEventClick}
       />
     </div>
   );
