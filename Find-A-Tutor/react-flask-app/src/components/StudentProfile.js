@@ -13,7 +13,6 @@ class StudentProfile extends React.Component {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             isLoaded: false,
             items: "",
-            loginPref: "",
             isTutorView: false
         }
 
@@ -41,6 +40,20 @@ class StudentProfile extends React.Component {
                     });
                 }
             )
+    }
+    
+    handleSubmit = () => {
+        const values = [{
+            "classes" : this.state.classesList
+        }];
+
+        const response = fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
+        })
     }
 
     AddNewClass() {
