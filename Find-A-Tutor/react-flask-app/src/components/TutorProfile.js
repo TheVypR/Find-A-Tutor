@@ -77,6 +77,13 @@ class TutorProfile extends React.Component {
     handleSelect = (value) => {
         this.setState({ payType: value });
         paymentType = value;
+        
+        var user = document.getElementById("venmoUser");
+        if (user.style.display != "none" && paymentType == "Cash") {
+            user.style.display = "none";
+        } else {
+            user.style.display = "block";
+        }
 
     }
 
@@ -265,7 +272,7 @@ class TutorProfile extends React.Component {
                                 ))}
                             </div>
 
-                            <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e) => this.setState({ payType: e.target.value })} />
+                            <input type="text" id="venmoUser" placeholder={paymentType + " Username"} onChange={(e) => this.setState({ payType: e.target.value })} />
 
 
                             {/*Login Info*/}
@@ -320,7 +327,7 @@ class TutorProfile extends React.Component {
 
                 <div id="days" className="d-flex justify-content-center">
                     <div>
-                        <text id="day"> Sunday </text> <br/>
+                        <text id="day"> Sunday </text> <br />
 
                         {this.state.sundayTimeSlots.map((thisTime, index) => {
                             return (
@@ -377,7 +384,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Monday </text><br/>
+                        <text id="day"> Monday </text><br />
                         {this.state.mondayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -432,7 +439,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Tuesday </text><br/>
+                        <text id="day"> Tuesday </text><br />
                         {this.state.tuesdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -487,7 +494,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Wednesday </text><br/>
+                        <text id="day"> Wednesday </text><br />
                         {this.state.wednesdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -542,7 +549,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Thursday </text><br/>
+                        <text id="day"> Thursday </text><br />
                         {this.state.thursdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -597,7 +604,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Friday </text><br/>
+                        <text id="day"> Friday </text><br />
                         {this.state.fridayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
@@ -652,7 +659,7 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Saturday </text><br/>
+                        <text id="day"> Saturday </text><br />
                         {this.state.saturdayTimeSlots.map((thisTime, index) => {
                             return (
                                 <>
