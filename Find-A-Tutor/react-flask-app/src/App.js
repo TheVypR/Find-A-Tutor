@@ -19,10 +19,14 @@ export default function App() {
             <Route exact path='/' element={<SignIn/>}></Route>
             <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/myProfile' element={
-              <StudentProfile />
+              <PrivateRoute>
+                <StudentProfile />
+              </PrivateRoute>
             } />
             <Route exact path='/calendar' element={
-              <Calendar/>
+              <PrivateRoute>
+                <Calendar />
+              </PrivateRoute>
             }/>
           </Routes>
         </BrowserRouter>
@@ -48,25 +52,7 @@ function ProvideAuth({ children }) {
 }
 
 function useProvideAuth() {
-  const [user, setUser] = useState("");
 
-  useEffect(() => {
-    fetch("/email/", {
-      method: 'GET',
-      headers: {
-        'Content-Type' : 'application/json'
-      },
-      })
-      .then(res => res.json())
-      .then(res => setUser(res))
-      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
-  });
-
-  console.log(user);
-
-  return {
-    user
-  };
 }
 
 function PrivateRoute({ children }) {
@@ -82,15 +68,14 @@ function PrivateRoute({ children }) {
       },
       })
       .then(res => res.json())
-      .then(res => setUser(res))
+      .then(authTag => setUser(authTag))
+      .then(console.log(user.authTag))
       .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
   }, []);
 
-  if (user['authTag'].value == "USER NOT FOUND")
-
-  console.log(user);
+  console.log(user.authTag);
 
   return (
-    user['authTag'] != "USER NOT FOUND" ? children : <SignIn />
+    user.authTag != "USER NOT FOUND" ? children : <SignIn />
   );
 }
