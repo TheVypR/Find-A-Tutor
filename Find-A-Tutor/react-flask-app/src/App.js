@@ -21,7 +21,7 @@ export default function App() {
             <Route exact path='/' element={<SignIn/>}></Route>
             <Route exact path='/myProfile' element={
               <PrivateRoute>
-                <StudentProfile />
+                <TutorProfile />
               </PrivateRoute>
             } />
             <Route exact path='/signup' element={<SignUp/>}></Route>

@@ -13,6 +13,7 @@ const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
 const buttonSize = 14;
 const removeTimeSize = 14;
+var paymentType = "Payment Type";
 
 class TutorProfile extends React.Component {
     constructor(props) {
@@ -75,6 +76,8 @@ class TutorProfile extends React.Component {
 
     handleSelect = (value) => {
         this.setState({ payType: value });
+        paymentType = value;
+
     }
 
     handleChange = (value) => {
@@ -252,12 +255,12 @@ class TutorProfile extends React.Component {
                                         id={'dropdown-button-drop-${idx}'}
                                         size="sm"
                                         variant="primary"
-                                        title="Payment Type"
+                                        title={paymentType}
                                         onSelect={this.handleSelect}
                                     >
-                                        <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">Cash</Dropdown.Item>
-                                        <Dropdown.Divider />
+                                        <Dropdown.Item eventKey="Venmo">Venmo</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Paypal">Paypal</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Cash">Cash</Dropdown.Item>
                                     </DropdownType>
                                 ))}
                             </div>
