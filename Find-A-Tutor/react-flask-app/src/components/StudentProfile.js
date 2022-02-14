@@ -13,7 +13,7 @@ class StudentProfile extends React.Component {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             isLoaded: false,
             items: "",
-            isTutorView: false
+            isTutorView: true
         }
 
         this.AddNewClass = this.AddNewClass.bind(this);
@@ -73,7 +73,6 @@ class StudentProfile extends React.Component {
         })
     }
 
-
     render() {
         return (
             <>
@@ -94,7 +93,6 @@ class StudentProfile extends React.Component {
                                 {this.state.classesList.map((thisClass, index) => {
                                     return (
                                         <div className="input-group mb-3">
-                                            <BsPatchCheckFill name="verified" id={index} className="verified" size="22" />
                                             <input name="courseCode" id={index} className="courseCode" type="text" placeholder='HUMA 200 A' size="8"></input>
                                             <div className="input-group-append">
                                                 <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
