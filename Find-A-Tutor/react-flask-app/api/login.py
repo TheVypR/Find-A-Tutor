@@ -45,31 +45,37 @@ def login():
                             
     result = cursor.fetchone()
     
-    salt = bytes.fromhex(result[0])
+    if(result):
+        salt = bytes.fromhex(result[0])
     
-    password = hashlib.pbkdf2_hmac(
-        'sha256', # The hash digest algorithm for HMAC
-        info[1].encode('utf-8'), # Convert the password to bytes
-        salt, # Provide the salt
-        100000 #100,000 iterations of SHA-256 
-    )
+        password = hashlib.pbkdf2_hmac(
+            'sha256', # The hash digest algorithm for HMAC
+            info[1].encode('utf-8'), # Convert the password to bytes
+            salt, # Provide the salt
+            100000 #100,000 iterations of SHA-256 
+        )
     
-    password = salt + password
+        password = salt + password
     
-    cursor.execute("select stu_email from Student where stu_email = \""
-                            + info[0] + "\" and stu_pass = \""
-                            + password.hex() + "\"")
-    user = cursor.fetchone()
-    conn.close()
+        cursor.execute("select stu_email from Student where stu_email = \""
+                                + info[0] + "\" and stu_pass = \""
+                                + password.hex() + "\"")
+        user = cursor.fetchone()
+        conn.close()
 
-    if(type(user) is tuple): 
-      global email
-      email = user[0]
-      print(email)      
-      return user[0]
+        if(type(user) is tuple): 
+          global email
+          email = user[0]
+          print(email)      
+        else:
+          print("Wrong password")
+          email = "USER NOT FOUND"
+        
     else:
-      email = "USER NOT FOUND"
-      return email
+        print("wrong user")
+        email = "USER NOT FOUND"
+    
+    return email
 
 @app.route('/email/', methods=['GET'])
 def getAuth():
