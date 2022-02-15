@@ -21,13 +21,13 @@ class TutorProfile extends React.Component {
         this.state = {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             time: moment,
-            sundayTimeSlots: [{ startTime: "", endTime: "" }],
-            mondayTimeSlots: [{ startTime: "", endTime: "" }],
-            tuesdayTimeSlots: [{ startTime: "", endTime: "" }],
-            wednesdayTimeSlots: [{ startTime: "", endTime: "" }],
-            thursdayTimeSlots: [{ startTime: "", endTime: "" }],
-            fridayTimeSlots: [{ startTime: "", endTime: "" }],
-            saturdayTimeSlots: [{ startTime: "", endTime: "" }],
+            sundayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            mondayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            tuesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            wednesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            thursdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            fridayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            saturdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
 
             isLoaded: false,
             items: "",
@@ -240,12 +240,17 @@ class TutorProfile extends React.Component {
     }
 
     submitTime = (startTime, endTime, index, day) => {
-        var sTime = startTime.format(format);
-        var eTime = endTime.format(format);
-        var timeSlot = {sTime, eTime};
+        var sTime = startTime.format(format).toString();
+        var eTime = endTime.format(format).toString();
+        var date = startTime['_d'];
+        var timeSlot = {sTime, eTime, date};
 
         if (day == "sunday") {
             this.state.sundayTimeSlots[index] = timeSlot;
+            var startElem = document.getElementById(index + "StartTimepicker");
+            var endElem = document.getElementById(index + "EndTimepicker");
+            startElem.remove();
+            endElem.remove();
         } else if (day == "monday") {
             this.state.mondayTimeSlots[index] = timeSlot;
         } else if (day == "tuesday") {
@@ -259,7 +264,6 @@ class TutorProfile extends React.Component {
         } else if (day == "saturday") {
             this.state.saturdayTimeSlots[index] = timeSlot;
         }
-
     }
 
     render() {
@@ -363,7 +367,7 @@ class TutorProfile extends React.Component {
                                     <div className="d-flex justify-content-center">
                                         <Time
                                             name="startTime"
-                                            id={index}
+                                            id={index + "StartTimepicker"}
                                             className="timepicker"
                                             showSecond={false}
                                             defaultValue={now}
@@ -378,7 +382,7 @@ class TutorProfile extends React.Component {
 
                                         <Time
                                             name="endTime"
-                                            id={index}
+                                            id={index + "EndTimepicker"}
                                             className="timepicker"
                                             showSecond={false}
                                             defaultValue={now}
