@@ -64,13 +64,13 @@ def getTimes():
     
     return {'times':availTimes}
     
-def getAppointments():
+def getAppointments(email):
     availAppts = []
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
-    cursor.execute("select * from Appointment")
+    cursor.execute("select * from Appointment where stu_email = \"" + email + "\"")
     appts = cursor.fetchall()
     
     for appt in appts:
