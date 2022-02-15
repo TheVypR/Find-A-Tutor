@@ -1,0 +1,23 @@
+.calendar{
+    padding-left: 200px;
+    padding-right: 100px;
+    background-color: gray;
+}
+
+.title{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-style: oblique;
+    font-weight: bold;
+    font-size: 96px;
+    color: crimson;
+   
+}
+
+.filter{
+    text-align:left;
+   
+}
+
+body{
+    background-color: gray;
+}

@@ -93,6 +93,6 @@ function PrivateRoute({ children }) {
   console.log(user);
 
   return (
-    auth.user != "" ? children : <SignIn />
+    auth.user == "" ? children : <SignIn />
   );
 }

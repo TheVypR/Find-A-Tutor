@@ -6,6 +6,18 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import styled from "@emotion/styled"
+import './calendar.css'
+
+
+export const StyleWrapper = styled.div`
+  .fc td {
+    background: white;
+  }
+`
+
+
+
 
 
 
@@ -118,79 +130,84 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button 
-			variant="primary" 
-			onClick= {
-				() => {
-					addEvent(stuEmail, tutEmail, 
-							classCode, startDate, endDate, 
-							title)
-				}
-			}>
+          <Button variant="primary" 
+			      onClick= {
+				      () => {
+					      addEvent(stuEmail, tutEmail, 
+							  classCode, startDate, endDate, 
+							  title)
+				      }
+			    }>
             Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
-	  
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        eventColor="green"
-        nowIndicator
-        dateClick={(e) => console.log(e.dateStr)}
+		
+      <div class="title">
+        <p>
+          Find-A-Tutor
+        </p>
+      </div>
+      <div class="filter">
+        <p>
+          Filter By:
+        </p>
+        <input type="checkbox" id="myApts" name="My Appointments">
+        </input>
+        <label for="myApts">My Appointments</label><br></br>
+        <input type="checkbox" id="availableApts" name="My Appointments">
+        </input>
+        <label for="availableApts">Available Appointments</label><br></br>
+      </div>
+      <StyleWrapper>
+        <div class="calendar">
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 
-        //user defaults to week view
-        initialView="timeGridWeek"
+          //user defaults to week view
+          initialView="timeGridWeek"
 
-        /* 
-          set up tab bar at top of calendar
-          current allignment: switch to month view - switch to week view - 
-          switch to day view - add appointment button
-        */
-        
+          /* 
+            set up tab bar at top of calendar
+            current allignment: switch to month view - switch to week view - 
+            switch to day view - add appointment button
+          */
+          headerToolbar={{
+            center: 'dayGridMonth,timeGridWeek,timeGridDay,profile',
+          }}
 
-        //create buttons
-        //TODO: decide if any buttons at top of screen are necessary
-        customButtons={{
-			addAppointment: {
-				//set text for button
-				text: 'create appointment',
+          //create buttons
+          //TODO: decide if any buttons at top of screen are necessary
+          customButtons={{
+            profile: {
+              text: 'To Profile',
 
-				//define function for on click
-				click: () => {addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
-								"COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
-								"Test Appointment")
-				}		
+              click: function() {
+                window.location.href = '/myProfile'
+              }
             },
-			profile: {
-				text: 'To Profile',
 
-				click: function() {
-					window.location.href = '/myProfile'
-            }
-          },
+          }}//end button setup
 
-        }}//end button setup
-		
-		headerToolbar={{
-          center: 'dayGridMonth,timeGridWeek,timeGridDay,profile',
-        }}
-		
-        //add appointments to calendar
-        events={times.concat(appts)}
+          //add appointments to calendar
+          events={times.concat(appts)}
 
-        //formatting of appointments
-        eventColor="green"
-        nowIndicator
+          //formatting of appointments
+          eventColor="green"
+          nowIndicator
 
-        //ability to click dates
-        dateClick={(e) => alert(e.dateStr)}
+          //ability to click dates
+          dateClick={(e) => alert(e.dateStr)}
 
-        //ability to click appointments
-        //TODO: add ability to open up more information about appointment via click
-        //TODO: add ability to sign up for appointment via click/on loaded modal
-        eventClick={handleShow}
-		//eventClick= {handleEventClick}
-      />
+          //ability to click appointments
+          //TODO: add ability to open up more information about appointment via click
+          //TODO: add ability to sign up for appointment via click/on loaded modal
+          eventClick={handleShow}
+          // eventClick={(e) => 
+          //   alert('Appointment With: ' + e.event.title)}
+        />
+        </div>
+      </StyleWrapper>
     </div>
   );
 }
