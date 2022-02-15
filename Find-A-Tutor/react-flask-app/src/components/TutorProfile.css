@@ -114,3 +114,7 @@ fieldset {
 .vr {
     border-left: thin solid black;
 }
+
+#stopTutoring {
+    margin-left: 5px;
+}

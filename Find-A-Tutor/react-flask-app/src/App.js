@@ -20,7 +20,7 @@ export default function App() {
             <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/myProfile' element={
               <PrivateRoute>
-                <StudentProfile />
+                <TutorProfile />
               </PrivateRoute>
             } />
             <Route exact path='/calendar' element={
