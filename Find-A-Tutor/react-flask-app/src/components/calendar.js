@@ -15,6 +15,16 @@ function FullCalendarApp() {
   const [show, setShow] = useState(false);
   const [chosen, setChosen] = useState({});
   
+  const [stuEmail, setStuEmail] = useState("");
+  const [tutEmail, setTutEmail] = useState("");
+  const [classCode, setClassCode] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [title, setTitle] = useState("");
+
+
+  
+  
   //handle the modal on/off
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -73,7 +83,7 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 	
 	console.log("Add");
   }
-
+  
 	const handleEventClick = (event, el) => {
 		//handleShow;
 		setChosen(event);
@@ -85,10 +95,23 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
     <div className="App">
 		<Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Enter Session Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-			{chosen.title}
+			<form>
+				Title: 
+				<input type="text" title="title" onChange= {(e) => {setTitle(e.target.value)}}/>
+				Student Email: 
+				<input type="text" stu_email="stu_email" onChange= {(e) => {setStuEmail(e.target.value)}}/>
+				Tutor Email: 
+				<input type="text" tut_email="tut_email" onChange= {(e) => {setTutEmail(e.target.value)}}/>
+				Class: 
+				<input type="text" class_code="class" onChange= {(e) => {setClassCode(e.target.value)}}/>
+				Start Date: 
+				<input type="text" s_date="s_date" placeholder="2022-02-13T10:00:00" onChange= {(e) => {setStartDate(e.target.value)}}/>
+				End Date: 
+				<input type="text" e_date="e_date" placeholder="2022-02-13T11:00:00" onChange= {(e) => {setEndDate(e.target.value)}}/>
+			</form>
 		</Modal.Body>
 		
         <Modal.Footer>
@@ -99,9 +122,9 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 			variant="primary" 
 			onClick= {
 				() => {
-					addEvent("apelia18@gcc.edu", "sickafuseaj18@gcc.edu", 
-							"COMP447A", "2022-02-12T10:00:00", "2022-02-12T11:00:00", 
-							"Test Appointment")
+					addEvent(stuEmail, tutEmail, 
+							classCode, startDate, endDate, 
+							title)
 				}
 			}>
             Save Changes
