@@ -1,4 +1,5 @@
 import hashlib
+from typing import Tuple
 
 from flask import Flask, request
 
@@ -28,8 +29,6 @@ else:
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
-
-email = ''
 
 @app.route('/login/', methods=['POST'])
 def login():
@@ -61,18 +60,20 @@ def login():
                             + info[0] + "\" and stu_pass = \""
                             + password.hex() + "\"")
     user = cursor.fetchone()
-    print(user)
     conn.close()
 
-    if(user): 
-      email = user[0]   
+    if(type(user) is tuple): 
+      global email
+      email = user[0]
       print(email)      
       return user[0]
     else:
-      return "USER NOT FOUND"
+      email = "USER NOT FOUND"
+      return email
 
 @app.route('/email/', methods=['GET'])
 def getAuth():
+  print("Email!!!: " + email)
   return {'authTag':email}
 
 #signUp page
