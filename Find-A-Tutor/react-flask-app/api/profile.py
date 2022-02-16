@@ -104,6 +104,11 @@ def retrieve_classes(tut_email):
     
     return classes
 
+def get_TimeSlots():
+    submission = request.get_json()
+    sundayTimeSlots = submission["sundayTimeSlots"]
+    print(sundayTimeSlots)
+
 def edit_profile():
     tut_email = "apelia18@gcc.edu"
     # conn = mysql.connect()
@@ -118,6 +123,8 @@ def edit_profile():
     print(info['loginPref'])
     print(info['contact'])
     print(info['times'])
+
+    get_TimeSlots()
 
     # classes = submission[1]
     

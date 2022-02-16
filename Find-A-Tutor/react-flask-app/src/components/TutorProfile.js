@@ -78,7 +78,7 @@ class TutorProfile extends React.Component {
     handleSelect = (value) => {
         this.setState({ payType: value });
         paymentType = value;
-        
+
         var user = document.getElementById("venmoUser");
         if (user.style.display != "none" && paymentType == "Cash") {
             user.style.display = "none";
@@ -96,13 +96,21 @@ class TutorProfile extends React.Component {
 
     handleSubmit = () => {
         const values = [{
+            "classesList": this.state.classesList,
             "payType": this.state.payType,
             "inputList": this.state.inputList,
             "payVal": this.state.payVal,
             "loginPref": this.state.payVal,
             "rates": this.state.payVal,
             "contact": this.state.payVal,
-            "times": this.state.times
+            "times": this.state.times,
+            "sundayTimeSlots": this.state.sundayTimeSlots,
+            "mondayTimeSlots": this.state.mondayTimeSlots,
+            "tuesdayTimeSlots": this.state.mondayTimeSlots,
+            "wednesdayTimeSlots": this.state.mondayTimeSlots,
+            "thursdayTimeSlots": this.state.thursdayTimeSlots,
+            "fridayTimeSlots": this.state.fridayTimeSlots,
+            "saturdayTimeSlots": this.state.saturdayTimeSlots
         }];
 
         const response = fetch("/myProfile/", {
@@ -240,29 +248,33 @@ class TutorProfile extends React.Component {
     }
 
     submitTime = (startTime, endTime, index, day) => {
-        var sTime = startTime.format(format).toString();
-        var eTime = endTime.format(format).toString();
-        var date = startTime['_d'];
-        var timeSlot = {sTime, eTime, date};
+        if (startTime != undefined && endTime != undefined) {
+            var sTime = startTime.format(format).toString();
+            var eTime = endTime.format(format).toString();
+            var date = startTime['_d'];
+            var timeSlot = { sTime, eTime, date };
 
-        if (day == "sunday") {
-            this.state.sundayTimeSlots[index] = timeSlot;
-            var startElem = document.getElementById(index + "StartTimepicker");
-            var endElem = document.getElementById(index + "EndTimepicker");
-            startElem.remove();
-            endElem.remove();
-        } else if (day == "monday") {
-            this.state.mondayTimeSlots[index] = timeSlot;
-        } else if (day == "tuesday") {
-            this.state.tuesdayTimeSlots[index] = timeSlot;
-        } else if (day == "wednesday") {
-            this.state.wednesdayTimeSlots[index] = timeSlot;
-        } else if (day == "thursday") {
-            this.state.thursdayTimeSlots[index] = timeSlot;
-        } else if (day == "friday") {
-            this.state.fridayTimeSlots[index] = timeSlot;
-        } else if (day == "saturday") {
-            this.state.saturdayTimeSlots[index] = timeSlot;
+            if (day == "sunday") {
+                this.state.sundayTimeSlots[index] = timeSlot;
+                var startElem = document.getElementById(index + "StartTimepicker");
+                var endElem = document.getElementById(index + "EndTimepicker");
+                startElem.remove();
+                endElem.remove();
+            } else if (day == "monday") {
+                this.state.mondayTimeSlots[index] = timeSlot;
+            } else if (day == "tuesday") {
+                this.state.tuesdayTimeSlots[index] = timeSlot;
+            } else if (day == "wednesday") {
+                this.state.wednesdayTimeSlots[index] = timeSlot;
+            } else if (day == "thursday") {
+                this.state.thursdayTimeSlots[index] = timeSlot;
+            } else if (day == "friday") {
+                this.state.fridayTimeSlots[index] = timeSlot;
+            } else if (day == "saturday") {
+                this.state.saturdayTimeSlots[index] = timeSlot;
+            }
+        } else {
+            console.log("Enter Times");
         }
     }
 
@@ -396,7 +408,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "sunday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "sunday")}>
                                         Submit
                                     </Button>
 
@@ -457,7 +469,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "monday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "monday")}>
                                         Submit
                                     </Button>
 
@@ -517,7 +529,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "tuesday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "tuesday")}>
                                         Submit
                                     </Button>
 
@@ -577,7 +589,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "wednesday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "wednesday")}>
                                         Submit
                                     </Button>
 
@@ -641,7 +653,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "thursday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "thursday")}>
                                         Submit
                                     </Button>
 
@@ -701,7 +713,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "friday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "friday")}>
                                         Submit
                                     </Button>
 
@@ -761,7 +773,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "saturday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "saturday")}>
                                         Submit
                                     </Button>
 
@@ -782,7 +794,7 @@ class TutorProfile extends React.Component {
                 <div id="bottom">
                     <Button type="submit" id="save"
                         onClick={this.handleSubmit}
-                    > Save and Close </Button>
+                    > Apply </Button>
                     <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
                     <Link to='/calendar'>
                         <Button id="submit"> To Calendar </Button>

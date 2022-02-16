@@ -118,3 +118,9 @@ fieldset {
 #stopTutoring {
     margin-left: 5px;
 }
+
+.submitTime {
+    padding: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+}
