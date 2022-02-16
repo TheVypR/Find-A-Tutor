@@ -15,6 +15,7 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
+email = ""
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -106,5 +107,5 @@ def getTimes():
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
     print("Appointments")
-    appts = appointment.getAppointments()
+    appts = appointment.getAppointments(email)
     return appts
