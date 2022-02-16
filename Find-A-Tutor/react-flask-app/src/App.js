@@ -9,54 +9,41 @@ import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 import StudentProfile from "./components/StudentProfile"
-import './components/App.css';
 import { createContext } from 'react';
 
 export default function App() {
   return (
-    <ProvideAuth>
       <div className="App">
         <BrowserRouter>
           <Routes>
             <Route exact path='/' element={<SignIn/>}></Route>
+            <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/myProfile' element={
               <PrivateRoute>
                 <TutorProfile />
               </PrivateRoute>
             } />
-            <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/calendar' element={
               <PrivateRoute>
-                <Calendar/>
+                <Calendar />
               </PrivateRoute>
             }/>
           </Routes>
         </BrowserRouter>
       </div>
-      </ProvideAuth>
   );
 }
 
-const authenticate = {
-  isAuth: false,
-  signin(cb) {
-    authenticate.isAuth = true;
-    setTimeout(cb, 100);
-  },
-  signout(cb) {
-    authenticate.isAuth = false;
-    setTimeout(cb, 100);
-  }
-};
-
-const authContext = createContext();
+const authContext = createContext({
+  authenticated: false,
+});
 
 function useAuth() {
   return useContext(authContext);
 }
 
 function ProvideAuth({ children }) {
-  const auth = useProvideAuth();
+  const auth = useAuth()
   return (
     <authContext.Provider value={auth}>
       {children}
@@ -65,34 +52,30 @@ function ProvideAuth({ children }) {
 }
 
 function useProvideAuth() {
-  const [user, setUser] = useState(null);
 
-  
-
-  const signin = cb =>{
-    return authenticate.signin(() => {
-      setUser("Good");
-      cb();
-    });
-  };
-
-  const signout = cb =>{
-    return authenticate.signout(() => {
-      setUser(null);
-      cb();
-    });
-  };
-
-  return {
-    user,
-    signin,
-    signout
-  };
 }
 
 function PrivateRoute({ children }) {
   let auth = useAuth();
+
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    fetch("/email/", {
+      method: 'GET',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      })
+      .then(res => res.json())
+      .then(authTag => setUser(authTag))
+      .then(console.log(user.authTag))
+      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
+  }, []);
+
+  console.log(user.authTag);
+
   return (
-    auth.user == null ? children : <SignIn />
+    user.authTag != "USER NOT FOUND" ? children : <SignIn />
   );
 }
