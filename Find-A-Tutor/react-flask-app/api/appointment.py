@@ -30,14 +30,14 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-def appointment():
+def appointment(email):
     conn = mysql.connect()
     conn.autocommit(True)
     data = request.get_json()[0]
     cursor = conn.cursor()  
         
     cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title) values(\"" 
-                    + data['stu_email'] + "\", \"" 
+                    + email + "\", \"" 
                     + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + data['start'] + "', '"
@@ -58,7 +58,7 @@ def getTimes():
     times = cursor.fetchall()
     
     for time in times:
-        availTimes.append({'title':time[0], 'start':time[1], 'end':time[2]})
+        availTimes.append({'title':time[0], 'start':time[1], 'end':time[2], 'type':"time"})
     
     conn.close()
     
@@ -74,7 +74,7 @@ def getAppointments(email):
     appts = cursor.fetchall()
     
     for appt in appts:
-        availAppts.append({'stu_email':appt[1], 'tut_email':appt[2], 'class_code':appt[3], 'start':appt[4], 'end':appt[5], 'title':appt[6], 'type':"appointment"})
+        availAppts.append({'stu_email':appt[1], 'tut_email':appt[2], 'class_code':appt[3], 'start':appt[4], 'end':appt[5], 'title':appt[6], 'type':"appt"})
     
     conn.close()
     

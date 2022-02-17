@@ -3,6 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import React, { useState, useEffect, Component } from "react";
 import FullCalendar from '@fullcalendar/react';
+import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -22,21 +23,29 @@ export const StyleWrapper = styled.div`
 
 
 function FullCalendarApp() {
+  //calendar filling
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
-  const [show, setShow] = useState(false);
+  
+  //handle modals
+  const [showTime, setShowTime] = useState(false);
+  const [showAppt, setShowAppt] = useState(false);
   const [chosen, setChosen] = useState({});
   
+  //appointment creation
   const [stuEmail, setStuEmail] = useState("");
   const [tutEmail, setTutEmail] = useState("");
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
   
-  //handle the modal on/off
-  const handleClose = () => setShow(false);
-  const handleShow = function (){ setShow(true)};
+  //toggle the modal on/off
+  const handleClose = function(){setShowTime(false); setShowAppt(false)};
+  const handleShowTime = function (){ setShowTime(true)};
+  const handleShowAppt = function (){ setShowAppt(true)};
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -93,30 +102,62 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 	console.log("Add");
   }
   
-const handleEventClick = function (e) {
+	const handleEventClick = function (e) {
 		setChosen(e.extendedProps);
 		setTitle(e.title);
-		handleShow();
-		console.log(e.extendedProps);
+		
+		//set dates and times
+		setStartDate(
+			formatDate(e.start, {
+				month: 'long',
+				year: 'numeric',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit'
+			}));
+		setEndDate(formatDate(e.end, {
+				month: 'long',
+				year: 'numeric',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit'
+			}));
+		setStartTime(formatDate(e.start, {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: 'false'
+		}));
+		setEndTime(formatDate(e.end, {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: 'false'
+		}));
+		
+		if(e.extendedProps['type'] == "appt") {
+			handleShowAppt();
+			
+		} else if(e.extendedProps['type'] == "time") {
+			handleShowTime();
+		}
 	};
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
     <div className="App">
-		<Modal show={show} onHide={handleClose}>
+		<Modal show={showTime} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{title}<br/>{chosen['tut_email']}</Modal.Title>
+          <Modal.Title>TIME<br/>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-			Meeting with: {chosen['tut_email']}<br/>
+			Make Appointment With: {chosen['tut_email']}<br/>
 			<form>
 				Choose Class: 
-				<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}}/><br/>
+				<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 				Start Time: 
-				<input type="text" s_date="s_date" placeholder="2022-02-13T10:00:00" onChange={(e) => {setStartDate(e.target.value)}}/><br/>
+				<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 				End Time: 
-				<input type="text" e_date="e_date" placeholder="2022-02-13T11:00:00" onChange={(e) => {setEndDate(e.target.value)}}/>
+				<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
 			</form>
 		</Modal.Body>
 		
@@ -133,6 +174,27 @@ const handleEventClick = function (e) {
 				      }
 			    }>
             Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+	  
+	  <Modal show={showAppt} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+			Meeting with: {chosen['tut_email']}<br/>
+			For: {chosen['class_code']}<br/>
+			From: {startDate}<br/>
+			To: {endDate}
+		</Modal.Body>
+		
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary">
+            Edit Appointment
           </Button>
         </Modal.Footer>
       </Modal>

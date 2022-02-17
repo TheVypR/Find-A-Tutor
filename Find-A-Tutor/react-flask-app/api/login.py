@@ -96,7 +96,6 @@ def myProfile():
 #add appointments on calendar screen
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
-  #data = request.json()
   return appointment.appointment(email)
   
 @app.route('/getTimes/', methods=['GET'])
