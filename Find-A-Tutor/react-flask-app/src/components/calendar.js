@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import React, { useState, useEffect, Component } from "react";
+import TimePicker from 'react-time-picker';
 import FullCalendar from '@fullcalendar/react';
 import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -125,13 +126,12 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 		setStartTime(formatDate(e.start, {
 			hour: 'numeric',
 			minute: '2-digit',
-			hour12: 'false'
+			hour12: 'false',
+			meridiem: 'false'
 		}));
-		setEndTime(formatDate(e.end, {
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: 'false'
-		}));
+		
+		setEndTime(e.end.getHours() + ":" + e.end.getMinutes());
+		console.log(e);
 		console.log(startTime);
 		console.log(endTime);
 		
@@ -157,9 +157,9 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
+					<input type="time" id="e_date" step="900" onChange={(e) => {setEndDate(e.target.value)}}required/>
 			</Modal.Body>
 			
 			<Modal.Footer>
@@ -249,7 +249,7 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 
           //add appointments to calendar
           events={times.concat(appts)}
-
+			
           //formatting of appointments
           eventColor="green"	
           nowIndicator
