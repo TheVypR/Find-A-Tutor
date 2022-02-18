@@ -132,10 +132,12 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 			minute: '2-digit',
 			hour12: 'false'
 		}));
+		console.log(startTime);
+		console.log(endTime);
 		
+		//find which modal to load
 		if(e.extendedProps['type'] == "appt") {
 			handleShowAppt();
-			
 		} else if(e.extendedProps['type'] == "time") {
 			handleShowTime();
 		}
