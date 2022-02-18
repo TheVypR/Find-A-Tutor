@@ -253,24 +253,42 @@ class TutorProfile extends React.Component {
             var date = startTime['_d'];
             var timeSlot = { sTime, eTime, date };
 
+            let timesDiv = document.createElement("div");
+            let times = document.createTextNode(sTime + " to " + eTime);
+            timesDiv.appendChild(times);
+            timesDiv.classList.add('SubmittedTimeSlot')
+
+
             if (day == "sunday") {
                 this.state.sundayTimeSlots[index] = timeSlot;
-                var startElem = document.getElementById(index + "StartTimepicker");
-                var endElem = document.getElementById(index + "EndTimepicker");
-                startElem.remove();
-                endElem.remove();
+                var timePickers = document.getElementById(index+"sundayTimeSlot");
+                timePickers.parentElement.replaceChild(timesDiv, timePickers);
+                timePickers.remove();
+                //TODO: remove submit button
             } else if (day == "monday") {
                 this.state.mondayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"mondayTimeSlot");
+                timePickers.remove();
             } else if (day == "tuesday") {
                 this.state.tuesdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"tuesdayTimeSlot");
+                timePickers.remove();
             } else if (day == "wednesday") {
                 this.state.wednesdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"wednesdayTimeSlot");
+                timePickers.remove();
             } else if (day == "thursday") {
                 this.state.thursdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"thursdayTimeSlot");
+                timePickers.remove();
             } else if (day == "friday") {
                 this.state.fridayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"fridayTimeSlot");
+                timePickers.remove();
             } else if (day == "saturday") {
                 this.state.saturdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"saturdayTimeSlot");
+                timePickers.remove();
             }
         } else {
             console.log("Enter Times");
@@ -358,7 +376,7 @@ class TutorProfile extends React.Component {
                     <div className="row justify-content-start">
                         <div className="col-4">
                             <input type="checkbox" id="contactMe" onChange={(e) => this.setState({ contact: e.target.value })} />
-                            <label htmlFor="contactMe"> Contact Me For Avalability </label>
+                            <label htmlFor="contactMe"> Contact Me For Availability </label>
                         </div>
                         <h6 id="header" className="col-4 text-center"> Available Times</h6>
                     </div>
@@ -367,7 +385,7 @@ class TutorProfile extends React.Component {
                 <div id="days" className="d-flex justify-content-center">
                     <div>
                         <text id="day"> Sunday </text> <br />
-                        {this.state.sundayTimeSlots.map((thisTime, index) => {
+                        {this.state.sundayTimeSlots.map((index) => {
                             var startTime, endTime;
                             return (
                                 <>
@@ -375,7 +393,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"sundayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index + "StartTimepicker"}
@@ -436,7 +454,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"mondayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -496,7 +514,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"tuesdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -556,7 +574,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"wednesdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -620,7 +638,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"thursdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -680,7 +698,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"fridayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -740,7 +758,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"saturdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
