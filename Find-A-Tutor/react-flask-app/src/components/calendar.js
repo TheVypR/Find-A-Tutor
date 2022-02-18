@@ -3,6 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import React, { useState, useEffect, Component } from "react";
 import FullCalendar from '@fullcalendar/react';
+import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -22,24 +23,29 @@ export const StyleWrapper = styled.div`
 
 
 function FullCalendarApp() {
+  //calendar filling
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
-  const [show, setShow] = useState(false);
+  
+  //handle modals
+  const [showTime, setShowTime] = useState(false);
+  const [showAppt, setShowAppt] = useState(false);
   const [chosen, setChosen] = useState({});
   
+  //appointment creation
   const [stuEmail, setStuEmail] = useState("");
   const [tutEmail, setTutEmail] = useState("");
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
-
-
   
-  
-  //handle the modal on/off
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  //toggle the modal on/off
+  const handleClose = function(){setShowTime(false); setShowAppt(false)};
+  const handleShowTime = function (){ setShowTime(true)};
+  const handleShowAppt = function (){ setShowAppt(true)};
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -96,33 +102,62 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 	console.log("Add");
   }
   
-	const handleEventClick = (event, el) => {
-		//handleShow;
-		setChosen(event);
+	const handleEventClick = function (e) {
+		setChosen(e.extendedProps);
+		setTitle(e.title);
+		
+		//set dates and times
+		setStartDate(
+			formatDate(e.start, {
+				month: 'long',
+				year: 'numeric',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit'
+			}));
+		setEndDate(formatDate(e.end, {
+				month: 'long',
+				year: 'numeric',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit'
+			}));
+		setStartTime(formatDate(e.start, {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: 'false'
+		}));
+		setEndTime(formatDate(e.end, {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: 'false'
+		}));
+		
+		if(e.extendedProps['type'] == "appt") {
+			handleShowAppt();
+			
+		} else if(e.extendedProps['type'] == "time") {
+			handleShowTime();
+		}
 	};
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
     <div className="App">
-		<Modal show={show} onHide={handleClose}>
+		<Modal show={showTime} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Enter Session Details</Modal.Title>
+          <Modal.Title>TIME<br/>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+			Make Appointment With: {chosen['tut_email']}<br/>
 			<form>
-				Title: 
-				<input type="text" title="title" onChange= {(e) => {setTitle(e.target.value)}}/>
-				Student Email: 
-				<input type="text" stu_email="stu_email" onChange= {(e) => {setStuEmail(e.target.value)}}/>
-				Tutor Email: 
-				<input type="text" tut_email="tut_email" onChange= {(e) => {setTutEmail(e.target.value)}}/>
-				Class: 
-				<input type="text" class_code="class" onChange= {(e) => {setClassCode(e.target.value)}}/>
-				Start Date: 
-				<input type="text" s_date="s_date" placeholder="2022-02-13T10:00:00" onChange= {(e) => {setStartDate(e.target.value)}}/>
-				End Date: 
-				<input type="text" e_date="e_date" placeholder="2022-02-13T11:00:00" onChange= {(e) => {setEndDate(e.target.value)}}/>
+				Choose Class: 
+				<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+				Start Time: 
+				<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+				End Time: 
+				<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
 			</form>
 		</Modal.Body>
 		
@@ -142,25 +177,46 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           </Button>
         </Modal.Footer>
       </Modal>
+	  
+	  <Modal show={showAppt} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+			Meeting with: {chosen['tut_email']}<br/>
+			For: {chosen['class_code']}<br/>
+			From: {startDate}<br/>
+			To: {endDate}
+		</Modal.Body>
 		
-      <div class="title">
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary">
+            Edit Appointment
+          </Button>
+        </Modal.Footer>
+      </Modal>
+		
+      <div className="title">
         <p>
           Find-A-Tutor
         </p>
       </div>
-      <div class="filter">
+      <div className="filter">
         <p>
           Filter By:
         </p>
         <input type="checkbox" id="myApts" name="My Appointments">
         </input>
-        <label for="myApts">My Appointments</label><br></br>
+        <label htmlFor="myApts">My Appointments</label><br></br>
         <input type="checkbox" id="availableApts" name="My Appointments">
         </input>
-        <label for="availableApts">Available Appointments</label><br></br>
+        <label htmlFor="availableApts">Available Appointments</label><br></br>
       </div>
       <StyleWrapper>
-        <div class="calendar">
+        <div className="calendar">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 
@@ -193,18 +249,14 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           events={times.concat(appts)}
 
           //formatting of appointments
-          eventColor="green"
+          eventColor="green"	
           nowIndicator
 
           //ability to click dates
           dateClick={(e) => alert(e.dateStr)}
 
           //ability to click appointments
-          //TODO: add ability to open up more information about appointment via click
-          //TODO: add ability to sign up for appointment via click/on loaded modal
-          eventClick={handleShow}
-          // eventClick={(e) => 
-          //   alert('Appointment With: ' + e.event.title)}
+          eventClick={function (e) {handleEventClick(e.event)}}
         />
         </div>
       </StyleWrapper>
