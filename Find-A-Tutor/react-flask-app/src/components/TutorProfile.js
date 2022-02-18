@@ -30,7 +30,7 @@ class TutorProfile extends React.Component {
             saturdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
 
             isLoaded: false,
-            items: "",
+            items: {},
             isTutorView: true,
             payType: "",
             inputList: "",
@@ -52,14 +52,14 @@ class TutorProfile extends React.Component {
         this.submitTime = this.submitTime.bind(this);
     }
 
-    componentDidMount() {
-        fetch("/myProfile")
+    async componentDidMount() {
+        fetch("http://127.0.0.1:3000/myProfile/")
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        items: result.items
+                        items: result
                     });
                 },
                 // Note: it's important to handle errors here
@@ -123,7 +123,6 @@ class TutorProfile extends React.Component {
     }
 
     onChange(time) {
-        console.log("test");
     }
 
 
@@ -601,7 +600,7 @@ class TutorProfile extends React.Component {
                             );
                         })}
 
-                        {console.log(this.state.wednesdayTimeSlots)}
+                        {/*console.log(this.state.wednesdayTimeSlots)*/}
 
 
                         <Button className="AddTimeSlot" onClick={() => this.AddTimeSlot("wednesday")}>

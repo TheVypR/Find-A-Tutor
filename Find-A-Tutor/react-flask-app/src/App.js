@@ -69,11 +69,11 @@ function PrivateRoute({ children }) {
       })
       .then(res => res.json())
       .then(authTag => setUser(authTag))
-      .then(console.log(user.authTag))
+      //.then(console.log(user.authTag))
       .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
   }, []);
 
-  console.log(user.authTag);
+  //console.log(user.authTag);
 
   return (
     user.authTag != "USER NOT FOUND" ? children : <SignIn />
