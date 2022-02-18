@@ -53,7 +53,7 @@ class TutorProfile extends React.Component {
     }
 
     async componentDidMount() {
-        fetch("http://127.0.0.1:3000/myProfile/")
+        fetch("/myProfile/")
             .then(res => res.json())
             .then(
                 (result) => {
