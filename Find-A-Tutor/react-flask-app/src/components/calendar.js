@@ -148,36 +148,36 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
   return (
     <div className="App">
 		<Modal show={showTime} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>TIME<br/>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-			Make Appointment With: {chosen['tut_email']}<br/>
-			<form>
-				Choose Class: 
-				<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
-				Start Time: 
-				<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
-				End Time: 
-				<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
-			</form>
-		</Modal.Body>
-		
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" 
-			      onClick= {
-				      () => {
-					      addEvent(stuEmail, tutEmail, 
-							  classCode, startDate, endDate, 
-							  title)
-				      }
-			    }>
-            Save Changes
-          </Button>
-        </Modal.Footer>
+		<form>
+			<Modal.Header closeButton>
+			  <Modal.Title>TIME<br/>{title}</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				Make Appointment With: {chosen['tut_email']}<br/>
+					Choose Class: 
+					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					Start Time: 
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					End Time: 
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
+			</Modal.Body>
+			
+			<Modal.Footer>
+			  <Button variant="secondary" onClick={handleClose}>
+				Close
+			  </Button>
+			  <Button variant="primary"  type="submit"
+					  onClick= {
+						  () => {
+							  addEvent(stuEmail, tutEmail, 
+								  classCode, startDate, endDate, 
+								  title)
+						  }
+					}>
+				Save Changes
+			  </Button>
+			</Modal.Footer>
+		</form>
       </Modal>
 	  
 	  <Modal show={showAppt} onHide={handleClose}>
