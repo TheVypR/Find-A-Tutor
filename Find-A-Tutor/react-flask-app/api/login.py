@@ -93,10 +93,11 @@ def signUp():
 def myProfile():
   return profile.retrieve_profile("apelia18@gcc.edu")
 
-#add appointments on calendar screen
+#add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
-  return appointment.appointment(email)
+  data = request.get_json()[0]
+  return appointment.appointment(data, email)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():

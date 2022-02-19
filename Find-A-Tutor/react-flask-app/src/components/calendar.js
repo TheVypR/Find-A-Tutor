@@ -39,6 +39,8 @@ function FullCalendarApp() {
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [origStartDate, setOrigStartDate] = useState("");
+  const [origEndDate, setOrigEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
@@ -82,14 +84,16 @@ function FullCalendarApp() {
 
 
 //create appointment
-function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
+function addEvent() {
+	setStartDate(origStartDate);
+	setEndDate(origEndDate);
     const myEvent = {
-      stu_email: stuEmail,
-      tut_email: tutEmail,
-	  class_code: classCode,
-      start: startTime,
-      end: endTime,
-	  title: title
+      class_code: classCode,
+      start: startDate,
+      end: endDate,
+	  day: origStartDate,
+	  title: title,
+	  tutEmail: tutEmail
     };
 	
 	fetch("/addAppointment/", {
@@ -100,29 +104,16 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 		body:JSON.stringify([myEvent])    
 	})
 	
-	console.log("Add");
+	
   }
   
 	const handleEventClick = function (e) {
-		setChosen(e.extendedProps);
+		setStuEmail(e.extendedProps.stuEmail);
+		setTutEmail(e.extendedProps.tutEmail);
 		setTitle(e.title);
-		
 		//set dates and times
-		setStartDate(
-			formatDate(e.start, {
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit'
-			}));
-		setEndDate(formatDate(e.end, {
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit'
-			}));
+		setOrigStartDate(e.start);
+		setOrigEndDate(e.end);
 		setStartTime(formatDate(e.start, {
 			hour: 'numeric',
 			minute: '2-digit',
@@ -130,10 +121,15 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 			meridiem: 'false'
 		}));
 		
-		setEndTime(e.end.getHours() + ":" + e.end.getMinutes());
+		setEndTime(formatDate(e.end, {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: 'false',
+			meridiem: 'false'
+		}));
 		console.log(e);
-		console.log(startTime);
-		console.log(endTime);
+		console.log(origStartDate);
+		console.log(origEndDate);
 		
 		//find which modal to load
 		if(e.extendedProps['type'] == "appt") {
@@ -185,8 +181,8 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-			Meeting with: {chosen['tut_email']}<br/>
-			For: {chosen['class_code']}<br/>
+			Meeting with: {tutEmail}<br/>
+			For: {classCode}<br/>
 			From: {startDate}<br/>
 			To: {endDate}
 		</Modal.Body>
@@ -195,6 +191,9 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
+		  <Button variant="danger" onClick={handleClose}>
+		    Cancel Appointment
+		  </Button>
           <Button variant="primary">
             Edit Appointment
           </Button>
