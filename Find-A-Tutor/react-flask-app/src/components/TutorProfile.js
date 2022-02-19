@@ -19,9 +19,9 @@ class TutorProfile extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            classesList: [{ verified: "", courseCode: "", rate: "" }],
+            classesList: [],
             time: moment,
-            sundayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            sundayTimeSlots: [],
             mondayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
             tuesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
             wednesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
@@ -95,7 +95,8 @@ class TutorProfile extends React.Component {
     }
 
     handleSubmit = () => {
-        const values = [{
+        console.log("apply")
+        const values = {
             "classesList": this.state.classesList,
             "payType": this.state.payType,
             "inputList": this.state.inputList,
@@ -111,7 +112,7 @@ class TutorProfile extends React.Component {
             "thursdayTimeSlots": this.state.thursdayTimeSlots,
             "fridayTimeSlots": this.state.fridayTimeSlots,
             "saturdayTimeSlots": this.state.saturdayTimeSlots
-        }];
+        };
 
         const response = fetch("/myProfile/", {
             method: "POST",
@@ -148,7 +149,7 @@ class TutorProfile extends React.Component {
             this.setState({
                 sundayTimeSlots: [
                     ...this.state.sundayTimeSlots,
-                    { startTime: "", endTime: "" }
+                    { 'startTime': "", 'endTime': "", 'date': "" }
                 ]
             })
         } else if (day == "monday") {
@@ -251,7 +252,6 @@ class TutorProfile extends React.Component {
             var sTime = startTime.format(format).toString();
             var eTime = endTime.format(format).toString();
             var date = startTime['_d'];
-            var timeSlot = { sTime, eTime, date };
 
             let timesDiv = document.createElement("div");
             let times = document.createTextNode(sTime + " to " + eTime);
@@ -260,7 +260,14 @@ class TutorProfile extends React.Component {
 
 
             if (day == "sunday") {
-                this.state.sundayTimeSlots[index] = timeSlot;
+                let shallowCopy = [...this.state.sundayTimeSlots];
+                let timeSlotToChange = {...shallowCopy[index]};
+                timeSlotToChange = {'startTime': sTime, 'endTime': eTime, 'date': date}
+                console.log(timeSlotToChange);
+                shallowCopy[index] = timeSlotToChange;
+                console.log(shallowCopy);
+                this.setState({sundayTimeSlots: shallowCopy});
+                console.log(this.state.sundayTimeSlots);
                 var timePickers = document.getElementById(index+"sundayTimeSlot");
                 timePickers.parentElement.replaceChild(timesDiv, timePickers);
                 timePickers.remove();
