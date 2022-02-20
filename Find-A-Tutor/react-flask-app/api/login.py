@@ -97,8 +97,9 @@ def myProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  print(data)
-  return appointment.addAppointment(data, email)
+  newStart = createDateFromTime(data['day'], data['start'])
+  newEnd = createDateFromTime(data['day'], data['end'])
+  return appointment.addAppointment(data, email, newStart, newEnd)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
@@ -158,3 +159,16 @@ def dateParse(date):
     print(newDate)
     
     return newDate
+    
+def createDateFromTime(day, time):
+    #split up the day
+    date = dateParse(day)
+    newDay = date.split("T")[0]
+    
+    #add the time
+    newDate = newDay + "T" + time + ":00"
+    
+    print(newDate)
+    
+    return newDate
+    
