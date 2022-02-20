@@ -8,6 +8,9 @@ const format = 'h:mm a';                //Format for TimePicker
 const now = moment().hour(0).minute(0); //Default value for TimePickers
 
 /** TimePickers Component
+ * 
+ * Displays two rc-time-pickers with start and end time labels
+ * 
  * @returns label and TimePickers for the given TimeSlot
  * @props timeSlotChange(e, String): a callback function from the parent to set the given state
  *      timeSlotChange @params e: Moment object, String defining which timepicker was changed
@@ -34,6 +37,7 @@ class TimePickers extends React.Component {
                         inputReadOnly
                         minuteStep={30}
                         name="startTime"
+                        showSecond={false}
                     /> {/* startTime */}
 
 
@@ -41,12 +45,13 @@ class TimePickers extends React.Component {
                     <Time
                         className="endTime"
                         defaultValue={now}
-                        onChange={(e) => this.props.timeSlotChange(e, "start")}
+                        onChange={(e) => this.props.timeSlotChange(e, "end")}
                         format={format}
                         use12Hours
                         inputReadOnly
                         minuteStep={30}
                         name="endTime"
+                        showSecond={false}
                     />{/* endTime */}
 
                 </div> {/* TimeSlots */}

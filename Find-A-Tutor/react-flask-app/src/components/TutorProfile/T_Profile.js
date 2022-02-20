@@ -1,17 +1,16 @@
 import React, { Component } from "react";
-import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
+import { Button } from 'react-bootstrap';
 
-import TimePickers from './TimePickers'
+import TimeSlot from './TimeSlot'
 
 class T_Profile extends React.Component {
     render() {
         return (
             <>
+            <TimeSlot />
             </>
-        );
-    }
-}
+        );//return
+    }//render
+}//T_Profile
 
 export default T_Profile;
