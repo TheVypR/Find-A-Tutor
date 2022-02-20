@@ -53,9 +53,9 @@ class TimeSlot extends React.Component {
 
         //Update TimeSlot according to the changed timepicker
         if (timepicker == 'start') {
-            this.setState({startTime: time}, ()=>{console.log(this.state.startTime)});
+            this.setState({ startTime: time }, () => { console.log(this.state.startTime) });
         } else {
-            this.setState({endTime: time}, ()=>{console.log(this.state.endTime)})
+            this.setState({ endTime: time }, () => { console.log(this.state.endTime) })
         }//if
 
     }//timeSlotChange()
@@ -63,8 +63,14 @@ class TimeSlot extends React.Component {
     render() {
         return (
             <>
-                <TimePickers timeSlotChange={this.timeSlotChange}/>
-                <SubmitRemoveTime />
+                <div className="d-flex justify-content-center">
+                    <div>
+                        <TimePickers timeSlotChange={this.timeSlotChange} />
+                        <SubmitRemoveTime />
+                    </div>
+                    <div className="vr"></div>
+                </div>
+                <hr />
             </>
         );//return
     }//render
