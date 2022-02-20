@@ -30,30 +30,33 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-def appointment(data, email):
+def addAppointment(data, email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
-    print("Data " + data['tutEmail'])
+    print(data)
     cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title) values(\"" 
                     + email + "\", \"" 
-                    + data['tutEmail'] + "\", \"" 
+                    + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + data['start'] + "', '"
                     + data['end'] + "', \""
-                    + data['title'] + "\")")
+                    + "Appointment for " + data['class_code'] + " with " + data['tut_email'] + "\")")
     
     conn.close()
 
     return 'Done'
 
-def getTimes():
+def getTimes(email):
     availTimes = []
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
-    cursor.execute("select * from TutorTimes")
+    cursor.execute("select tut_email, start_date, end_date" + 
+                    " from TutorTimes" + 
+                    " where tut_email in (select tut_email from TutorClasses where class_code in" + 
+                    " (select class_code from StudentClasses where stu_email = \"" + email + "\"));")
     times = cursor.fetchall()
     
     for time in times:

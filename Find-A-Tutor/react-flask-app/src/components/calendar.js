@@ -92,10 +92,9 @@ function addEvent() {
       start: startDate,
       end: endDate,
 	  day: origStartDate,
-	  title: title,
-	  tutEmail: tutEmail
+	  tut_email: tutEmail
     };
-	
+	console.log(myEvent)
 	fetch("/addAppointment/", {
 		method: 'POST',
 		headers: {

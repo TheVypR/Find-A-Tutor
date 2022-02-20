@@ -97,12 +97,13 @@ def myProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  return appointment.appointment(data, email)
+  print(data)
+  return appointment.addAppointment(data, email)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     print("Times")
-    return appointment.getTimes()
+    return appointment.getTimes(email)
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
