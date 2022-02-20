@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Button } from 'react-bootstrap';
 
-import TimeSlot from './TimeSlot'
+import Weekday from './Weekday'
 
 class T_Profile extends React.Component {
     render() {
         return (
             <>
-            <TimeSlot />
+            <Weekday day="Sunday"/>
             </>
         );//return
     }//render
