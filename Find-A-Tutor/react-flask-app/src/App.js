@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
-import TutorProfile from "./components/TutorProfile"
+import TutorProfile from "./components/TutorProfile/T_Profile"
 import StudentProfile from "./components/StudentProfile"
 import { createContext } from 'react';
 

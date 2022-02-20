@@ -1,0 +1,129 @@
+#venmoUser{
+    margin-top: 10px;
+}
+
+#rate {
+    margin-left: 5px;
+}
+
+#hourlyRate {
+    margin-right: 5px;
+}
+
+#dropBtn {
+    margin-right: 5px;
+}
+
+#day {
+    margin-bottom: 5px;
+}
+
+#email {
+    font-size: large;
+}
+
+#header {
+    font-weight: bold;
+    font-size: large;
+    margin-bottom: 5px;
+}
+
+#loginPreferences {
+    font-weight: bold;
+    font-size: large;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#contactMe {
+    margin-right: 5px;
+}
+
+#bottom {
+    margin-top: 20px;
+}
+
+#edit {
+    margin-right: 5px;
+}
+
+.AddTimeSlot {
+    margin-top: 5px;
+}
+
+.removeTime{
+    padding: 3px 3px;
+    font-size: 50%;
+}
+
+.verified {
+    margin-right: 5px;
+}
+
+.removeClass {
+    padding: 2px 4px;
+    margin-left: 5px;
+}
+
+.hourlyRate {
+    margin-left: 5px;
+}
+
+.rateLabel {
+    margin-right: 5px;
+}
+
+.courseCode {
+    margin-right: 5px;
+}
+
+.timeLabel {
+    font-size: 10px;
+}
+
+fieldset {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;    
+    border-radius: 4px;
+}
+
+#startTimeLabel {
+    margin-right: 20px;
+}
+
+.startTime {
+    margin-right: 3px;
+    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
+}
+
+.endTime {
+    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
+}
+
+#day {
+    width: 200px;
+    max-width: 200px;
+}
+
+.vr {
+    border-left: thin solid black;
+}
+
+#stopTutoring {
+    margin-left: 5px;
+}
+
+.submitTime {
+    padding: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.SubmittedTimeSlot {
+    font-size: 12px;
+}
