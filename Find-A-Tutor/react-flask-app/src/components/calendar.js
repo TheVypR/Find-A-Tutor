@@ -108,12 +108,13 @@ function addEvent() {
   }
   
 	const handleEventClick = function (e) {
-		setStuEmail(e.extendedProps.stuEmail);
-		setTutEmail(e.extendedProps.tutEmail);
+		setStuEmail(e.extendedProps.stu_email);
+		setTutEmail(e.extendedProps.tut_email);
+		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
 		//set dates and times
-		setOrigStartDate(e.start);
-		setOrigEndDate(e.end);
+		setOrigStartDate(e.start.toString());
+		setOrigEndDate(e.end.toString());
 		setStartTime(formatDate(e.start, {
 			hour: 'numeric',
 			minute: '2-digit',
@@ -127,9 +128,10 @@ function addEvent() {
 			hour12: 'false',
 			meridiem: 'false'
 		}));
-		console.log(e);
+		console.log();
 		console.log(origStartDate);
 		console.log(origEndDate);
+		
 		
 		//find which modal to load
 		if(e.extendedProps['type'] == "appt") {
@@ -138,6 +140,22 @@ function addEvent() {
 			handleShowTime();
 		}
 	};
+
+	const cancelAppt = function () {
+		fetch("/deleteAppointment/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify([{
+			stu_email: stuEmail,
+			tut_email: tutEmail,
+			class_code: classCode,
+			start: origStartDate,
+			end: origEndDate
+		}])    
+	})
+	}
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
@@ -183,15 +201,15 @@ function addEvent() {
         <Modal.Body>
 			Meeting with: {tutEmail}<br/>
 			For: {classCode}<br/>
-			From: {startDate}<br/>
-			To: {endDate}
+			From: {origStartDate}<br/>
+			To: {origEndDate}
 		</Modal.Body>
 		
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-		  <Button variant="danger" onClick={handleClose}>
+		  <Button variant="danger" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
           <Button variant="primary">

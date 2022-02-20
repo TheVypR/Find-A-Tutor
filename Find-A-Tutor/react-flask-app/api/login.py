@@ -109,3 +109,51 @@ def getAppointments():
     print("Appointments")
     appts = appointment.getAppointments(email)
     return appts
+    
+@app.route('/deleteAppointment/', methods=['POST'])
+def deleteAppointment():
+    print("Deleted")
+    data = request.get_json()[0]
+    print(data)
+    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    return appointment.removeAppointment(email, data, newDate)
+    
+def dateParse(date):
+    #get the parts of the date
+    dateArray = date.split()
+    
+    #get the year
+    newDate = dateArray[3] + "-"
+    #get the month
+    if(dateArray[1] == "Jan"):
+        newDate += "01-"
+    elif(dateArray[1] == "Feb"):
+        newDate += "02-"
+    elif(dateArray[1] == "Mar"):
+        newDate += "03-"
+    elif(dateArray[1] == "Apr"):
+        newDate += "04-"
+    elif(dateArray[1] == "May"):
+        newDate += "05-"
+    elif(dateArray[1] == "Jun"):
+        newDate += "06-"
+    elif(dateArray[1] == "Jul"):
+        newDate += "07-"
+    elif(dateArray[1] == "Aug"):
+        newDate += "08-"
+    elif(dateArray[1] == "Sep"):
+        newDate += "09-"
+    elif(dateArray[1] == "Oct"):
+        newDate += "10-"
+    elif(dateArray[1] == "Nov"):
+        newDate += "11-"
+    elif(dateArray[1] == "Dec"):
+        newDate += "12-"
+    #get the day
+    newDate += dateArray[2] + "T"
+    #get the time
+    newDate += dateArray[4]
+    
+    print(newDate)
+    
+    return newDate

@@ -78,3 +78,17 @@ def getAppointments(email):
     conn.close()
     
     return {'appts':availAppts}
+    
+def removeAppointment(email, data, newDates):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()  
+    
+    cursor.execute("delete from Appointment where stu_email=\"" 
+                    + data['stu_email'] + "\" and tut_email=\"" 
+                    + data['tut_email'] + "\" and start_date=\"" 
+                    + newDates['start'] + "\"")
+    print("Closing..")
+    conn.close()
+    
+    return "Success"
