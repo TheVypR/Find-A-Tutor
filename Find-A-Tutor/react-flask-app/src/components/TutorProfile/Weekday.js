@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import TimeSlot from './TimeSlot'
 
@@ -32,9 +31,11 @@ class Weekday extends React.Component {
         const day = this.props.day;
         return (
             <>
-                <h6 className="weekdayLabel"> {day} </h6>
-                <TimeSlot />
-                <AddTimeSlot />
+                <div>
+                    <h6 className="weekdayLabel"> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    <TimeSlot />
+                    <AddTimeSlot />
+                </div>
             </>
         );//return
     }//render

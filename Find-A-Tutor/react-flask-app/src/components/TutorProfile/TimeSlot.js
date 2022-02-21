@@ -63,13 +63,8 @@ class TimeSlot extends React.Component {
     render() {
         return (
             <>
-                <div className="d-flex justify-content-center">
-                    <div>
-                        <TimePickers timeSlotChange={this.timeSlotChange} />
-                        <SubmitRemoveTime />
-                    </div>
-                    <div className="vr"></div>
-                </div>
+                <TimePickers timeSlotChange={this.timeSlotChange} />
+                <SubmitRemoveTime />
                 <hr />
             </>
         );//return

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 
-import Weekday from './Weekday'
+import AvailableTimes from './AvailableTimes'
 
 class T_Profile extends React.Component {
     render() {
         return (
             <>
-            <Weekday day="Sunday"/>
+            <AvailableTimes />
             </>
         );//return
     }//render
