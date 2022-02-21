@@ -8,15 +8,17 @@
     text-decoration: underline;
     font-style: italic;
 }
-
-.title{
+.titleText{
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-style: oblique;
     font-weight: bold;
     font-size: 96px;
     color: crimson;
-  
-  
+    opacity: .4;
+    background-color: white;
+   
+}
+.title{
     background-image: url("C:\Users\beamnj18\OneDrive - Grove City College\Desktop\Find-A-Tutor\Find-A-Tutor\Find-A-Tutor\react-flask-app\src\images\gcc.jpg");
     background-repeat: no-repeat;
     background-size: cover;

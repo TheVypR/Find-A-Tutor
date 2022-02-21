@@ -149,9 +149,9 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
       </Modal>
 		
       <div class="title">
-        <p>
-          Find-A-Tutor
-        </p>
+        <div class="titleText">
+          <p>Find-A-Tutor</p>
+          </div>
       </div>
       <div class="filter">
         <div class="filterHeader">
