@@ -35,7 +35,11 @@ function FullCalendarApp() {
   const [title, setTitle] = useState("");
 
 
-  
+  const [checked, setChecked] = React.useState(false);
+
+    const handleChange = () => {
+      setChecked(!checked);
+    }
   
   //handle the modal on/off
   const handleClose = () => setShow(false);
@@ -101,6 +105,12 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 		setChosen(event);
 	};
 
+
+  
+  
+ 
+
+
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
@@ -149,16 +159,48 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
         </p>
       </div>
       <div class="filter">
+        <div>
+          <input
+            type = "checkbox"
+            id="myApts"
+            name="filterMyApts"
+            checked={checked}
+            onChange={handleChange}
+          />
+            My Appointments
+        </div>
+        <div>
+          <input
+            type = "checkbox"
+            id="availableApts"
+            name="filterAvailApts"
+            checked={checked}
+            onChange={handleChange}
+          />
+          Available Appointments
+        </div>
+        <div className="result">
+          Above checkbox is {checked ? "checked" : "un-checked"}.
+        </div>
+      </div>
+          
+      {/* <div class="filter">
         <p>
           Filter By:
         </p>
-        <input type="checkbox" id="myApts" name="My Appointments">
-        </input>
-        <label for="myApts">My Appointments</label><br></br>
+        <div>
+        <label for="myApts">
+          <input type="checkbox" id="myApts" name="My Appointments" value="yes"></input> My Appointments
+        </label>
+        <script>
+          const cb = document.querySelector('#myApts');
+          alert("hi");
+        </script>
+        </div>
         <input type="checkbox" id="availableApts" name="My Appointments">
         </input>
         <label for="availableApts">Available Appointments</label><br></br>
-      </div>
+      </div> */}
       <StyleWrapper>
         <div class="calendar">
         <FullCalendar
@@ -210,6 +252,15 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
       </StyleWrapper>
     </div>
   );
+
+  const Checkbox = ({ label, value, onChange }) => {
+    return (
+      <label>
+        <input type="checkbox" checked={value} onChange={onChange} />
+        {label}
+      </label>
+    );
+  };
 }
 
 export default FullCalendarApp;
