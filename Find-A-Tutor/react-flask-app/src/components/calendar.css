@@ -2,6 +2,11 @@
     padding-left: 200px;
     padding-right: 100px;
     background-color: gray;
+   
+}
+.filterHeader{
+    text-decoration: underline;
+    font-style: italic;
 }
 
 .title{
@@ -10,7 +15,12 @@
     font-weight: bold;
     font-size: 96px;
     color: crimson;
-   
+  
+  
+    background-image: url("C:\Users\beamnj18\OneDrive - Grove City College\Desktop\Find-A-Tutor\Find-A-Tutor\Find-A-Tutor\react-flask-app\src\images\gcc.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 }
 
 .filter{

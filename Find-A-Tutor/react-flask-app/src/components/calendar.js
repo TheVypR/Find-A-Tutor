@@ -34,6 +34,12 @@ function FullCalendarApp() {
 
     const handleChange = () => {
       setChecked(!checked);
+      if(!checked){
+        alert("Im now checked");
+      }else{
+        alert("I am now not checked");
+      }
+      
     }
   
   //handle the modal on/off
@@ -100,12 +106,6 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 		setChosen(event);
 	};
 
-
-  
-  
- 
-
-
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
@@ -154,6 +154,9 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
         </p>
       </div>
       <div class="filter">
+        <div class="filterHeader">
+          <h2>Filter By:</h2>
+        </div>
         <div>
           <input
             type = "checkbox"
@@ -164,7 +167,7 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           />
             My Appointments
         </div>
-        <div>
+        {/* <div>
           <input
             type = "checkbox"
             id="availableApts"
@@ -173,10 +176,7 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
             onChange={handleChange}
           />
           Available Appointments
-        </div>
-        <div className="result">
-          Above checkbox is {checked ? "checked" : "un-checked"}.
-        </div>
+        </div> */}
       </div>
           
       {/* <div class="filter">
