@@ -20,14 +20,9 @@ const appointments = [
 
 export const StyleWrapper = styled.div`
   .fc td {
-    background: white;
+    background: lightgray;
   }
 `
-
-
-
-
-
 
 function FullCalendarApp() {
   const [times, setTimes] = useState([{}])
