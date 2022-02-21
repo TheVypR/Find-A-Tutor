@@ -1,4 +1,5 @@
 import hashlib
+from typing import Tuple
 
 from flask import Flask, request
 
@@ -29,8 +30,6 @@ else:
 
 mysql.init_app(app)
 
-email = ''
-
 @app.route('/login/', methods=['POST'])
 def login():
     #sql setup
@@ -46,33 +45,41 @@ def login():
                             
     result = cursor.fetchone()
     
-    salt = bytes.fromhex(result[0])
+    if(result):
+        salt = bytes.fromhex(result[0])
     
-    password = hashlib.pbkdf2_hmac(
-        'sha256', # The hash digest algorithm for HMAC
-        info[1].encode('utf-8'), # Convert the password to bytes
-        salt, # Provide the salt
-        100000 #100,000 iterations of SHA-256 
-    )
+        password = hashlib.pbkdf2_hmac(
+            'sha256', # The hash digest algorithm for HMAC
+            info[1].encode('utf-8'), # Convert the password to bytes
+            salt, # Provide the salt
+            100000 #100,000 iterations of SHA-256 
+        )
     
-    password = salt + password
+        password = salt + password
     
-    cursor.execute("select stu_email from Student where stu_email = \""
-                            + info[0] + "\" and stu_pass = \""
-                            + password.hex() + "\"")
-    user = cursor.fetchone()
-    print(user)
-    conn.close()
+        cursor.execute("select stu_email from Student where stu_email = \""
+                                + info[0] + "\" and stu_pass = \""
+                                + password.hex() + "\"")
+        user = cursor.fetchone()
+        conn.close()
 
-    if(user): 
-      email = user[0]   
-      print(email)      
-      return user[0]
+        if(type(user) is tuple): 
+          global email
+          email = user[0]
+          print(email)      
+        else:
+          print("Wrong password")
+          email = "USER NOT FOUND"
+        
     else:
-      return "USER NOT FOUND"
+        print("wrong user")
+        email = "USER NOT FOUND"
+    
+    return email
 
 @app.route('/email/', methods=['GET'])
 def getAuth():
+  print("Email!!!: " + email)
   return {'authTag':email}
 
 #signUp page
@@ -86,12 +93,18 @@ def myProfile():
   return profile.retrieve_profile("apelia18@gcc.edu")
 
 #add appointments on calendar screen
-@app.route('/addAppointment/', methods=['GET', 'POST'])
+@app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
-  data = request.json()
-  return appointment.appointment(data[0]['title'], data[0]['start_time'], data[0]['end_time'])
+  #data = request.json()
+  return appointment.appointment(email)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     print("Times")
     return appointment.getTimes()
+    
+@app.route('/getAppointments/', methods=['GET'])
+def getAppointments():
+    print("Appointments")
+    appts = appointment.getAppointments()
+    return appts

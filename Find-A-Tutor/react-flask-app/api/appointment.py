@@ -30,25 +30,26 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-def appointment(title, start_time, end_time):
+def appointment():
     conn = mysql.connect()
     conn.autocommit(True)
+    data = request.get_json()[0]
     cursor = conn.cursor()  
-    
-    print(title)
-    
-    cursor.execute("insert into Appointments(appointment_id, stu_email, tut_email, class_code, start_time, end_time, title)" 
-                    + " values(25, \"apelia18@gcc.edu\", \"sickafuseaj18@gcc.edu\", \"COMP447A\",'" 
-                    + start_time + "', '"
-                    + end_time + "', \""
-                    + title + "\")")
+        
+    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title) values(\"" 
+                    + data['stu_email'] + "\", \"" 
+                    + data['tut_email'] + "\", \"" 
+                    + data['class_code'] + "\",'" 
+                    + data['start'] + "', '"
+                    + data['end'] + "', \""
+                    + data['title'] + "\")")
     
     conn.close()
 
     return 'Done'
 
 def getTimes():
-    availTimes = [{}]
+    availTimes = []
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
@@ -59,4 +60,22 @@ def getTimes():
     for time in times:
         availTimes.append({'title':time[0], 'start':time[1], 'end':time[2]})
     
+    conn.close()
+    
     return {'times':availTimes}
+    
+def getAppointments(email):
+    availAppts = []
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()  
+    
+    cursor.execute("select * from Appointment where stu_email = \"" + email + "\"")
+    appts = cursor.fetchall()
+    
+    for appt in appts:
+        availAppts.append({'stu_email':appt[1], 'tut_email':appt[2], 'class_code':appt[3], 'start':appt[4], 'end':appt[5], 'title':appt[6], 'type':"appointment"})
+    
+    conn.close()
+    
+    return {'appts':availAppts}

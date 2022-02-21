@@ -13,6 +13,7 @@ const format = 'h:mm a';
 const now = moment().hour(0).minute(0);
 const buttonSize = 14;
 const removeTimeSize = 14;
+var paymentType = "Payment Type";
 
 class TutorProfile extends React.Component {
     constructor(props) {
@@ -20,13 +21,13 @@ class TutorProfile extends React.Component {
         this.state = {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             time: moment,
-            sundayTimeSlots: [{ startTime: "", endTime: "" }],
-            mondayTimeSlots: [{ startTime: "", endTime: "" }],
-            tuesdayTimeSlots: [{ startTime: "", endTime: "" }],
-            wednesdayTimeSlots: [{ startTime: "", endTime: "" }],
-            thursdayTimeSlots: [{ startTime: "", endTime: "" }],
-            fridayTimeSlots: [{ startTime: "", endTime: "" }],
-            saturdayTimeSlots: [{ startTime: "", endTime: "" }],
+            sundayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            mondayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            tuesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            wednesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            thursdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            fridayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            saturdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
 
             isLoaded: false,
             items: "",
@@ -40,7 +41,6 @@ class TutorProfile extends React.Component {
             times: ""
         }
 
-        this.onChange = this.onChange.bind(this);
         this.AddNewClass = this.AddNewClass.bind(this);
         this.RemoveClass = this.RemoveClass.bind(this);
         this.AddTimeSlot = this.AddTimeSlot.bind(this);
@@ -48,6 +48,8 @@ class TutorProfile extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.submitTime = this.submitTime.bind(this);
     }
 
     componentDidMount() {
@@ -75,6 +77,15 @@ class TutorProfile extends React.Component {
 
     handleSelect = (value) => {
         this.setState({ payType: value });
+        paymentType = value;
+        
+        var user = document.getElementById("venmoUser");
+        if (user.style.display != "none" && paymentType == "Cash") {
+            user.style.display = "none";
+        } else {
+            user.style.display = "block";
+        }
+
     }
 
     handleChange = (value) => {
@@ -104,7 +115,7 @@ class TutorProfile extends React.Component {
     }
 
     onChange(time) {
-        console.log(time && time.format(format));
+        console.log("test");
     }
 
 
@@ -228,6 +239,33 @@ class TutorProfile extends React.Component {
         }
     }
 
+    submitTime = (startTime, endTime, index, day) => {
+        var sTime = startTime.format(format).toString();
+        var eTime = endTime.format(format).toString();
+        var date = startTime['_d'];
+        var timeSlot = {sTime, eTime, date};
+
+        if (day == "sunday") {
+            this.state.sundayTimeSlots[index] = timeSlot;
+            var startElem = document.getElementById(index + "StartTimepicker");
+            var endElem = document.getElementById(index + "EndTimepicker");
+            startElem.remove();
+            endElem.remove();
+        } else if (day == "monday") {
+            this.state.mondayTimeSlots[index] = timeSlot;
+        } else if (day == "tuesday") {
+            this.state.tuesdayTimeSlots[index] = timeSlot;
+        } else if (day == "wednesday") {
+            this.state.wednesdayTimeSlots[index] = timeSlot;
+        } else if (day == "thursday") {
+            this.state.thursdayTimeSlots[index] = timeSlot;
+        } else if (day == "friday") {
+            this.state.fridayTimeSlots[index] = timeSlot;
+        } else if (day == "saturday") {
+            this.state.saturdayTimeSlots[index] = timeSlot;
+        }
+    }
+
     render() {
         return (
             <>
@@ -252,25 +290,25 @@ class TutorProfile extends React.Component {
                                         id={'dropdown-button-drop-${idx}'}
                                         size="sm"
                                         variant="primary"
-                                        title="Payment Type"
+                                        title={paymentType}
                                         onSelect={this.handleSelect}
                                     >
-                                        <Dropdown.Item eventKey="1">Venmo</Dropdown.Item>
-                                        <Dropdown.Item eventKey="2">Cash</Dropdown.Item>
-                                        <Dropdown.Divider />
+                                        <Dropdown.Item eventKey="Venmo">Venmo</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Paypal">Paypal</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Cash">Cash</Dropdown.Item>
                                     </DropdownType>
                                 ))}
                             </div>
 
-                            <input type="text" id="venmoUser" placeholder="Venmo Username" onChange={(e) => this.setState({ payType: e.target.value })} />
+                            <input type="text" id="venmoUser" placeholder={paymentType + " Username"} onChange={(e) => this.setState({ payType: e.target.value })} />
 
 
                             {/*Login Info*/}
                             <div id="loginInfo" onChange={(e) => this.setState({ loginPrefs: e.target.value })}>
                                 <p id="loginPreferences"> Login Preferences </p>
-                                <input type="radio" id="studentView" value="StudentView" />
+                                <input name="loginPrefs" type="radio" id="studentView" value="StudentView" />
                                 <label htmlFor="stuentView"> Student View </label><br />
-                                <input type="radio" id="tutorView" value="TutorView" />
+                                <input name="loginPrefs" type="radio" id="tutorView" value="TutorView" />
                                 <label htmlFor="tutorView"> Tutor View </label>
                             </div>
                         </div>
@@ -317,9 +355,9 @@ class TutorProfile extends React.Component {
 
                 <div id="days" className="d-flex justify-content-center">
                     <div>
-                        <text id="day"> Sunday </text> <br/>
-
+                        <text id="day"> Sunday </text> <br />
                         {this.state.sundayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -329,12 +367,12 @@ class TutorProfile extends React.Component {
                                     <div className="d-flex justify-content-center">
                                         <Time
                                             name="startTime"
-                                            id={index}
+                                            id={index + "StartTimepicker"}
                                             className="timepicker"
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -344,12 +382,12 @@ class TutorProfile extends React.Component {
 
                                         <Time
                                             name="endTime"
-                                            id={index}
+                                            id={index + "EndTimepicker"}
                                             className="timepicker"
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -357,6 +395,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "sunday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "sunday")}>
                                         <BsFillTrashFill size={removeTimeSize} />
@@ -374,8 +416,9 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Monday </text><br/>
+                        <text id="day"> Monday </text><br />
                         {this.state.mondayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -390,7 +433,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -405,7 +448,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -413,6 +456,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "monday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "monday")}>
                                         <BsFillTrashFill size={removeTimeSize} />
@@ -429,8 +476,9 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Tuesday </text><br/>
+                        <text id="day"> Tuesday </text><br />
                         {this.state.tuesdayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -445,7 +493,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -460,7 +508,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -468,6 +516,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "tuesday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "tuesday")}>
                                         <BsFillTrashFill size={removeTimeSize} />
@@ -484,8 +536,9 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Wednesday </text><br/>
+                        <text id="day"> Wednesday </text><br />
                         {this.state.wednesdayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -500,7 +553,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -515,7 +568,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -523,6 +576,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "wednesday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "wednesday")}>
                                         <BsFillTrashFill size={removeTimeSize} />
@@ -531,6 +588,10 @@ class TutorProfile extends React.Component {
                                 </>
                             );
                         })}
+
+                        {console.log(this.state.wednesdayTimeSlots)}
+
+
                         <Button className="AddTimeSlot" onClick={() => this.AddTimeSlot("wednesday")}>
                             <BsFillPlusCircleFill />
                         </Button>
@@ -539,8 +600,9 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Thursday </text><br/>
+                        <text id="day"> Thursday </text><br />
                         {this.state.thursdayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -555,7 +617,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -570,7 +632,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -578,6 +640,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "thursday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "thursday")}>
                                         <BsFillTrashFill size={removeTimeSize} />
@@ -594,8 +660,9 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Friday </text><br/>
+                        <text id="day"> Friday </text><br />
                         {this.state.fridayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -610,7 +677,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -625,7 +692,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -633,6 +700,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "friday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "friday")}>
                                         <BsFillTrashFill size={removeTimeSize} />
@@ -649,8 +720,9 @@ class TutorProfile extends React.Component {
                     <div className="vr"></div>
 
                     <div>
-                        <text id="day"> Saturday </text><br/>
+                        <text id="day"> Saturday </text><br />
                         {this.state.saturdayTimeSlots.map((thisTime, index) => {
+                            var startTime, endTime;
                             return (
                                 <>
                                     <div className="d-flex justify-content-center" id="timeSlot">
@@ -665,7 +737,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="startTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => startTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -680,7 +752,7 @@ class TutorProfile extends React.Component {
                                             showSecond={false}
                                             defaultValue={now}
                                             className="endTime"
-                                            onChange={this.onChange}
+                                            onChange={(time) => endTime = time}
                                             format={format}
                                             use12Hours
                                             inputReadOnly
@@ -688,6 +760,10 @@ class TutorProfile extends React.Component {
                                             name="endTime"
                                         />
                                     </div>
+
+                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "saturday")}>
+                                        Submit
+                                    </Button>
 
                                     <Button id={index} className="removeTime" variant="danger" onClick={() => this.RemoveTimeSlot(index, "saturday")}>
                                         <BsFillTrashFill size={removeTimeSize} />

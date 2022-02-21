@@ -13,8 +13,7 @@ class StudentProfile extends React.Component {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             isLoaded: false,
             items: "",
-            loginPref: "",
-            isTutorView: false
+            isTutorView: true
         }
 
         this.AddNewClass = this.AddNewClass.bind(this);
@@ -42,6 +41,20 @@ class StudentProfile extends React.Component {
                 }
             )
     }
+    
+    handleSubmit = () => {
+        const values = [{
+            "classes" : this.state.classesList
+        }];
+
+        const response = fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
+        })
+    }
 
     AddNewClass() {
         this.setState({
@@ -60,7 +73,6 @@ class StudentProfile extends React.Component {
         })
     }
 
-
     render() {
         return (
             <>
@@ -72,17 +84,6 @@ class StudentProfile extends React.Component {
                 </div>
 
                 <div className="d-flex justify-content-center">
-                    {/*Login Info*/}
-                    <fieldset id="loginPrefs">
-                        <div id="loginInfo" onChange={(e) => this.setState({ loginPrefs: e.target.value })}>
-                            <p id="loginPreferences"> Login Preferences </p>
-                            <input type="radio" id="studentView" value="StudentView" />
-                            <label htmlFor="stuentView"> Student View </label><br />
-                            <input type="radio" id="tutorView" value="TutorView" />
-                            <label htmlFor="tutorView"> Tutor View </label>
-                        </div>
-                    </fieldset>
-
                     {/*Classes*/}
                     <fieldset>
                         <div className="p-2">
@@ -92,7 +93,6 @@ class StudentProfile extends React.Component {
                                 {this.state.classesList.map((thisClass, index) => {
                                     return (
                                         <div className="input-group mb-3">
-                                            <BsPatchCheckFill name="verified" id={index} className="verified" size="22" />
                                             <input name="courseCode" id={index} className="courseCode" type="text" placeholder='HUMA 200 A' size="8"></input>
                                             <div className="input-group-append">
                                                 <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
@@ -107,6 +107,16 @@ class StudentProfile extends React.Component {
                             <Button type="button" id="AddClass" variant="primary" onClick={this.AddNewClass}> Add Class </Button>
                         </div>
                     </fieldset>
+                </div>
+
+                {/* Bottom Buttons */}
+                <div id="bottom">
+                    <Button type="submit" id="save"
+                        onClick={this.handleSubmit}
+                    > Apply </Button>
+                    <Link to='/calendar'>
+                        <Button id="submit"> To Calendar </Button>
+                    </Link>
                 </div>
             </>
         )

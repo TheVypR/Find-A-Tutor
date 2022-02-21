@@ -13,7 +13,6 @@ import { createContext } from 'react';
 
 export default function App() {
   return (
-    <ProvideAuth>
       <div className="App">
         <BrowserRouter>
           <Routes>
@@ -21,29 +20,30 @@ export default function App() {
             <Route exact path='/signup' element={<SignUp/>}></Route>
             <Route exact path='/myProfile' element={
               <PrivateRoute>
-                <StudentProfile />
+                <TutorProfile />
               </PrivateRoute>
             } />
             <Route exact path='/calendar' element={
               <PrivateRoute>
-                <Calendar/>
+                <Calendar />
               </PrivateRoute>
             }/>
           </Routes>
         </BrowserRouter>
       </div>
-    </ProvideAuth>
   );
 }
 
-const authContext = createContext();
+const authContext = createContext({
+  authenticated: false,
+});
 
 function useAuth() {
   return useContext(authContext);
 }
 
 function ProvideAuth({ children }) {
-  const auth = useProvideAuth();
+  const auth = useAuth()
   return (
     <authContext.Provider value={auth}>
       {children}
@@ -52,25 +52,7 @@ function ProvideAuth({ children }) {
 }
 
 function useProvideAuth() {
-  const [user, setUser] = useState("");
 
-  useEffect(() => {
-    fetch("/email/", {
-      method: 'GET',
-      headers: {
-        'Content-Type' : 'application/json'
-      },
-      })
-      .then(res => res.json())
-      .then(res => setUser(res))
-      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
-  }, []);
-
-  console.log(user);
-
-  return {
-    user
-  };
 }
 
 function PrivateRoute({ children }) {
@@ -86,13 +68,14 @@ function PrivateRoute({ children }) {
       },
       })
       .then(res => res.json())
-      .then(res => setUser(res))
+      .then(authTag => setUser(authTag))
+      .then(console.log(user.authTag))
       .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
   }, []);
 
-  console.log(user);
+  console.log(user.authTag);
 
   return (
-    auth.user == "" ? children : <SignIn />
+    user.authTag != "USER NOT FOUND" ? children : <SignIn />
   );
 }
