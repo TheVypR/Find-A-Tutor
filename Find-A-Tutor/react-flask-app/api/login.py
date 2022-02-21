@@ -1,13 +1,12 @@
 import hashlib
-from typing import Tuple
-
-from flask import Flask, request
-
-from flask_wtf import FlaskForm
-from flask_wtf import Form
+from datetime import datetime, timedelta
+from typing import Tuple 
+from flask import Flask, request 
+from flask_wtf import FlaskForm 
+from flask_wtf import Form 
 from wtforms import BooleanField
-
 import profile, signup, appointment
+
 
 #Database stuff
 from flaskext.mysql import MySQL
@@ -73,7 +72,7 @@ def login():
           email = "USER NOT FOUND"
         
     else:
-        print("wrong user")
+        print("Wrong user")
         email = "USER NOT FOUND"
     
     return email
@@ -99,12 +98,13 @@ def addAppointment():
   data = request.get_json()[0]
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
+  
   return appointment.addAppointment(data, email, newStart, newEnd)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     print("Times")
-    return appointment.getTimes(email)
+    return {'times':mergeTimes(appointment.getTimes(email)['times'])}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
@@ -171,4 +171,52 @@ def createDateFromTime(day, time):
     print(newDate)
     
     return newDate
+    
+#takes all the 15min times and makes them one block
+#input must be an array of datetimes formatted like this
+##### YYYY-MM-DDTHH:mm:SS #####
+def mergeTimes(timeArray):
+    #make sure to exclude the first and include the last block
+    first = True
+    left = len(timeArray)
+    #set the expected difference
+    minDif = timedelta(minutes=15)
+    #management vars
+    curTime = datetime.now()
+    timeBlockArray = []
+    curBlockStart = datetime.now()
+    curBlockEnd = datetime.now()
+
+    #go through every entry
+    for time in timeArray:
+        startTime = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+        endTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        if (endTime - curTime) != minDif:
+            #if this is the first don't add last one
+            if not first:
+                timeBlockArray.append({'tut_email':time['tut_email'],
+                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                'type': "time",
+                'title': "Available Time with " + time['tut_email']})
+            else:
+                first = False
+            #add time to the blockArray
+            curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        else:
+            #add 15 minutes to the block
+            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        if left == 1:
+            timeBlockArray.append({'tut_email':time['tut_email'],
+                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                'type': "time",
+                'title': "Available Time with " + time['tut_email']})
+        #hold the new time
+        curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        left-=1
+    
+    return timeBlockArray
+        
     

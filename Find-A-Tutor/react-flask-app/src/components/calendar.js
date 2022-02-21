@@ -83,36 +83,34 @@ function FullCalendarApp() {
   }, []);
 
 
-//create appointment
-function addEvent() {
-	setStartDate(origStartDate);
-	setEndDate(origEndDate);
-    const myEvent = {
-      class_code: classCode,
-      start: startDate,
-      end: endDate,
-	  day: origStartDate,
-	  title: title,
-	  tut_email: tutEmail
-    };
-	console.log(myEvent)
-	fetch("/addAppointment/", {
-		method: 'POST',
-		headers: {
-		'Content-Type' : 'application/json'
-		},
-		body:JSON.stringify([myEvent])    
-	})
-	
-	
-  }
+	//create appointment
+	function addEvent() {
+		setStartDate(origStartDate);
+		setEndDate(origEndDate);
+		const myEvent = {
+		  class_code: classCode,
+		  start: startDate,
+		  end: endDate,
+		  day: origStartDate,
+		  title: title,
+		  tut_email: tutEmail
+		};
+		console.log(myEvent)
+		fetch("/addAppointment/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([myEvent])    
+		})
+		
+		
+	}
   
 	const handleEventClick = function (e) {
-		console.log(e.extendedProps.tut_email)
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
-		console.log(tutEmail);
 		//set dates and times
 		setOrigStartDate(e.start.toString());
 		setOrigEndDate(e.end.toString());
@@ -129,8 +127,6 @@ function addEvent() {
 			hour12: 'false',
 			meridiem: 'false'
 		}));
-		console.log(tutEmail);
-		
 		
 		//find which modal to load
 		if(e.extendedProps['type'] == "appt") {
