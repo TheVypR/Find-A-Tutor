@@ -36,10 +36,39 @@ function FullCalendarApp() {
       setChecked(!checked);
       if(!checked){
         alert("Im now checked");
+        //filter appointments to users' appointments
+        filterMyAps();
       }else{
         alert("I am now not checked");
+        //query all
+        fetch("/getAppointments/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setAppts(result['appts']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
       }
       
+    }
+
+    const filterMyAps = () => {
+      fetch("/filter")
+      .then(res => res.json())
+      .then(
+        result => {
+          setAppts(result['myApts']);
+        },
+        (error) => {
+          console.log(error);
+      }
+      )
     }
   
   //handle the modal on/off
@@ -247,15 +276,6 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
       </StyleWrapper>
     </div>
   );
-
-  const Checkbox = ({ label, value, onChange }) => {
-    return (
-      <label>
-        <input type="checkbox" checked={value} onChange={onChange} />
-        {label}
-      </label>
-    );
-  };
 }
 
 export default FullCalendarApp;
