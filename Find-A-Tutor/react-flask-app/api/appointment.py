@@ -34,7 +34,7 @@ def addAppointment(data, email, start, end):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
-    print(data)
+    print(data['tut_email'])
     cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title) values(\"" 
                     + email + "\", \"" 
                     + "sickafuseaj18@gcc.edu" + "\", \"" 
@@ -60,7 +60,7 @@ def getTimes(email):
     times = cursor.fetchall()
     
     for time in times:
-        availTimes.append({'title':time[0], 'start':time[1], 'end':time[2], 'type':"time"})
+        availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time"})
     
     conn.close()
     

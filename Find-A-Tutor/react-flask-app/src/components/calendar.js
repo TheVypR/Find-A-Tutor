@@ -92,6 +92,7 @@ function addEvent() {
       start: startDate,
       end: endDate,
 	  day: origStartDate,
+	  title: title,
 	  tut_email: tutEmail
     };
 	console.log(myEvent)
@@ -107,10 +108,11 @@ function addEvent() {
   }
   
 	const handleEventClick = function (e) {
-		setStuEmail(e.extendedProps.stu_email);
+		console.log(e.extendedProps.tut_email)
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
+		console.log(tutEmail);
 		//set dates and times
 		setOrigStartDate(e.start.toString());
 		setOrigEndDate(e.end.toString());
@@ -127,13 +129,12 @@ function addEvent() {
 			hour12: 'false',
 			meridiem: 'false'
 		}));
-		console.log();
-		console.log(origStartDate);
-		console.log(origEndDate);
+		console.log(tutEmail);
 		
 		
 		//find which modal to load
 		if(e.extendedProps['type'] == "appt") {
+			setStuEmail(e.extendedProps.stu_email);
 			handleShowAppt();
 		} else if(e.extendedProps['type'] == "time") {
 			handleShowTime();
@@ -163,7 +164,7 @@ function addEvent() {
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
-			  <Modal.Title>TIME<br/>{title}</Modal.Title>
+			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				Make Appointment With: {chosen['tut_email']}<br/>
