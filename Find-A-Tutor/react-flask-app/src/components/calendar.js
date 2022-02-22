@@ -31,6 +31,7 @@ function FullCalendarApp() {
   //handle modals
   const [showTime, setShowTime] = useState(false);
   const [showAppt, setShowAppt] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [chosen, setChosen] = useState({});
   
   //appointment creation
@@ -46,9 +47,10 @@ function FullCalendarApp() {
   const [title, setTitle] = useState("");
   
   //toggle the modal on/off
-  const handleClose = function(){setShowTime(false); setShowAppt(false)};
+  const handleClose = function(){setShowTime(false); setShowAppt(false); setShowEdit(false)};
   const handleShowTime = function (){ setShowTime(true)};
   const handleShowAppt = function (){ setShowAppt(true)};
+  const handleShowEdit = function (){ setShowEdit(true)};
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -138,7 +140,7 @@ function FullCalendarApp() {
 		return date.replace(pattern, replacement);
 	}
 	
-	const handleEventClick = function (e) {
+	const handleEventClick = function (e, editting) {
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
@@ -161,11 +163,15 @@ function FullCalendarApp() {
 		console.log(startTime)
 		
 		//find which modal to load
-		if(e.extendedProps['type'] == "appt") {
-			setStuEmail(e.extendedProps.stu_email);
-			handleShowAppt();
-		} else if(e.extendedProps['type'] == "time") {
-			handleShowTime();
+		if(editting) {
+			handleShowEdit();
+		} else {
+			if(e.extendedProps['type'] == "appt") {
+				setStuEmail(e.extendedProps.stu_email);
+				handleShowAppt();
+			} else if(e.extendedProps['type'] == "time") {
+				handleShowTime();
+			} 
 		}
 	};
 
@@ -183,7 +189,7 @@ function FullCalendarApp() {
 				end: origEndDate
 			}])    
 		})
-	}
+	} 
 	
 	const editAppt = function () {
 		fetch("/deleteAppointment/", {
@@ -241,9 +247,7 @@ function FullCalendarApp() {
 			  <Button variant="primary"  type="submit"
 					  onClick= {
 						  () => {
-							  addEvent(stuEmail, tutEmail, 
-								  classCode, startDate, endDate, 
-								  title)
+							  addEvent()
 						  }
 					}>
 				Save Changes
@@ -270,11 +274,42 @@ function FullCalendarApp() {
 		  <Button variant="danger" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" onClick={editAppt}>
+          <Button variant="primary" onClick={handleShowEdit}>
             Edit Appointment
           </Button>
         </Modal.Footer>
       </Modal>
+		
+	  <Modal show={showEdit} onHide={handleClose}>
+		<form>
+			<Modal.Header closeButton>
+			  <Modal.Title>{title}</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				Edit Appointment With: {chosen['tut_email']}<br/>
+					Choose Class: 
+					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					Start Time: 
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					End Time: 
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}} required/>
+			</Modal.Body>
+			
+			<Modal.Footer>
+			  <Button variant="secondary" onClick={handleClose}>
+				Close
+			  </Button>
+			  <Button variant="primary"  type="submit"
+					  onClick= {
+						  () => {
+							  editAppt()
+						  }
+					}>
+				Save Changes
+			  </Button>
+			</Modal.Footer>
+		</form>
+      </Modal>	
 		
       <div className="title">
         <p>
@@ -333,7 +368,7 @@ function FullCalendarApp() {
           dateClick={(e) => alert(e.dateStr)}
 
           //ability to click appointments
-          eventClick={function (e) {handleEventClick(e.event)}}
+          eventClick={function (e) {handleEventClick(e.event, false)}}
         />
         </div>
       </StyleWrapper>

@@ -239,7 +239,7 @@ def splitTimes(timeToSplit):
     splitTimeArray = []
 
     #go through the time until the end
-    while curEnd != endSplit:
+    while curEnd < endSplit:
         print(curEnd)
         splitTimeArray.append({
         'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
