@@ -1,5 +1,5 @@
 /*https://mui.com/getting-started/templates/*/
-import * as React from 'react';
+import react, { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,25 +12,29 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const navigate = useNavigate();
+  const nav = useNavigate();
+
+  //authentication information
+  const authContext = useContext(AuthContext);
+
+  const loginHandler = function () {
+      authContext.login();
+      console.log(authContext);
+      nav('/calendar');
+  };
+
+  const logoutHandler = function () {
+      authContext.logout();
+      nav('/');
+  };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
