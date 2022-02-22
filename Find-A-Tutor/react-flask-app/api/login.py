@@ -32,50 +32,44 @@ mysql.init_app(app)
 
 @app.route('/login/', methods=['POST'])
 def login():
-    #sql setup
-    conn = mysql.connect()
-    conn.autocommit(True)
-    cursor = conn.cursor()
-    #get the login provided
-    info = request.get_json()
-    
-    #get the salt
-    cursor.execute("select stu_salt from Student where stu_email = \""
-                            + info[0] + "\"")
-                            
-    result = cursor.fetchone()
-    
-    if(result):
-        salt = bytes.fromhex(result[0])
-    
-        password = hashlib.pbkdf2_hmac(
-            'sha256', # The hash digest algorithm for HMAC
-            info[1].encode('utf-8'), # Convert the password to bytes
-            salt, # Provide the salt
-            100000 #100,000 iterations of SHA-256 
-        )
-    
-        password = salt + password
-    
-        cursor.execute("select stu_email from Student where stu_email = \""
-                                + info[0] + "\" and stu_pass = \""
-                                + password.hex() + "\"")
-        user = cursor.fetchone()
-        conn.close()
+  #sql setup
+  conn = mysql.connect()
+  conn.autocommit(True)
+  cursor = conn.cursor()
+  #get the login provided
+  info = request.get_json()
+  email = info[0]
+  pw = info[1]
+  print(email)
+  print(pw)
 
-        if(type(user) is tuple): 
-          global email
-          email = user[0]
-          print(email)      
-        else:
-          print("Wrong password")
-          email = "USER NOT FOUND"
-        
-    else:
-        print("Wrong user")
-        email = "USER NOT FOUND"
-    
-    return email
+  #get the salt
+  cursor.execute("select stu_salt from Student where stu_email = \""
+                          + email + "\"")               
+  result = cursor.fetchone()
+
+  if result is None:
+    return jsonify({'error': 'Not Authenticated'})
+
+  if(result):
+      salt = bytes.fromhex(result[0])
+      password = hashlib.pbkdf2_hmac(
+          'sha256', # The hash digest algorithm for HMAC
+          pw.encode('utf-8'), # Convert the password to bytes
+          salt, # Provide the salt
+          100000 #100,000 iterations of SHA-256 
+      )
+      password = salt + password
+      cursor.execute("select stu_email from Student where stu_email = \""
+                              + email + "\" and stu_pass = \""
+                              + password.hex() + "\"")
+      user = cursor.fetchone()
+      conn.close()
+      print(user)
+      if user is None:
+        return jsonify({'error': 'Not Authenticated'})
+
+  return jsonify({'email': email})
 
 @app.route('/email/', methods=['GET'])
 def getAuth():
