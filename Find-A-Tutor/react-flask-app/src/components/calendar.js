@@ -2,8 +2,9 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import React, { useState, useEffect, Component } from "react";
+import TimePicker from 'react-time-picker';
 import FullCalendar from '@fullcalendar/react';
-import { formatDate } from '@fullcalendar/core';
+//import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -38,6 +39,8 @@ function FullCalendarApp() {
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [origStartDate, setOrigStartDate] = useState("");
+  const [origEndDate, setOrigEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
@@ -80,102 +83,143 @@ function FullCalendarApp() {
   }, []);
 
 
-//create appointment
-function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
-    const myEvent = {
-      stu_email: stuEmail,
-      tut_email: tutEmail,
-	  class_code: classCode,
-      start: startTime,
-      end: endTime,
-	  title: title
-    };
+	//create appointment
+	function addEvent() {
+		setStartDate(origStartDate);
+		setEndDate(origEndDate);
+		const myEvent = {
+		  class_code: classCode,
+		  start: startDate,
+		  end: endDate,
+		  day: origStartDate,
+		  title: title,
+		  tut_email: tutEmail
+		};
+		console.log(myEvent)
+		fetch("/addAppointment/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([myEvent])    
+		})
+		
+		
+	}
 	
-	fetch("/addAppointment/", {
-		method: 'POST',
-		headers: {
-		'Content-Type' : 'application/json'
-		},
-		body:JSON.stringify([myEvent])    
-	})
+	function formatDate(date) {
+		var d = new Date(date);
+		var hh = d.getHours();
+		var m = d.getMinutes();
+		var s = d.getSeconds();
+		var dd = "AM";
+		var h = hh;
+		if (h >= 12) {
+			h = hh - 12;
+			dd = "PM";
+		}
+		if (h == 0) {
+			h = 12;
+		}
+		m = m < 10 ? "0" + m : m;
+
+		s = s < 10 ? "0" + s : s;
+
+		/* if you want 2 digit hours:
+		h = h<10?"0"+h:h; */
+
+		var pattern = new RegExp("0?" + hh + ":" + m + ":" + s);
+
+		var replacement = h + ":" + m;
+		/* if you want to add seconds
+		replacement += ":"+s;  */
+		replacement += " " + dd;
+
+		return date.replace(pattern, replacement);
+	}
 	
-	console.log("Add");
-  }
-  
 	const handleEventClick = function (e) {
-		setChosen(e.extendedProps);
+		setTutEmail(e.extendedProps.tut_email);
+		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
-		
 		//set dates and times
-		setStartDate(
-			formatDate(e.start, {
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit'
-			}));
-		setEndDate(formatDate(e.end, {
-				month: 'long',
-				year: 'numeric',
-				day: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit'
-			}));
-		setStartTime(formatDate(e.start, {
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: 'false'
-		}));
-		setEndTime(formatDate(e.end, {
-			hour: 'numeric',
-			minute: '2-digit',
-			hour12: 'false'
-		}));
+		setOrigStartDate(e.start.toString());
+		setOrigEndDate(e.end.toString());
+		//setStartTime(formatDate(e.start));
+		//setEndTime(formatDate(e.end));
 		
+		var options = {
+		  hour: '2-digit',
+		  minute: '2-digit',
+		  hour12: false
+		};
+		
+		setStartTime(e.start.toLocaleString('en-US', options))
+		setEndTime(e.end.toLocaleString('en-US', options))
+		
+		console.log(endTime)
+		console.log(startTime)
+		
+		//find which modal to load
 		if(e.extendedProps['type'] == "appt") {
+			setStuEmail(e.extendedProps.stu_email);
 			handleShowAppt();
-			
 		} else if(e.extendedProps['type'] == "time") {
 			handleShowTime();
 		}
 	};
+
+	const cancelAppt = function () {
+		fetch("/deleteAppointment/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify([{
+			stu_email: stuEmail,
+			tut_email: tutEmail,
+			class_code: classCode,
+			start: origStartDate,
+			end: origEndDate
+		}])    
+	})
+	}
 
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
     <div className="App">
 		<Modal show={showTime} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>TIME<br/>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-			Make Appointment With: {chosen['tut_email']}<br/>
-			<form>
-				Choose Class: 
-				<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
-				Start Time: 
-				<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
-				End Time: 
-				<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
-			</form>
-		</Modal.Body>
-		
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" 
-			      onClick= {
-				      () => {
-					      addEvent(stuEmail, tutEmail, 
-							  classCode, startDate, endDate, 
-							  title)
-				      }
-			    }>
-            Save Changes
-          </Button>
-        </Modal.Footer>
+		<form>
+			<Modal.Header closeButton>
+			  <Modal.Title>{title}</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				Make Appointment With: {chosen['tut_email']}<br/>
+					Choose Class: 
+					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					Start Time: 
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					End Time: 
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
+			</Modal.Body>
+			
+			<Modal.Footer>
+			  <Button variant="secondary" onClick={handleClose}>
+				Close
+			  </Button>
+			  <Button variant="primary"  type="submit"
+					  onClick= {
+						  () => {
+							  addEvent(stuEmail, tutEmail, 
+								  classCode, startDate, endDate, 
+								  title)
+						  }
+					}>
+				Save Changes
+			  </Button>
+			</Modal.Footer>
+		</form>
       </Modal>
 	  
 	  <Modal show={showAppt} onHide={handleClose}>
@@ -183,16 +227,19 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-			Meeting with: {chosen['tut_email']}<br/>
-			For: {chosen['class_code']}<br/>
-			From: {startDate}<br/>
-			To: {endDate}
+			Meeting with: {tutEmail}<br/>
+			For: {classCode}<br/>
+			From: {origStartDate}<br/>
+			To: {origEndDate}
 		</Modal.Body>
 		
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
+		  <Button variant="danger" onClick={cancelAppt}>
+		    Cancel Appointment
+		  </Button>
           <Button variant="primary">
             Edit Appointment
           </Button>
@@ -247,7 +294,7 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
 
           //add appointments to calendar
           events={times.concat(appts)}
-
+			
           //formatting of appointments
           eventColor="green"	
           nowIndicator
