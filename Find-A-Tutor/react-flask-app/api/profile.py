@@ -115,6 +115,7 @@ def post_TimeSlots(submission, tut_email):
     #Submit timeslot for given weekday
     startTime = submission['startTime']
     endTime = submission['endTime']
+    #TODO: pass into split times
     # cursor.execute(insert into TutorTimes values("tut_email", "startTime", "endTime")
 
     #conn.close()
