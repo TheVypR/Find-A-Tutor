@@ -48,6 +48,10 @@ def login():
   cursor.execute("select stu_salt from Student where stu_email = \""
                           + email + "\"")               
   result = cursor.fetchone()
+
+  if result is None:
+    return jsonify({'error': 'Not Authenticated'})
+
   if(result):
       salt = bytes.fromhex(result[0])
       password = hashlib.pbkdf2_hmac(
@@ -66,7 +70,7 @@ def login():
       if user is None:
         return jsonify({'error': 'Not Authenticated'})
 
-  return {'email': email}
+  return jsonify({'email': email})
 
 @app.route('/email/', methods=['GET'])
 def getAuth():

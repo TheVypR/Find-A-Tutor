@@ -39,25 +39,20 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-	const info = [data.get('email'), data.get('password')]
-	fetch("/login/", {
-		method: 'POST',
-		headers: {'Content-Type' : 'application/json'},
-		body:JSON.stringify(info)
-	}).then(resp => resp.json())
-  .then(result => {
-    if (result['email'] == info[0]) {
-      loginHandler()
-    }
-    else {
-      logoutHandler()
-    }
-  })
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const info = [data.get('email'), data.get('password')]
+    fetch("/login/", {
+      method: 'POST',
+      headers: {'Content-Type' : 'application/json'},
+      body:JSON.stringify(info)
+    }).then(resp => resp.json())
+    .then(result => {
+      if (result['email'] === info[0]) {
+        loginHandler()
+      }
+      else {
+        logoutHandler()
+      }
+    })
   };
   return (
     <ThemeProvider theme={theme}>
