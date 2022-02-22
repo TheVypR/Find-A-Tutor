@@ -29,6 +29,8 @@ function FullCalendarApp() {
   const [startDate, setStartDate] = useState("");
   const [title, setTitle] = useState("");
 
+  var filterMyApts = false;
+
 
   const [checked, setChecked] = React.useState(false);
 
@@ -37,38 +39,13 @@ function FullCalendarApp() {
       if(!checked){
         alert("Im now checked");
         //filter appointments to users' appointments
-        filterMyAps();
+        filterMyApts = true;
       }else{
         alert("I am now not checked");
         //query all
-        fetch("/getAppointments/")
-            .then(res => res.json())
-            .then(
-                result => {
-                    setAppts(result['appts']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
+        filterMyApts = false;
       }
       
-    }
-
-    const filterMyAps = () => {
-      fetch("/filter")
-      .then(res => res.json())
-      .then(
-        result => {
-          setAppts(result['myApts']);
-        },
-        (error) => {
-          console.log(error);
-      }
-      )
     }
   
   //handle the modal on/off
@@ -196,35 +173,10 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           />
             My Appointments
         </div>
-        {/* <div>
-          <input
-            type = "checkbox"
-            id="availableApts"
-            name="filterAvailApts"
-            checked={checked}
-            onChange={handleChange}
-          />
-          Available Appointments
-        </div> */}
+    
       </div>
           
-      {/* <div class="filter">
-        <p>
-          Filter By:
-        </p>
-        <div>
-        <label for="myApts">
-          <input type="checkbox" id="myApts" name="My Appointments" value="yes"></input> My Appointments
-        </label>
-        <script>
-          const cb = document.querySelector('#myApts');
-          alert("hi");
-        </script>
-        </div>
-        <input type="checkbox" id="availableApts" name="My Appointments">
-        </input>
-        <label for="availableApts">Available Appointments</label><br></br>
-      </div> */}
+
       <StyleWrapper>
         <div class="calendar">
         <FullCalendar
@@ -256,6 +208,7 @@ function addEvent(stuEmail, tutEmail, classCode, startTime, endTime, title) {
           }}//end button setup
 
           //add appointments to calendar
+          
           events={times.concat(appts)}
 
           //formatting of appointments
