@@ -1,15 +1,9 @@
 import hashlib
 from datetime import datetime, timedelta
 from typing import Tuple 
-<<<<<<< HEAD
 from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
-from flask_wtf import Form
-=======
-from flask import Flask, request 
-from flask_wtf import FlaskForm 
 from flask_wtf import Form 
->>>>>>> parent of 278a384 (Merge remote-tracking branch 'origin/ajs-auth')
 from wtforms import BooleanField
 import profile, signup, appointment
 

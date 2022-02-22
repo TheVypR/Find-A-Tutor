@@ -91,8 +91,8 @@ function FullCalendarApp() {
 		setEndDate(origEndDate);
 		const myEvent = {
 		  class_code: classCode,
-		  start: startDate,
-		  end: endDate,
+		  start: startTime,
+		  end: endTime,
 		  day: origStartDate,
 		  title: title,
 		  tut_email: tutEmail
@@ -230,7 +230,7 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				Make Appointment With: {chosen['tut_email']}<br/>
+				Make Appointment With: {tutEmail}<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
@@ -285,7 +285,7 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				Edit Appointment With: {chosen['tut_email']}<br/>
+				Edit Appointment With: {tutEmail}<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
