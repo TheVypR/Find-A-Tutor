@@ -8,6 +8,8 @@ from wtforms import BooleanField
 #Database stuff
 from flaskext.mysql import MySQL
 
+import json
+
 app = Flask(__name__)
 
 mysql = MySQL()
@@ -104,10 +106,18 @@ def retrieve_classes(tut_email):
     
     return classes
 
-def get_TimeSlots(submission):
-    print("Getting Time Slots")
-    sundayTimeSlots = submission["sundayTimeSlots"]
-    print(sundayTimeSlots)
+# Submit time slots to db for given weekday
+def post_TimeSlots(submission, tut_email):
+    # conn = mysql.connect()
+    # conn.autocommit(True)
+    # cursor = conn.cursor()
+
+    #Submit timeslot for given weekday
+    startTime = submission['startTime']
+    endTime = submission['endTime']
+    # cursor.execute(insert into TutorTimes values("tut_email", "startTime", "endTime")
+
+    #conn.close()
 
 def edit_profile():
     print("Getting Profile")
@@ -122,11 +132,7 @@ def edit_profile():
     # keys = list(submission.keys())
     # print(keys)
 
-    sundayTimeSlots = submission["sundayTimeSlots"]
-    print(sundayTimeSlots)
-
-
-    get_TimeSlots(submission)
+    post_TimeSlots(submission, tut_email)
 
     # classes = submission[1]
     

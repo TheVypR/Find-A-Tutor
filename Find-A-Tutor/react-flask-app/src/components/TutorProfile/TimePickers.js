@@ -16,6 +16,16 @@ const now = moment().hour(0).minute(0); //Default value for TimePickers
  *      timeSlotChange @params e: Moment object, String defining which timepicker was changed
  */
 class TimePickers extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.onChangeTimes = this.onChangeTimes.bind(this);
+    }
+
+    onChangeTimes(time, timepicker) {
+        this.props.timeSlotChange(time, timepicker);
+    }
+
     render() {
         return (
             <>
@@ -31,7 +41,7 @@ class TimePickers extends React.Component {
                     <Time
                         className="startTime"
                         defaultValue={now}
-                        onChange={(e) => this.props.timeSlotChange(e, "start")}
+                        onChange={(e) => this.onChangeTimes(e, "start")}
                         format={format}
                         use12Hours
                         inputReadOnly
@@ -45,7 +55,7 @@ class TimePickers extends React.Component {
                     <Time
                         className="endTime"
                         defaultValue={now}
-                        onChange={(e) => this.props.timeSlotChange(e, "end")}
+                        onChange={(e) => this.onChangeTimes(e, "end")}
                         format={format}
                         use12Hours
                         inputReadOnly

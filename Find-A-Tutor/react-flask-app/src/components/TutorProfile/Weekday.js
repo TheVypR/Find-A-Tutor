@@ -32,8 +32,8 @@ class Weekday extends React.Component {
         return (
             <>
                 <div>
-                    <h6 className="weekdayLabel"> {day[0].toUpperCase() + day.slice(1)} </h6>
-                    <TimeSlot />
+                    <h6 className={day+"Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    <TimeSlot day={day}/>
                     <AddTimeSlot />
                 </div>
             </>
