@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import './App.css';
-import React, { useState, useEffect, useContext, Component } from "react";
+import React, { useState, useEffect, Component } from "react";
+import TimePicker from 'react-time-picker';
 import FullCalendar from '@fullcalendar/react';
 //import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -9,7 +10,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import styled from "@emotion/styled"
 import './calendar.css'
-import { AuthContext } from './AuthContext';
 
 
 export const StyleWrapper = styled.div`
@@ -17,6 +17,10 @@ export const StyleWrapper = styled.div`
     background: white;
   }
 `
+
+
+
+
 
 
 function FullCalendarApp() {
@@ -41,9 +45,6 @@ function FullCalendarApp() {
   const [endTime, setEndTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
-
-  //for authentication
-  const authContext = useContext(AuthContext);
   
   //toggle the modal on/off
   const handleClose = function(){setShowTime(false); setShowAppt(false); setShowEdit(false)};
@@ -221,7 +222,7 @@ function FullCalendarApp() {
 	}
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return authContext.isLoggedIn && (
+  return (
     <div className="App">
 		<Modal show={showTime} onHide={handleClose}>
 		<form>

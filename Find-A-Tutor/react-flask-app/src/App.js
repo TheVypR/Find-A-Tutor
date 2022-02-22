@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -7,33 +8,74 @@ import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
-
-import { AuthContext } from './components/AuthContext'
+import StudentProfile from "./components/StudentProfile"
+import { createContext } from 'react';
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  //set login and logout; this is where we will set the authentication from the backend
-  const login = () => {
-    setLoggedIn(true);
-  };
-
-  const logout = () => {
-    setLoggedIn(false);
-  };
-
   return (
-    <div className="App">
-      <AuthContext.Provider value={{isLoggedIn: loggedIn, login: login, logout: logout}}>
+      <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<SignIn />}></Route>
-            <Route path='/signup' element={<SignUp />}></Route>
-            <Route path='/myProfile' element={<TutorProfile />} />
-            <Route path='/calendar' element={<Calendar />} />
+            <Route exact path='/' element={<SignIn/>}></Route>
+            <Route exact path='/signup' element={<SignUp/>}></Route>
+            <Route exact path='/myProfile' element={
+              <PrivateRoute>
+                <TutorProfile />
+              </PrivateRoute>
+            } />
+            <Route exact path='/calendar' element={
+              <PrivateRoute>
+                <Calendar />
+              </PrivateRoute>
+            }/>
           </Routes>
         </BrowserRouter>
-      </AuthContext.Provider>
-    </div>
+      </div>
+  );
+}
+
+const authContext = createContext({
+  authenticated: false,
+});
+
+function useAuth() {
+  return useContext(authContext);
+}
+
+function ProvideAuth({ children }) {
+  const auth = useAuth()
+  return (
+    <authContext.Provider value={auth}>
+      {children}
+    </authContext.Provider>
   )
+}
+
+function useProvideAuth() {
+
+}
+
+function PrivateRoute({ children }) {
+  let auth = useAuth();
+
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    fetch("/email/", {
+      method: 'GET',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      })
+      .then(res => res.json())
+      .then(authTag => setUser(authTag))
+      .then(console.log(user.authTag))
+      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
+  }, []);
+
+  console.log(user.authTag);
+
+  return (
+    user.authTag != "USER NOT FOUND" ? children : <SignIn />
+  );
 }

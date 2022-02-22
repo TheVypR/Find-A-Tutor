@@ -1,5 +1,5 @@
 /*https://mui.com/getting-started/templates/*/
-import react, { useContext } from 'react';
+import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,47 +12,44 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from './AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
 
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const nav = useNavigate();
-
-  //authentication information
-  const authContext = useContext(AuthContext);
-
-  const loginHandler = function () {
-      authContext.login();
-      console.log(authContext);
-      nav('/calendar');
-  };
-
-  const logoutHandler = function () {
-      authContext.logout();
-      nav('/');
-  };
-
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const info = [data.get('email'), data.get('password')]
-    fetch("/login/", {
-      method: 'POST',
-      headers: {'Content-Type' : 'application/json'},
-      body:JSON.stringify(info)
-    }).then(resp => resp.json())
-    .then(result => {
-      if (result['email'] === info[0]) {
-        loginHandler()
-      }
-      else {
-        logoutHandler()
-      }
-    })
+	const info = [data.get('email'), data.get('password')]
+	fetch("/login/", {
+		method: 'POST',
+		headers: {
+		'Content-Type' : 'application/json'
+		},
+		body:JSON.stringify(info)
+	})
+  .then(navigate('/calendar'))
+    // eslint-disable-next-line no-console
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
+	console.log("SignedIn");
   };
   return (
     <ThemeProvider theme={theme}>
