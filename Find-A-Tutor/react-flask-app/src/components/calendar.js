@@ -4,7 +4,6 @@ import './App.css';
 import React, { useState, useEffect, Component } from "react";
 import TimePicker from 'react-time-picker';
 import FullCalendar from '@fullcalendar/react';
-//import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -346,28 +345,14 @@ function FullCalendarApp() {
 			</Modal.Footer>
 		</form>
       </Modal>	
-		
-      <div className="title">
+	<div class="title">
+      <div className="titleText">
         <p>
           Find-A-Tutor
         </p>
       </div>
-      <div className="filter">
-        <p>
-          Filter By:
-        </p>
-        <input type="checkbox" id="myApts" name="My Appointments">
-        </input>
-        <label htmlFor="myApts">My Appointments</label><br></br>
-        <input type="checkbox" id="availableApts" name="My Appointments">
-        </input>
-        <label htmlFor="availableApts">Available Appointments</label><br></br>
-      </div>
-      <div className="title">
-        <div className="titleText">
-          <p>Find-A-Tutor</p>
-          </div>
-      </div>
+	  </div>
+    
       <div className="filter">
         <div className="filterHeader">
           <h2>Filter By:</h2>
