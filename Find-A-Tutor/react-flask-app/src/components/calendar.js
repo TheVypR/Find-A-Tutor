@@ -211,9 +211,7 @@ function FullCalendarApp() {
 				day: origStartDate,
 				title: title,
 				tut_email: tutEmail
-			}]).then(
-				
-			)    
+			}])  
 		})
 		)
 	}
@@ -233,7 +231,7 @@ function FullCalendarApp() {
 					Start Time: 
 					<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}} required/>
 			</Modal.Body>
 			
 			<Modal.Footer>
