@@ -1,7 +1,7 @@
 import hashlib
 from datetime import datetime, timedelta
 from typing import Tuple 
-from flask import Flask, request, jsonifys
+from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
 from flask_wtf import Form
 from wtforms import BooleanField
