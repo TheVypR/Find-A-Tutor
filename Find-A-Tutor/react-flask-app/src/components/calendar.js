@@ -14,14 +14,9 @@ import './calendar.css'
 
 export const StyleWrapper = styled.div`
   .fc td {
-    background: white;
+    background: lightgray;
   }
 `
-
-
-
-
-
 
 function FullCalendarApp() {
   //calendar filling
@@ -51,6 +46,48 @@ function FullCalendarApp() {
   const handleShowTime = function (){ setShowTime(true)};
   const handleShowAppt = function (){ setShowAppt(true)};
   const handleShowEdit = function (){ setShowEdit(true)};
+
+
+  const [checked, setChecked] = React.useState(false);
+
+    const handleChange = () => {
+      setChecked(!checked);
+      if(!checked){
+        alert("Im now checked");
+        //filter appointments to users' appointments
+        filterMyAps();
+      }else{
+        alert("I am now not checked");
+        //query all
+        fetch("/getAppointments/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setAppts(result['appts']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
+      }
+      
+    }
+
+    const filterMyAps = () => {
+      fetch("/filter")
+      .then(res => res.json())
+      .then(
+        result => {
+          setAppts(result['myApts']);
+        },
+        (error) => {
+          console.log(error);
+      }
+      )
+    }
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -326,6 +363,54 @@ function FullCalendarApp() {
         </input>
         <label htmlFor="availableApts">Available Appointments</label><br></br>
       </div>
+      <div className="title">
+        <div className="titleText">
+          <p>Find-A-Tutor</p>
+          </div>
+      </div>
+      <div className="filter">
+        <div className="filterHeader">
+          <h2>Filter By:</h2>
+        </div>
+        <div>
+          <input
+            type = "checkbox"
+            id="myApts"
+            name="filterMyApts"
+            checked={checked}
+            onChange={handleChange}
+          />
+            My Appointments
+        </div>
+        {/* <div>
+          <input
+            type = "checkbox"
+            id="availableApts"
+            name="filterAvailApts"
+            checked={checked}
+            onChange={handleChange}
+          />
+          Available Appointments
+        </div> */}
+      </div>
+          
+      {/* <div class="filter">
+        <p>
+          Filter By:
+        </p>
+        <div>
+        <label for="myApts">
+          <input type="checkbox" id="myApts" name="My Appointments" value="yes"></input> My Appointments
+        </label>
+        <script>
+          const cb = document.querySelector('#myApts');
+          alert("hi");
+        </script>
+        </div>
+        <input type="checkbox" id="availableApts" name="My Appointments">
+        </input>
+        <label for="availableApts">Available Appointments</label><br></br>
+      </div> */}
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
