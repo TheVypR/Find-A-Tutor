@@ -1,13 +1,12 @@
 import hashlib
-from typing import Tuple
-
-from flask import Flask, request
-
+from datetime import datetime, timedelta
+from typing import Tuple 
+from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
-from flask_wtf import Form
+from flask_wtf import Form 
 from wtforms import BooleanField
-
 import profile, signup, appointment
+
 
 #Database stuff
 from flaskext.mysql import MySQL
@@ -15,6 +14,7 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
+email = ""
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -72,7 +72,7 @@ def login():
           email = "USER NOT FOUND"
         
     else:
-        print("wrong user")
+        print("Wrong user")
         email = "USER NOT FOUND"
     
     return email
@@ -92,19 +92,162 @@ def signUp():
 def myProfile():
   return profile.retrieve_profile("apelia18@gcc.edu")
 
-#add appointments on calendar screen
+#add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
-  #data = request.json()
-  return appointment.appointment(email)
+  data = request.get_json()[0]
+  
+  newStart = createDateFromTime(data['day'], data['start'])
+  newEnd = createDateFromTime(data['day'], data['end'])
+  
+  slots = splitTimes({'start':newStart, 'end':newEnd})
+  
+  #add the appointment and mark time as taken
+  return appointment.addAppointment(data, email, newStart, newEnd, slots)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     print("Times")
-    return appointment.getTimes()
+    return {'times':mergeTimes(appointment.getTimes(email)['times'])}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
     print("Appointments")
-    appts = appointment.getAppointments()
+    appts = appointment.getAppointments(email)
     return appts
+    
+@app.route('/deleteAppointment/', methods=['POST'])
+def deleteAppointment():
+    print("Deleted")
+    data = request.get_json()[0]
+    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    return appointment.removeAppointment(email, data, newDate, slots)
+
+@app.route('/editAppointment/', methods=['POST'])
+def editAppointment():
+    print("Edit")
+    data = request.get_json()[0]
+    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
+
+def dateParse(date):
+    #get the parts of the date
+    dateArray = date.split()
+    
+    #get the year
+    newDate = dateArray[3] + "-"
+    #get the month
+    if(dateArray[1] == "Jan"):
+        newDate += "01-"
+    elif(dateArray[1] == "Feb"):
+        newDate += "02-"
+    elif(dateArray[1] == "Mar"):
+        newDate += "03-"
+    elif(dateArray[1] == "Apr"):
+        newDate += "04-"
+    elif(dateArray[1] == "May"):
+        newDate += "05-"
+    elif(dateArray[1] == "Jun"):
+        newDate += "06-"
+    elif(dateArray[1] == "Jul"):
+        newDate += "07-"
+    elif(dateArray[1] == "Aug"):
+        newDate += "08-"
+    elif(dateArray[1] == "Sep"):
+        newDate += "09-"
+    elif(dateArray[1] == "Oct"):
+        newDate += "10-"
+    elif(dateArray[1] == "Nov"):
+        newDate += "11-"
+    elif(dateArray[1] == "Dec"):
+        newDate += "12-"
+    #get the day
+    newDate += dateArray[2] + "T"
+    #get the time
+    newDate += dateArray[4]
+    
+    print(newDate)
+    
+    return newDate
+    
+def createDateFromTime(day, time):
+    #split up the day
+    date = dateParse(day)
+    newDay = date.split("T")[0]
+    
+    #add the time
+    newDate = newDay + "T" + time + ":00"
+    
+    print(newDate)
+    
+    return newDate
+    
+#takes all the 15min times and makes them one block
+#input must be an array of datetimes formatted like this
+##### YYYY-MM-DDTHH:mm:SS #####
+def mergeTimes(timeArray):
+    #make sure to exclude the first and include the last block
+    first = True
+    left = len(timeArray)
+    #set the expected difference
+    minDif = timedelta(minutes=15)
+    #management vars
+    curTime = datetime.now()
+    timeBlockArray = []
+    curBlockStart = datetime.now()
+    curBlockEnd = datetime.now()
+
+    #go through every entry
+    for time in timeArray:
+        startTime = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+        endTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        if (endTime - curTime) != minDif:
+            #if this is the first don't add last one
+            if not first:
+                timeBlockArray.append({'tut_email':time['tut_email'],
+                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                'type': "time",
+                'title': "Available Time with " + time['tut_email']})
+            else:
+                first = False
+            #add time to the blockArray
+            curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        else:
+            #add 15 minutes to the block
+            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        if left == 1:
+            timeBlockArray.append({'tut_email':time['tut_email'],
+                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                'type': "time",
+                'title': "Available Time with " + time['tut_email']})
+        #hold the new time
+        curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        left-=1
+    
+    return timeBlockArray
+        
+def splitTimes(timeToSplit):
+    startSplit = datetime.strptime(timeToSplit['start'], '%Y-%m-%dT%H:%M:%S')
+    endSplit = datetime.strptime(timeToSplit['end'], '%Y-%m-%dT%H:%M:%S')
+    curEnd = startSplit + timedelta(minutes=15)
+    splitTimeArray = []
+
+    #go through the time until the end
+    while curEnd < endSplit:
+        print(curEnd)
+        splitTimeArray.append({
+        'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
+        'end':datetime.strftime(curEnd, '%Y-%m-%dT%H:%M:%S')})
+        startSplit = curEnd
+        curEnd = startSplit + timedelta(minutes=15)
+    #put last time in array
+    splitTimeArray.append({
+    'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
+    'end':datetime.strftime(endSplit, '%Y-%m-%dT%H:%M:%S')})
+    return splitTimeArray

@@ -19,7 +19,7 @@
    
 }
 .title{
-    background-image: url("C:\Users\beamnj18\OneDrive - Grove City College\Desktop\Find-A-Tutor\Find-A-Tutor\Find-A-Tutor\react-flask-app\src\images\gcc.jpg");
+    background-image: url("../images/gcc.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
