@@ -171,20 +171,52 @@ function FullCalendarApp() {
 
 	const cancelAppt = function () {
 		fetch("/deleteAppointment/", {
-		method: 'POST',
-		headers: {
-		'Content-Type' : 'application/json'
-		},
-		body:JSON.stringify([{
-			stu_email: stuEmail,
-			tut_email: tutEmail,
-			class_code: classCode,
-			start: origStartDate,
-			end: origEndDate
-		}])    
-	})
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{
+				stu_email: stuEmail,
+				tut_email: tutEmail,
+				class_code: classCode,
+				start: origStartDate,
+				end: origEndDate
+			}])    
+		})
 	}
-
+	
+	const editAppt = function () {
+		fetch("/deleteAppointment/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{
+				stu_email: stuEmail,
+				tut_email: tutEmail,
+				class_code: classCode,
+				start: origStartDate,
+				end: origEndDate
+			}])
+		}).then(
+			fetch("/addAppointment/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{
+				class_code: classCode,
+				start: startDate,
+				end: endDate,
+				day: origStartDate,
+				title: title,
+				tut_email: tutEmail
+			}]).then(
+				
+			)    
+		})
+		)
+	}
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return (
@@ -199,9 +231,9 @@ function FullCalendarApp() {
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
 			</Modal.Body>
 			
 			<Modal.Footer>
@@ -240,7 +272,7 @@ function FullCalendarApp() {
 		  <Button variant="danger" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary">
+          <Button variant="primary" onClick={editAppt}>
             Edit Appointment
           </Button>
         </Modal.Footer>

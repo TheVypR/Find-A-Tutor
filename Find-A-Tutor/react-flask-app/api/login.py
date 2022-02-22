@@ -123,7 +123,16 @@ def deleteAppointment():
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
     slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.removeAppointment(email, data, newDate, slots)
-    
+
+@app.route('/editAppointment/', methods=['POST'])
+def editAppointment():
+    print("Edit")
+    data = request.get_json()[0]
+    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
+
 def dateParse(date):
     #get the parts of the date
     dateArray = date.split()
