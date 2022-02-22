@@ -145,9 +145,17 @@ function FullCalendarApp() {
 		//set dates and times
 		setOrigStartDate(e.start.toString());
 		setOrigEndDate(e.end.toString());
-		setStartTime(formatDate(e.start));
+		//setStartTime(formatDate(e.start));
+		//setEndTime(formatDate(e.end));
 		
-		setEndTime(formatDate(e.end));
+		var options = {
+		  hour: '2-digit',
+		  minute: '2-digit',
+		  hour12: false
+		};
+		
+		setStartTime(e.start.toLocaleString('en-US', options))
+		setEndTime(e.end.toLocaleString('en-US', options))
 		
 		console.log(endTime)
 		console.log(startTime)
@@ -191,9 +199,9 @@ function FullCalendarApp() {
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" onChange={(e) => {setEndDate(e.target.value)}}required/>
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
 			</Modal.Body>
 			
 			<Modal.Footer>
