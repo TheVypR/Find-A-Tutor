@@ -30,18 +30,22 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-def addAppointment(data, email, start, end):
+def addAppointment(data, email, start, end, timeslots):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     print(data['tut_email'])
     cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title) values(\"" 
                     + email + "\", \"" 
-                    + "sickafuseaj18@gcc.edu" + "\", \"" 
+                    + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + start + "', '"
                     + end + "', \""
                     + "Appointment for " + data['class_code'] + " with " + "sickafuseaj18@gcc.edu" + "\")")
+    
+    for time in timeslots:
+        cursor.execute("update TutorTimes set taken = true where tut_email = \"" 
+                        + data['tut_email'] + "\" and start_date = \"" + time['start'] + "\"")
     
     conn.close()
 
@@ -53,14 +57,15 @@ def getTimes(email):
     conn.autocommit(True)
     cursor = conn.cursor()  
     
-    cursor.execute("select tut_email, start_date, end_date" + 
+    cursor.execute("select tut_email, start_date, end_date, taken" + 
                     " from TutorTimes" + 
                     " where tut_email in (select tut_email from TutorClasses where class_code in" + 
                     " (select class_code from StudentClasses where stu_email = \"" + email + "\"));")
     times = cursor.fetchall()
     
     for time in times:
-        availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time"})
+        if time[3] == 0:
+            availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time"})
     
     conn.close()
     
@@ -82,7 +87,7 @@ def getAppointments(email):
     
     return {'appts':availAppts}
     
-def removeAppointment(email, data, newDates):
+def removeAppointment(email, data, dates, slots):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
@@ -90,8 +95,12 @@ def removeAppointment(email, data, newDates):
     cursor.execute("delete from Appointment where stu_email=\"" 
                     + data['stu_email'] + "\" and tut_email=\"" 
                     + data['tut_email'] + "\" and start_date=\"" 
-                    + newDates['start'] + "\"")
-    print("Closing..")
+                    + dates['start'] + "\"")
+    
+    for slot in slots:
+        cursor.execute("update TutorTimes set taken = false where tut_email = \"" 
+                        + data['tut_email'] + "\" and start_date = \"" + slot['start'] + "\"")
+    
     conn.close()
     
     return "Success"

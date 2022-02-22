@@ -96,10 +96,14 @@ def myProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
+  
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
   
-  return appointment.addAppointment(data, email, newStart, newEnd)
+  slots = splitTimes({'start':newStart, 'end':newEnd})
+  
+  #add the appointment and mark time as taken
+  return appointment.addAppointment(data, email, newStart, newEnd, slots)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
@@ -116,9 +120,9 @@ def getAppointments():
 def deleteAppointment():
     print("Deleted")
     data = request.get_json()[0]
-    print(data)
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
-    return appointment.removeAppointment(email, data, newDate)
+    slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    return appointment.removeAppointment(email, data, newDate, slots)
     
 def dateParse(date):
     #get the parts of the date
@@ -219,4 +223,22 @@ def mergeTimes(timeArray):
     
     return timeBlockArray
         
-    
+def splitTimes(timeToSplit):
+    startSplit = datetime.strptime(timeToSplit['start'], '%Y-%m-%dT%H:%M:%S')
+    endSplit = datetime.strptime(timeToSplit['end'], '%Y-%m-%dT%H:%M:%S')
+    curEnd = startSplit + timedelta(minutes=15)
+    splitTimeArray = []
+
+    #go through the time until the end
+    while curEnd != endSplit:
+        print(curEnd)
+        splitTimeArray.append({
+        'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
+        'end':datetime.strftime(curEnd, '%Y-%m-%dT%H:%M:%S')})
+        startSplit = curEnd
+        curEnd = startSplit + timedelta(minutes=15)
+    #put last time in array
+    splitTimeArray.append({
+    'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
+    'end':datetime.strftime(endSplit, '%Y-%m-%dT%H:%M:%S')})
+    return splitTimeArray
