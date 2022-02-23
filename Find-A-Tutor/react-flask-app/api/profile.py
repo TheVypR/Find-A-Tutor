@@ -107,33 +107,31 @@ def retrieve_classes(tut_email):
     return classes
 
 # Submit time slots to db for given weekday
-def post_TimeSlots(submission, tut_email):
-    # conn = mysql.connect()
-    # conn.autocommit(True)
-    # cursor = conn.cursor()
+def post_TimeSlots(times, submission, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
 
-    #Submit timeslot for given weekday
-    startTime = submission['startTime']
-    endTime = submission['endTime']
-    #TODO: pass into split times
-    # cursor.execute(insert into TutorTimes values("tut_email", "startTime", "endTime")
+    #loop through times and run this query for each 15 minute slot
+    for time in times:
+        cursor.execute("insert into TutorTimes values(\"" + tut_email +
+                        "\",\""+ time['start'] +
+                        "\",\""+ time['end'] +
+                        "\",false)")
 
-    #conn.close()
+    conn.close()
 
-def edit_profile():
+def edit_profile(times, submission):
     print("Getting Profile")
     tut_email = "apelia18@gcc.edu"
     # conn = mysql.connect()
     # conn.autocommit(True)
     # cursor = conn.cursor()
-    
-    #get the new information
-    submission = request.get_json()
 
     # keys = list(submission.keys())
     # print(keys)
 
-    post_TimeSlots(submission, tut_email)
+    post_TimeSlots(times, submission, tut_email)
 
     # classes = submission[1]
     

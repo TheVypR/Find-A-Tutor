@@ -91,7 +91,12 @@ def signUp():
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
   if request.method == 'POST':
-    return profile.edit_profile()
+    submission = request.get_json()
+    startTime = dateParse(submission['startTime'])
+    endTime = dateParse(submission['endTime'])
+    timeSlot = {'start': startTime, 'end': endTime}
+    times = splitTimes(timeSlot)
+    return profile.edit_profile(times, submission)
   else:
     return profile.retrieve_profile(email)
 

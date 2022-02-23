@@ -137,8 +137,8 @@ class TimeSlot extends React.Component {
      */
     handleFetch() {
         let timeSlot = {
-                "startTime": this.state.startTime.format(dateTimeFormat).toString(),
-                "endTime": this.state.endTime.format(dateTimeFormat).toString(),
+                "startTime": this.state.startTime.toString(),
+                "endTime": this.state.endTime.toString(),
         };
 
         const response = fetch("/myProfile/", {
