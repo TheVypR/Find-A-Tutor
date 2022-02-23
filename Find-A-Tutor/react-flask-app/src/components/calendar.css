@@ -2,15 +2,27 @@
     padding-left: 200px;
     padding-right: 100px;
     background-color: gray;
+   
 }
-
-.title{
+.filterHeader{
+    text-decoration: underline;
+    font-style: italic;
+}
+.titleText{
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-style: oblique;
     font-weight: bold;
     font-size: 96px;
     color: crimson;
+    opacity: .4;
+    background-color: white;
    
+}
+.title{
+    background-image: url("../images/gcc.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 }
 
 .filter{

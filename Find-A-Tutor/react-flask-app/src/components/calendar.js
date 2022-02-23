@@ -1,27 +1,22 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import './App.css';
-import React, { useState, useEffect, Component } from "react";
 import TimePicker from 'react-time-picker';
+import React, { useState, useEffect, useContext, Component } from "react";
 import FullCalendar from '@fullcalendar/react';
-//import { formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import styled from "@emotion/styled"
 import './calendar.css'
+import { AuthContext } from './AuthContext';
 
 
 export const StyleWrapper = styled.div`
   .fc td {
-    background: white;
+    background: lightgray;
   }
 `
-
-
-
-
-
 
 function FullCalendarApp() {
   //calendar filling
@@ -31,6 +26,7 @@ function FullCalendarApp() {
   //handle modals
   const [showTime, setShowTime] = useState(false);
   const [showAppt, setShowAppt] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [chosen, setChosen] = useState({});
   
   //appointment creation
@@ -44,11 +40,57 @@ function FullCalendarApp() {
   const [endTime, setEndTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
+
+  //for authentication
+  const authContext = useContext(AuthContext);
   
   //toggle the modal on/off
-  const handleClose = function(){setShowTime(false); setShowAppt(false)};
+  const handleClose = function(){setShowTime(false); setShowAppt(false); setShowEdit(false)};
   const handleShowTime = function (){ setShowTime(true)};
   const handleShowAppt = function (){ setShowAppt(true)};
+  const handleShowEdit = function (){ setShowEdit(true)};
+
+
+  const [checked, setChecked] = React.useState(false);
+
+    const handleChange = () => {
+      setChecked(!checked);
+      if(!checked){
+        alert("Im now checked");
+        //filter appointments to users' appointments
+        filterMyAps();
+      }else{
+        alert("I am now not checked");
+        //query all
+        fetch("/getAppointments/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setAppts(result['appts']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
+      }
+      
+    }
+
+    const filterMyAps = () => {
+      fetch("/filter")
+      .then(res => res.json())
+      .then(
+        result => {
+          setAppts(result['myApts']);
+        },
+        (error) => {
+          console.log(error);
+      }
+      )
+    }
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -89,8 +131,8 @@ function FullCalendarApp() {
 		setEndDate(origEndDate);
 		const myEvent = {
 		  class_code: classCode,
-		  start: startDate,
-		  end: endDate,
+		  start: startTime,
+		  end: endTime,
 		  day: origStartDate,
 		  title: title,
 		  tut_email: tutEmail
@@ -138,15 +180,13 @@ function FullCalendarApp() {
 		return date.replace(pattern, replacement);
 	}
 	
-	const handleEventClick = function (e) {
+	const handleEventClick = function (e, editting) {
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
 		//set dates and times
 		setOrigStartDate(e.start.toString());
 		setOrigEndDate(e.end.toString());
-		//setStartTime(formatDate(e.start));
-		//setEndTime(formatDate(e.end));
 		
 		var options = {
 		  hour: '2-digit',
@@ -157,37 +197,72 @@ function FullCalendarApp() {
 		setStartTime(e.start.toLocaleString('en-US', options))
 		setEndTime(e.end.toLocaleString('en-US', options))
 		
+		
 		console.log(endTime)
 		console.log(startTime)
 		
 		//find which modal to load
-		if(e.extendedProps['type'] == "appt") {
-			setStuEmail(e.extendedProps.stu_email);
-			handleShowAppt();
-		} else if(e.extendedProps['type'] == "time") {
-			handleShowTime();
+		if(editting) {
+			handleShowEdit();
+		} else {
+			if(e.extendedProps['type'] == "appt") {
+				setStuEmail(e.extendedProps.stu_email);
+				handleShowAppt();
+			} else if(e.extendedProps['type'] == "time") {
+				handleShowTime();
+			} 
 		}
 	};
 
 	const cancelAppt = function () {
 		fetch("/deleteAppointment/", {
-		method: 'POST',
-		headers: {
-		'Content-Type' : 'application/json'
-		},
-		body:JSON.stringify([{
-			stu_email: stuEmail,
-			tut_email: tutEmail,
-			class_code: classCode,
-			start: origStartDate,
-			end: origEndDate
-		}])    
-	})
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{
+				stu_email: stuEmail,
+				tut_email: tutEmail,
+				class_code: classCode,
+				start: origStartDate,
+				end: origEndDate
+			}])    
+		})
+	} 
+	
+	const editAppt = function () {
+		fetch("/deleteAppointment/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{
+				stu_email: stuEmail,
+				tut_email: tutEmail,
+				class_code: classCode,
+				start: origStartDate,
+				end: origEndDate
+			}])
+		}).then(
+			fetch("/addAppointment/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{
+				class_code: classCode,
+				start: startDate,
+				end: endDate,
+				day: origStartDate,
+				title: title,
+				tut_email: tutEmail
+			}])  
+		})
+		)
 	}
-
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return (
+  return authContext.isLoggedIn && (
     <div className="App">
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
@@ -195,13 +270,13 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				Make Appointment With: {chosen['tut_email']}<br/>
+				Make Appointment With: {tutEmail}<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startTime} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startTime} onChange={(e) => {setStartTime(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endTime} onChange={(e) => {setEndDate(e.target.value)}}required/>
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endTime} onChange={(e) => {setEndTime(e.target.value)}} required/>
 			</Modal.Body>
 			
 			<Modal.Footer>
@@ -211,9 +286,7 @@ function FullCalendarApp() {
 			  <Button variant="primary"  type="submit"
 					  onClick= {
 						  () => {
-							  addEvent(stuEmail, tutEmail, 
-								  classCode, startDate, endDate, 
-								  title)
+							  addEvent()
 						  }
 					}>
 				Save Changes
@@ -240,28 +313,93 @@ function FullCalendarApp() {
 		  <Button variant="danger" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary">
+          <Button variant="primary" onClick={handleShowEdit}>
             Edit Appointment
           </Button>
         </Modal.Footer>
       </Modal>
 		
-      <div className="title">
+	  <Modal show={showEdit} onHide={handleClose}>
+		<form>
+			<Modal.Header closeButton>
+			  <Modal.Title>{title}</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				Edit Appointment With: {tutEmail}<br/>
+					Choose Class: 
+					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					Start Time: 
+					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					End Time: 
+					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endDate} onChange={(e) => {setEndDate(e.target.value)}} required/>
+			</Modal.Body>
+			
+			<Modal.Footer>
+			  <Button variant="secondary" onClick={handleClose}>
+				Close
+			  </Button>
+			  <Button variant="primary"  type="submit"
+					  onClick= {
+						  () => {
+							  editAppt()
+						  }
+					}>
+				Save Changes
+			  </Button>
+			</Modal.Footer>
+		</form>
+      </Modal>	
+	<div class="title">
+      <div className="titleText">
         <p>
           Find-A-Tutor
         </p>
       </div>
+	  </div>
+    
       <div className="filter">
+        <div className="filterHeader">
+          <h2>Filter By:</h2>
+        </div>
+        <div>
+          <input
+            type = "checkbox"
+            id="myApts"
+            name="filterMyApts"
+            checked={checked}
+            onChange={handleChange}
+          />
+            My Appointments
+        </div>
+        {/* <div>
+          <input
+            type = "checkbox"
+            id="availableApts"
+            name="filterAvailApts"
+            checked={checked}
+            onChange={handleChange}
+          />
+          Available Appointments
+        </div> */}
+      </div>
+          
+      {/* <div class="filter">
         <p>
           Filter By:
         </p>
-        <input type="checkbox" id="myApts" name="My Appointments">
-        </input>
-        <label htmlFor="myApts">My Appointments</label><br></br>
+        <div>
+        <label for="myApts">
+          <input type="checkbox" id="myApts" name="My Appointments" value="yes"></input> My Appointments
+        </label>
+        <script>
+          const cb = document.querySelector('#myApts');
+          alert("hi");
+        </script>
+        </div>
         <input type="checkbox" id="availableApts" name="My Appointments">
         </input>
-        <label htmlFor="availableApts">Available Appointments</label><br></br>
-      </div>
+        <label for="availableApts">Available Appointments</label><br></br>
+      </div> */}
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
@@ -303,7 +441,7 @@ function FullCalendarApp() {
           dateClick={(e) => alert(e.dateStr)}
 
           //ability to click appointments
-          eventClick={function (e) {handleEventClick(e.event)}}
+          eventClick={function (e) {handleEventClick(e.event, false)}}
         />
         </div>
       </StyleWrapper>

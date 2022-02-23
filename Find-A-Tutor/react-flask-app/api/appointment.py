@@ -104,3 +104,27 @@ def removeAppointment(email, data, dates, slots):
     conn.close()
     
     return "Success"
+    
+def editAppointment(email, data, dates, newDates, returnSlots, takeSlots):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    cursor.execute("update Appointment set start_date = " 
+                    + newDates['start'] + "\" and end_date = \"" 
+                    + newDates['end'] + "\" where stu_email=\"" 
+                    + data['stu_email'] + "\" and tut_email=\"" 
+                    + data['tut_email'] + "\" and start_date=\"" 
+                    + dates['start'] + "\"")
+                    
+    for slot in returnSlots:
+        cursor.execute("update TutorTimes set taken = false where tut_email = \"" 
+                        + data['tut_email'] + "\" and start_date = \"" + slot['start'] + "\"")
+    
+    for slot in takeSlots:
+        cursor.execute("update TutorTimes set taken = true where tut_email = \"" 
+                        + data['tut_email'] + "\" and start_date = \"" + slot['start'] + "\"")
+    
+    conn.close()
+    
+    return "Done"
