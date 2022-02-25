@@ -349,7 +349,7 @@ function FullCalendarApp() {
 			</Modal.Footer>
 		</form>
       </Modal>	
-	<div class="title">
+	<div className="title">
       <div className="titleText">
         <p>
           Find-A-Tutor
