@@ -38,6 +38,7 @@ def login():
   cursor = conn.cursor()
   #get the login provided
   info = request.get_json()
+  global email
   email = info[0]
   pw = info[1]
   print(email)
@@ -110,6 +111,7 @@ def addAppointment():
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     print("Times")
+    print(email)
     return {'times':mergeTimes(appointment.getTimes(email)['times'])}
     
 @app.route('/getAppointments/', methods=['GET'])
