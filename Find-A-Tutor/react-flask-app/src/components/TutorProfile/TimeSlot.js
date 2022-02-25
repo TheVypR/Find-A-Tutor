@@ -21,20 +21,26 @@ class SubmitRemoveTime extends React.Component {
         super(props);
 
         this.onSubmitClick = this.onSubmitClick.bind(this);
+        this.removeTimeSlot = this.removeTimeSlot.bind(this);
     }
 
     onSubmitClick() {
         this.props.submitTimes();
     }
 
+    removeTimeSlot(index, day) {
+        this.props.removeTimeSlot(index, day);
+    }
+
     render() {
+        let index = this.props.index;
         return (
             <>
                 <Button className="submitTime btn-success" onClick={this.onSubmitClick}>
                     Submit
                 </Button>
 
-                <Button className="removeTime" variant="danger" onClick={this.props.removeSlot}>
+                <Button className="removeTime" variant="danger" onClick={() => {this.removeTimeSlot(index, this.props.day)}}>
                     <BsFillTrashFill size="14" />
                 </Button> <br />
             </>
@@ -93,7 +99,6 @@ class TimeSlot extends React.Component {
         this.timeSlotChange = this.timeSlotChange.bind(this);
         this.submitTimes = this.submitTimes.bind(this);
         this.handleFetch = this.handleFetch.bind(this);
-        this.removeSlot = this.removeSlot.bind(this);
     }//constructor
 
     /**
@@ -150,16 +155,11 @@ class TimeSlot extends React.Component {
         })//fetch
     }
 
-    /**
-     * Removes the given timeslot and associated data from db.
-     */
-    removeSlot() {
-        
-    }
-
     render() {
         //var timePickers = this.state.showTimePickers ? <TimePickers timeSlotChange={this.timeSlotChange} /> : <p> {this.state.startTime} to {this.state.endTime} </p>
         const day = this.props.day;
+        const index = this.props.index;
+
         return (
             <>
                 <Times
@@ -168,7 +168,11 @@ class TimeSlot extends React.Component {
                     startTime={this.state.startTime}
                     endTime={this.state.endTime}
                 />
-                <SubmitRemoveTime submitTimes={this.submitTimes} removeSlot={this.removeSlot} />
+                <SubmitRemoveTime submitTimes={this.submitTimes}
+                                 removeTimeSlot={this.props.removeTimeSlot}
+                                 index={index}
+                                 day={day}
+                />
                 <hr />
             </>
         );//return

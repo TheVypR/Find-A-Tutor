@@ -37,6 +37,7 @@ class Weekday extends React.Component {
 
         this.renderTimeSlot = this.renderTimeSlot.bind(this);
         this.handleAddTimeSlot = this.handleAddTimeSlot.bind(this);
+        this.removeTimeSlot = this.removeTimeSlot.bind(this);
     }
 
     handleAddTimeSlot=(e)=>{
@@ -50,9 +51,19 @@ class Weekday extends React.Component {
 
     renderTimeSlot(day) {
         return this.state.children.map(item => {
-            return <TimeSlot day={day} />
+            return <TimeSlot day={day} 
+                            index={this.state.children.indexOf(item)} 
+                            removeTimeSlot={this.removeTimeSlot}
+                    />
         })
     }
+
+    removeTimeSlot(index,day) {
+        this.state.children.splice(index, 1);
+        console.log("Removed: " + index + " " + day);
+        this.forceUpdate();
+    }
+
 
     render() {
         const day = this.props.day;
