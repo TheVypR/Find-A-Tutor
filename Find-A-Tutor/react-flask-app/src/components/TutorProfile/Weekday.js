@@ -32,36 +32,61 @@ class Weekday extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            children: [<TimeSlot day={this.props.day} />]
+            children: []
         }
 
         this.renderTimeSlot = this.renderTimeSlot.bind(this);
         this.handleAddTimeSlot = this.handleAddTimeSlot.bind(this);
         this.removeTimeSlot = this.removeTimeSlot.bind(this);
+        this.fetchRemoveTimeSlot = this.fetchRemoveTimeSlot.bind(this);
     }
 
-    handleAddTimeSlot=(e)=>{
+    handleAddTimeSlot = (e) => {
         e.preventDefault();
-            //Here i form the object
-            const slot = {
+        //Here i form the object
+        const slot = {
             //key:value
-            }
-       this.setState({children: [...this.state.children, slot]})
+        }
+        this.setState({ children: [...this.state.children, slot] })
+
     }
 
     renderTimeSlot(day) {
         return this.state.children.map(item => {
-            return <TimeSlot day={day} 
-                            index={this.state.children.indexOf(item)} 
-                            removeTimeSlot={this.removeTimeSlot}
-                    />
+            return <TimeSlot day={day}
+                index={this.state.children.indexOf(item)}
+                removeTimeSlot={this.removeTimeSlot}
+            />
         })
     }
 
-    removeTimeSlot(index,day) {
-        this.state.children.splice(index, 1);
-        console.log("Removed: " + index + " " + day);
+    removeTimeSlot(index, day) {
+        //remove timeslot from DOM
+        let filteredChildren = this.state.children.filter(child => child !== this.state.children[index]);
+        this.setState({children: filteredChildren});
         this.forceUpdate();
+        console.log("index: " + index + "day: " + day);
+
+        //remove timeslot from db
+        //this.fetchRemoveTimeSlot(index);
+    }
+
+    fetchRemoveTimeSlot(index) {
+        let timeSlot = {
+            "startTime": startTime.toString(),
+            "endTime": endTime.toString(),
+        };
+
+        console.log(timeSlot);
+
+        let submission = { 'remove': timeSlot }
+        const response = fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(timeSlot)
+        })//fetch
     }
 
 

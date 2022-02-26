@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from typing import Tuple 
 from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
-from flask_wtf import Form 
+from flask_wtf import Form
+from pymysql import NULL 
 from wtforms import BooleanField
 import profile, signup, appointment
 
@@ -87,11 +88,22 @@ def signUp():
 def myProfile():
   if request.method == 'POST':
     submission = request.get_json()
-    startTime = dateParse(submission['startTime'])
-    endTime = dateParse(submission['endTime'])
-    timeSlot = {'start': startTime, 'end': endTime}
-    times = splitTimes(timeSlot)
-    return profile.edit_profile(times, submission)
+    #Check to see if this is a removal
+    if 'remove' in submission.keys():
+        times = submission['removed']
+        # submittedTime = submission['remove']
+        # startTime = dateParse(submittedTime['startTime'])
+        # endTime = dateParse(submittedTime['endTime'])
+        # timeSlot = {'start': startTime, 'end': endTime}
+        # times = splitTimes(timeSlot)
+        return profile.remove_timeSlot(times)
+    else :
+        # else parse timeslot and divide it into 15 min chunks for storage
+        startTime = dateParse(submission['startTime'])
+        endTime = dateParse(submission['endTime'])
+        timeSlot = {'start': startTime, 'end': endTime}
+        times = splitTimes(timeSlot)
+        return profile.edit_profile(times, submission)
   else:
     return profile.retrieve_profile(email)
 

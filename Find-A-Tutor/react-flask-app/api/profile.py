@@ -121,8 +121,11 @@ def post_TimeSlots(times, submission, tut_email):
 
     conn.close()
 
+def remove_timeSlots(submission):
+    #delete from TutorTimes where tut_email='apelia18@gcc.edu' and start_date='2022-02-23T01:00:00' and end_date='2022-02-23T01:15:00';
+    print("removed: " + submission)
+
 def edit_profile(times, submission):
-    print("Getting Profile")
     tut_email = "apelia18@gcc.edu"
     # conn = mysql.connect()
     # conn.autocommit(True)
