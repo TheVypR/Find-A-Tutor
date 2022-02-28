@@ -91,10 +91,9 @@ def myProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  
+  print(data['day'])
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
-  
   slots = splitTimes({'start':newStart, 'end':newEnd})
   
   #add the appointment and mark time as taken
@@ -102,19 +101,15 @@ def addAppointment():
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
-    print("Times")
-    print(email)
     return {'times':mergeTimes(appointment.getTimes(email)['times'])}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
-    print("Appointments")
     appts = appointment.getAppointments(email)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
-    print("Deleted")
     data = request.get_json()[0]
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
     slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
@@ -171,13 +166,16 @@ def dateParse(date):
     
 def createDateFromTime(day, time):
     #split up the day
-    date = dateParse(day)
+    if len(day) == 19 and 'T' in day:
+        date = day
+    else:
+        date = dateParse(day)
     newDay = date.split("T")[0]
     
     #add the time
     newDate = newDay + "T" + time + ":00"
     
-    print(newDate)
+    print(newDate + " 179")
     
     return newDate
     
