@@ -40,6 +40,8 @@ function FullCalendarApp() {
   const [endTime, setEndTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
+  const [blockStart, setBlockStart] = useState("");
+  const [blockEnd, setBlockEnd] = useState("");
 
   //for authentication
   const authContext = useContext(AuthContext);
@@ -117,7 +119,7 @@ function FullCalendarApp() {
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
+                // exceptions from actual bugs in components
                 (error) => {
                     console.log(error);
                 }
@@ -135,7 +137,9 @@ function FullCalendarApp() {
 		  end: endTime,
 		  day: origStartDate,
 		  title: title,
-		  tut_email: tutEmail
+		  tut_email: tutEmail,
+		  block_start: origStartDate,
+		  block_end: origEndDate
 		};
 		console.log(myEvent)
 		fetch("/addAppointment/", {
@@ -196,13 +200,16 @@ function FullCalendarApp() {
 		
 		setStartTime(e.start.toLocaleString('en-US', options))
 		setEndTime(e.end.toLocaleString('en-US', options))
-		
+		setBlockStart(e.extendedProps.block_s.split('T')[1])
+		setBlockEnd(e.extendedProps.block_e.split('T')[1])
 		
 		console.log(endTime)
 		console.log(startTime)
 		
 		//find which modal to load
 		if(editting) {
+			console.log(blockStart)
+			console.log(blockEnd)
 			handleShowEdit();
 		} else {
 			if(e.extendedProps['type'] == "appt") {
@@ -327,11 +334,11 @@ function FullCalendarApp() {
 			<Modal.Body>
 				Edit Appointment With: {tutEmail}<br/>
 					Choose Class: 
-					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={blockStart} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endDate} onChange={(e) => {setEndDate(e.target.value)}} required/>
+					<input type="time" id="e_date" step="900" min={blockStart} max={blockEnd} value={blockEnd} onChange={(e) => {setEndDate(e.target.value)}} required/>
 			</Modal.Body>
 			
 			<Modal.Footer>

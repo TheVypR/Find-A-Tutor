@@ -94,11 +94,12 @@ def addAppointment():
   
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
-  
+  block_start = dateParse(data['block_start'])
+  block_end = dateParse(data['block_end'])
   slots = splitTimes({'start':newStart, 'end':newEnd})
   
   #add the appointment and mark time as taken
-  return appointment.addAppointment(data, email, newStart, newEnd, slots)
+  return appointment.addAppointment(data, email, newStart, newEnd, slots, block_start, block_end)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():

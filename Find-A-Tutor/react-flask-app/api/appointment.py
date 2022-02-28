@@ -30,18 +30,20 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-def addAppointment(data, email, start, end, timeslots):
+def addAppointment(data, email, start, end, timeslots, block_start, block_end):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     print(data['tut_email'])
-    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title) values(\"" 
+    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(\"" 
                     + email + "\", \"" 
                     + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + start + "', '"
                     + end + "', \""
-                    + "Appointment for " + data['class_code'] + " with " + "sickafuseaj18@gcc.edu" + "\")")
+                    + "Appointment for " + data['class_code'] + " with " + "sickafuseaj18@gcc.edu" + "\",\"" 
+                    + block_start + "\", \"" 
+                    + block_end + "\")")
     
     for time in timeslots:
         cursor.execute("update TutorTimes set taken = true where tut_email = \"" 
@@ -81,7 +83,16 @@ def getAppointments(email):
     appts = cursor.fetchall()
     
     for appt in appts:
-        availAppts.append({'stu_email':appt[1], 'tut_email':appt[2], 'class_code':appt[3], 'start':appt[4], 'end':appt[5], 'title':appt[6], 'type':"appt"})
+        availAppts.append({
+            'stu_email':appt[1], 
+            'tut_email':appt[2], 
+            'class_code':appt[3], 
+            'start':appt[4], 
+            'end':appt[5], 
+            'title':appt[6], 
+            'block_s':appt[7],
+            'block_e':appt[8], 
+            'type':"appt"})
     
     conn.close()
     
