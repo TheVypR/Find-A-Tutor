@@ -153,67 +153,30 @@ function FullCalendarApp() {
 		
 	}
 	
-	function formatDate(date) {
-		var d = new Date(date);
-		var hh = d.getHours();
-		var m = d.getMinutes();
-		var s = d.getSeconds();
-		var dd = "AM";
-		var h = hh;
-		if (h >= 12) {
-			h = hh - 12;
-			dd = "PM";
-		}
-		if (h == 0) {
-			h = 12;
-		}
-		m = m < 10 ? "0" + m : m;
-
-		s = s < 10 ? "0" + s : s;
-
-		/* if you want 2 digit hours:
-		h = h<10?"0"+h:h; */
-
-		var pattern = new RegExp("0?" + hh + ":" + m + ":" + s);
-
-		var replacement = h + ":" + m;
-		/* if you want to add seconds
-		replacement += ":"+s;  */
-		replacement += " " + dd;
-
-		return date.replace(pattern, replacement);
-	}
-	
 	const handleEventClick = function (e, editting) {
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
-		//set dates and times
-		setOrigStartDate(e.start.toString());
-		setOrigEndDate(e.end.toString());
-		
 		var options = {
 		  hour: '2-digit',
 		  minute: '2-digit',
 		  hour12: false
 		};
 		
+		//set dates and times
+		setOrigStartDate(e.start.toString());
+		setOrigEndDate(e.end.toString());
 		setStartTime(e.start.toLocaleString('en-US', options))
 		setEndTime(e.end.toLocaleString('en-US', options))
-		setBlockStart(e.extendedProps.block_s.split('T')[1])
-		setBlockEnd(e.extendedProps.block_e.split('T')[1])
-		
-		console.log(endTime)
-		console.log(startTime)
 		
 		//find which modal to load
 		if(editting) {
-			console.log(blockStart)
-			console.log(blockEnd)
 			handleShowEdit();
 		} else {
 			if(e.extendedProps['type'] == "appt") {
 				setStuEmail(e.extendedProps.stu_email);
+				setBlockStart(e.extendedProps.block_s)
+				setBlockEnd(e.extendedProps.block_e)	
 				handleShowAppt();
 			} else if(e.extendedProps['type'] == "time") {
 				handleShowTime();
@@ -238,6 +201,16 @@ function FullCalendarApp() {
 	} 
 	
 	const editAppt = function () {
+		const myEvent = {
+		  class_code: classCode,
+		  start: startDate,
+		  end: endDate,
+		  day: origStartDate,
+		  title: title,
+		  tut_email: tutEmail,
+		  block_start: blockStart,
+		  block_end: blockEnd
+		};
 		fetch("/deleteAppointment/", {
 			method: 'POST',
 			headers: {
@@ -256,14 +229,7 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{
-				class_code: classCode,
-				start: startDate,
-				end: endDate,
-				day: origStartDate,
-				title: title,
-				tut_email: tutEmail
-			}])  
+			body:JSON.stringify([myEvent])  
 		})
 		)
 	}
@@ -336,9 +302,9 @@ function FullCalendarApp() {
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={blockStart} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={blockStart} max={blockEnd} value={blockEnd} onChange={(e) => {setEndDate(e.target.value)}} required/>
+					<input type="time" id="e_date" step="900" min={blockStart} max={blockEnd} value={endDate} onChange={(e) => {setEndDate(e.target.value)}} required/>
 			</Modal.Body>
 			
 			<Modal.Footer>

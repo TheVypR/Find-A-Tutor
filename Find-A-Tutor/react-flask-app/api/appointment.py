@@ -30,7 +30,7 @@ mysql.init_app(app)
 #class ProfileForm(FlaskForm):
     #loginAs = BooleanField("Login as Tutor: ", validators=[Optional()])
 
-def addAppointment(data, email, start, end, timeslots, block_start, block_end):
+def addAppointment(data, email, start, end, timeslots):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
@@ -42,8 +42,8 @@ def addAppointment(data, email, start, end, timeslots, block_start, block_end):
                     + start + "', '"
                     + end + "', \""
                     + "Appointment for " + data['class_code'] + " with " + "sickafuseaj18@gcc.edu" + "\",\"" 
-                    + block_start + "\", \"" 
-                    + block_end + "\")")
+                    + data['block_start'] + "\", \"" 
+                    + data['block_end'] + "\")")
     
     for time in timeslots:
         cursor.execute("update TutorTimes set taken = true where tut_email = \"" 
