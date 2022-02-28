@@ -35,7 +35,6 @@ export default function StudentHistory() {
                                         <TableCell>Previous Tutors</TableCell>
                                         <TableCell>Class</TableCell>
                                         <TableCell>Date Tutored</TableCell>
-                                        <TableCell>Rate</TableCell>
                                         <TableCell>Leave A Review</TableCell>
                                         <TableCell>Report Tutor</TableCell>
                                     </TableRow>

@@ -8,6 +8,7 @@ import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 import TutoringHistory from './components/TutoringHistory';
+import StudentHistory from './components/StudentHistory';
 
 import { AuthContext } from './components/AuthContext'
 
