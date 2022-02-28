@@ -16,7 +16,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const theme = createTheme();
-export default function TutoringHistory() {
+export default function StudentHistory() {
     const [rating, setRating] = useState(2);
 
     return (
@@ -27,7 +27,7 @@ export default function TutoringHistory() {
                     <Grid container spacing={3}>
                         <React.Fragment>
                             <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                Tutoring History
+                                Student History
                             </Typography>
                             <Table size="small">
                                 <TableHead>
@@ -42,10 +42,9 @@ export default function TutoringHistory() {
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell>Aaron Sickafuse</TableCell>
+                                        <TableCell>Some idiot</TableCell>
                                         <TableCell>COMP447</TableCell>
                                         <TableCell>2/27/2021</TableCell>
-                                        <TableCell>$14,000/hr</TableCell>
                                         <TableCell>
                                             <Rating name="simple controlled" value={rating} />
                                         </TableCell>
@@ -61,7 +60,7 @@ export default function TutoringHistory() {
                     </Grid>
                 </Container>
                 <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}}>
-                    <Link to="/StudentHistory">Go to Student History</Link>
+                <Link to="/TutoringHistory">Go to Student History</Link>
                 </Button>
             </Box>
         </ThemeProvider>

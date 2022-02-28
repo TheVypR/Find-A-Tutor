@@ -33,6 +33,7 @@ export default function App() {
             <Route path='/myProfile' element={<TutorProfile />} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
+            <Route path='/StudentHistory' element={<StudentHistory />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
