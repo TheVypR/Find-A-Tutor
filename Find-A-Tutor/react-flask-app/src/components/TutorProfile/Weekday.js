@@ -35,9 +35,9 @@ class Weekday extends React.Component {
         super(props);
         this.state = {
             children: [],
-            startTime: [],        //startTime moment of a given timeslot
-            endTime: [],          //endTime moment of a given timeslot
-            showTimePickers: [], //boolean show if the TimePickers of a given timeslot should be rendered
+            startTime: [],          //startTime moment of a given timeslot
+            endTime: [],            //endTime moment of a given timeslot
+            showTimePickers: [],    //boolean show if the TimePickers of a given timeslot should be rendered
         }
 
         this.renderTimeSlot = this.renderTimeSlot.bind(this);
@@ -106,8 +106,18 @@ class Weekday extends React.Component {
         //remove timeslot from DOM
         let filteredChildren = this.state.children.filter(child => child !== this.state.children[index]);
         this.setState({ children: filteredChildren });
-        this.forceUpdate();
         console.log("index: " + index + "day: " + day);
+        
+        //remove related state variables
+        //startTime
+        let filteredStart = this.state.startTime.filter(child => child!== this.state.startTime[index]);
+        this.setState({startTime: filteredStart});
+        //endTime
+        let filteredEnd = this.state.endTime.filter(child => child!== this.state.endTime[index]);
+        this.setState({endTime: filteredEnd});
+        //showTimePickers
+        let filteredPickers = this.state.showTimePickers.filter(child => child!== this.state.showTimePickers[index]);
+        this.setState({showTimePickers: filteredPickers});
 
         //remove timeslot from db
         this.fetchRemoveTimeSlot(index);
