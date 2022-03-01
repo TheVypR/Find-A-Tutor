@@ -18,8 +18,23 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
+//making styles and themes
 const theme = createTheme();
+
 export default function CurrentAndBan() {
+    const [allTutors, setAllTutors] = useState([]);
+
+    //Get current tutors for the CurrentAndBan screen
+    useEffect(() => { fetch("/CurrentTutors/")
+        .then(res => res.json())
+        .then(result => {
+            setAllTutors(result);
+        },
+        (error) => {
+            console.log(error);
+        })
+    }, []);
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -49,10 +64,12 @@ export default function CurrentAndBan() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        <TableCell>Aaron Sickafuse</TableCell>
-                                        <TableCell>3/1/2022</TableCell>
-                                    </TableRow>
+                                    {allTutors.map((tutor) => (
+                                        <TableRow key={tutor[0]}>
+                                            <TableCell>{tutor[1]}</TableCell>
+                                            <TableCell>{tutor[2]}</TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </Paper>

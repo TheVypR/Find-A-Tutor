@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
 from flask_wtf import Form 
 from wtforms import BooleanField
-import profile, signup, appointment
+import profile, signup, appointment, adminRoutes
 
 
 #Database stuff
@@ -72,10 +72,9 @@ def login():
 
   return jsonify({'email': email})
 
-@app.route('/email/', methods=['GET'])
-def getAuth():
-  print("Email!!!: " + email)
-  return {'authTag':email}
+@app.route('/CurrentTutors/', methods=['GET'])
+def currentTutors():
+    return adminRoutes.CurrentTutors()
 
 #signUp page
 @app.route('/signup/', methods=['POST'])
