@@ -52,6 +52,7 @@ class Weekday extends React.Component {
         this.setStartTime = this.setStartTime.bind(this);
         this.setEndTime = this.setEndTime.bind(this);
         this.setShowTimePickers = this.setShowTimePickers.bind(this);
+        //this.getISO = this.getISO.bind(this);
     }
 
     /**
@@ -172,16 +173,40 @@ class Weekday extends React.Component {
      *  and call the fetch function
      * 
      */
-    submitTimes(index) {
+    submitTimes(index, day) {
         if (this.state.startTime[index] == null || this.state.endTime[index] == null) {
             console.log("Please enter all times");
         } else {
             this.setShowTimePickers(false, index);
 
-            this.submitFetch(index);
+            this.submitFetch(index, day);
 
         }//else
     }//submitTimes
+
+    /**
+     * returns numeric value of a weekday
+     * 1-monday 7-sunday
+     * 
+     * @param {} day: string weekday
+     */
+    // getISO(day) {
+    //     if (day == 'monday') {
+    //         return 1
+    //     } else if (day == 'tuesday') {
+    //         return 2
+    //     } else if (day == 'wednesday') {
+    //         return 3
+    //     } else if (day == 'thursday') {
+    //         return 4
+    //     } else if (day == 'friday') {
+    //         return 5
+    //     } else if (day == 'saturday') {
+    //         return 6
+    //     } else {
+    //         return 7
+    //     }
+    // }
 
 
     /**
@@ -189,10 +214,15 @@ class Weekday extends React.Component {
      * 
      * @param - prop of the given day of the timeslot
      */
-    submitFetch(index) {
+    submitFetch(index, day) {
+        console.log(day);
+        let startTime = this.state.startTime[index];
+        startTime = startTime.isoWeekday(day);
+        let endTime = this.state.endTime[index];
+        endTime = endTime.isoWeekday(day);
         let timeSlot = {
-            "startTime": this.state.startTime[index].toString(),
-            "endTime": this.state.endTime[index].toString(),
+            "startTime": startTime.toString(),
+            "endTime": endTime.toString(),
         };
 
         const response = fetch("/myProfile/", {

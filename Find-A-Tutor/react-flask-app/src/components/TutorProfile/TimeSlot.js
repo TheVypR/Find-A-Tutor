@@ -107,7 +107,7 @@ class TimeSlot extends React.Component {
                     startTime={startTime}
                     endTime={endTime}
                 />
-                <SubmitRemoveTime submitTimes={() => {this.props.submitTimes(index)}}
+                <SubmitRemoveTime submitTimes={() => {this.props.submitTimes(index, day)}}
                                  removeTimeSlot={this.props.removeTimeSlot}
                                  index={index}
                                  day={day}
