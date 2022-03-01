@@ -397,7 +397,7 @@ function FullCalendarApp() {
               text: 'To Profile',
 
               click: function() {
-                window.location.href = '/myProfile'
+                window.location.href = ':3000/myProfile'
               }
             },
 

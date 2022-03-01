@@ -72,9 +72,20 @@ def login():
 
   return jsonify({'email': email})
 
+# provide a list of current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
     return adminRoutes.CurrentTutors()
+
+# reported tutors list
+@app.route('/ReportedTutors/', methods=['GET'])
+def reportedTutors():
+    return adminRoutes.ReportedTutors()
+
+# reported students list
+@app.route('/ReportedStudents/', methods=['GET'])
+def reportedStudents():
+    return adminRoutes.ReportedStudents()
 
 #signUp page
 @app.route('/signup/', methods=['POST'])

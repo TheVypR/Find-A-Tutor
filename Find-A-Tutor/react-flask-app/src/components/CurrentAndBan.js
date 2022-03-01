@@ -49,7 +49,7 @@ export default function CurrentAndBan() {
                 </Toolbar>
             </AppBar>
             <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
-            <Container maxWidth="lg" sx={{mt: 8, mb: 8}}>
+            <Container maxWidth="xl" sx={{mt: 8, mb: 8}}>
                 <Grid container spacing={5}>
                     <Grid item xs={6}>
                         <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
@@ -59,15 +59,15 @@ export default function CurrentAndBan() {
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Tutor Name</TableCell>
-                                        <TableCell>Year</TableCell>
+                                        <TableCell><strong>Tutor Name</strong></TableCell>
+                                        <TableCell><strong>Contact Info</strong></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {allTutors.map((tutor) => (
                                         <TableRow key={tutor[0]}>
                                             <TableCell>{tutor[1]}</TableCell>
-                                            <TableCell>{tutor[2]}</TableCell>
+                                            <TableCell>{tutor[0]}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -82,9 +82,9 @@ export default function CurrentAndBan() {
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Date Banned</TableCell>
-                                        <TableCell>Role</TableCell>
+                                        <TableCell><strong>Name</strong></TableCell>
+                                        <TableCell><strong>Date Banned</strong></TableCell>
+                                        <TableCell><strong>Role</strong></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

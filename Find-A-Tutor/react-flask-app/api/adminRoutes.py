@@ -20,14 +20,26 @@ else:
 mysql.init_app(app)
 
 # functions to get data from database
-def Reports():
+def ReportedTutors():
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute("select * from Tutor")
+    cursor.execute("select * from ReportedTutors")
+    allTutors = cursor.fetchall()
+    conn.close()
+    return jsonify(allTutors)
+
+def ReportedStudents():
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute("select * from ReportedStudents")
+    allTutors = cursor.fetchall()
+    conn.close()
+    return jsonify(allTutors)
 
 def CurrentTutors():
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute("select * from Tutor")
     allTutors = cursor.fetchall()
+    conn.close()
     return jsonify(allTutors)
