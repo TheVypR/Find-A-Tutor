@@ -19,7 +19,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 
 const theme = createTheme();
-export default function Reports() {
+export default function CurrentAndBan() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -39,19 +39,19 @@ export default function Reports() {
                     <Grid item xs={6}>
                         <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                             <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                Reported Tutors
+                                Current Tutors
                             </Typography>
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Tutor Name</TableCell>
-                                        <TableCell>Date Reported</TableCell>
+                                        <TableCell>Year</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell>Isaac Apel</TableCell>
-                                        <TableCell>2/28/2022</TableCell>
+                                        <TableCell>Aaron Sickafuse</TableCell>
+                                        <TableCell>3/1/2022</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -60,27 +60,31 @@ export default function Reports() {
                     <Grid item xs={6}>
                         <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                             <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                Reported Students
+                                Banned Students and Tutors
                             </Typography>
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Tutor Name</TableCell>
-                                        <TableCell>Date Reported</TableCell>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Date Banned</TableCell>
+                                        <TableCell>Role</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
                                         <TableCell>Isaac Apel</TableCell>
                                         <TableCell>2/28/2022</TableCell>
+                                        <TableCell>Tutor</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>Isaac Apel</TableCell>
                                         <TableCell>2/28/2022</TableCell>
+                                        <TableCell>Student</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>Isaac Apel</TableCell>
                                         <TableCell>2/28/2022</TableCell>
+                                        <TableCell>Tutor</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
