@@ -6,7 +6,7 @@ import { BsFillTrashFill } from "react-icons/bs";
 import TimePickers from './TimePickers'
 
 const format = 'h:mm a';    //Format for TimePicker
-const dateTimeFormat = 'YYYY-MM-DD HH:mm:SS';
+//const dateTimeFormat = 'YYYY-MM-DD HH:mm:SS';
 
 /** SubmitRemoveTime Component
  * 

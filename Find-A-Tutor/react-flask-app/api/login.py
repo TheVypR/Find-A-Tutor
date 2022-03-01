@@ -90,13 +90,12 @@ def myProfile():
     submission = request.get_json()
     #Check to see if this is a removal
     if 'remove' in submission.keys():
-        times = submission['removed']
-        # submittedTime = submission['remove']
-        # startTime = dateParse(submittedTime['startTime'])
-        # endTime = dateParse(submittedTime['endTime'])
-        # timeSlot = {'start': startTime, 'end': endTime}
-        # times = splitTimes(timeSlot)
-        return profile.remove_timeSlot(times)
+        submittedTime = submission['remove']
+        startTime = dateParse(submittedTime['startTime'])
+        endTime = dateParse(submittedTime['endTime'])
+        timeSlot = {'start': startTime, 'end': endTime}
+        splitTimeVals = splitTimes(timeSlot)
+        return profile.remove_timeSlot(splitTimeVals, email)
     else :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])

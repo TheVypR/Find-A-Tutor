@@ -121,9 +121,19 @@ def post_TimeSlots(times, submission, tut_email):
 
     conn.close()
 
-def remove_timeSlots(submission):
+def remove_timeSlot(times, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #loop through times and run this query for each 15 minute slot
+    for time in times:
+        cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+
     #delete from TutorTimes where tut_email='apelia18@gcc.edu' and start_date='2022-02-23T01:00:00' and end_date='2022-02-23T01:15:00';
-    print("removed: " + submission)
+    conn.close()
+    
+    return 'Done'
 
 def edit_profile(times, submission):
     tut_email = "apelia18@gcc.edu"

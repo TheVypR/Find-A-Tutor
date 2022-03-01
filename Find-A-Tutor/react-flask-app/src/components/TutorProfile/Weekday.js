@@ -5,6 +5,8 @@ import { BsFillPlusCircleFill } from "react-icons/bs";
 import TimeSlot from './TimeSlot'
 
 
+const format = 'h:mm a';    //Format for TimePicker
+
 /** AdTimeSlot Component
  * 
  * Displays a button which allows users to add time slots to the given week day
@@ -103,26 +105,28 @@ class Weekday extends React.Component {
     removeTimeSlot(index, day) {
         //remove timeslot from DOM
         let filteredChildren = this.state.children.filter(child => child !== this.state.children[index]);
-        this.setState({children: filteredChildren});
+        this.setState({ children: filteredChildren });
         this.forceUpdate();
         console.log("index: " + index + "day: " + day);
 
         //remove timeslot from db
-        //this.fetchRemoveTimeSlot(index);
+        this.fetchRemoveTimeSlot(index);
     }
 
     /**
      * Fetch call to db to remove timeslot
      * 
-     * @param {*} timeSlot: given time slot to remove
+     * @param {*} index: the index of the given time slot to remove
      */
-    fetchRemoveTimeSlot(timeSlot) {
+    fetchRemoveTimeSlot(index) {
         let times = {
-            "startTime": timeSlot['startTime'].toString(),
-            "endTime": timeSlot['endTime'].toString(),
+            "remove": {
+                "startTime": this.state.startTime[index].toString(),
+                "endTime": this.state.endTime[index].toString(),
+            }
         };
 
-        console.log(times);
+        console.log("Post times: " + times['startTime']);
 
         let submission = { 'remove': times }
         const response = fetch("/myProfile/", {
@@ -130,7 +134,7 @@ class Weekday extends React.Component {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(timeSlot)
+            body: JSON.stringify(times)
         })//fetch
     }
 
@@ -140,8 +144,8 @@ class Weekday extends React.Component {
      * @param {*} time Moment object of the given timepicker
      * @param {*} timepicker String identifying which timepicker was changed
      */
-     timeSlotChange(time, timepicker, index) {
-         console.log(index);
+    timeSlotChange(time, timepicker, index) {
+        console.log(index);
         //Update TimeSlot according to the changed timepicker
         if (timepicker == 'start') {
             console.log("set");
@@ -177,8 +181,8 @@ class Weekday extends React.Component {
      */
     submitFetch(index) {
         let timeSlot = {
-                "startTime": this.state.startTime[index].toString(),
-                "endTime": this.state.endTime[index].toString(),
+            "startTime": this.state.startTime[index].toString(),
+            "endTime": this.state.endTime[index].toString(),
         };
 
         const response = fetch("/myProfile/", {
@@ -197,8 +201,8 @@ class Weekday extends React.Component {
      * @param {*} index: instance of TimeSlot we are at
      */
     setStartTime(time, index) {
-        if (this.state.startTime.size-1 < index) {
-            for (let i=0; i < index; i++) {
+        if (this.state.startTime.size - 1 < index) {
+            for (let i = 0; i < index; i++) {
                 this.state.startTime.push(null);
             }
         }
@@ -206,7 +210,7 @@ class Weekday extends React.Component {
         startTimeCopy.splice(index, 1, time);
         console.log(startTimeCopy);
 
-        this.setState({startTime: startTimeCopy})
+        this.setState({ startTime: startTimeCopy })
     }
 
     /**
@@ -215,16 +219,16 @@ class Weekday extends React.Component {
      * @param {*} time: given string from user input
      * @param {*} index: instance of TimeSlot we are at
      */
-     setEndTime(time, index) {
-        if (this.state.endTime.size-1 < index) {
-            for (let i=0; i < index; i++) {
+    setEndTime(time, index) {
+        if (this.state.endTime.size - 1 < index) {
+            for (let i = 0; i < index; i++) {
                 this.state.endTime.push(null);
             }
         }
         let endTimeCopy = this.state.endTime;
         endTimeCopy.splice(index, 1, time);
 
-        this.setState({endTime: endTimeCopy})
+        this.setState({ endTime: endTimeCopy })
     }
 
     /**
@@ -234,15 +238,15 @@ class Weekday extends React.Component {
      * @param {*} index: instance of TimeSlot we are at
      */
     setShowTimePickers(bool, index) {
-        if (this.state.showTimePickers.size-1 < index) {
-            for (let i=0; i < index; i++) {
+        if (this.state.showTimePickers.size - 1 < index) {
+            for (let i = 0; i < index; i++) {
                 this.state.showTimePickers.push(true);
             }
         }
         let showTimePickersCopy = this.state.showTimePickers;
         showTimePickersCopy[index] = bool
 
-        this.setState({showTimePickers: showTimePickersCopy})
+        this.setState({ showTimePickers: showTimePickersCopy })
     }
 
 
