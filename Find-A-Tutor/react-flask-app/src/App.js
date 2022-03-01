@@ -9,9 +9,10 @@ import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
-import AdminView from './components/AdminView';
+import Reports from './components/Reports';
 
 import { AuthContext } from './components/AuthContext'
+import Reports from './components/Reports';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -36,7 +37,7 @@ export default function App() {
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
-            <Route path='/AdminView' element={<AdminView />} />
+            <Route path='/Reports' element={<Reports />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

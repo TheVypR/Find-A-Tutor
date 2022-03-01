@@ -4,7 +4,9 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
+import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import Link from '@mui/material/Link';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Rating from '@mui/material/Rating';
@@ -15,16 +17,20 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 const theme = createTheme();
-export default function AdminView() {
+export default function Reports() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Typography component="h1" variant="h4" color="primary" gutterBottom>
-                Admin View
-            </Typography>
+            <AppBar postion="static" color="primary" elevation={0} sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
+                <Toolbar sx={{flexwrap: 'wrap'}}>
+                    <Typography component="h1" variant="h4" color="inherit" noWrap sx={{flexGrow: 1}}>
+                        Admin View
+                    </Typography>
+                    <Link variant="button" color="inherit" href="./"></Link>
+                </Toolbar>
+            </AppBar>
             <Container maxWidth="lg" sx={{mt: 8, mb:8}}>
                 <Grid container spacing={5}>
                     <Grid item xs={6}>
