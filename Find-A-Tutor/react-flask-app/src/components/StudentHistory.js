@@ -18,7 +18,25 @@ import { Link } from 'react-router-dom';
 const theme = createTheme();
 export default function StudentHistory() {
     const [rating, setRating] = useState(2);
-
+	const [appts, setAppts] = useState([]);
+	
+	//get history
+	useEffect(() => { fetch("/loadAppointment/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setAppts(result['appts']);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+	}, []);
+	
+	function toggleView() {
+		fetch("/toggleView/")
+	}
+	
     return (
         <ThemeProvider theme={theme}>
             <Box component="main" sx={{ backgroundColor: 'white', flexgrow: 1, height: '200vh', overflow: 'auto' }}>
@@ -32,7 +50,7 @@ export default function StudentHistory() {
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Previous Tutors</TableCell>
+                                        <TableCell>Student</TableCell>
                                         <TableCell>Class</TableCell>
                                         <TableCell>Date Tutored</TableCell>
                                         <TableCell>Leave A Review</TableCell>
@@ -40,10 +58,11 @@ export default function StudentHistory() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+								  {appts.map((row) => (
                                     <TableRow>
-                                        <TableCell>Some idiot</TableCell>
-                                        <TableCell>COMP447</TableCell>
-                                        <TableCell>2/27/2021</TableCell>
+                                        <TableCell>{row['with']}</TableCell>
+                                        <TableCell>{row['class']}</TableCell>
+                                        <TableCell>{row['time']}</TableCell>
                                         <TableCell>
                                             <Rating name="simple controlled" value={rating} />
                                         </TableCell>
@@ -53,13 +72,14 @@ export default function StudentHistory() {
                                             </Button>
                                         </TableCell>
                                     </TableRow>
+								  ))}
                                 </TableBody>
                             </Table>
                         </React.Fragment>
                     </Grid>
                 </Container>
-                <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}}>
-                <Link to="/TutoringHistory">Go to Student History</Link>
+                <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}} onClick={() => toggleView()}>
+                <Link to="/TutoringHistory">Go to Tutor History</Link>
                 </Button>
             </Box>
         </ThemeProvider>

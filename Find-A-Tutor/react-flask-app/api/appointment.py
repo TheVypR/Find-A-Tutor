@@ -70,7 +70,6 @@ def getTimes(email):
             availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time"})
     
     conn.close()
-    
     return {'times':availTimes}
     
 def getAppointments(email):
