@@ -130,9 +130,21 @@ def remove_timeSlot(times, tut_email):
     for time in times:
         cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
 
-    #delete from TutorTimes where tut_email='apelia18@gcc.edu' and start_date='2022-02-23T01:00:00' and end_date='2022-02-23T01:15:00';
     conn.close()
     
+    return 'Done'
+
+def contactMe_change(contactMe, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    c = 1
+
+    cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
+    #update Tutor set contactable=1 where tut_email='apelia18@gcc.edu';
+
+    conn.close()
     return 'Done'
 
 def edit_profile(times, submission):

@@ -97,6 +97,8 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         splitTimeVals = splitTimes(timeSlot)
         return profile.remove_timeSlot(splitTimeVals, email)
+    elif 'contactMe' in submission.keys():
+        return profile.contactMe_change(submission['contactMe'], email)
     else :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
