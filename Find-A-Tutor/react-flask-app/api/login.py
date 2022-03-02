@@ -87,6 +87,17 @@ def reportedTutors():
 def reportedStudents():
     return adminRoutes.ReportedStudents()
 
+# provide a list of banned students
+@app.route('/BannedStudents/', methods=['GET'])
+def bannedStudents():
+    return adminRoutes.BannedStudents()
+
+@app.route('/AddStudentToBan/', methods=['POST'])
+def addStudentToBan():
+    tutor = request.get_json()
+    adminRoutes.AddStudentToBan(tutor)
+    return 'Done'
+
 #signUp page
 @app.route('/signup/', methods=['POST'])
 def signUp():

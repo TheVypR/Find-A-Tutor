@@ -22,6 +22,7 @@ import './adminView.css';
 
 const theme = createTheme();
 export default function Reports() {
+    //List of reported students and tutors from server
     const [reportedTutors, setReportedTutors] = useState([]);
     const [reportedStudents, setReportedStudents] = useState([]);
 
@@ -53,6 +54,22 @@ export default function Reports() {
         })
     }, []);
 
+    //Post whether reported tutor is banned or the report is dismissed
+    function addToBannedList(tutor) {
+        const tutorToBan = {
+            stu_email: tutor[0],
+            reason: tutor[2]
+        };
+        fetch('/AddStudentToBan/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tutorToBan)
+        })
+    }
+
+    //function to have the modal appear and disappear and pass in info
     function showReport(tutor) {
         setTutor(tutor);
         handleEnableReport();
@@ -71,10 +88,11 @@ export default function Reports() {
                     <strong>Report Comment: </strong> {tutor[3]} <br/>   
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => addToBannedList(tutor)}>
                     Ban Student
                 </Button>
-                <Button variant="primary" onClick= {handleClose}>
+                <div></div>
+                <Button variant="contained" onClick= {handleClose}>
                     Dismiss Report
                 </Button>
                 </Modal.Footer>

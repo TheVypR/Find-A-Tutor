@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import getFunctions
 
 # database stuff
 from flaskext.mysql import MySQL
@@ -43,3 +44,22 @@ def CurrentTutors():
     allTutors = cursor.fetchall()
     conn.close()
     return jsonify(allTutors)
+
+def BannedStudents():
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute("select * from BannedUsers")
+    allBanned = cursor.fetchall()
+    conn.close()
+    return jsonify(allBanned)
+
+def AddStudentToBan(tutor):
+    # get additional info
+    print(getFunctions.getName(tutor['stu_email']))
+
+
+    # post to db
+    # conn = mysql.connect()
+    # conn.autocommit(True)
+    # cursor = conn.cursor()
+    # cursor.execute("insert into BannedUsers(\""+ tutor['stu_email'] + "\", \""+ tutor['stu_email'] + "\")")

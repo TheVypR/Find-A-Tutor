@@ -25,6 +25,7 @@ const theme = createTheme();
 
 export default function CurrentAndBan() {
     const [allTutors, setAllTutors] = useState([]);
+    const [bannedUsers, setBannedUsers] = useState([]);
 
     //Get current tutors for the CurrentAndBan screen
     useEffect(() => { fetch("/CurrentTutors/")
@@ -34,6 +35,17 @@ export default function CurrentAndBan() {
         },
         (error) => {
             console.log(error);
+        })
+    }, []);
+
+    //Get list of current banned students
+    useEffect(() => { fetch("/BannedStudents/")
+        .then(res => res.json())
+        .then(result => {
+            setBannedUsers(result);
+        },
+        (error) => {
+            console.log(error)
         })
     }, []);
 
@@ -71,7 +83,7 @@ export default function CurrentAndBan() {
                                 </TableHead>
                                 <TableBody>
                                     {allTutors.map((tutor) => (
-                                        <TableRow key={tutor[0]} hover>
+                                        <TableRow key={tutor[0]}>
                                             <TableCell>{tutor[1]}</TableCell>
                                             <TableCell>{tutor[0]}</TableCell>
                                         </TableRow>
@@ -89,26 +101,18 @@ export default function CurrentAndBan() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell><strong>Name</strong></TableCell>
-                                        <TableCell><strong>Date Banned</strong></TableCell>
                                         <TableCell><strong>Role</strong></TableCell>
+                                        <TableCell><strong>Email</strong></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        <TableCell>Isaac Apel</TableCell>
-                                        <TableCell>2/28/2022</TableCell>
-                                        <TableCell>Tutor</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Isaac Apel</TableCell>
-                                        <TableCell>2/28/2022</TableCell>
-                                        <TableCell>Student</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Isaac Apel</TableCell>
-                                        <TableCell>2/28/2022</TableCell>
-                                        <TableCell>Tutor</TableCell>
-                                    </TableRow>
+                                    {bannedUsers.map((student) => (
+                                        <TableRow key={student[0]}>
+                                            <TableCell>{student[2]}</TableCell>
+                                            <TableCell>{student[1]}</TableCell>
+                                            <TableCell>{student[0]}</TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </Paper>
