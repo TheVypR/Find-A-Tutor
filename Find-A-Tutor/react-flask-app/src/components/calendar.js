@@ -40,6 +40,8 @@ function FullCalendarApp() {
   const [endTime, setEndTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [title, setTitle] = useState("");
+  const [blockStart, setBlockStart] = useState("");
+  const [blockEnd, setBlockEnd] = useState("");
 
   //for authentication
   const authContext = useContext(AuthContext);
@@ -107,7 +109,7 @@ function FullCalendarApp() {
                 }
             )
   }, []);
-  
+
   //loads in the appts currently created in the DB - IAA
   useEffect(() => { fetch("/getAppointments/")
             .then(res => res.json())
@@ -117,7 +119,7 @@ function FullCalendarApp() {
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
+                // exceptions from actual bugs in components
                 (error) => {
                     console.log(error);
                 }
@@ -135,7 +137,9 @@ function FullCalendarApp() {
 		  end: endTime,
 		  day: origStartDate,
 		  title: title,
-		  tut_email: tutEmail
+		  tut_email: tutEmail,
+		  block_start: origStartDate,
+		  block_end: origEndDate
 		};
 		console.log(myEvent)
 		fetch("/addAppointment/", {
@@ -149,57 +153,21 @@ function FullCalendarApp() {
 		
 	}
 	
-	function formatDate(date) {
-		var d = new Date(date);
-		var hh = d.getHours();
-		var m = d.getMinutes();
-		var s = d.getSeconds();
-		var dd = "AM";
-		var h = hh;
-		if (h >= 12) {
-			h = hh - 12;
-			dd = "PM";
-		}
-		if (h == 0) {
-			h = 12;
-		}
-		m = m < 10 ? "0" + m : m;
-
-		s = s < 10 ? "0" + s : s;
-
-		/* if you want 2 digit hours:
-		h = h<10?"0"+h:h; */
-
-		var pattern = new RegExp("0?" + hh + ":" + m + ":" + s);
-
-		var replacement = h + ":" + m;
-		/* if you want to add seconds
-		replacement += ":"+s;  */
-		replacement += " " + dd;
-
-		return date.replace(pattern, replacement);
-	}
-	
 	const handleEventClick = function (e, editting) {
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
-		//set dates and times
-		setOrigStartDate(e.start.toString());
-		setOrigEndDate(e.end.toString());
-		
 		var options = {
 		  hour: '2-digit',
 		  minute: '2-digit',
 		  hour12: false
 		};
 		
+		//set dates and times
+		setOrigStartDate(e.start.toString());
+		setOrigEndDate(e.end.toString());
 		setStartTime(e.start.toLocaleString('en-US', options))
 		setEndTime(e.end.toLocaleString('en-US', options))
-		
-		
-		console.log(endTime)
-		console.log(startTime)
 		
 		//find which modal to load
 		if(editting) {
@@ -207,6 +175,8 @@ function FullCalendarApp() {
 		} else {
 			if(e.extendedProps['type'] == "appt") {
 				setStuEmail(e.extendedProps.stu_email);
+				setBlockStart(e.extendedProps.block_s)
+				setBlockEnd(e.extendedProps.block_e)	
 				handleShowAppt();
 			} else if(e.extendedProps['type'] == "time") {
 				handleShowTime();
@@ -231,6 +201,16 @@ function FullCalendarApp() {
 	} 
 	
 	const editAppt = function () {
+		const myEvent = {
+		  class_code: classCode,
+		  start: startDate,
+		  end: endDate,
+		  day: origStartDate,
+		  title: title,
+		  tut_email: tutEmail,
+		  block_start: blockStart,
+		  block_end: blockEnd
+		};
 		fetch("/deleteAppointment/", {
 			method: 'POST',
 			headers: {
@@ -249,17 +229,12 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{
-				class_code: classCode,
-				start: startDate,
-				end: endDate,
-				day: origStartDate,
-				title: title,
-				tut_email: tutEmail
-			}])  
+			body:JSON.stringify([myEvent])  
 		})
 		)
 	}
+	
+	console.log(times);
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
@@ -327,11 +302,11 @@ function FullCalendarApp() {
 			<Modal.Body>
 				Edit Appointment With: {tutEmail}<br/>
 					Choose Class: 
-					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={startTime} max={endTime} value={endDate} onChange={(e) => {setEndDate(e.target.value)}} required/>
+					<input type="time" id="e_date" step="900" min={blockStart} max={blockEnd} value={endDate} onChange={(e) => {setEndDate(e.target.value)}} required/>
 			</Modal.Body>
 			
 			<Modal.Footer>

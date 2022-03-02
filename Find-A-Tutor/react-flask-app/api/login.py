@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from flask_wtf import Form
 from pymysql import NULL 
 from wtforms import BooleanField
-import profile, signup, appointment
+import profile, signup, appointment, history
 
 
 #Database stuff
@@ -15,7 +15,8 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-email = ""
+email = "apelia18@gcc.edu"
+isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -110,10 +111,9 @@ def myProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  
+  print(data['day'])
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
-  
   slots = splitTimes({'start':newStart, 'end':newEnd})
   
   #add the appointment and mark time as taken
@@ -121,19 +121,18 @@ def addAppointment():
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
-    print("Times")
+    times = mergeTimes(appointment.getTimes(email)['times'])
+    print(times)
     print(email)
-    return {'times':mergeTimes(appointment.getTimes(email)['times'])}
+    return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
-    print("Appointments")
     appts = appointment.getAppointments(email)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
-    print("Deleted")
     data = request.get_json()[0]
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
     slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
@@ -147,6 +146,21 @@ def editAppointment():
     returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
+
+@app.route('/toggleView/')
+def toggleView():
+    global isTutor
+    isTutor = not isTutor
+    print(isTutor)
+    return str(isTutor)
+
+@app.route('/loadAppointment/', methods=['GET'])
+def loadAppointments():
+    print(email)
+    if isTutor:
+        return history.loadPreviousAppointmentsTutor(email)
+    else:
+        return history.loadPreviousAppointmentsStudent(email)
 
 def dateParse(date):
     #get the parts of the date
@@ -190,13 +204,16 @@ def dateParse(date):
     
 def createDateFromTime(day, time):
     #split up the day
-    date = dateParse(day)
+    if len(day) == 19 and 'T' in day:
+        date = day
+    else:
+        date = dateParse(day)
     newDay = date.split("T")[0]
     
     #add the time
     newDate = newDay + "T" + time + ":00"
     
-    print(newDate)
+    print(newDate + " 179")
     
     return newDate
     

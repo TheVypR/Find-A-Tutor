@@ -9,6 +9,8 @@ import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile/T_Profile"
 import StudentProfile from "./components/StudentProfile"
 import { createContext } from 'react';
+import TutoringHistory from './components/TutoringHistory';
+import StudentHistory from './components/StudentHistory';
 import { AuthContext } from './components/AuthContext'
 
 export default function App() {
@@ -32,6 +34,8 @@ export default function App() {
             <Route path='/signup' element={<SignUp />}></Route>
             <Route path='/myProfile' element={<TutorProfile />} />
             <Route path='/calendar' element={<Calendar />} />
+            <Route path='/TutoringHistory' element={<TutoringHistory />} />
+            <Route path='/StudentHistory' element={<StudentHistory />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
