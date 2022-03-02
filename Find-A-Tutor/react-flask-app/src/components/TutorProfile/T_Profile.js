@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 
-import AvailableTimes from './AvailableTimes'
+import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
+import TutorsFor from "./TutorsFor";
 
 /** Tutor Profile Component
  *  
@@ -53,7 +54,7 @@ class T_Profile extends React.Component {
 
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs />
-                    <p> placeholder </p>
+                    <TutorsFor />
                 </div>
 
                 <AvailableTimes />

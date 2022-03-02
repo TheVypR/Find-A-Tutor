@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Week from './Week'
 
 import { DropdownButton, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 
