@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import AvailableTimes from './AvailableTimes'
+import PayAndLoginPrefs from './PayAndLoginPrefs'
 
 /** Tutor Profile Component
  *  
@@ -49,6 +50,12 @@ class T_Profile extends React.Component {
                     <h1 id="name"> {this.state.items['name']} </h1>
                     <p id="email"> {this.state.items['email']} </p>
                 </div>
+
+                <div id="center" className="d-flex justify-content-around">
+                    <PayAndLoginPrefs />
+                    <p> placeholder </p>
+                </div>
+
                 <AvailableTimes />
             </>
         );//return
