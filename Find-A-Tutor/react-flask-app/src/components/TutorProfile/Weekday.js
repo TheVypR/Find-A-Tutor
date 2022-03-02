@@ -52,7 +52,7 @@ class Weekday extends React.Component {
         this.setStartTime = this.setStartTime.bind(this);
         this.setEndTime = this.setEndTime.bind(this);
         this.setShowTimePickers = this.setShowTimePickers.bind(this);
-        //this.getISO = this.getISO.bind(this);
+        this.getISO = this.getISO.bind(this);
     }
 
     /**
@@ -189,24 +189,25 @@ class Weekday extends React.Component {
      * 1-monday 7-sunday
      * 
      * @param {} day: string weekday
+     * @returns int 1-7, 1 being monday and 7 being sunday
      */
-    // getISO(day) {
-    //     if (day == 'monday') {
-    //         return 1
-    //     } else if (day == 'tuesday') {
-    //         return 2
-    //     } else if (day == 'wednesday') {
-    //         return 3
-    //     } else if (day == 'thursday') {
-    //         return 4
-    //     } else if (day == 'friday') {
-    //         return 5
-    //     } else if (day == 'saturday') {
-    //         return 6
-    //     } else {
-    //         return 7
-    //     }
-    // }
+    getISO(day) {
+        if (day == 'monday') {
+            return 1
+        } else if (day == 'tuesday') {
+            return 2
+        } else if (day == 'wednesday') {
+            return 3
+        } else if (day == 'thursday') {
+            return 4
+        } else if (day == 'friday') {
+            return 5
+        } else if (day == 'saturday') {
+            return 6
+        } else {
+            return 7
+        }
+    }
 
 
     /**
@@ -215,14 +216,11 @@ class Weekday extends React.Component {
      * @param - prop of the given day of the timeslot
      */
     submitFetch(index, day) {
-        console.log(day);
-        let startTime = this.state.startTime[index];
-        startTime = startTime.isoWeekday(day);
-        let endTime = this.state.endTime[index];
-        endTime = endTime.isoWeekday(day);
+        let date = getISO(day)
         let timeSlot = {
             "startTime": startTime.toString(),
             "endTime": endTime.toString(),
+            "date": date
         };
 
         const response = fetch("/myProfile/", {
