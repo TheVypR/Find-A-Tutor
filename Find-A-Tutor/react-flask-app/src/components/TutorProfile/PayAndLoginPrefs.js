@@ -12,6 +12,12 @@ class PayAndLoginPrefs extends React.Component {
         this.handleSelect = this.handleSelect.bind(this);
     }
 
+    /**
+     * Updates payment username to selected item
+     * sends selection to parent
+     * 
+     * @param {String} e selected payment method
+     */
     handleSelect = (e) => {
         this.setState({paymentType: e})
         paymentType = e;
@@ -22,7 +28,9 @@ class PayAndLoginPrefs extends React.Component {
         } else {
             user.style.display = "block";
         }
-
+        
+        //Send to parent
+        this.props.setPaymentType(e);
     }
 
     render() {

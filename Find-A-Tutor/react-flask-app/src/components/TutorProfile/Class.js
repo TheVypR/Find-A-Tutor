@@ -10,7 +10,7 @@ class Class extends React.Component {
     }
     
     render() {
-        let index = this.props.key;
+        let index = this.props.index;
         return (
             <>
                 <div className="input-group mb-3">

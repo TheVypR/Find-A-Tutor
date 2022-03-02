@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { Button } from 'react-bootstrap';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
 import TutorsFor from "./TutorsFor";
+
 
 /** Tutor Profile Component
  *  
@@ -13,9 +15,15 @@ class T_Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {}
+            items: {},
+            paymentType: "",
+            loginPrefs: -1,
+            classes: []
         }
 
+        this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.setPaymentType = this.setPaymentType(this);
     }//constructor
 
     /**
@@ -43,6 +51,14 @@ class T_Profile extends React.Component {
             )
     }//componentDidMount
 
+    handleSubmit() {
+        console.log("applied");
+    }
+
+    setPaymentType(e) {
+        this.setState({paymentType: e})
+    }
+
     render() {
         return (
             <>
@@ -53,11 +69,18 @@ class T_Profile extends React.Component {
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">
-                    <PayAndLoginPrefs />
+                    <PayAndLoginPrefs setPaymentType={() => {this.setPaymentType(e)}}/>
                     <TutorsFor />
                 </div>
 
                 <AvailableTimes />
+
+                <div id="bottom">
+                    <Button type="submit" id="save"
+                        onClick={this.handleSubmit}
+                    > Apply </Button>
+                    <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                </div>
             </>
         );//return
     }//render
