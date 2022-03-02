@@ -1,3 +1,7 @@
-TableRow {
+.MuiTableRow-hover {
     cursor: pointer;
+}
+
+.MuiTableRow-head {
+    background-color: lightgray;
 }

@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
+import MenuItem from '@mui/material/MenuItem';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Rating from '@mui/material/Rating';
@@ -17,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import './adminView.css';
 
 //making styles and themes
 const theme = createTheme();
@@ -43,8 +45,12 @@ export default function CurrentAndBan() {
                     <Typography component="h1" variant="h4" color="inherit" sx={{px: 5, flexGrow: 1, display: 'flex'}}>
                         Admin View
                     </Typography>
-                    <Link variant="button" color="inherit" href="./Reports" sx={{my: 1, mx: 5}}>Reports</Link>
-                    <Link variant="button" color="inherit" href="./CurrentAndBan" sx={{my: 1, mx: 5}}>Current Tutors</Link>
+                    <MenuItem component='a' href='./Reports'>
+                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Reports</Typography>
+                    </MenuItem>
+                    <MenuItem component='a' href='./CurrentAndBan'>
+                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Current Tutors</Typography>
+                    </MenuItem>
                     <Button href="./" color="inherit" variant="outlined" sx={{my: 1, mx: 5}}>Logout</Button>
                 </Toolbar>
             </AppBar>
@@ -65,7 +71,7 @@ export default function CurrentAndBan() {
                                 </TableHead>
                                 <TableBody>
                                     {allTutors.map((tutor) => (
-                                        <TableRow key={tutor[0]}>
+                                        <TableRow key={tutor[0]} hover>
                                             <TableCell>{tutor[1]}</TableCell>
                                             <TableCell>{tutor[0]}</TableCell>
                                         </TableRow>
