@@ -52,7 +52,6 @@ function FullCalendarApp() {
   const handleShowAppt = function (){ setShowAppt(true)};
   const handleShowEdit = function (){ setShowEdit(true)};
 
-
   const [checked, setChecked] = React.useState(false);
 
     const handleChange = () => {

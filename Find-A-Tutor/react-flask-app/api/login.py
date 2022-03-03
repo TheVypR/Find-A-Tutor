@@ -143,6 +143,11 @@ def loadAppointments():
     else:
         return history.loadPreviousAppointmentsStudent(email)
 
+@app.route('/submitRating/', methods=['POST'])
+def rateTutor():
+    data = request.get_json()
+    history.submitRating(data[0])
+
 def dateParse(date):
     #get the parts of the date
     dateArray = date.split()

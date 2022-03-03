@@ -35,6 +35,14 @@ export default function TutoringHistory() {
 	
 	function toggleView() {
 		fetch("/toggleView/")
+	};
+	
+	const onRatingChange = (event) => {
+		console.log(event.target.value)
+	}
+	
+	const onRowClick = (event) => {
+		console.log(event);
 	}
 	
     return (
@@ -49,7 +57,7 @@ export default function TutoringHistory() {
                             </Typography>
                             <Table size="small">
                                 <TableHead>
-                                    <TableRow>
+                                    <TableRow onClick={onRowClick}>
                                         <TableCell>Student</TableCell>
                                         <TableCell>Class</TableCell>
                                         <TableCell>Date Tutored</TableCell>
@@ -60,13 +68,17 @@ export default function TutoringHistory() {
                                 </TableHead>
                                 <TableBody>
 									{appts.map((row) => (
-                                      <TableRow>
+                                      <TableRow key={row['id']}>
                                         <TableCell>{row['with']}</TableCell>
                                         <TableCell>{row['class']}</TableCell>
                                         <TableCell>{row['time']}</TableCell>
                                         <TableCell>$14/hr</TableCell>
                                         <TableCell>
-                                            <Rating name="simple controlled" value={rating} />
+                                            <Rating
+											  name="simple-controlled"
+											  value={rating}
+											  onChange={onRatingChange}
+											/>
                                         </TableCell>
                                         <TableCell>
                                             <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}}>

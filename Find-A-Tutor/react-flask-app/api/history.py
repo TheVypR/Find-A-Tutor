@@ -54,8 +54,18 @@ def loadPreviousAppointmentsTutor(email):
     history = cursor.fetchall()
     
     for appt in history:
-        apptHistory.append({'with': appt[1], 'class': appt[3], 'time': appt[4]})
+        apptHistory.append({'with': appt[1], 'class': appt[3], 'time': appt[4], 'id': appt[0]})
     
     conn.close()
 
     return {'appts': apptHistory}
+    
+def submitRating(data):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("select rating from Tutor where tut_email = \"" + data['tutor'] + "\"")
+    rating = cursor.fetchone()[0]
+    newRate = int((rating + data['rating']) / 2)
+    cursor.execute("update Tutor set rating = " + newRate + " where tut_email = \"" + data['tutor'] + "\"")
+    return "Done"

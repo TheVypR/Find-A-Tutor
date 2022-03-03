@@ -17,8 +17,9 @@ import { Link } from 'react-router-dom';
 
 const theme = createTheme();
 export default function StudentHistory() {
-    const [rating, setRating] = useState(2);
+    const [rating, setRating] = useState(1);
 	const [appts, setAppts] = useState([]);
+	const [tutor, setTutor] = useState("");
 	
 	//get history
 	useEffect(() => { fetch("/loadAppointment/")
@@ -37,6 +38,21 @@ export default function StudentHistory() {
 		fetch("/toggleView/")
 	}
 	
+	const onRatingChange = (event) => {
+		console.log(event.target.value);
+		// fetch("/submitRating/", {
+			// method: 'POST',
+			// headers: {
+			// 'Content-Type' : 'application/json'
+			// },
+			// body:JSON.stringify([{'tutor': appt}])    
+		// })
+	}
+	
+	const onRowClick = (event) => {
+		console.log(event);
+	}
+	
     return (
         <ThemeProvider theme={theme}>
             <Box component="main" sx={{ backgroundColor: 'white', flexgrow: 1, height: '200vh', overflow: 'auto' }}>
@@ -53,18 +69,18 @@ export default function StudentHistory() {
                                         <TableCell>Student</TableCell>
                                         <TableCell>Class</TableCell>
                                         <TableCell>Date Tutored</TableCell>
-                                        <TableCell>Leave A Review</TableCell>
+                                        <TableCell>Leave A Rating</TableCell>
                                         <TableCell>Report Tutor</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
 								  {appts.map((row) => (
-                                    <TableRow>
+                                    <TableRow onClick={onRowClick}>
                                         <TableCell>{row['with']}</TableCell>
                                         <TableCell>{row['class']}</TableCell>
                                         <TableCell>{row['time']}</TableCell>
                                         <TableCell>
-                                            <Rating name="simple controlled" value={rating} />
+                                            <Rating name="simple controlled" value={rating} onChange={onRatingChange}/>
                                         </TableCell>
                                         <TableCell>
                                             <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}}>
