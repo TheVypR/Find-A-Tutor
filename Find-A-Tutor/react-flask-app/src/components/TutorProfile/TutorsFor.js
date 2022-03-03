@@ -8,17 +8,16 @@ const index = 1;
 class TutorsFor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            "classes": []
-        }
 
         this.handleAddClass = this.handleAddClass.bind(this);
         this.renderClass = this.renderClass.bind(this);
         this.removeClass = this.removeClass.bind(this);
+
+        this.setCourseCode = this.setCourseCode.bind(this);
     }
 
     /**
-     * Updates array of classes
+     * Updates array of classes in parent
      * 
      * @param {*} e 
      */
@@ -28,7 +27,7 @@ class TutorsFor extends React.Component {
         const aClass = {
             //key:value
         }
-        this.setState({ classes: [...this.state.classes, aClass] })
+        this.props.addClass(aClass);
     }
 
     /**
@@ -37,20 +36,22 @@ class TutorsFor extends React.Component {
      * @returns : map of rendered classes
      */
     renderClass() {
-        return this.state.classes.map(item => {
-            let index = this.state.classes.indexOf(item);
+        return this.props.classes.map(item => {
+            let index = this.props.classes.indexOf(item);
             return <Class
                 index={index}
                 removeClass={() => { this.removeClass(index) }}
+                setCourseCode={this.setCourseCode}
             />
         })
     }
 
     removeClass(index) {
-         //remove timeslot from DOM
-         let filteredClasses = this.state.classes.filter(aClass => aClass !== this.state.classes[index]);
-         this.setState({ classes: filteredClasses });
-         console.log("index: " + index);
+         this.props.removeClass(index);
+    }
+
+    setCourseCode(code) {
+        this.props.setCourseCode(code);
     }
 
     render() {

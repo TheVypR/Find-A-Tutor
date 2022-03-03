@@ -215,10 +215,10 @@ class Weekday extends React.Component {
      * @param - prop of the given day of the timeslot
      */
     submitFetch(index, day) {
-        let date = getISO(day)
+        let date = this.getISO(day)
         let timeSlot = {
-            "startTime": startTime.toString(),
-            "endTime": endTime.toString(),
+            "startTime": this.state.startTime[index].toString(),
+            "endTime": this.state.endTime[index].toString(),
             "date": date
         };
 

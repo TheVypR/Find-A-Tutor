@@ -107,7 +107,7 @@ def retrieve_classes(tut_email):
     return classes
 
 # Submit time slots to db for given weekday
-def post_timeSlots(times, tut_email):
+def post_timeSlot(times, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -120,6 +120,7 @@ def post_timeSlots(times, tut_email):
                         "\",false)")
 
     conn.close()
+    return 'Done'
 
 def remove_timeSlot(times, tut_email):
     conn = mysql.connect()
@@ -150,7 +151,7 @@ def contactMe_change(contactMe, tut_email):
 def edit_profile(submission):
     for s in submission:
         print(s)
-        
+
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()

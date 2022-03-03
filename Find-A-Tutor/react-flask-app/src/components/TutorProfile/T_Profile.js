@@ -20,6 +20,7 @@ class T_Profile extends React.Component {
             paymentUser: "",
             loginPrefs: -1,
             classes: [],
+            courseCode: ""
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,6 +28,9 @@ class T_Profile extends React.Component {
         this.setPaymentType = this.setPaymentType.bind(this);
         this.setLoginPrefs = this.setLoginPrefs.bind(this);
         this.setPaymentUser = this.setPaymentUser.bind(this);
+
+        this.addClass = this.addClass.bind(this);
+        this.removeClass = this.removeClass.bind(this);
     }//constructor
 
     /**
@@ -55,11 +59,16 @@ class T_Profile extends React.Component {
     }//componentDidMount
 
     handleSubmit() {
+        let classes = {
+            'courseCode': this.state.courseCode,
+            'rate': this.state.rate
+        }
+
         let post = {
             'paymentType': this.state.paymentType,
             'paymentUser': this.state.paymentUser,
             'loginPrefs': this.state.loginPrefs,
-            'classes': this.state.classes
+            'classes': classes
         }
         console.log(post);
         const response = fetch("/myProfile/", {
@@ -72,6 +81,17 @@ class T_Profile extends React.Component {
         console.log("applied");
     }
 
+    addClass(aClass) {
+        this.setState({classes: [...this.state.classes, aClass]})
+    }
+    
+    removeClass(index) {
+        //remove timeslot from DOM
+        let filteredClasses = this.props.classes.filter(aClass => aClass !== this.props.classes[index]);
+        this.setState({ classes: filteredClasses });
+        console.log("index: " + index);
+    }
+
     setPaymentType(type) {
         this.setState({ paymentType: type });
     }
@@ -81,7 +101,11 @@ class T_Profile extends React.Component {
     }
 
     setPaymentUser(user) {
-        this.setState({paymentUser: user});
+        this.setState({ paymentUser: user });
+    }
+
+    setCourseCode(code) {
+        this.setState({courseCode: code});
     }
 
     render() {
@@ -99,7 +123,12 @@ class T_Profile extends React.Component {
                         setLoginPrefs={this.setLoginPrefs}
                         setPaymentUser={this.setPaymentUser}
                     />
-                    <TutorsFor />
+                    <TutorsFor
+                        classes={this.state.classes}
+                        addClass={this.addClass}
+                        removeClass={this.removeClass}
+                        setCourseCode={this.setCourseCode}
+                    />
                 </div>
 
                 <AvailableTimes />
