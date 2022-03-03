@@ -32,39 +32,40 @@ export default function Reports() {
     const [tutor, setTutor] = useState([]);
 
     //get data from server
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const responseTutors = await fetch("/ReportedTutors/")
+    //         const responseStudents = await fetch("/ReportedStudents/")
+    //         const postTutors = await responseTutors.json();
+    //         const postStudents = await responseStudents.json();
+    //         setReportedTutors(postTutors);
+    //         setReportedStudents(postStudents);
+    //     }
+    //     fetchData();
+    // }, []);
+
+    //get data from server
     useEffect(() => {
-        const fetchData = async () => {
-            const responseTutors = await fetch("/ReportedTutors/")
-            const responseStudents = await fetch("/ReportedStudents/")
-            const postTutors = await responseTutors.json();
-            const postStudents = await responseStudents.json();
-            setReportedTutors(postTutors);
-            setReportedStudents(postStudents);
-        }
-        fetchData();
+        fetch("/ReportedTutors/")
+            .then(res => res.json())
+            .then(result => {
+                setReportedTutors(result);
+            },
+        (error) => {
+            console.log(error)
+        })
     }, []);
 
-    // useEffect(() => {
-    //     fetch("/ReportedTutors/")
-    //         .then(res => res.json())
-    //         .then(result => {
-    //             setReportedTutors(result);
-    //         },
-    //     (error) => {
-    //         console.log(error)
-    //     })
-    // }, []);
-
-    // useEffect(() => {
-    //     fetch("/ReportedStudents/")
-    //         .then(res => res.json())
-    //         .then(result => {
-    //             setReportedStudents(result);
-    //         },
-    //     (error) => {
-    //         console.log(error)
-    //     })
-    // }, []);
+    useEffect(() => {
+        fetch("/ReportedStudents/")
+            .then(res => res.json())
+            .then(result => {
+                setReportedStudents(result);
+            },
+        (error) => {
+            console.log(error)
+        })
+    }, []);
 
     //Post whether reported tutor is banned or the report is dismissed
     function AddToBannedList(tutor) {
