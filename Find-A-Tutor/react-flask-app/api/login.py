@@ -91,6 +91,14 @@ def reportedStudents():
 def bannedStudents():
     return adminRoutes.BannedStudents()
 
+# remove student from reported students or tutors list
+@app.route('/DimissReport/', methods=['POST'])
+def dismissReport():
+    tutor = request.get_json()
+    adminRoutes.DeleteUserFromList(tutor)
+    return 'Done'
+
+# add student to the banned list
 @app.route('/AddStudentToBan/', methods=['POST'])
 def addStudentToBan():
     tutor = request.get_json()

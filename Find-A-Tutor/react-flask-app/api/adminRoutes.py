@@ -27,7 +27,18 @@ def ReportedTutors():
     cursor.execute("select * from ReportedTutors")
     allTutors = cursor.fetchall()
     conn.close()
-    return jsonify(allTutors)
+
+    returnArray = list(allTutors)
+    LSize = 0
+    for tutor in returnArray:
+        returnArray[LSize] = list(tutor)
+        reportedTutorName = getFunctions.getName(tutor[0])
+        reportedByName = getFunctions.getName(tutor[1])
+        returnArray[LSize].append(reportedTutorName)
+        returnArray[LSize].append(reportedByName)
+        LSize += 1
+
+    return jsonify(returnArray)
 
 def ReportedStudents():
     conn = mysql.connect()
@@ -35,7 +46,18 @@ def ReportedStudents():
     cursor.execute("select * from ReportedStudents")
     allTutors = cursor.fetchall()
     conn.close()
-    return jsonify(allTutors)
+
+    returnArray = list(allTutors)
+    LSize = 0
+    for tutor in returnArray:
+        returnArray[LSize] = list(tutor)
+        reportedTutorName = getFunctions.getName(tutor[0])
+        reportedByName = getFunctions.getName(tutor[1])
+        returnArray[LSize].append(reportedTutorName)
+        returnArray[LSize].append(reportedByName)
+        LSize += 1
+
+    return jsonify(returnArray)
 
 def CurrentTutors():
     conn = mysql.connect()

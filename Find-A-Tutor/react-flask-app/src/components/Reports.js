@@ -31,34 +31,39 @@ export default function Reports() {
     const handleEnableReport = function(){setEnableReport(true);};
     const [tutor, setTutor] = useState([]);
 
-    //Get reported tutors for the Reports screen
-    // async function fetchReportedTutors() {
-    //     await fetch("/ReportedTutors/")
+    //get data from server
+    useEffect(() => {
+        const fetchData = async () => {
+            const responseTutors = await fetch("/ReportedTutors/")
+            const responseStudents = await fetch("/ReportedStudents/")
+            const postTutors = await responseTutors.json();
+            const postStudents = await responseStudents.json();
+            setReportedTutors(postTutors);
+            setReportedStudents(postStudents);
+        }
+        fetchData();
+    }, []);
+
+    // useEffect(() => {
+    //     fetch("/ReportedTutors/")
     //         .then(res => res.json())
     //         .then(result => {
     //             setReportedTutors(result);
     //         },
-    //         (error) => {
-    //             console.log(error);
-    //         })
-    // }
+    //     (error) => {
+    //         console.log(error)
+    //     })
+    // }, []);
 
-    // //Get reported students for the Reports screen
-    // async function fetchReportedStudents() {
-    //     await fetch("/ReportedStudents/")
+    // useEffect(() => {
+    //     fetch("/ReportedStudents/")
     //         .then(res => res.json())
     //         .then(result => {
     //             setReportedStudents(result);
     //         },
-    //         (error) => {
-    //             console.log(error);
-    //         })
-    // }
-
-    //limit to only one fetch
-    // useEffect(() => {
-    //     fetchReportedStudents()
-    //     fetchReportedTutors()
+    //     (error) => {
+    //         console.log(error)
+    //     })
     // }, []);
 
     //Post whether reported tutor is banned or the report is dismissed
@@ -74,6 +79,25 @@ export default function Reports() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(tutorToBan)
+        });
+        handleClose();
+        removeStudent(tutor);
+        removeTutor(tutor);
+    }
+
+    //Post to remove user from reported students or tutors list
+    function RemoveFromReports(tutor) {
+        const tutorToRemove = {
+            stu_email: tutor[0],
+            reason: tutor[2],
+            table: activeTable,
+        };
+        fetch('/DimissReport/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tutorToRemove)
         });
         handleClose();
         removeStudent(tutor);
@@ -97,37 +121,33 @@ export default function Reports() {
         handleEnableReport();
     }
 
-    //get data from server
-    useEffect(() => {
-        const fetchData = async () => {
-            const responseTutors = await fetch("/ReportedTutors/")
-            const responseStudents = await fetch("/ReportedStudents/")
-            const postTutors = await responseTutors.json();
-            const postStudents = await responseStudents.json();
-            setReportedTutors(postTutors);
-            setReportedStudents(postStudents);
-        }
-        fetchData();
-    }, []);
-
     return (
         <ThemeProvider theme={theme}>
 
             <Modal show={enableReport} size="lg" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Report on <strong>{tutor[0]}</strong></Modal.Title>
+                    <Grid container spacing={1}>
+                        <Grid item xs={6} sm={6}>
+                            <Typography component="h1" variant='h4' color="#dc143c" align="left">{tutor[5]}</Typography>
+                        </Grid>
+                        <Grid item xs={6} sm={6}>
+                            <Typography component="h1" variant='overline' color="inherit" align="right" sx={{pt: .5, pr: 1, fontSize: 14}}><strong>Email:</strong> {tutor[0]}</Typography>
+                        </Grid>
+                    </Grid>
                 </Modal.Header>
                 <Modal.Body>
-                    <strong>Reported By: </strong> {tutor[1]} <br/>
+                    <strong>Reported By: </strong> {tutor[6]} <br/>
+                    <strong>Email:</strong> {tutor[1]} <br/>
+                    <br/>
                     <strong>Reason: </strong> {tutor[2]} <br/>
-                    <strong>Report Comment: </strong> {tutor[3]} <br/>   
+                    <strong>Report Comment: </strong> <br/> {tutor[3]} <br/>   
                 </Modal.Body>
                 <Modal.Footer>
                 <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => AddToBannedList(tutor)}>
                     Ban Student
                 </Button>
                 <div></div>
-                <Button variant="contained" onClick= {handleClose}>
+                <Button variant="contained" onClick={() => RemoveFromReports(tutor)}>
                     Dismiss Report
                 </Button>
                 </Modal.Footer>
@@ -143,7 +163,7 @@ export default function Reports() {
                         <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Reports</Typography>
                     </MenuItem>
                     <MenuItem component='a' href='./CurrentAndBan'>
-                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Current Tutors</Typography>
+                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Tutors and Banned List</Typography>
                     </MenuItem>
                     <Button href="./" color="inherit" variant="outlined" sx={{my: 1, mx: 5}}>Logout</Button>
                 </Toolbar>
@@ -167,8 +187,8 @@ export default function Reports() {
                                 <TableBody>
                                     {reportedTutors.map((tutor) => (
                                         <TableRow key={tutor[4]} onClick={() => showReport(tutor, "tutors")} hover>
-                                            <TableCell>{tutor[0]}</TableCell>
-                                            <TableCell>{tutor[1]}</TableCell>
+                                            <TableCell>{tutor[5]}</TableCell>
+                                            <TableCell>{tutor[6]}</TableCell>
                                             <TableCell>{tutor[2]}</TableCell>
                                         </TableRow>
                                     ))}
@@ -192,8 +212,8 @@ export default function Reports() {
                                 <TableBody>
                                     {reportedStudents.map((tutor) => (
                                         <TableRow key={tutor[4]} onClick={() => showReport(tutor, "students")} hover>
-                                            <TableCell>{tutor[0]}</TableCell>
-                                            <TableCell>{tutor[1]}</TableCell>
+                                            <TableCell>{tutor[5]}</TableCell>
+                                            <TableCell>{tutor[6]}</TableCell>
                                             <TableCell>{tutor[2]}</TableCell>
                                         </TableRow>
                                     ))}
