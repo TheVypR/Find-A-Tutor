@@ -109,7 +109,7 @@ function FullCalendarApp() {
                 }
             )
   }, []);
-  
+
   //loads in the appts currently created in the DB - IAA
   useEffect(() => { fetch("/getAppointments/")
             .then(res => res.json())
@@ -233,6 +233,8 @@ function FullCalendarApp() {
 		})
 		)
 	}
+	
+	console.log(times);
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (

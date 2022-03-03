@@ -17,8 +17,26 @@ import { Link } from 'react-router-dom';
 
 const theme = createTheme();
 export default function TutoringHistory() {
-    const [rating, setRating] = useState(2);
-
+    const [rating, setRating] = useState(0);
+	const [appts, setAppts] = useState([]);
+	
+	//get history
+	useEffect(() => { fetch("/loadAppointment/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setAppts(result['appts']);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+	}, []);
+	
+	function toggleView() {
+		fetch("/toggleView/")
+	}
+	
     return (
         <ThemeProvider theme={theme}>
             <Box component="main" sx={{ backgroundColor: 'white', flexgrow: 1, height: '200vh', overflow: 'auto' }}>
@@ -32,7 +50,7 @@ export default function TutoringHistory() {
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Previous Tutors</TableCell>
+                                        <TableCell>Student</TableCell>
                                         <TableCell>Class</TableCell>
                                         <TableCell>Date Tutored</TableCell>
                                         <TableCell>Rate</TableCell>
@@ -41,11 +59,12 @@ export default function TutoringHistory() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        <TableCell>Aaron Sickafuse</TableCell>
-                                        <TableCell>COMP447</TableCell>
-                                        <TableCell>2/27/2021</TableCell>
-                                        <TableCell>$14,000/hr</TableCell>
+									{appts.map((row) => (
+                                      <TableRow>
+                                        <TableCell>{row['with']}</TableCell>
+                                        <TableCell>{row['class']}</TableCell>
+                                        <TableCell>{row['time']}</TableCell>
+                                        <TableCell>$14/hr</TableCell>
                                         <TableCell>
                                             <Rating name="simple controlled" value={rating} />
                                         </TableCell>
@@ -54,13 +73,14 @@ export default function TutoringHistory() {
                                                 Report
                                             </Button>
                                         </TableCell>
-                                    </TableRow>
+                                      </TableRow>
+									))}
                                 </TableBody>
                             </Table>
                         </React.Fragment>
                     </Grid>
                 </Container>
-                <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}}>
+                <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}} onClick={() => toggleView()}>
                     <Link to="/StudentHistory">Go to Student History</Link>
                 </Button>
             </Box>

@@ -5,7 +5,8 @@ from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
 from flask_wtf import Form 
 from wtforms import BooleanField
-import profile, signup, appointment, adminRoutes
+import profile, signup, appointment, history, adminRoutes
+
 
 #Database stuff
 from flaskext.mysql import MySQL
@@ -13,7 +14,8 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-email = ""
+email = "apelia18@gcc.edu"
+isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -129,7 +131,10 @@ def addAppointment():
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
-    return {'times':mergeTimes(appointment.getTimes(email)['times'])}
+    times = mergeTimes(appointment.getTimes(email)['times'])
+    print(times)
+    print(email)
+    return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
@@ -151,6 +156,21 @@ def editAppointment():
     returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
+
+@app.route('/toggleView/')
+def toggleView():
+    global isTutor
+    isTutor = not isTutor
+    print(isTutor)
+    return str(isTutor)
+
+@app.route('/loadAppointment/', methods=['GET'])
+def loadAppointments():
+    print(email)
+    if isTutor:
+        return history.loadPreviousAppointmentsTutor(email)
+    else:
+        return history.loadPreviousAppointmentsStudent(email)
 
 def dateParse(date):
     #get the parts of the date
