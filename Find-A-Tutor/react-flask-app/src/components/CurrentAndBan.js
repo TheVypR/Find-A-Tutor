@@ -101,15 +101,15 @@ export default function CurrentAndBan() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell><strong>Name</strong></TableCell>
-                                        <TableCell><strong>Role</strong></TableCell>
+                                        <TableCell><strong>Reason</strong></TableCell>
                                         <TableCell><strong>Email</strong></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {bannedUsers.map((student) => (
-                                        <TableRow key={student[0]}>
-                                            <TableCell>{student[2]}</TableCell>
+                                        <TableRow key={student[3]}>
                                             <TableCell>{student[1]}</TableCell>
+                                            <TableCell>{student[2]}</TableCell>
                                             <TableCell>{student[0]}</TableCell>
                                         </TableRow>
                                     ))}

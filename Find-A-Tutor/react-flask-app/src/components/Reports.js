@@ -25,6 +25,7 @@ export default function Reports() {
     //List of reported students and tutors from server
     const [reportedTutors, setReportedTutors] = useState([]);
     const [reportedStudents, setReportedStudents] = useState([]);
+    const [activeTable, setActiveTable] = useState("");
 
     //handle modal popups
     const [enableReport, setEnableReport] = useState(false);
@@ -33,32 +34,41 @@ export default function Reports() {
     const [tutor, setTutor] = useState([]);
 
     //Get reported tutors for the Reports screen
-    useEffect(() => { fetch("/ReportedTutors/")
-        .then(res => res.json())
-        .then(result => {
-            setReportedTutors(result);
-        },
-        (error) => {
-            console.log(error);
-        })
-    }, []);
+    async function fetchReportedTutors() {
+        await fetch("/ReportedTutors/")
+            .then(res => res.json())
+            .then(result => {
+                setReportedTutors(result);
+            },
+            (error) => {
+                console.log(error);
+            })
+    }
 
     //Get reported students for the Reports screen
-    useEffect(() => { fetch("/ReportedStudents/")
-        .then(res => res.json())
-        .then(result => {
-            setReportedStudents(result);
-        },
-        (error) => {
-            console.log(error);
-        })
+    async function fetchReportedStudents() {
+        await fetch("/ReportedStudents/")
+            .then(res => res.json())
+            .then(result => {
+                setReportedStudents(result);
+            },
+            (error) => {
+                console.log(error);
+            })
+    }
+
+    //limit to only one fetch
+    useEffect(() => {
+        fetchReportedStudents()
+        fetchReportedTutors()
     }, []);
 
     //Post whether reported tutor is banned or the report is dismissed
-    function addToBannedList(tutor) {
+    function AddToBannedList(tutor) {
         const tutorToBan = {
             stu_email: tutor[0],
-            reason: tutor[2]
+            reason: tutor[2],
+            table: activeTable,
         };
         fetch('/AddStudentToBan/', {
             method: 'POST',
@@ -67,11 +77,13 @@ export default function Reports() {
             },
             body: JSON.stringify(tutorToBan)
         })
+        handleClose()
     }
 
     //function to have the modal appear and disappear and pass in info
-    function showReport(tutor) {
+    function showReport(tutor, str) {
         setTutor(tutor);
+        setActiveTable(str);
         handleEnableReport();
     }
 
@@ -88,7 +100,7 @@ export default function Reports() {
                     <strong>Report Comment: </strong> {tutor[3]} <br/>   
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => addToBannedList(tutor)}>
+                <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={(_e) => AddToBannedList(tutor)}>
                     Ban Student
                 </Button>
                 <div></div>
@@ -131,7 +143,7 @@ export default function Reports() {
                                 </TableHead>
                                 <TableBody>
                                     {reportedTutors.map((tutor) => (
-                                        <TableRow key={tutor[4]} onClick={() => showReport(tutor)} hover>
+                                        <TableRow key={tutor[4]} onClick={() => showReport(tutor, "tutors")} hover>
                                             <TableCell>{tutor[0]}</TableCell>
                                             <TableCell>{tutor[1]}</TableCell>
                                             <TableCell>{tutor[2]}</TableCell>
@@ -156,7 +168,7 @@ export default function Reports() {
                                 </TableHead>
                                 <TableBody>
                                     {reportedStudents.map((tutor) => (
-                                        <TableRow key={tutor[4]} onClick={() => showReport(tutor)} hover>
+                                        <TableRow key={tutor[4]} onClick={() => showReport(tutor, "students")} hover>
                                             <TableCell>{tutor[0]}</TableCell>
                                             <TableCell>{tutor[1]}</TableCell>
                                             <TableCell>{tutor[2]}</TableCell>

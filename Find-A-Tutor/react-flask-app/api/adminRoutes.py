@@ -55,11 +55,33 @@ def BannedStudents():
 
 def AddStudentToBan(tutor):
     # get additional info
-    print(getFunctions.getName(tutor['stu_email']))
-
+    name = getFunctions.getName(tutor['stu_email'])
 
     # post to db
-    # conn = mysql.connect()
-    # conn.autocommit(True)
-    # cursor = conn.cursor()
-    # cursor.execute("insert into BannedUsers(\""+ tutor['stu_email'] + "\", \""+ tutor['stu_email'] + "\")")
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("insert into BannedUsers(stu_email, stu_name, reason, ban_id) values(\""+ tutor['stu_email'] + "\", \""+ name[0] + "\", \""+ tutor['reason'] + "\", 0)")
+    conn.close()
+
+    # delete from reported users list
+    DeleteUserFromList(tutor)
+
+    return 'Done'
+
+def DeleteUserFromList(tutor):
+    table = ""
+    email = ""
+    if tutor['table'] == "students":
+        table = "ReportedStudents"
+        email = "stu_email"
+    elif tutor['table'] == "tutors":
+        table = "ReportedTutors"
+        email = "tut_email"
+
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("delete from "+ table + " where " + email + " = \""+ tutor['stu_email'] + "\" ")
+    conn.close()
+    return 'Done'

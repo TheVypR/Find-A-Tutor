@@ -7,7 +7,6 @@ from flask_wtf import Form
 from wtforms import BooleanField
 import profile, signup, appointment, adminRoutes
 
-
 #Database stuff
 from flaskext.mysql import MySQL
 

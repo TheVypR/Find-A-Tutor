@@ -23,8 +23,7 @@ mysql.init_app(app)
 def getName(email):
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute("select * from Student where stu_email = \""+email+"\"")
+    cursor.execute("select stu_name from Student where stu_email = \""+email+"\"")
     name = cursor.fetchone()
-    print(name)
     conn.close()
     return name
