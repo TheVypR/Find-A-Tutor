@@ -21,6 +21,17 @@ import { Modal } from 'react-bootstrap';
 import './adminView.css';
 
 const theme = createTheme();
+
+const reportStudents = () => {
+    useEffect(() => {
+        fetch("/ReportedTutors/")
+            .then(res => {
+                result = res.json();
+                return result;
+            })
+    })
+}
+
 export default function Reports() {
     //List of reported students and tutors from server
     const [reportedTutors, setReportedTutors] = useState([]);
