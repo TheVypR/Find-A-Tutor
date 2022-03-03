@@ -6,32 +6,19 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
-import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem'
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
-import { createTheme, ThemeProvider, createStyles, makeStyles } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import './adminView.css';
 
 const theme = createTheme();
-
-const reportStudents = () => {
-    useEffect(() => {
-        fetch("/ReportedTutors/")
-            .then(res => {
-                result = res.json();
-                return result;
-            })
-    })
-}
-
 export default function Reports() {
     //List of reported students and tutors from server
     const [reportedTutors, setReportedTutors] = useState([]);
@@ -45,34 +32,34 @@ export default function Reports() {
     const [tutor, setTutor] = useState([]);
 
     //Get reported tutors for the Reports screen
-    async function fetchReportedTutors() {
-        await fetch("/ReportedTutors/")
-            .then(res => res.json())
-            .then(result => {
-                setReportedTutors(result);
-            },
-            (error) => {
-                console.log(error);
-            })
-    }
+    // async function fetchReportedTutors() {
+    //     await fetch("/ReportedTutors/")
+    //         .then(res => res.json())
+    //         .then(result => {
+    //             setReportedTutors(result);
+    //         },
+    //         (error) => {
+    //             console.log(error);
+    //         })
+    // }
 
-    //Get reported students for the Reports screen
-    async function fetchReportedStudents() {
-        await fetch("/ReportedStudents/")
-            .then(res => res.json())
-            .then(result => {
-                setReportedStudents(result);
-            },
-            (error) => {
-                console.log(error);
-            })
-    }
+    // //Get reported students for the Reports screen
+    // async function fetchReportedStudents() {
+    //     await fetch("/ReportedStudents/")
+    //         .then(res => res.json())
+    //         .then(result => {
+    //             setReportedStudents(result);
+    //         },
+    //         (error) => {
+    //             console.log(error);
+    //         })
+    // }
 
     //limit to only one fetch
-    useEffect(() => {
-        fetchReportedStudents()
-        fetchReportedTutors()
-    }, []);
+    // useEffect(() => {
+    //     fetchReportedStudents()
+    //     fetchReportedTutors()
+    // }, []);
 
     //Post whether reported tutor is banned or the report is dismissed
     function AddToBannedList(tutor) {
@@ -87,8 +74,20 @@ export default function Reports() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(tutorToBan)
-        })
-        handleClose()
+        });
+        handleClose();
+        removeStudent(tutor);
+        removeTutor(tutor);
+    }
+
+    //remove functions to remove people from showing up on screen
+    function removeStudent(tutor) {
+        const arrayCopy = reportedStudents.filter((report) => report[4] !== tutor[4]);
+        setReportedStudents(arrayCopy);
+    }
+    function removeTutor(tutor) {
+        const arrayCopy = reportedTutors.filter((report) => report[4] !== tutor[4]);
+        setReportedTutors(arrayCopy);
     }
 
     //function to have the modal appear and disappear and pass in info
@@ -97,6 +96,19 @@ export default function Reports() {
         setActiveTable(str);
         handleEnableReport();
     }
+
+    //get data from server
+    useEffect(() => {
+        const fetchData = async () => {
+            const responseTutors = await fetch("/ReportedTutors/")
+            const responseStudents = await fetch("/ReportedStudents/")
+            const postTutors = await responseTutors.json();
+            const postStudents = await responseStudents.json();
+            setReportedTutors(postTutors);
+            setReportedStudents(postStudents);
+        }
+        fetchData();
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
@@ -111,7 +123,7 @@ export default function Reports() {
                     <strong>Report Comment: </strong> {tutor[3]} <br/>   
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={(_e) => AddToBannedList(tutor)}>
+                <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => AddToBannedList(tutor)}>
                     Ban Student
                 </Button>
                 <div></div>
