@@ -148,10 +148,7 @@ def contactMe_change(contactMe, tut_email):
     conn.close()
     return 'Done'
 
-def edit_profile(submission):
-    for s in submission:
-        print(s)
-
+def edit_profile(submission, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -162,11 +159,14 @@ def edit_profile(submission):
 
     # classes = submission[1]
     
-    # #update the profile
-    # cursor.execute("update Tutor set name = \"" 
-                    # + info['payment_type'] + "\", payment_details = \"" 
-                    # + info['payment_details'] + "\" where tutor_id = " 
-                    # + info['login_pref'])
+    #update the profile
+    cursor.execute("update Tutor set"
+                    + "\", payment_type = \"" + submission['paymentType'] 
+                    + "\", payment_details = \"" + submission['paymentUser']
+                    + "\" where tut_email = " + tut_email)
+    #+ "\", log_in_as_tutor = \"" + submission['login_pref'] 
+    #+ "\", classes = \"" + submission['classes']
+
                     
     # #delete the classes and rates
     # cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 

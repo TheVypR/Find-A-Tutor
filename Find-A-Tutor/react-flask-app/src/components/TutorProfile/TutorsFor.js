@@ -14,6 +14,7 @@ class TutorsFor extends React.Component {
         this.removeClass = this.removeClass.bind(this);
 
         this.setCourseCode = this.setCourseCode.bind(this);
+        this.setRate = this.setRate.bind(this);
     }
 
     /**
@@ -42,6 +43,7 @@ class TutorsFor extends React.Component {
                 index={index}
                 removeClass={() => { this.removeClass(index) }}
                 setCourseCode={this.setCourseCode}
+                setRate={this.setRate}
             />
         })
     }
@@ -50,8 +52,13 @@ class TutorsFor extends React.Component {
          this.props.removeClass(index);
     }
 
-    setCourseCode(code) {
-        this.props.setCourseCode(code);
+    setCourseCode(code, index) {
+        //send to parent
+        this.props.setCourseCode(code, index);
+    }
+
+    setRate(rate, index) {
+        this.props.setRate(rate, index);
     }
 
     render() {

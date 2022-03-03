@@ -19,8 +19,7 @@ class T_Profile extends React.Component {
             paymentType: "",
             paymentUser: "",
             loginPrefs: -1,
-            classes: [],
-            courseCode: ""
+            classes: [{}]
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,6 +30,8 @@ class T_Profile extends React.Component {
 
         this.addClass = this.addClass.bind(this);
         this.removeClass = this.removeClass.bind(this);
+        this.setCourseCode = this.setCourseCode.bind(this);
+        this.setRate = this.setRate.bind(this);
     }//constructor
 
     /**
@@ -59,16 +60,13 @@ class T_Profile extends React.Component {
     }//componentDidMount
 
     handleSubmit() {
-        let classes = {
-            'courseCode': this.state.courseCode,
-            'rate': this.state.rate
-        }
+        console.log(this.state.classes);
 
         let post = {
             'paymentType': this.state.paymentType,
             'paymentUser': this.state.paymentUser,
             'loginPrefs': this.state.loginPrefs,
-            'classes': classes
+            'classes': this.state.classes
         }
         console.log(post);
         const response = fetch("/myProfile/", {
@@ -104,8 +102,32 @@ class T_Profile extends React.Component {
         this.setState({ paymentUser: user });
     }
 
-    setCourseCode(code) {
-        this.setState({courseCode: code});
+    /**
+     * sets the courseCode for a class in the classes state
+     * 
+     * @param {string} code entered courseCode
+     * @param {int} index given index of class
+     */
+    setCourseCode(code, index) {
+        let classes = this.state.classes;
+        let aClass = {...classes[index]};
+        aClass['courseCode'] = code;
+        classes[index] = aClass;
+        this.setState({classes: classes})
+    }
+
+    /**
+     * sets the rate for a class in the classes state
+     * 
+     * @param {int} rate entered rate
+     * @param {int} index given index
+     */
+    setRate(rate, index) {
+        let classes = this.state.classes;
+        let aClass = {...classes[index]};
+        aClass['rate'] = rate;
+        classes[index] = aClass;
+        this.setState({classes: classes});
     }
 
     render() {
@@ -128,6 +150,7 @@ class T_Profile extends React.Component {
                         addClass={this.addClass}
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
+                        setRate={this.setRate}
                     />
                 </div>
 
