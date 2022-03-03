@@ -17,13 +17,16 @@ class T_Profile extends React.Component {
         this.state = {
             items: {},
             paymentType: "",
+            paymentUser: "",
             loginPrefs: -1,
-            classes: []
+            classes: [],
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
-        this.setPaymentType = this.setPaymentType(this);
+        this.setPaymentType = this.setPaymentType.bind(this);
+        this.setLoginPrefs = this.setLoginPrefs.bind(this);
+        this.setPaymentUser = this.setPaymentUser.bind(this);
     }//constructor
 
     /**
@@ -52,11 +55,33 @@ class T_Profile extends React.Component {
     }//componentDidMount
 
     handleSubmit() {
+        let post = {
+            'paymentType': this.state.paymentType,
+            'paymentUser': this.state.paymentUser,
+            'loginPrefs': this.state.loginPrefs,
+            'classes': this.state.classes
+        }
+        console.log(post);
+        const response = fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post)
+        })//fetch
         console.log("applied");
     }
 
-    setPaymentType(e) {
-        this.setState({paymentType: e})
+    setPaymentType(type) {
+        this.setState({ paymentType: type });
+    }
+
+    setLoginPrefs(pref) {
+        this.setState({ loginPrefs: pref });
+    }
+
+    setPaymentUser(user) {
+        this.setState({paymentUser: user});
     }
 
     render() {
@@ -69,7 +94,11 @@ class T_Profile extends React.Component {
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">
-                    <PayAndLoginPrefs setPaymentType={() => {this.setPaymentType(e)}}/>
+                    <PayAndLoginPrefs
+                        setPaymentType={this.setPaymentType}
+                        setLoginPrefs={this.setLoginPrefs}
+                        setPaymentUser={this.setPaymentUser}
+                    />
                     <TutorsFor />
                 </div>
 

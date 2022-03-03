@@ -99,13 +99,15 @@ def myProfile():
         return profile.remove_timeSlot(splitTimeVals, email)
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
-    else :
+    elif 'startTime' in submission.keys() :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
         endTime = dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
-        return profile.edit_profile(times, submission)
+        return profile.post_timeSlot(times, email)
+    else :
+        return profile.edit_profile(submission, email)
   else:
     return profile.retrieve_profile(email)
 

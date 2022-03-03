@@ -107,7 +107,7 @@ def retrieve_classes(tut_email):
     return classes
 
 # Submit time slots to db for given weekday
-def post_TimeSlots(times, submission, tut_email):
+def post_timeSlots(times, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -147,27 +147,25 @@ def contactMe_change(contactMe, tut_email):
     conn.close()
     return 'Done'
 
-def edit_profile(times, submission):
-    tut_email = "apelia18@gcc.edu"
-    # conn = mysql.connect()
-    # conn.autocommit(True)
-    # cursor = conn.cursor()
+def edit_profile(submission):
+    for s in submission:
+        print(s)
+        
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
 
     # keys = list(submission.keys())
     # print(keys)
 
-    post_TimeSlots(times, submission, tut_email)
 
     # classes = submission[1]
     
     # #update the profile
     # cursor.execute("update Tutor set name = \"" 
-                    # + info['name'] + "\", log_in_as_tutor = \"" 
-                    # + info['login_pref'] + "\", contact_me = \"" 
-                    # + info['contact_me'] + "\", payment_type = \"" 
                     # + info['payment_type'] + "\", payment_details = \"" 
                     # + info['payment_details'] + "\" where tutor_id = " 
-                    # + tutor_id)
+                    # + info['login_pref'])
                     
     # #delete the classes and rates
     # cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
@@ -180,5 +178,6 @@ def edit_profile(times, submission):
                     # + c[rate] + "\")")
                     
     # print(info['payInfo'])
-    
+
+    conn.close()
     return 'Done'

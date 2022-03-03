@@ -139,7 +139,6 @@ class Weekday extends React.Component {
 
         console.log("Post times: " + times['startTime']);
 
-        let submission = { 'remove': times }
         const response = fetch("/myProfile/", {
             method: "POST",
             headers: {

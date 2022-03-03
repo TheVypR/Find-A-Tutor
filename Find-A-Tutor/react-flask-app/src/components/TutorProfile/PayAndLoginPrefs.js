@@ -10,27 +10,36 @@ class PayAndLoginPrefs extends React.Component {
         }
 
         this.handleSelect = this.handleSelect.bind(this);
+        this.setPaymentType = this.setPaymentType.bind(this);
+    }
+
+    /**
+     * Set prop to set state of parent for payment type
+     * 
+     * @param {string} type 
+     */
+    setPaymentType(type) {
+        this.props.setPaymentType("Venmo");
     }
 
     /**
      * Updates payment username to selected item
      * sends selection to parent
      * 
-     * @param {String} e selected payment method
+     * @param {String} type selected payment method
      */
-    handleSelect = (e) => {
-        this.setState({paymentType: e})
-        paymentType = e;
+    handleSelect(type) {
+        this.setState({ paymentType: type })
 
         var user = document.getElementById("paymentUser");
-        if (user.style.display != "none" && paymentType == "Cash") {
+        if (user.style.display != "none" && this.paymentType == "Cash") {
             user.style.display = "none";
         } else {
             user.style.display = "block";
         }
-        
+
         //Send to parent
-        this.props.setPaymentType(e);
+        this.setPaymentType(type);
     }
 
     render() {
@@ -48,7 +57,7 @@ class PayAndLoginPrefs extends React.Component {
                                     size="sm"
                                     variant="primary"
                                     title={this.state.paymentType}
-                                    onSelect={(e) => {this.handleSelect(e)}}
+                                    onSelect={e => this.handleSelect(e)}
                                 >
                                     <Dropdown.Item eventKey="Venmo">Venmo</Dropdown.Item>
                                     <Dropdown.Item eventKey="Paypal">Paypal</Dropdown.Item>
@@ -57,11 +66,17 @@ class PayAndLoginPrefs extends React.Component {
                             ))}
                         </div>
 
-                        <input type="text" id="paymentUser" placeholder={this.state.paymentType + " Username"}/>
+                        {/* Payment Username */}
+                        <input
+                            type="text"
+                            id="paymentUser"
+                            placeholder={this.state.paymentType + " Username"}
+                            onChange={e => this.props.setPaymentUser(e.target.value)}
+                        />
 
 
                         {/*Login Info*/}
-                        <div id="loginInfo" onChange={(e) => this.setState({ loginPrefs: e.target.value })}>
+                        <div id="loginInfo" onChange={(e) => this.props.setLoginPrefs(e.target.value)}>
                             <p id="loginPreferences"> Login Preferences </p>
                             <input name="loginPrefs" type="radio" id="studentView" value="StudentView" />
                             <label htmlFor="stuentView"> Student View </label><br />
