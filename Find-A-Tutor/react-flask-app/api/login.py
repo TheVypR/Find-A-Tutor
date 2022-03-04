@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
 from flask_wtf import Form 
 from wtforms import BooleanField
-import profile, signup, appointment, history
+import profile, signup, appointment, history, adminRoutes
 
 
 #Database stuff
@@ -73,10 +73,39 @@ def login():
 
   return jsonify({'email': email})
 
-@app.route('/email/', methods=['GET'])
-def getAuth():
-  print("Email!!!: " + email)
-  return {'authTag':email}
+# provide a list of current tutors
+@app.route('/CurrentTutors/', methods=['GET'])
+def currentTutors():
+    return adminRoutes.CurrentTutors()
+
+# reported tutors list
+@app.route('/ReportedTutors/', methods=['GET'])
+def reportedTutors():
+    return adminRoutes.ReportedTutors()
+
+# reported students list
+@app.route('/ReportedStudents/', methods=['GET'])
+def reportedStudents():
+    return adminRoutes.ReportedStudents()
+
+# provide a list of banned students
+@app.route('/BannedStudents/', methods=['GET'])
+def bannedStudents():
+    return adminRoutes.BannedStudents()
+
+# remove student from reported students or tutors list
+@app.route('/DimissReport/', methods=['POST'])
+def dismissReport():
+    tutor = request.get_json()
+    adminRoutes.DeleteUserFromList(tutor)
+    return 'Done'
+
+# add student to the banned list
+@app.route('/AddStudentToBan/', methods=['POST'])
+def addStudentToBan():
+    tutor = request.get_json()
+    adminRoutes.AddStudentToBan(tutor)
+    return 'Done'
 
 #signUp page
 @app.route('/signup/', methods=['POST'])

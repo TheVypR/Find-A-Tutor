@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import TimePicker from 'react-time-picker';
@@ -45,6 +45,12 @@ function FullCalendarApp() {
 
   //for authentication
   const authContext = useContext(AuthContext);
+
+  //for LinkingPages
+  const navigate = useNavigate();
+  const nextPage = event => {
+    navigate("/myProfile/", {replace: true});
+  }
   
   //toggle the modal on/off
   const handleClose = function(){setShowTime(false); setShowAppt(false); setShowEdit(false)};
@@ -398,7 +404,7 @@ function FullCalendarApp() {
               text: 'To Profile',
 
               click: function() {
-                window.location.href = '/myProfile'
+                nextPage();
               }
             },
 

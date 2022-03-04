@@ -9,6 +9,8 @@ import SignUp from "./components/SignUp"
 import TutorProfile from "./components/TutorProfile"
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
+import Reports from './components/Reports';
+import CurrentAndBan from './components/CurrentAndBan';
 
 import { AuthContext } from './components/AuthContext'
 
@@ -35,6 +37,8 @@ export default function App() {
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
+            <Route path='/Reports' element={<Reports />} />
+            <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
