@@ -95,7 +95,13 @@ class T_Profile extends React.Component {
     }
 
     setLoginPrefs(pref) {
-        this.setState({ loginPrefs: pref });
+        let loginPref = -1
+        if (pref == "StudentView")
+            loginPref = 0;
+        else 
+            loginPref = 1;
+        
+        this.setState({ loginPrefs: loginPref });
     }
 
     setPaymentUser(user) {

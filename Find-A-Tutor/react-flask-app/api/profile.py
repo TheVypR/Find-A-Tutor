@@ -158,12 +158,19 @@ def edit_profile(submission, tut_email):
 
 
     # classes = submission[1]
+    print("Login Prefs: " + str(submission['loginPrefs']))
+
     
     #update the profile
     cursor.execute("update Tutor set"
-                    + "\", payment_type = \"" + submission['paymentType'] 
-                    + "\", payment_details = \"" + submission['paymentUser']
-                    + "\" where tut_email = " + tut_email)
+                    + " pay_type = \"" + submission['paymentType'] + "\"" 
+                    + ", pay_info = \"" + submission['paymentUser'] + "\""
+                    + ", login_pref = " + str(submission['loginPrefs'])
+                    + " where tut_email = \"" + tut_email + "\";")
+
+#     update Tutor
+# set pay_type="PayPal", pay_info="user"
+# where tut_email="apelia18@gcc.edu";
     #+ "\", log_in_as_tutor = \"" + submission['login_pref'] 
     #+ "\", classes = \"" + submission['classes']
 
