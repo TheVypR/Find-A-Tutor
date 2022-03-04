@@ -80,3 +80,14 @@ def submitStudentReport(data, email):
                         + data['reason'] + "\", \""
                         + data['report'] + "\")")
     return "DONE"
+    
+def submitTutorReport(data, email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("insert into ReportedTutors(tut_email, reported_by, reason, report) values (\"" 
+                        + data['tutor'] + "\", \""
+                        + email + "\", \""
+                        + data['reason'] + "\", \""
+                        + data['report'] + "\")")
+    return "DONE"
