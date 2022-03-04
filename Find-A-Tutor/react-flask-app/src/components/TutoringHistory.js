@@ -43,16 +43,27 @@ export default function TutoringHistory() {
             )
 	}, []);
 	
+	useEffect(() => {setRating(appts['rating']);}, []);
+	
 	function toggleView() {
 		fetch("/toggleView/")
 	};
 	
 	const onRatingChange = (event) => {
 		console.log(event.target.value)
+		console.log(target)
+		fetch("/submitRating/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{'target': target, 'rating': event.target.value}])  
+		})
 	}
 	
-	const onRowClick = (event) => {
-		console.log(event);
+	function onRowClick(row) {
+		console.log(row);
+		setTarget(row['with'])
 	}
 	
 	const handleReport = () => {
@@ -101,7 +112,7 @@ export default function TutoringHistory() {
                             </Typography>
                             <Table size="small">
                                 <TableHead>
-                                    <TableRow onClick={onRowClick}>
+                                    <TableRow>
                                         <TableCell>Student</TableCell>
                                         <TableCell>Class</TableCell>
                                         <TableCell>Date Tutored</TableCell>
@@ -112,7 +123,7 @@ export default function TutoringHistory() {
                                 </TableHead>
                                 <TableBody>
 									{appts.map((row) => (
-                                      <TableRow key={row['id']}>
+                                      <TableRow key={row['id']} onClick={() => (onRowClick(row))}>
                                         <TableCell>{row['with']}</TableCell>
                                         <TableCell>{row['class']}</TableCell>
                                         <TableCell>{row['time']}</TableCell>

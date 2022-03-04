@@ -175,15 +175,15 @@ def loadAppointments():
 @app.route('/submitRating/', methods=['POST'])
 def rateTutor():
     data = request.get_json()
-    history.submitRating(data[0])
+    return history.submitRating(data[0])
 
 @app.route('/submitReport/', methods=['POST'])
 def report():
     data = request.get_json()
     if isTutor:
-        history.submitStudentReport(data[0], email)
+        return history.submitStudentReport(data[0], email)
     else:
-        history.submitTutorReport(data[0], email)
+        return history.submitTutorReport(data[0], email)
 
 def dateParse(date):
     #get the parts of the date
