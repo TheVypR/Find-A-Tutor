@@ -67,7 +67,7 @@ def getTimes(email):
     
     for time in times:
         if time[3] == 0:
-            availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time"})
+            availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time", 'color':"blue"})
     
     conn.close()
     return {'times':availTimes}
@@ -91,7 +91,8 @@ def getAppointments(email):
             'title':appt[6], 
             'block_s':appt[7],
             'block_e':appt[8], 
-            'type':"appt"})
+            'type':"appt",
+            'color':"green"})
     
     conn.close()
     

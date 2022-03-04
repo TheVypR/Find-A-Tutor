@@ -43,6 +43,11 @@ function FullCalendarApp() {
   const [blockStart, setBlockStart] = useState("");
   const [blockEnd, setBlockEnd] = useState("");
 
+  //filter
+  const [evnts, setEvnts] = useState([])
+  const [filterTimes, setFilterTimes] = useState(false)
+  const [filterAppts, setFilterAppts] = useState(false)
+  
   //for authentication
   const authContext = useContext(AuthContext);
 
@@ -59,45 +64,31 @@ function FullCalendarApp() {
   const handleShowEdit = function (){ setShowEdit(true)};
 
   const [checked, setChecked] = React.useState(false);
-
-    const handleChange = () => {
-      setChecked(!checked);
-      if(!checked){
-        alert("Im now checked");
-        //filter appointments to users' appointments
-        filterMyAps();
-      }else{
-        alert("I am now not checked");
-        //query all
-        fetch("/getAppointments/")
-            .then(res => res.json())
-            .then(
-                result => {
-                    setAppts(result['appts']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
-      }
-      
-    }
-
-    const filterMyAps = () => {
-      fetch("/filter")
-      .then(res => res.json())
-      .then(
-        result => {
-          setAppts(result['myApts']);
-        },
-        (error) => {
-          console.log(error);
-      }
-      )
-    }
+  
+  const updateEvents = function() {
+	console.log("update")
+	setEvnts([])
+	if (filterAppts) {
+		console.log("appts")
+		setEvnts(evnts.concat(appts));
+	} else {
+		for (let i = 0; i < evnts.length; i++) {
+			if (evnts[i]['type'] == "appt") {
+				setEvnts(evnts.splice(i, 1));
+			}
+		}
+	}
+	if (filterTimes) {
+		console.log("times")
+		setEvnts(evnts.concat(times));
+	} else {
+		for (let i = 0; i < evnts.length; i++) {
+			if (evnts[i]['type'] == "time") {
+				setEvnts(evnts.splice(i, 1));
+			}
+		}
+	}
+  }
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
@@ -239,7 +230,6 @@ function FullCalendarApp() {
 		)
 	}
 	
-	console.log(times);
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
@@ -346,21 +336,23 @@ function FullCalendarApp() {
             type = "checkbox"
             id="myApts"
             name="filterMyApts"
-            checked={checked}
-            onChange={handleChange}
+			value='appt'
+            checked={filterAppts}
+            onChange={() => {setFilterAppts(!filterAppts); updateEvents()}}
           />
-            My Appointments
+          My Appointments
         </div>
-        {/* <div>
+        <div>
           <input
             type = "checkbox"
             id="availableApts"
             name="filterAvailApts"
-            checked={checked}
-            onChange={handleChange}
+			value='time'
+            checked={filterTimes}
+            onChange={() => {setFilterTimes(!filterTimes); updateEvents()}}
           />
-          Available Appointments
-        </div> */}
+          Available Times
+        </div>
       </div>
           
       {/* <div class="filter">
@@ -411,7 +403,7 @@ function FullCalendarApp() {
           }}//end button setup
 
           //add appointments to calendar
-          events={times.concat(appts)}
+          events={evnts}
 			
           //formatting of appointments
           eventColor="green"	
