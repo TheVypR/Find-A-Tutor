@@ -3,8 +3,9 @@ import { Button } from 'react-bootstrap';
 
 import Class from './Class'
 
-const index = 1;
-
+/**
+ * Allows users to add classes that they tutor for
+ */
 class TutorsFor extends React.Component {
     constructor(props) {
         super(props);
@@ -12,7 +13,6 @@ class TutorsFor extends React.Component {
         this.handleAddClass = this.handleAddClass.bind(this);
         this.renderClass = this.renderClass.bind(this);
         this.removeClass = this.removeClass.bind(this);
-
         this.setCourseCode = this.setCourseCode.bind(this);
         this.setRate = this.setRate.bind(this);
     }
@@ -45,21 +45,37 @@ class TutorsFor extends React.Component {
                 setCourseCode={this.setCourseCode}
                 setRate={this.setRate}
             />
-        })
-    }
+        })//return
+    }//renderClass
 
+    /**
+     * Calls parent's removeClass passing in the current class index
+     * 
+     * @param {int} index current class index
+     */
     removeClass(index) {
          this.props.removeClass(index);
-    }
+    }//removeClass
 
+    /**
+     * Calls parent's setCourseCode passing in the course code and the index
+     * 
+     * @param {string} code entered course code
+     * @param {int} index index of class
+     */
     setCourseCode(code, index) {
-        //send to parent
         this.props.setCourseCode(code, index);
-    }
+    }//setCourseCode
 
+    /**
+     * Calls parent's setRate passing in the rate and the index
+     * 
+     * @param {int} rate entered hourly rate for tutoring a class
+     * @param {int} index index of class
+     */
     setRate(rate, index) {
         this.props.setRate(rate, index);
-    }
+    }//setRate
 
     render() {
         return (

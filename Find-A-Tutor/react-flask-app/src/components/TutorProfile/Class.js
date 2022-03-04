@@ -2,13 +2,10 @@ import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsPatchCheckFill } from "react-icons/bs";
 
+/**
+ * Renders the Inputs for a Class
+ */
 class Class extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.RemoveClass
-    }
-
     render() {
         let index = this.props.index;
         return (
