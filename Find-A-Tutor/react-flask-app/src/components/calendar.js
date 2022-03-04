@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import './App.css';
 import TimePicker from 'react-time-picker';
@@ -45,13 +45,18 @@ function FullCalendarApp() {
 
   //for authentication
   const authContext = useContext(AuthContext);
+
+  //for LinkingPages
+  const navigate = useNavigate();
+  const nextPage = event => {
+    navigate("/myProfile/", {replace: true});
+  }
   
   //toggle the modal on/off
   const handleClose = function(){setShowTime(false); setShowAppt(false); setShowEdit(false)};
   const handleShowTime = function (){ setShowTime(true)};
   const handleShowAppt = function (){ setShowAppt(true)};
   const handleShowEdit = function (){ setShowEdit(true)};
-
 
   const [checked, setChecked] = React.useState(false);
 
@@ -285,10 +290,10 @@ function FullCalendarApp() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-		  <Button variant="danger" onClick={cancelAppt}>
+		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" onClick={handleShowEdit}>
+          <Button variant="primary" type="submit" onClick={handleShowEdit}>
             Edit Appointment
           </Button>
         </Modal.Footer>
@@ -399,7 +404,7 @@ function FullCalendarApp() {
               text: 'To Profile',
 
               click: function() {
-                window.location.href = '/myProfile'
+                nextPage();
               }
             },
 
