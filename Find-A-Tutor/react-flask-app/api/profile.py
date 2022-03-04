@@ -153,19 +153,15 @@ def edit_profile(submission, tut_email):
     conn.autocommit(True)
     cursor = conn.cursor()
 
-    # keys = list(submission.keys())
-    # print(keys)
-
-
-    # classes = submission[1]
-    print("Login Prefs: " + str(submission['loginPrefs']))
-
+    #Check for empty values
+    # for key in submission.keys():
+    #     if (submission)
     
     #update the profile
     cursor.execute("update Tutor set"
-                    + " pay_type = \"" + submission['paymentType'] + "\"" 
-                    + ", pay_info = \"" + submission['paymentUser'] + "\""
-                    + ", login_pref = " + str(submission['loginPrefs'])
+                    + " pay_type = \"" + submission['pay_type'] + "\"" 
+                    + ", pay_info = \"" + submission['pay_info'] + "\""
+                    + ", login_pref = " + str(submission['login_pref'])
                     + " where tut_email = \"" + tut_email + "\";")
 
 #     update Tutor

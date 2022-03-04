@@ -30,6 +30,7 @@ class T_Profile extends React.Component {
         this.removeClass = this.removeClass.bind(this);
         this.setCourseCode = this.setCourseCode.bind(this);
         this.setRate = this.setRate.bind(this);
+        this.checkForEmptyState = this.checkForEmptyState.bind(this);
     }//constructor
 
     /**
@@ -58,13 +59,17 @@ class T_Profile extends React.Component {
      * Collects state values and sends them to the backend
      */
     handleSubmit() {
+        //Collect state values
         let post = {
-            'paymentType': this.state.paymentType,
-            'paymentUser': this.state.paymentUser,
-            'loginPrefs': this.state.loginPrefs,
-            'classes': this.state.classes
-        }
+            'pay_type': this.state.paymentType,
+            'pay_info': this.state.paymentUser,
+            'login_pref': this.state.loginPrefs,
+            'classes': this.state.classes//TODO: This will have to be different
+        }//post
 
+        this.checkForEmptyState(post);
+
+        //Fetch
         const response = fetch("/myProfile/", {
             method: "POST",
             headers: {
@@ -75,14 +80,34 @@ class T_Profile extends React.Component {
     }//handleSubmit
 
     /**
+     * If the state is empty if fills in with db data
+     * 
+     * @param {dictionary} post things being sent to backend
+     */
+    checkForEmptyState(post) {
+        //Check for empty values
+        for (let postKey in post) {
+            if (post[postKey] == "" || post[postKey] == -1 || post[postKey] == [{}]) {
+                //replace with db data
+                for (let getKey in this.state.items) {
+                    console.log(getKey + ": " + this.state.items[getKey]);
+                    if (postKey == getKey) {
+                        post[postKey] = items[getKey];
+                    }//if
+                }//for
+            }//if
+        }//for
+    }//checkForEmptyState
+
+    /**
      * Sets array value with empty class
      * 
      * @param {dictionary} aClass empty dictionary representing a class
      */
     addClass(aClass) {
-        this.setState({classes: [...this.state.classes, aClass]})
+        this.setState({ classes: [...this.state.classes, aClass] })
     }//addClass
-    
+
     /**
      * Removes class from DOM
      * 
@@ -113,9 +138,9 @@ class T_Profile extends React.Component {
 
         if (pref == "StudentView")
             loginPref = 0;
-        else 
+        else
             loginPref = 1;
-        
+
         this.setState({ loginPrefs: loginPref });
     }//setLoginPrefs
 
@@ -136,10 +161,10 @@ class T_Profile extends React.Component {
      */
     setCourseCode(code, index) {
         let classes = this.state.classes;
-        let aClass = {...classes[index]};
+        let aClass = { ...classes[index] };
         aClass['courseCode'] = code;
         classes[index] = aClass;
-        this.setState({classes: classes})
+        this.setState({ classes: classes })
     }//setCourseCode
 
     /**
@@ -150,10 +175,10 @@ class T_Profile extends React.Component {
      */
     setRate(rate, index) {
         let classes = this.state.classes;
-        let aClass = {...classes[index]};
+        let aClass = { ...classes[index] };
         aClass['rate'] = rate;
         classes[index] = aClass;
-        this.setState({classes: classes});
+        this.setState({ classes: classes });
     }//setRate
 
     render() {
