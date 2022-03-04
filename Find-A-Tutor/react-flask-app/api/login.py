@@ -149,7 +149,7 @@ def rateTutor():
     history.submitRating(data[0])
 
 @app.route('/submitReport/', methods=['POST'])
-def rateTutor():
+def report():
     data = request.get_json()
     if isTutor:
         history.submitStudentReport(data[0], email)

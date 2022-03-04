@@ -1,4 +1,5 @@
 import Table from '@mui/material/Table';
+import { Modal } from 'react-bootstrap';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
@@ -19,6 +20,15 @@ const theme = createTheme();
 export default function TutoringHistory() {
     const [rating, setRating] = useState(0);
 	const [appts, setAppts] = useState([]);
+	const [target, setTarget] = useState("");
+	const [reason, setReason] = useState("");
+	
+	//modal handles
+	const [showReport, setShowReport] = useState(false);
+	
+	//modal toggles
+	const handleClose = function(){setShowReport(false)};
+	const handleShowReport = function (){ setShowReport(true)};
 	
 	//get history
 	useEffect(() => { fetch("/loadAppointment/")
@@ -45,9 +55,43 @@ export default function TutoringHistory() {
 		console.log(event);
 	}
 	
+	const handleReport = () => {
+		console.log(reason)
+		console.log(target)
+	}
+	
     return (
         <ThemeProvider theme={theme}>
-            <Box component="main" sx={{ backgroundColor: 'white', flexgrow: 1, height: '200vh', overflow: 'auto' }}>
+			<Box component="main" sx={{ backgroundColor: 'white', flexgrow: 1, height: '200vh', overflow: 'auto' }}>
+				<Modal show={showReport} onHide={handleClose}>
+					<form>
+						<Modal.Header closeButton>
+						  <Modal.Title>Report </Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							Reason<b/><br/>
+								<input type="radio" id="harass" name="reason" value="Harassment" onChange={(e) => setReason(e.target.value)}/>
+								<label htmlFor="harass">Harassment</label><br/>
+								<input type="radio" id="spam" name="reason" value="Spam" onChange={(e) => setReason(e.target.value)}/>
+								<label htmlFor="spam">Spam</label><br/>
+								<input type="radio" id="miss" name="reason" value="Missed Appointment" onChange={(e) => setReason(e.target.value)}/>
+								<label htmlFor="miss">Missed Appointment</label><br/>
+								<input type="radio" id="other" name="reason" value="Other" onChange={(e) => setReason(e.target.value)}/>
+								<label htmlFor="other">Other</label><br/>
+							Comment 
+							<input type="textarea" id="report"/><br/>
+						</Modal.Body>
+						
+						<Modal.Footer>
+						  <Button variant="secondary" onClick={handleClose}>
+							Cancel
+						  </Button>
+						  <Button variant="primary" onClick={handleReport}>
+							Report
+						  </Button>
+						</Modal.Footer>
+					</form>
+				  </Modal>
                 <Container maxWidth = "lg" sx={{mt: 4, mb: 4}}>
                 <CssBaseline />
                     <Grid container spacing={3}>
@@ -81,7 +125,7 @@ export default function TutoringHistory() {
 											/>
                                         </TableCell>
                                         <TableCell>
-                                            <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}}>
+                                            <Button type="submit" variant="contained" sx={{mt: 1, mb: 1}} onClick={handleShowReport}>
                                                 Report
                                             </Button>
                                         </TableCell>
