@@ -22,6 +22,7 @@ export default function TutoringHistory() {
 	const [appts, setAppts] = useState([]);
 	const [target, setTarget] = useState("");
 	const [reason, setReason] = useState("");
+	const [report, setReport] = useState("");
 	
 	//modal handles
 	const [showReport, setShowReport] = useState(false);
@@ -69,6 +70,14 @@ export default function TutoringHistory() {
 	const handleReport = () => {
 		console.log(reason)
 		console.log(target)
+		console.log(report)
+		fetch("/submitReport/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify([{'target': target, 'reason': reason, 'report':report}])  
+		})
 	}
 	
     return (
@@ -90,14 +99,14 @@ export default function TutoringHistory() {
 								<input type="radio" id="other" name="reason" value="Other" onChange={(e) => setReason(e.target.value)}/>
 								<label htmlFor="other">Other</label><br/>
 							Comment 
-							<input type="textarea" id="report"/><br/>
+							<input type="textarea" id="report" onChange={(e) => setReport(e.target.value)}/><br/>
 						</Modal.Body>
 						
 						<Modal.Footer>
 						  <Button variant="secondary" onClick={handleClose}>
 							Cancel
 						  </Button>
-						  <Button variant="primary" onClick={handleReport}>
+						  <Button variant="primary" onClick={() => {handleReport(); handleClose();}}>
 							Report
 						  </Button>
 						</Modal.Footer>

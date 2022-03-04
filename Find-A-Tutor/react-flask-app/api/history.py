@@ -77,7 +77,7 @@ def submitStudentReport(data, email):
     conn.autocommit(True)
     cursor = conn.cursor()
     cursor.execute("insert into ReportedStudents(stu_email, reported_by, reason, report) values (\"" 
-                        + data['student'] + "\", \""
+                        + data['target'] + "\", \""
                         + email + "\", \""
                         + data['reason'] + "\", \""
                         + data['report'] + "\")")
@@ -88,7 +88,7 @@ def submitTutorReport(data, email):
     conn.autocommit(True)
     cursor = conn.cursor()
     cursor.execute("insert into ReportedTutors(tut_email, reported_by, reason, report) values (\"" 
-                        + data['tutor'] + "\", \""
+                        + data['target'] + "\", \""
                         + email + "\", \""
                         + data['reason'] + "\", \""
                         + data['report'] + "\")")
