@@ -39,7 +39,7 @@ def loadPreviousAppointmentsStudent(email):
     history = cursor.fetchall()
     
     for appt in history:
-        apptHistory.append({'with': appt[2], 'class': appt[3], 'time': appt[4]})
+        apptHistory.append({'with': appt[2], 'class': appt[3], 'time': appt[4], 'id': appt[0]})
     
     conn.close()
 
