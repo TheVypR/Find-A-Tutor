@@ -19,9 +19,9 @@ class TutorProfile extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            classesList: [{ verified: "", courseCode: "", rate: "" }],
+            classesList: [],
             time: moment,
-            sundayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
+            sundayTimeSlots: [],
             mondayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
             tuesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
             wednesdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
@@ -30,7 +30,7 @@ class TutorProfile extends React.Component {
             saturdayTimeSlots: [{ startTime: "", endTime: "", date: "" }],
 
             isLoaded: false,
-            items: "",
+            items: {},
             isTutorView: true,
             payType: "",
             inputList: "",
@@ -52,14 +52,14 @@ class TutorProfile extends React.Component {
         this.submitTime = this.submitTime.bind(this);
     }
 
-    componentDidMount() {
-        fetch("/myProfile")
+    async componentDidMount() {
+        fetch("/myProfile/")
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         isLoaded: true,
-                        items: result.items
+                        items: result
                     });
                 },
                 // Note: it's important to handle errors here
@@ -78,7 +78,7 @@ class TutorProfile extends React.Component {
     handleSelect = (value) => {
         this.setState({ payType: value });
         paymentType = value;
-        
+
         var user = document.getElementById("venmoUser");
         if (user.style.display != "none" && paymentType == "Cash") {
             user.style.display = "none";
@@ -95,15 +95,24 @@ class TutorProfile extends React.Component {
     }
 
     handleSubmit = () => {
-        const values = [{
+        console.log("apply")
+        const values = {
+            "classesList": this.state.classesList,
             "payType": this.state.payType,
             "inputList": this.state.inputList,
             "payVal": this.state.payVal,
             "loginPref": this.state.payVal,
             "rates": this.state.payVal,
             "contact": this.state.payVal,
-            "times": this.state.times
-        }];
+            "times": this.state.times,
+            "sundayTimeSlots": this.state.sundayTimeSlots,
+            "mondayTimeSlots": this.state.mondayTimeSlots,
+            "tuesdayTimeSlots": this.state.mondayTimeSlots,
+            "wednesdayTimeSlots": this.state.mondayTimeSlots,
+            "thursdayTimeSlots": this.state.thursdayTimeSlots,
+            "fridayTimeSlots": this.state.fridayTimeSlots,
+            "saturdayTimeSlots": this.state.saturdayTimeSlots
+        };
 
         const response = fetch("/myProfile/", {
             method: "POST",
@@ -115,7 +124,6 @@ class TutorProfile extends React.Component {
     }
 
     onChange(time) {
-        console.log("test");
     }
 
 
@@ -141,7 +149,7 @@ class TutorProfile extends React.Component {
             this.setState({
                 sundayTimeSlots: [
                     ...this.state.sundayTimeSlots,
-                    { startTime: "", endTime: "" }
+                    { 'startTime': "", 'endTime': "", 'date': "" }
                 ]
             })
         } else if (day == "monday") {
@@ -240,29 +248,57 @@ class TutorProfile extends React.Component {
     }
 
     submitTime = (startTime, endTime, index, day) => {
-        var sTime = startTime.format(format).toString();
-        var eTime = endTime.format(format).toString();
-        var date = startTime['_d'];
-        var timeSlot = {sTime, eTime, date};
+        if (startTime != undefined && endTime != undefined) {
+            var sTime = startTime.format(format).toString();
+            var eTime = endTime.format(format).toString();
+            var date = startTime['_d'];
 
-        if (day == "sunday") {
-            this.state.sundayTimeSlots[index] = timeSlot;
-            var startElem = document.getElementById(index + "StartTimepicker");
-            var endElem = document.getElementById(index + "EndTimepicker");
-            startElem.remove();
-            endElem.remove();
-        } else if (day == "monday") {
-            this.state.mondayTimeSlots[index] = timeSlot;
-        } else if (day == "tuesday") {
-            this.state.tuesdayTimeSlots[index] = timeSlot;
-        } else if (day == "wednesday") {
-            this.state.wednesdayTimeSlots[index] = timeSlot;
-        } else if (day == "thursday") {
-            this.state.thursdayTimeSlots[index] = timeSlot;
-        } else if (day == "friday") {
-            this.state.fridayTimeSlots[index] = timeSlot;
-        } else if (day == "saturday") {
-            this.state.saturdayTimeSlots[index] = timeSlot;
+            let timesDiv = document.createElement("div");
+            let times = document.createTextNode(sTime + " to " + eTime);
+            timesDiv.appendChild(times);
+            timesDiv.classList.add('SubmittedTimeSlot')
+
+
+            if (day == "sunday") {
+                let shallowCopy = [...this.state.sundayTimeSlots];
+                let timeSlotToChange = {...shallowCopy[index]};
+                timeSlotToChange = {'startTime': sTime, 'endTime': eTime, 'date': date}
+                console.log(timeSlotToChange);
+                shallowCopy[index] = timeSlotToChange;
+                console.log(shallowCopy);
+                this.setState({sundayTimeSlots: shallowCopy});
+                console.log(this.state.sundayTimeSlots);
+                var timePickers = document.getElementById(index+"sundayTimeSlot");
+                timePickers.parentElement.replaceChild(timesDiv, timePickers);
+                timePickers.remove();
+                //TODO: remove submit button
+            } else if (day == "monday") {
+                this.state.mondayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"mondayTimeSlot");
+                timePickers.remove();
+            } else if (day == "tuesday") {
+                this.state.tuesdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"tuesdayTimeSlot");
+                timePickers.remove();
+            } else if (day == "wednesday") {
+                this.state.wednesdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"wednesdayTimeSlot");
+                timePickers.remove();
+            } else if (day == "thursday") {
+                this.state.thursdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"thursdayTimeSlot");
+                timePickers.remove();
+            } else if (day == "friday") {
+                this.state.fridayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"fridayTimeSlot");
+                timePickers.remove();
+            } else if (day == "saturday") {
+                this.state.saturdayTimeSlots[index] = timeSlot;
+                var timePickers = document.getElementById(index+"saturdayTimeSlot");
+                timePickers.remove();
+            }
+        } else {
+            console.log("Enter Times");
         }
     }
 
@@ -347,7 +383,7 @@ class TutorProfile extends React.Component {
                     <div className="row justify-content-start">
                         <div className="col-4">
                             <input type="checkbox" id="contactMe" onChange={(e) => this.setState({ contact: e.target.value })} />
-                            <label htmlFor="contactMe"> Contact Me For Avalability </label>
+                            <label htmlFor="contactMe"> Contact Me For Availability </label>
                         </div>
                         <h6 id="header" className="col-4 text-center"> Available Times</h6>
                     </div>
@@ -356,7 +392,7 @@ class TutorProfile extends React.Component {
                 <div id="days" className="d-flex justify-content-center">
                     <div>
                         <text id="day"> Sunday </text> <br />
-                        {this.state.sundayTimeSlots.map((thisTime, index) => {
+                        {this.state.sundayTimeSlots.map((index) => {
                             var startTime, endTime;
                             return (
                                 <>
@@ -364,7 +400,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"sundayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index + "StartTimepicker"}
@@ -396,7 +432,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "sunday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "sunday")}>
                                         Submit
                                     </Button>
 
@@ -425,7 +461,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"mondayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -457,7 +493,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "monday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "monday")}>
                                         Submit
                                     </Button>
 
@@ -485,7 +521,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"tuesdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -517,7 +553,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "tuesday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "tuesday")}>
                                         Submit
                                     </Button>
 
@@ -545,7 +581,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"wednesdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -577,7 +613,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "wednesday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "wednesday")}>
                                         Submit
                                     </Button>
 
@@ -589,7 +625,7 @@ class TutorProfile extends React.Component {
                             );
                         })}
 
-                        {console.log(this.state.wednesdayTimeSlots)}
+                        {/*console.log(this.state.wednesdayTimeSlots)*/}
 
 
                         <Button className="AddTimeSlot" onClick={() => this.AddTimeSlot("wednesday")}>
@@ -609,7 +645,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"thursdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -641,7 +677,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "thursday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "thursday")}>
                                         Submit
                                     </Button>
 
@@ -669,7 +705,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"fridayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -701,7 +737,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "friday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "friday")}>
                                         Submit
                                     </Button>
 
@@ -729,7 +765,7 @@ class TutorProfile extends React.Component {
                                         <label id="startTimeLabel" className="timeLabel"> Start Time </label>
                                         <label id="endTimeLabel" className="timeLabel"> End Time </label><br />
                                     </div>
-                                    <div className="d-flex justify-content-center">
+                                    <div className="d-flex justify-content-center" id={index+"saturdayTimeSlot"}>
                                         <Time
                                             name="startTime"
                                             id={index}
@@ -761,7 +797,7 @@ class TutorProfile extends React.Component {
                                         />
                                     </div>
 
-                                    <Button className="submitTime" onClick={() => this.submitTime(startTime, endTime, index, "saturday")}>
+                                    <Button className="submitTime btn-success" onClick={() => this.submitTime(startTime, endTime, index, "saturday")}>
                                         Submit
                                     </Button>
 
@@ -782,7 +818,7 @@ class TutorProfile extends React.Component {
                 <div id="bottom">
                     <Button type="submit" id="save"
                         onClick={this.handleSubmit}
-                    > Save and Close </Button>
+                    > Apply </Button>
                     <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
                     <Link to='/calendar'>
                         <Button id="submit"> To Calendar </Button>

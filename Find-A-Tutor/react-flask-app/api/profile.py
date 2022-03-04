@@ -8,6 +8,8 @@ from wtforms import BooleanField
 #Database stuff
 from flaskext.mysql import MySQL
 
+import json
+
 app = Flask(__name__)
 
 mysql = MySQL()
@@ -104,31 +106,70 @@ def retrieve_classes(tut_email):
     
     return classes
 
-def edit_profile():
-    tut_email = "apelia18@gcc.edu"
-    # conn = mysql.connect()
-    # conn.autocommit(True)
-    # cursor = conn.cursor()
-    
-    #get the new information
-    submission = request.get_json()
-    info = submission[0]
-    print(info['payVal'])
-    print(info['payType'])
-    print(info['loginPref'])
-    print(info['contact'])
-    print(info['times'])
+# Submit time slots to db for given weekday
+def post_timeSlot(times, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
 
-    # classes = submission[1]
+    #loop through times and run this query for each 15 minute slot
+    for time in times:
+        cursor.execute("insert into TutorTimes values(\"" + tut_email +
+                        "\",\""+ time['start'] +
+                        "\",\""+ time['end'] +
+                        "\",false)")
+
+    conn.close()
+    return 'Done'
+
+def remove_timeSlot(times, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
     
-    # #update the profile
-    # cursor.execute("update Tutor set name = \"" 
-                    # + info['name'] + "\", log_in_as_tutor = \"" 
-                    # + info['login_pref'] + "\", contact_me = \"" 
-                    # + info['contact_me'] + "\", payment_type = \"" 
-                    # + info['payment_type'] + "\", payment_details = \"" 
-                    # + info['payment_details'] + "\" where tutor_id = " 
-                    # + tutor_id)
+    #loop through times and run this query for each 15 minute slot
+    for time in times:
+        cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+
+    conn.close()
+    
+    return 'Done'
+
+def contactMe_change(contactMe, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    c = 1
+
+    cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
+    #update Tutor set contactable=1 where tut_email='apelia18@gcc.edu';
+
+    conn.close()
+    return 'Done'
+
+def edit_profile(submission, tut_email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #Check for empty values
+    # for key in submission.keys():
+    #     if (submission)
+    
+    #update the profile
+    cursor.execute("update Tutor set"
+                    + " pay_type = \"" + submission['pay_type'] + "\"" 
+                    + ", pay_info = \"" + submission['pay_info'] + "\""
+                    + ", login_pref = " + str(submission['login_pref'])
+                    + " where tut_email = \"" + tut_email + "\";")
+
+#     update Tutor
+# set pay_type="PayPal", pay_info="user"
+# where tut_email="apelia18@gcc.edu";
+    #+ "\", log_in_as_tutor = \"" + submission['login_pref'] 
+    #+ "\", classes = \"" + submission['classes']
+
                     
     # #delete the classes and rates
     # cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
@@ -141,5 +182,6 @@ def edit_profile():
                     # + c[rate] + "\")")
                     
     # print(info['payInfo'])
-    
+
+    conn.close()
     return 'Done'
