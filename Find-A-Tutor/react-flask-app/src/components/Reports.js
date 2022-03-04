@@ -73,6 +73,7 @@ export default function Reports() {
             stu_email: tutor[0],
             reason: tutor[2],
             table: activeTable,
+            id: tutor[4],
         };
         fetch('/AddStudentToBan/', {
             method: 'POST',
@@ -92,7 +93,9 @@ export default function Reports() {
             stu_email: tutor[0],
             reason: tutor[2],
             table: activeTable,
+            id: tutor[4],
         };
+        console.log(tutor);
         fetch('/DimissReport/', {
             method: 'POST',
             headers: {
