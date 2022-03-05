@@ -131,14 +131,15 @@ def addAppointment():
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
+    print(email)
     times = mergeTimes(appointment.getTimes(email)['times'])
     print(times)
-    print(email)
     return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
     appts = appointment.getAppointments(email)
+    print(appts)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])

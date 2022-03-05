@@ -47,6 +47,8 @@ function FullCalendarApp() {
   const [evnts, setEvnts] = useState([])
   const [filterTimes, setFilterTimes] = useState(false)
   const [filterAppts, setFilterAppts] = useState(false)
+  const [lastTimeFilter, setLastTimeFilter] = useState(false)
+  const [lastApptFilter, setLastApptFilter] = useState(false)
   
   //for authentication
   const authContext = useContext(AuthContext);
@@ -66,31 +68,6 @@ function FullCalendarApp() {
   const [checked, setChecked] = React.useState(false);
   const [wrongTimes, setWrongTimes] = useState(false);
   
-  const updateEvents = function() {
-	console.log("update")
-	setEvnts([])
-	if (filterAppts) {
-		console.log("appts")
-		setEvnts(evnts.concat(appts));
-	} else {
-		for (let i = 0; i < evnts.length; i++) {
-			if (evnts[i]['type'] == "appt") {
-				setEvnts(evnts.splice(i, 1));
-			}
-		}
-	}
-	if (filterTimes) {
-		console.log("times")
-		setEvnts(evnts.concat(times));
-	} else {
-		for (let i = 0; i < evnts.length; i++) {
-			if (evnts[i]['type'] == "time") {
-				setEvnts(evnts.splice(i, 1));
-			}
-		}
-	}
-  }
-  
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/")
             .then(res => res.json())
@@ -104,7 +81,7 @@ function FullCalendarApp() {
                 (error) => {
                     console.log(error);
                 }
-            )
+            ).then(console.log(times))
   }, []);
 
   //loads in the appts currently created in the DB - IAA
@@ -120,9 +97,31 @@ function FullCalendarApp() {
                 (error) => {
                     console.log(error);
                 }
-            )
+            ).then(console.log(appts))
   }, []);
 
+
+	const updateEvents = function() {
+		setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
+		setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
+		if (filterAppts && lastApptFilter != filterAppts) {
+			console.log("appts");
+			setEvnts(evnts.concat(appts));
+			console.log(evnts)
+		} else {
+			console.log("remove appts");
+			setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
+		}
+		if (filterTimes && lastTimeFilter != filterTimes) {
+			console.log("times")
+			setEvnts(evnts.concat(times));
+		} else {
+			console.log("remove times");
+			setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
+		}
+		setLastApptFilter(filterAppts)
+		setLastTimeFilter(filterTimes)
+  }
 
 	//create appointment
 	function addEvent() {
@@ -151,6 +150,7 @@ function FullCalendarApp() {
 	}
 	
 	const handleEventClick = function (e, editting) {
+		console.log(e)
 		setTutEmail(e.extendedProps.tut_email);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
@@ -353,24 +353,21 @@ function FullCalendarApp() {
           <input
             type = "checkbox"
             id="myApts"
-            name="filterMyApts"
+            name="filters"
 			value='appt'
-            checked={filterAppts}
-            onChange={() => {setFilterAppts(!filterAppts); updateEvents()}}
+            onClick={(e) => {setFilterAppts(!filterAppts)}}
           />
-          My Appointments
-        </div>
-        <div>
+          My Appointment<br/>
           <input
             type = "checkbox"
             id="availableApts"
-            name="filterAvailApts"
+            name="filters"
 			value='time'
-            checked={filterTimes}
-            onChange={() => {setFilterTimes(!filterTimes); updateEvents()}}
+            onClick={(e) => {setFilterTimes(!filterTimes)}}
           />
           Available Times
         </div>
+			<Button onClick={(e) => {console.log(e);updateEvents()}}>Apply Filters</Button>
       </div>
           
       {/* <div class="filter">
@@ -421,14 +418,14 @@ function FullCalendarApp() {
           }}//end button setup
 
           //add appointments to calendar
-          events={evnts}
+          events={times.concat(appts)}
 			
           //formatting of appointments
           eventColor="green"	
           nowIndicator
 
           //ability to click dates
-          dateClick={(e) => alert(e.dateStr)}
+          dateClick={() => console.log(evnts)}
 
           //ability to click appointments
           eventClick={function (e) {handleEventClick(e.event, false)}}

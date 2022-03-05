@@ -64,12 +64,13 @@ def getTimes(email):
                     " where tut_email in (select tut_email from TutorClasses where class_code in" + 
                     " (select class_code from StudentClasses where stu_email = \"" + email + "\"));")
     times = cursor.fetchall()
-    
+    print(times)
     for time in times:
         if time[3] == 0:
-            availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time", 'color':"blue"})
+            availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with" + time[0], 'type':"time", 'backgroundColor':'#00ff00'})
     
     conn.close()
+    print(availTimes)
     return {'times':availTimes}
     
 def getAppointments(email):
@@ -92,7 +93,7 @@ def getAppointments(email):
             'block_s':appt[7],
             'block_e':appt[8], 
             'type':"appt",
-            'color':"green"})
+            'backgroundColor':'##0000ff'})
     
     conn.close()
     
