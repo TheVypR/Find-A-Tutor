@@ -1,5 +1,5 @@
 /*https://mui.com/getting-started/templates/*/
-import react, { useContext } from 'react';
+import react, { useContext, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,7 +20,8 @@ const theme = createTheme();
 
 export default function SignIn() {
   const nav = useNavigate();
-
+  const [wrongLogin, setWrongLogin] = useState(false);
+  
   //authentication information
   const authContext = useContext(AuthContext);
 
@@ -50,10 +51,20 @@ export default function SignIn() {
         loginHandler()
       }
       else {
+		setWrongLogin(true)
         logoutHandler()
       }
     })
   };
+  
+  const WrongSignIn = () => {
+	return (
+		<div>
+			Incorrect email or password
+		</div>
+	)
+  }
+  
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -72,6 +83,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+		  {wrongLogin ? <WrongSignIn /> : null}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
