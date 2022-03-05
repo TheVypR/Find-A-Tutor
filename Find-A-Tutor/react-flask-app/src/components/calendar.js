@@ -30,8 +30,8 @@ function FullCalendarApp() {
   const [chosen, setChosen] = useState({});
   
   //appointment creation
-  const [stuEmail, setStuEmail] = useState("");
   const [tutEmail, setTutEmail] = useState("");
+  const [tutName, setTutName] = useState("");
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -134,6 +134,7 @@ function FullCalendarApp() {
 		  day: origStartDate,
 		  title: title,
 		  tut_email: tutEmail,
+		  tut_name:tutName,
 		  block_start: origStartDate,
 		  block_end: origEndDate
 		};
@@ -152,6 +153,7 @@ function FullCalendarApp() {
 	const handleEventClick = function (e, editting) {
 		console.log(e)
 		setTutEmail(e.extendedProps.tut_email);
+		setTutName(e.extendedProps.tut_name);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
 		var options = {
@@ -171,7 +173,6 @@ function FullCalendarApp() {
 			handleShowEdit();
 		} else {
 			if(e.extendedProps['type'] == "appt") {
-				setStuEmail(e.extendedProps.stu_email);
 				setBlockStart(e.extendedProps.block_s)
 				setBlockEnd(e.extendedProps.block_e)	
 				handleShowAppt();
@@ -188,7 +189,6 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([{
-				stu_email: stuEmail,
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -214,7 +214,6 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([{
-				stu_email: stuEmail,
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -258,7 +257,7 @@ function FullCalendarApp() {
 			</Modal.Header>
 			<Modal.Body>
 				{wrongTimes ? <TimeError /> : null}
-				Make Appointment With: {tutEmail}<br/>
+				Make Appointment With: {tutName}<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
@@ -288,7 +287,7 @@ function FullCalendarApp() {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-			Meeting with: {tutEmail}<br/>
+			Meeting with: {tutName}<br/>
 			For: {classCode}<br/>
 			From: {origStartDate}<br/>
 			To: {origEndDate}
@@ -313,7 +312,7 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				Edit Appointment With: {tutEmail}<br/>
+				Edit Appointment With: {tutName}<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 

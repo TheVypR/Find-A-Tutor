@@ -158,15 +158,12 @@ def addAppointment():
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
-    print(email)
-    times = mergeTimes(appointment.getTimes(email)['times'])
-    print(times)
+    times = mergeTimes(appointment.getTimes(email))
     return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
     appts = appointment.getAppointments(email)
-    print(appts)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])
@@ -290,11 +287,11 @@ def mergeTimes(timeArray):
         if (endTime - curTime) != minDif:
             #if this is the first don't add last one
             if not first:
-                timeBlockArray.append({'tut_email':time['tut_email'],
+                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
                 'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                 'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                 'type': "time",
-                'title': "Available Time with " + time['tut_email']})
+                'title': "Available Time with " + time['tut_name']})
             else:
                 first = False
             #add time to the blockArray
@@ -304,11 +301,11 @@ def mergeTimes(timeArray):
             #add 15 minutes to the block
             curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         if left == 1:
-            timeBlockArray.append({'tut_email':time['tut_email'],
+            timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
                 'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                 'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                 'type': "time",
-                'title': "Available Time with " + time['tut_email']})
+                'title': "Available Time with " + time['tut_name']})
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1
