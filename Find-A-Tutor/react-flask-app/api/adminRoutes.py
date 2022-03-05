@@ -93,17 +93,14 @@ def AddStudentToBan(tutor):
 
 def DeleteUserFromList(tutor):
     table = ""
-    email = ""
     if tutor['table'] == "students":
         table = "ReportedStudents"
-        email = "stu_email"
     elif tutor['table'] == "tutors":
         table = "ReportedTutors"
-        email = "tut_email"
 
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    cursor.execute("delete from "+ table + " where " + email + " = \""+ tutor['stu_email'] + "\" ")
+    cursor.execute("delete from "+ table +" where report_id = " + str(tutor['id']))
     conn.close()
     return 'Done'

@@ -58,7 +58,6 @@ function FullCalendarApp() {
   const handleShowAppt = function (){ setShowAppt(true)};
   const handleShowEdit = function (){ setShowEdit(true)};
 
-
   const [checked, setChecked] = React.useState(false);
 
     const handleChange = () => {
@@ -291,10 +290,10 @@ function FullCalendarApp() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-		  <Button variant="danger" onClick={cancelAppt}>
+		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" onClick={handleShowEdit}>
+          <Button variant="primary" type="submit" onClick={handleShowEdit}>
             Edit Appointment
           </Button>
         </Modal.Footer>

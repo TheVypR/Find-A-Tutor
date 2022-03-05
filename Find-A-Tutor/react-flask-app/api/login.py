@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from typing import Tuple 
 from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
-from flask_wtf import Form 
+from flask_wtf import Form
+from pymysql import NULL 
 from wtforms import BooleanField
 import profile, signup, appointment, history, adminRoutes
 
@@ -73,6 +74,10 @@ def login():
 
   return jsonify({'email': email})
 
+@app.route('/email/', methods=['GET'])
+def getAuth():
+  #print("Email!!!: " + email)
+  return {'authTag':email}
 # provide a list of current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -115,7 +120,29 @@ def signUp():
 #profile page
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
-  return profile.retrieve_profile("apelia18@gcc.edu")
+  if request.method == 'POST':
+    submission = request.get_json()
+    #Check to see if this is a removal
+    if 'remove' in submission.keys():
+        submittedTime = submission['remove']
+        startTime = dateParse(submittedTime['startTime'])
+        endTime = dateParse(submittedTime['endTime'])
+        timeSlot = {'start': startTime, 'end': endTime}
+        splitTimeVals = splitTimes(timeSlot)
+        return profile.remove_timeSlot(splitTimeVals, email)
+    elif 'contactMe' in submission.keys():
+        return profile.contactMe_change(submission['contactMe'], email)
+    elif 'startTime' in submission.keys() :
+        # else parse timeslot and divide it into 15 min chunks for storage
+        startTime = dateParse(submission['startTime'])
+        endTime = dateParse(submission['endTime'])
+        timeSlot = {'start': startTime, 'end': endTime}
+        times = splitTimes(timeSlot)
+        return profile.post_timeSlot(times, email)
+    else :
+        return profile.edit_profile(submission, email)
+  else:
+    return profile.retrieve_profile(email)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
@@ -171,6 +198,19 @@ def loadAppointments():
         return history.loadPreviousAppointmentsTutor(email)
     else:
         return history.loadPreviousAppointmentsStudent(email)
+
+@app.route('/submitRating/', methods=['POST'])
+def rateTutor():
+    data = request.get_json()
+    return history.submitRating(data[0])
+
+@app.route('/submitReport/', methods=['POST'])
+def report():
+    data = request.get_json()
+    if isTutor:
+        return history.submitStudentReport(data[0], email)
+    else:
+        return history.submitTutorReport(data[0], email)
 
 def dateParse(date):
     #get the parts of the date

@@ -39,7 +39,7 @@ def loadPreviousAppointmentsStudent(email):
     history = cursor.fetchall()
     
     for appt in history:
-        apptHistory.append({'with': appt[2], 'class': appt[3], 'time': appt[4]})
+        apptHistory.append({'with': appt[2], 'class': appt[3], 'time': appt[4], 'id': appt[0]})
     
     conn.close()
 
@@ -54,8 +54,42 @@ def loadPreviousAppointmentsTutor(email):
     history = cursor.fetchall()
     
     for appt in history:
-        apptHistory.append({'with': appt[1], 'class': appt[3], 'time': appt[4]})
+        apptHistory.append({'with': appt[1], 'class': appt[3], 'time': appt[4], 'id': appt[0]})
     
     conn.close()
 
     return {'appts': apptHistory}
+    
+def submitRating(data):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("select rating from Tutor where tut_email = \"" + data['target'] + "\"")
+    rating = cursor.fetchone()[0]
+    if type(rating) == type(None):
+        rating = 0
+    newRate = int((rating + int(data['rating'])) / 2)
+    cursor.execute("update Tutor set rating = " + str(newRate) + " where tut_email = \"" + data['target'] + "\"")
+    return "Done"
+    
+def submitStudentReport(data, email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("insert into ReportedStudents(stu_email, reported_by, reason, report) values (\"" 
+                        + data['target'] + "\", \""
+                        + email + "\", \""
+                        + data['reason'] + "\", \""
+                        + data['report'] + "\")")
+    return "DONE"
+    
+def submitTutorReport(data, email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("insert into ReportedTutors(tut_email, reported_by, reason, report) values (\"" 
+                        + data['target'] + "\", \""
+                        + email + "\", \""
+                        + data['reason'] + "\", \""
+                        + data['report'] + "\")")
+    return "DONE"
