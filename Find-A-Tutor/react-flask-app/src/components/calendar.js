@@ -44,11 +44,11 @@ function FullCalendarApp() {
   const [blockEnd, setBlockEnd] = useState("");
 
   //filter
-  const [evnts, setEvnts] = useState([])
-  const [filterTimes, setFilterTimes] = useState(false)
-  const [filterAppts, setFilterAppts] = useState(false)
-  const [lastTimeFilter, setLastTimeFilter] = useState(false)
-  const [lastApptFilter, setLastApptFilter] = useState(false)
+  const [evnts, setEvnts] = useState([]);
+  const [filterTimes, setFilterTimes] = useState(false);
+  const [filterAppts, setFilterAppts] = useState(false);
+  const [lastTimeFilter, setLastTimeFilter] = useState(false);
+  const [lastApptFilter, setLastApptFilter] = useState(false);
   
   //for authentication
   const authContext = useContext(AuthContext);
@@ -241,8 +241,8 @@ function FullCalendarApp() {
 	
 	const TimeError = () => {
 		return (
-		<div>
-			<p>Start must be before the end time</p>
+		<div style={{color : 'red'}}>
+			Start must be before the end time
 		</div>)
 	}
 	

@@ -57,10 +57,11 @@ export default function SignIn() {
     })
   };
   
+  
   const WrongSignIn = () => {
 	return (
-		<div>
-			Incorrect email or password
+		<div style={{color : 'red'}}>
+			Incorrect Email or Password
 		</div>
 	)
   }
