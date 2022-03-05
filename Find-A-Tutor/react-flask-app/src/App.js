@@ -53,26 +53,26 @@ function useProvideAuth() {
 }
 
 function PrivateRoute({ children }) {
-  let auth = useAuth();
+  // let auth = useAuth();
 
-  const [user, setUser] = useState("");
+  // const [user, setUser] = useState("");
 
-  useEffect(() => {
-    fetch("/email/", {
-      method: 'GET',
-      headers: {
-        'Content-Type' : 'application/json'
-      },
-      })
-      .then(res => res.json())
-      .then(authTag => setUser(authTag))
-      //.then(console.log(user.authTag))
-      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
-  }, []);
+  // useEffect(() => {
+    // fetch("/email/", {
+      // method: 'GET',
+      // headers: {
+        // 'Content-Type' : 'application/json'
+      // },
+      // })
+      // .then(res => res.json())
+      // .then(authTag => setUser(authTag))
+      // //.then(console.log(user.authTag))
+      // .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
+  // }, []);
 
-  //console.log(user.authTag);
+  // //console.log(user.authTag);
 
-  return (
-    user.authTag != "USER NOT FOUND" ? children : <SignIn />
-  );
+  // return (
+    // user.authTag != "USER NOT FOUND" ? children : <SignIn />
+  // );
 }

@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from sqlalchemy import null
+#from sqlalchemy import null
 import getFunctions
 
 # database stuff

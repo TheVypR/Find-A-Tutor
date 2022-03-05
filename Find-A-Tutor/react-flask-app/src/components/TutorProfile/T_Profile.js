@@ -92,7 +92,7 @@ class T_Profile extends React.Component {
                 for (let getKey in this.state.items) {
                     console.log(getKey + ": " + this.state.items[getKey]);
                     if (postKey == getKey) {
-                        post[postKey] = items[getKey];
+                        post[postKey] = this.state.items[getKey];
                     }//if
                 }//for
             }//if
