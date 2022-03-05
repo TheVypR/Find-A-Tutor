@@ -64,6 +64,7 @@ function FullCalendarApp() {
   const handleShowEdit = function (){ setShowEdit(true)};
 
   const [checked, setChecked] = React.useState(false);
+  const [wrongTimes, setWrongTimes] = useState(false);
   
   const updateEvents = function() {
 	console.log("update")
@@ -230,6 +231,22 @@ function FullCalendarApp() {
 		)
 	}
 	
+	function verifyTimes() {
+		if (endTime < startTime) {
+			console.log("Wrong Time")
+			setWrongTimes(true)
+		} else {
+            addEvent();
+		}
+	}
+	
+	const TimeError = () => {
+		return (
+		<div>
+			<p>Start must be before the end time</p>
+		</div>)
+	}
+	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
@@ -240,6 +257,7 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+				{wrongTimes ? <TimeError /> : null}
 				Make Appointment With: {tutEmail}<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
@@ -253,10 +271,10 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Close
 			  </Button>
-			  <Button variant="primary"  type="submit"
+			  <Button variant="primary"
 					  onClick= {
 						  () => {
-							  addEvent()
+							  verifyTimes();
 						  }
 					}>
 				Save Changes
