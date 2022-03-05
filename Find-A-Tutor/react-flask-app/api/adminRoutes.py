@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from sqlalchemy import null
 import getFunctions
 
 # database stuff
@@ -84,6 +85,26 @@ def AddStudentToBan(tutor):
     conn.autocommit(True)
     cursor = conn.cursor()
     cursor.execute("insert into BannedUsers(stu_email, stu_name, reason, ban_id) values(\""+ tutor['stu_email'] + "\", \""+ name[0] + "\", \""+ tutor['reason'] + "\", 0)")
+
+    # determining if the user is a tutor
+    cursor.execute("select tut_email from Tutor where tut_email = \""+ tutor['stu_email'] + "\" ")
+    data = list(cursor.fetchall())
+
+
+    # delete if student is a tutor
+    ban = "Banned@vac_ban.edu"
+    if data[0] != null:
+        cursor.execute("update Appointment set tut_email = \""+ban+"\" where tut_email = \""+ tutor['stu_email'] +"\" ")
+        cursor.execute("delete from TutorTimes where tut_email = \""+ tutor['stu_email'] + "\" ")
+        cursor.execute("delete from TutorClasses where tut_email = \""+ tutor['stu_email'] + "\" ")
+        cursor.execute("delete from Tutor where tut_email = \""+ tutor['stu_email'] + "\" ")
+
+    # delete from student as well
+    cursor.execute("update Appointment set stu_email = \""+ban+"\" where stu_email = \""+ tutor['stu_email'] + "\" ")
+    cursor.execute("delete from StudentClasses where stu_email = \""+ tutor['stu_email'] + "\" ")
+    cursor.execute("delete from Student where stu_email = \""+ tutor['stu_email'] + "\" ")
+
+    # close the connection
     conn.close()
 
     # delete from reported users list
@@ -93,17 +114,14 @@ def AddStudentToBan(tutor):
 
 def DeleteUserFromList(tutor):
     table = ""
-    email = ""
     if tutor['table'] == "students":
         table = "ReportedStudents"
-        email = "stu_email"
     elif tutor['table'] == "tutors":
         table = "ReportedTutors"
-        email = "tut_email"
 
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    cursor.execute("delete from "+ table + " where " + email + " = \""+ tutor['stu_email'] + "\" ")
+    cursor.execute("delete from "+ table +" where report_id = " + str(tutor['id']))
     conn.close()
     return 'Done'

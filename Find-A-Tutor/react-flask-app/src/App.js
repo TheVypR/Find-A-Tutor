@@ -6,7 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
-import TutorProfile from "./components/TutorProfile"
+import TutorProfile from "./components/TutorProfile/T_Profile"
+import StudentProfile from "./components/StudentProfile"
+import { createContext } from 'react';
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
@@ -44,4 +46,33 @@ export default function App() {
       </AuthContext.Provider>
     </div>
   )
+}
+
+function useProvideAuth() {
+
+}
+
+function PrivateRoute({ children }) {
+  let auth = useAuth();
+
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    fetch("/email/", {
+      method: 'GET',
+      headers: {
+        'Content-Type' : 'application/json'
+      },
+      })
+      .then(res => res.json())
+      .then(authTag => setUser(authTag))
+      //.then(console.log(user.authTag))
+      .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
+  }, []);
+
+  //console.log(user.authTag);
+
+  return (
+    user.authTag != "USER NOT FOUND" ? children : <SignIn />
+  );
 }

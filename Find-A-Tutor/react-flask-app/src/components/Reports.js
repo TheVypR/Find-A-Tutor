@@ -27,8 +27,10 @@ export default function Reports() {
 
     //handle modal popups
     const [enableReport, setEnableReport] = useState(false);
-    const handleClose = function(){setEnableReport(false);};
+    const [banConfirm, setBanConfirm] = useState(false);
+    const handleClose = function(){setEnableReport(false); setBanConfirm(false);};
     const handleEnableReport = function(){setEnableReport(true);};
+    const handleBanConfirm = function(){setBanConfirm(true);};
     const [tutor, setTutor] = useState([]);
 
     //get data from server
@@ -73,6 +75,7 @@ export default function Reports() {
             stu_email: tutor[0],
             reason: tutor[2],
             table: activeTable,
+            id: tutor[4],
         };
         fetch('/AddStudentToBan/', {
             method: 'POST',
@@ -92,7 +95,9 @@ export default function Reports() {
             stu_email: tutor[0],
             reason: tutor[2],
             table: activeTable,
+            id: tutor[4],
         };
+        console.log(tutor);
         fetch('/DimissReport/', {
             method: 'POST',
             headers: {
@@ -122,8 +127,32 @@ export default function Reports() {
         handleEnableReport();
     }
 
+    //function to have BanConfirm modal appear and pass info
+    function showBan(tutor) {
+        handleBanConfirm();
+    }
+
     return (
         <ThemeProvider theme={theme}>
+
+            <Modal show={banConfirm} size="md" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Grid container spacing={1}>
+                        <Grid item>
+                            <Typography component="h1" variant='h6' align="left">Are you sure you want to ban {tutor[5]}</Typography>
+                        </Grid>
+                    </Grid>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => AddToBannedList(tutor)}>
+                        Submit
+                    </Button>
+                    <div></div>
+                    <Button variant="contained" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
             <Modal show={enableReport} size="lg" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -144,13 +173,13 @@ export default function Reports() {
                     <strong>Report Comment: </strong> <br/> {tutor[3]} <br/>   
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => AddToBannedList(tutor)}>
-                    Ban Student
-                </Button>
-                <div></div>
-                <Button variant="contained" onClick={() => RemoveFromReports(tutor)}>
-                    Dismiss Report
-                </Button>
+                    <Button variant="contained" type='submit' style={{backgroundColor: "#dc143c"}} onClick={() => showBan(tutor)}>
+                        Ban Student
+                    </Button>
+                    <div></div>
+                    <Button variant="contained" onClick={() => RemoveFromReports(tutor)}>
+                        Dismiss Report
+                    </Button>
                 </Modal.Footer>
             </Modal>
 

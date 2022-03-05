@@ -1,0 +1,49 @@
+.AddTimeSlot {
+    margin-top: 5px;
+}
+
+.removeTime{
+    padding: 3px 3px;
+    font-size: 50%;
+}
+
+.timeLabel {
+    font-size: 10px;
+}
+
+#startTimeLabel {
+    margin-right: 20px;
+}
+
+.startTime {
+    margin-right: 3px;
+    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
+}
+
+.endTime {
+    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
+}
+
+#day {
+    width: 200px;
+    max-width: 200px;
+}
+
+.vr {
+    border-left: thin solid black;
+    margin: 3px;
+}
+
+.submitTime {
+    padding: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.SubmittedTimeSlot {
+    font-size: 12px;
+}
