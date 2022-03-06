@@ -32,6 +32,7 @@ function FullCalendarApp() {
   //appointment creation
   const [tutEmail, setTutEmail] = useState("");
   const [tutName, setTutName] = useState("");
+  const [rates, setRates] = useState({})
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -100,7 +101,6 @@ function FullCalendarApp() {
             ).then(console.log(appts))
   }, []);
 
-
 	const updateEvents = function() {
 		setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
 		setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
@@ -151,11 +151,25 @@ function FullCalendarApp() {
 	}
 	
 	const handleEventClick = function (e, editting) {
-		console.log(e)
+		fetch('/getRates/', {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify(e.extendedProps.tut_email)
+		},).then(
+			res => res.json()
+		).then(
+			result => {
+				setRates(result)
+			}
+		)		
+		
 		setTutEmail(e.extendedProps.tut_email);
 		setTutName(e.extendedProps.tut_name);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
+		
 		var options = {
 		  hour: '2-digit',
 		  minute: '2-digit',
@@ -177,7 +191,7 @@ function FullCalendarApp() {
 				setBlockEnd(e.extendedProps.block_e)	
 				handleShowAppt();
 			} else if(e.extendedProps['type'] == "time") {
-				handleShowTime();
+				handleShowTime();				
 			} 
 		}
 	};
@@ -258,6 +272,7 @@ function FullCalendarApp() {
 			<Modal.Body>
 				{wrongTimes ? <TimeError /> : null}
 				Make Appointment With: {tutName}<br/>
+				Rate: ${rates[classCode]}/hr<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 
@@ -313,6 +328,7 @@ function FullCalendarApp() {
 			</Modal.Header>
 			<Modal.Body>
 				Edit Appointment With: {tutName}<br/>
+					Rate: ${rates[classCode]}/hr<br/>
 					Choose Class: 
 					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
 					Start Time: 

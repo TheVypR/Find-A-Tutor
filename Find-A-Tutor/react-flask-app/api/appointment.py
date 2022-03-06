@@ -53,11 +53,26 @@ def addAppointment(data, email, start, end, timeslots):
 
     return 'Done'
 
+def getRates(data):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    tutorRates = {}
+    
+    cursor.execute("select class_code, rate from TutorClasses where tut_email = \"" + data +"\"")
+    classRates = cursor.fetchall()
+    print(classRates)
+    for clss in classRates:
+        tutorRates[clss[0]] = clss[1]
+    
+    return tutorRates
+
 def getTimes(email):
     availTimes = []
     conn = mysql.connect()
     conn.autocommit(True)
-    cursor = conn.cursor()  
+    cursor = conn.cursor()
     
     cursor.execute("select TT.tut_email, start_date, end_date, taken, T.tut_name" + 
                     " from TutorTimes TT, Tutor T" + 
@@ -66,7 +81,14 @@ def getTimes(email):
     times = cursor.fetchall()
     for time in times:
         if time[3] == 0:
-            availTimes.append({'tut_email':time[0], 'start':time[1], 'end':time[2], 'title': "Available Session with " + time[4], 'tut_name':time[4], 'type':"time", 'backgroundColor':'#00ff00'})
+            availTimes.append({'tut_email':time[0], 
+                               'start':time[1],
+                               'end':time[2],
+                               'title': "Available Session with " + time[4],
+                               'tut_name':time[4],
+                               'type':"time",
+                               'backgroundColor':'#00ff00',
+                               'borderColor':'#00ff00'})
     
     conn.close()
     return availTimes
@@ -106,7 +128,8 @@ def getAppointments(email):
             'block_s':appt[7],
             'block_e':appt[8],
             'type':"appt",
-            'backgroundColor':'##0000ff'})
+            'backgroundColor':'##0000ff',
+            'borderColor':'#00ff00'})
     
     conn.close()
     print(availAppts)

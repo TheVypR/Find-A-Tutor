@@ -156,6 +156,11 @@ def addAppointment():
   #add the appointment and mark time as taken
   return appointment.addAppointment(data, email, newStart, newEnd, slots)
   
+@app.route('/getRates/', methods=['POST'])
+def getRates():
+    data = request.get_json()
+    return appointment.getRates(data)
+  
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     times = mergeTimes(appointment.getTimes(email))
