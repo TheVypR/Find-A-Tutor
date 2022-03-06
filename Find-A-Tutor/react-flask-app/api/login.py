@@ -8,7 +8,6 @@ from pymysql import NULL
 from wtforms import BooleanField
 import profile, signup, appointment, history, adminRoutes
 
-
 #Database stuff
 from flaskext.mysql import MySQL
 

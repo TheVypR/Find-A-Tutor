@@ -26,12 +26,13 @@ export default function SignIn() {
   const authContext = useContext(AuthContext);
 
   const loginHandler = function () {
-      authContext.login();
+      authContext.isLoggedIn = true;
       console.log(authContext);
       nav('/calendar');
   };
 
   const logoutHandler = function () {
+	  authContext.isLoggedIn = false;
       authContext.logout();
       nav('/');
   };
@@ -48,11 +49,13 @@ export default function SignIn() {
     }).then(resp => resp.json())
     .then(result => {
       if (result['email'] === info[0]) {
-        loginHandler()
+        loginHandler();
+		localStorage.setItem("loggedIn", true);
       }
       else {
 		setWrongLogin(true)
-        logoutHandler()
+        logoutHandler();
+		localStorage.setItem("loggedIn", false);
       }
     })
   };
