@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown'
 import './App.css';
 import TimePicker from 'react-time-picker';
 import React, { useState, useEffect, useContext, Component } from "react";
@@ -34,6 +36,7 @@ function FullCalendarApp() {
   const [tutName, setTutName] = useState("");
   const [rates, setRates] = useState({})
   const [classCode, setClassCode] = useState("");
+  const providedClasses = "";
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [origStartDate, setOrigStartDate] = useState("");
@@ -144,7 +147,7 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([myEvent])    
+			body:JSON.stringify([myEvent])
 		})
 		
 		
@@ -163,7 +166,11 @@ function FullCalendarApp() {
 			result => {
 				setRates(result)
 			}
-		)		
+		)
+		for (let i = 0; i < rates.length; i++) {
+				const clss = rates.keys()[i];
+				(providedClasses.concat("<option value=" + {clss} + ">" + {clss} + "</option><br/>"));
+		}
 		
 		setTutEmail(e.extendedProps.tut_email);
 		setTutName(e.extendedProps.tut_name);
@@ -284,8 +291,14 @@ function FullCalendarApp() {
 				{wrongTimes ? <TimeError /> : null}
 				Make Appointment With: {tutName}<br/>
 				Rate: ${rates[classCode]}/hr<br/>
-					Choose Class: 
-					<input type="text" class_code="class" placeholder="COMP447" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					Choose Class:
+					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
+						<option key="null" value="NONE">NONE</option>
+						{(Object.keys(rates)).map((clss) => {
+							return <option key={clss} value={clss}>{clss}</option>
+						})}
+					</select>
+					<br/>
 					Start Time: 
 					<input type="time" id="s_date" step="900" min={startTime} max={endTime} value={startTime} onChange={(e) => {setStartTime(e.target.value)}} required/><br/>
 					End Time: 
