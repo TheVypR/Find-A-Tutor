@@ -12,6 +12,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import styled from "@emotion/styled"
 import './calendar.css'
 import { AuthContext } from './AuthContext';
+import NavBar from './NavBar';
 
 
 export const StyleWrapper = styled.div`
@@ -275,6 +276,7 @@ function FullCalendarApp() {
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
     <div className="App">
+		<NavBar value={"Calendar"} />
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
