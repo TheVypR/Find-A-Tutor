@@ -43,6 +43,7 @@ function FullCalendarApp() {
 
   //for authentication
   const authContext = useContext(AuthContext);
+
   
   //toggle the modal on/off
   const handleClose = function(){setShowTime(false); setShowAppt(false); setShowEdit(false)};
