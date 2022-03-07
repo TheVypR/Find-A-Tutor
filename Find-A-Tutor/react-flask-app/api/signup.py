@@ -50,11 +50,11 @@ def signup():
     
     password = salt + password
        
-    cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt) values (\"" 
+    cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt, isAdmin) values (\"" 
                     + info[2] + "\", \"" 
                     + info[0] + " " + info[1] +"\", \"" 
                     + password.hex() + "\", \"" 
-                    + salt.hex() + "\")")
+                    + salt.hex() + "\", false)")
     
     conn.close()
 
