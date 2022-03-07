@@ -17,13 +17,17 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './adminView.css';
+import {AuthContext} from './AuthContext';
 
 //making styles and themes
 const theme = createTheme();
 
 export default function CurrentAndBan() {
+	//authentication
+	const authContext = useContext(AuthContext);
+	
     const [allTutors, setAllTutors] = useState([]);
     const [bannedUsers, setBannedUsers] = useState([]);
 
@@ -49,7 +53,7 @@ export default function CurrentAndBan() {
         })
     }, []);
 
-    return (
+    return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <AppBar postion="static" color="primary" elevation={0} sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
