@@ -102,25 +102,22 @@ function FullCalendarApp() {
 
 
 	const updateEvents = function() {
-		setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
-		setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
-		if (filterAppts && lastApptFilter != filterAppts) {
+		let localEvents = [];
+		//setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
+		//setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
+		if (filterAppts) {
 			console.log("appts");
-			setEvnts(evnts.concat(appts));
-			console.log(evnts)
+			localEvents = localEvents.concat(appts);
 		} else {
 			console.log("remove appts");
-			setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
 		}
-		if (filterTimes && lastTimeFilter != filterTimes) {
-			console.log("times")
-			setEvnts(evnts.concat(times));
+		if (filterTimes) {
+			console.log("times");
+			localEvents = localEvents.concat(times);
 		} else {
 			console.log("remove times");
-			setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
 		}
-		setLastApptFilter(filterAppts)
-		setLastTimeFilter(filterTimes)
+		setEvnts(localEvents);
   }
 
 	//create appointment
@@ -355,7 +352,8 @@ function FullCalendarApp() {
             id="myApts"
             name="filters"
 			value='appt'
-            onClick={(e) => {setFilterAppts(!filterAppts)}}
+			checked={filterAppts}
+            onChange={(e) => {console.log(e.target.value);setFilterAppts(!filterAppts)}}
           />
           My Appointment<br/>
           <input
@@ -363,11 +361,14 @@ function FullCalendarApp() {
             id="availableApts"
             name="filters"
 			value='time'
-            onClick={(e) => {setFilterTimes(!filterTimes)}}
+			checked={filterTimes}
+            onChange={(e) => {setFilterTimes(!filterTimes)}}
           />
           Available Times
         </div>
+		<div>
 			<Button onClick={(e) => {console.log(e);updateEvents()}}>Apply Filters</Button>
+		</div>
       </div>
           
       {/* <div class="filter">
@@ -418,7 +419,7 @@ function FullCalendarApp() {
           }}//end button setup
 
           //add appointments to calendar
-          events={times.concat(appts)}
+          events={evnts}
 			
           //formatting of appointments
           eventColor="green"	
