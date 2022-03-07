@@ -68,6 +68,21 @@ def getRates(data):
     
     return tutorRates
 
+def getStuClasses(email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    classes = []
+    
+    cursor.execute("select class_code from StudentClasses where stu_email = \"" + email +"\"")
+    classList = cursor.fetchall()
+    print(classList)
+    for clss in classList:
+        classes.append(clss[0])
+    
+    return {'stu_classes':classes}
+
 def getTimes(email):
     availTimes = []
     conn = mysql.connect()
@@ -81,7 +96,7 @@ def getTimes(email):
     times = cursor.fetchall()
     for time in times:
         if time[3] == 0:
-            availTimes.append({'tut_email':time[0], 
+            availTimes.append({'tut_email':time[0],
                                'start':time[1],
                                'end':time[2],
                                'title': "Available Session with " + time[4],

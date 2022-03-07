@@ -53,8 +53,9 @@ function FullCalendarApp() {
   const [evnts, setEvnts] = useState([]);
   const [filterTimes, setFilterTimes] = useState(false);
   const [filterAppts, setFilterAppts] = useState(false);
-  const [lastTimeFilter, setLastTimeFilter] = useState(false);
-  const [lastApptFilter, setLastApptFilter] = useState(false);
+  const [filterClass, setFilterClass] = useState("");
+  const [studentClasses, setStudentClasses] = useState();
+  
   
   //for authentication
   const authContext = useContext(AuthContext);
@@ -87,7 +88,22 @@ function FullCalendarApp() {
                 (error) => {
                     console.log(error);
                 }
-            ).then(console.log(times))
+            )
+  }, []);
+
+  useEffect(() => { fetch("/getStuClasses/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setStudentClasses(result['stu_classes']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
   }, []);
 
   //loads in the appts currently created in the DB - IAA
@@ -103,18 +119,27 @@ function FullCalendarApp() {
                 (error) => {
                     console.log(error);
                 }
-            ).then(console.log(appts))
+            )
   }, []);
 
 	const updateEvents = function() {
 		let localEvents = [];
-		//setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
-		//setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
-		if (filterAppts) {
-			console.log("appts");
-			localEvents = localEvents.concat(appts);
-		} else {
-			console.log("remove appts");
+		
+		//filter classes
+		if (filterClass !== "All Classes") {
+			if (filterAppts) {
+				console.log("appts");
+				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] == filterClass));
+			} else {
+				console.log("remove appts");
+			}
+		} else {		
+			if (filterAppts) {
+				console.log("appts");
+				localEvents = localEvents.concat(appts);
+			} else {
+				console.log("remove appts");
+			}
 		}
 		if (filterTimes) {
 			console.log("times");
@@ -384,6 +409,14 @@ function FullCalendarApp() {
         <div className="filterHeader">
           <h2>Filter By:</h2>
         </div>
+		<div className="class-filter">
+		{studentClasses !== undefined ? <select onChange={(e) => {setFilterClass(e.target.value)}}>
+				<option key="null" value="All Classes">All Classes</option>
+				{studentClasses.map((clss) => {
+					return <option key={clss} value={clss}>{clss}</option>
+				})}
+		</select> : null}
+		</div>
         <div>
           <input
             type = "checkbox"
@@ -405,27 +438,9 @@ function FullCalendarApp() {
           Available Times
         </div>
 		<div>
-			<Button onClick={(e) => {console.log(e);updateEvents()}}>Apply Filters</Button>
+			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
       </div>
-          
-      {/* <div class="filter">
-        <p>
-          Filter By:
-        </p>
-        <div>
-        <label for="myApts">
-          <input type="checkbox" id="myApts" name="My Appointments" value="yes"></input> My Appointments
-        </label>
-        <script>
-          const cb = document.querySelector('#myApts');
-          alert("hi");
-        </script>
-        </div>
-        <input type="checkbox" id="availableApts" name="My Appointments">
-        </input>
-        <label for="availableApts">Available Appointments</label><br></br>
-      </div> */}
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
