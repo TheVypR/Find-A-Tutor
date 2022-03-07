@@ -11,6 +11,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import styled from "@emotion/styled"
 import './calendar.css'
+import Rating from '@mui/material/Rating';
 import { AuthContext } from './AuthContext';
 
 
@@ -46,6 +47,7 @@ function FullCalendarApp() {
   const [title, setTitle] = useState("");
   const [blockStart, setBlockStart] = useState("");
   const [blockEnd, setBlockEnd] = useState("");
+  const [rating, setRating] = useState(null);
 
   //filter
   const [evnts, setEvnts] = useState([]);
@@ -195,7 +197,9 @@ function FullCalendarApp() {
 				setBlockEnd(e.extendedProps.block_e)	
 				handleShowAppt();
 			} else if(e.extendedProps['type'] == "time") {
-				handleShowTime();				
+				console.log(e.extendedProps.rating);
+				setRating(e.extendedProps.rating);
+				handleShowTime();			
 			} 
 		}
 	};
@@ -280,7 +284,8 @@ function FullCalendarApp() {
 			</Modal.Header>
 			<Modal.Body>
 				{wrongTimes ? <TimeError /> : null}
-				Make Appointment With: {tutName}<br/>
+				Make Appointment With: {tutName} <br/>
+				Tutor Rating: <Rating value={rating} readOnly/><br/>
 				Rate: ${rates[classCode]}/hr<br/>
 					Choose Class:
 					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>

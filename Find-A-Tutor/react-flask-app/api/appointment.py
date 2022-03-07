@@ -74,7 +74,7 @@ def getTimes(email):
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    cursor.execute("select TT.tut_email, start_date, end_date, taken, T.tut_name" + 
+    cursor.execute("select TT.tut_email, start_date, end_date, taken, T.tut_name, T.rating" + 
                     " from TutorTimes TT, Tutor T" + 
                     " where TT.tut_email in (select tut_email from TutorClasses where class_code in" + 
                     " (select class_code from StudentClasses where stu_email = \"" + email + "\")) and TT.tut_email = T.tut_email;")
@@ -86,6 +86,7 @@ def getTimes(email):
                                'end':time[2],
                                'title': "Available Session with " + time[4],
                                'tut_name':time[4],
+                               'rating':time[5],
                                'type':"time",
                                'backgroundColor':'#00ff00',
                                'borderColor':'#00ff00'})
@@ -97,7 +98,7 @@ def getAppointments(email):
     availAppts = []
     conn = mysql.connect()
     conn.autocommit(True)
-    cursor = conn.cursor()  
+    cursor = conn.cursor()
     
     cursor.execute("select " 
                     +"appt_id, "
@@ -129,7 +130,7 @@ def getAppointments(email):
             'block_e':appt[8],
             'type':"appt",
             'backgroundColor':'##0000ff',
-            'borderColor':'#00ff00'})
+            'borderColor':'#0000ff'})
     
     conn.close()
     print(availAppts)

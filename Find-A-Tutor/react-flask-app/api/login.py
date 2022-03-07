@@ -295,7 +295,8 @@ def mergeTimes(timeArray):
                 'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                 'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                 'type': "time",
-                'title': "Available Time with " + time['tut_name']})
+                'title': "Available Time with " + time['tut_name'],
+                'rating': time['rating']})
             else:
                 first = False
             #add time to the blockArray
@@ -309,7 +310,8 @@ def mergeTimes(timeArray):
                 'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                 'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                 'type': "time",
-                'title': "Available Time with " + time['tut_name']})
+                'title': "Available Time with " + time['tut_name'],
+                'rating': time['rating']})
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1
