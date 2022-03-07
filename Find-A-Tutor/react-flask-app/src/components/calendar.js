@@ -326,7 +326,7 @@ function FullCalendarApp() {
 			</Modal.Footer>
 		</form>
       </Modal>	
-	<div class="title">
+	<div className="title">
       <div className="titleText">
         <p>
           Find-A-Tutor
@@ -335,6 +335,9 @@ function FullCalendarApp() {
 	  </div>
     
       <div className="filter">
+		<div className="filterButton">
+	  		<button type="button">Switch Views</button>
+		</div>
         <div className="filterHeader">
           <h2>Filter By:</h2>
         </div>
