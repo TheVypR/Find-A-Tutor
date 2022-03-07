@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from typing import Tuple 
 from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
-from flask_wtf import Form 
+from flask_wtf import Form
+from pymysql import NULL 
 from wtforms import BooleanField
-import profile, signup, appointment
-
+import profile, signup, appointment, history, adminRoutes
 
 #Database stuff
 from flaskext.mysql import MySQL
@@ -14,7 +14,8 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-email = ""
+email = "apelia18@gcc.edu"
+isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -38,6 +39,7 @@ def login():
   cursor = conn.cursor()
   #get the login provided
   info = request.get_json()
+  global email
   email = info[0]
   pw = info[1]
   print(email)
@@ -73,8 +75,41 @@ def login():
 
 @app.route('/email/', methods=['GET'])
 def getAuth():
-  print("Email!!!: " + email)
+  #print("Email!!!: " + email)
   return {'authTag':email}
+# provide a list of current tutors
+@app.route('/CurrentTutors/', methods=['GET'])
+def currentTutors():
+    return adminRoutes.CurrentTutors()
+
+# reported tutors list
+@app.route('/ReportedTutors/', methods=['GET'])
+def reportedTutors():
+    return adminRoutes.ReportedTutors()
+
+# reported students list
+@app.route('/ReportedStudents/', methods=['GET'])
+def reportedStudents():
+    return adminRoutes.ReportedStudents()
+
+# provide a list of banned students
+@app.route('/BannedStudents/', methods=['GET'])
+def bannedStudents():
+    return adminRoutes.BannedStudents()
+
+# remove student from reported students or tutors list
+@app.route('/DimissReport/', methods=['POST'])
+def dismissReport():
+    tutor = request.get_json()
+    adminRoutes.DeleteUserFromList(tutor)
+    return 'Done'
+
+# add student to the banned list
+@app.route('/AddStudentToBan/', methods=['POST'])
+def addStudentToBan():
+    tutor = request.get_json()
+    adminRoutes.AddStudentToBan(tutor)
+    return 'Done'
 
 #signUp page
 @app.route('/signup/', methods=['POST'])
@@ -84,35 +119,59 @@ def signUp():
 #profile page
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
-  return profile.retrieve_profile("apelia18@gcc.edu")
+  if request.method == 'POST':
+    submission = request.get_json()
+    #Check to see if this is a removal
+    if 'remove' in submission.keys():
+        submittedTime = submission['remove']
+        startTime = dateParse(submittedTime['startTime'])
+        endTime = dateParse(submittedTime['endTime'])
+        timeSlot = {'start': startTime, 'end': endTime}
+        splitTimeVals = splitTimes(timeSlot)
+        return profile.remove_timeSlot(splitTimeVals, email)
+    elif 'contactMe' in submission.keys():
+        return profile.contactMe_change(submission['contactMe'], email)
+    elif 'startTime' in submission.keys() :
+        # else parse timeslot and divide it into 15 min chunks for storage
+        startTime = dateParse(submission['startTime'])
+        endTime = dateParse(submission['endTime'])
+        timeSlot = {'start': startTime, 'end': endTime}
+        times = splitTimes(timeSlot)
+        return profile.post_timeSlot(times, email)
+    else :
+        return profile.edit_profile(submission, email)
+  else:
+    return profile.retrieve_profile(email)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  
+  print(data['day'])
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
-  
   slots = splitTimes({'start':newStart, 'end':newEnd})
   
   #add the appointment and mark time as taken
   return appointment.addAppointment(data, email, newStart, newEnd, slots)
   
+@app.route('/getRates/', methods=['POST'])
+def getRates():
+    data = request.get_json()
+    return appointment.getRates(data)
+  
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
-    print("Times")
-    return {'times':mergeTimes(appointment.getTimes(email)['times'])}
+    times = mergeTimes(appointment.getTimes(email))
+    return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
-    print("Appointments")
     appts = appointment.getAppointments(email)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
-    print("Deleted")
     data = request.get_json()[0]
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
     slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
@@ -126,6 +185,34 @@ def editAppointment():
     returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
+
+@app.route('/toggleView/')
+def toggleView():
+    global isTutor
+    isTutor = not isTutor
+    print(isTutor)
+    return str(isTutor)
+
+@app.route('/loadAppointment/', methods=['GET'])
+def loadAppointments():
+    print(email)
+    if isTutor:
+        return history.loadPreviousAppointmentsTutor(email)
+    else:
+        return history.loadPreviousAppointmentsStudent(email)
+
+@app.route('/submitRating/', methods=['POST'])
+def rateTutor():
+    data = request.get_json()
+    return history.submitRating(data[0])
+
+@app.route('/submitReport/', methods=['POST'])
+def report():
+    data = request.get_json()
+    if isTutor:
+        return history.submitStudentReport(data[0], email)
+    else:
+        return history.submitTutorReport(data[0], email)
 
 def dateParse(date):
     #get the parts of the date
@@ -169,13 +256,16 @@ def dateParse(date):
     
 def createDateFromTime(day, time):
     #split up the day
-    date = dateParse(day)
+    if len(day) == 19 and 'T' in day:
+        date = day
+    else:
+        date = dateParse(day)
     newDay = date.split("T")[0]
     
     #add the time
     newDate = newDay + "T" + time + ":00"
     
-    print(newDate)
+    print(newDate + " 179")
     
     return newDate
     
@@ -201,11 +291,12 @@ def mergeTimes(timeArray):
         if (endTime - curTime) != minDif:
             #if this is the first don't add last one
             if not first:
-                timeBlockArray.append({'tut_email':time['tut_email'],
+                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
                 'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                 'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                 'type': "time",
-                'title': "Available Time with " + time['tut_email']})
+                'title': "Available Time with " + time['tut_name'],
+                'rating': time['rating']})
             else:
                 first = False
             #add time to the blockArray
@@ -215,11 +306,12 @@ def mergeTimes(timeArray):
             #add 15 minutes to the block
             curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         if left == 1:
-            timeBlockArray.append({'tut_email':time['tut_email'],
+            timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
                 'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                 'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                 'type': "time",
-                'title': "Available Time with " + time['tut_email']})
+                'title': "Available Time with " + time['tut_name'],
+                'rating': time['rating']})
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1

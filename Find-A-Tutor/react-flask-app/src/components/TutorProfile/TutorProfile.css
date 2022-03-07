@@ -1,4 +1,4 @@
-#venmoUser{
+#paymentUser{
     margin-top: 10px;
 }
 
@@ -79,7 +79,6 @@
 
 .timeLabel {
     font-size: 10px;
-    font-weight: bold;
 }
 
 fieldset {
@@ -101,9 +100,9 @@ fieldset {
 }
 
 .endTime {
-    max-width:  75px;
-    width: 75px;
-    min-width: 75px;
+    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
 }
 
 #day {
@@ -113,6 +112,7 @@ fieldset {
 
 .vr {
     border-left: thin solid black;
+    margin: 3px;
 }
 
 #stopTutoring {

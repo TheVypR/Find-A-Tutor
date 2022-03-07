@@ -1,5 +1,5 @@
 /*https://mui.com/getting-started/templates/*/
-import react, { useContext } from 'react';
+import react, { useContext, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,12 +20,13 @@ const theme = createTheme();
 
 export default function SignIn() {
   const nav = useNavigate();
-
+  const [wrongLogin, setWrongLogin] = useState(false);
+  
   //authentication information
   const authContext = useContext(AuthContext);
 
   const loginHandler = function () {
-      authContext.login();
+	  authContext.login();
       console.log(authContext);
       nav('/calendar');
   };
@@ -47,13 +48,26 @@ export default function SignIn() {
     }).then(resp => resp.json())
     .then(result => {
       if (result['email'] === info[0]) {
-        loginHandler()
+        loginHandler();
+		localStorage.setItem("loggedIn", true);
       }
       else {
-        logoutHandler()
+		setWrongLogin(true)
+        logoutHandler();
+		localStorage.setItem("logIn", false);
       }
     })
   };
+  
+  
+  const WrongSignIn = () => {
+	return (
+		<div style={{color : 'red'}}>
+			Incorrect Email or Password
+		</div>
+	)
+  }
+  
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -72,6 +86,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+		  {wrongLogin ? <WrongSignIn /> : null}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
