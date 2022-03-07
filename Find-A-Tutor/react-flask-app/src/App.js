@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';
 import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -21,11 +21,15 @@ export default function App() {
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
-    setLoggedIn(true);
+	console.log("login");
+	localStorage.setItem("loggedIn", true);
+    setLoggedIn(localStorage.getItem("loggedIn"));
   };
 
   const logout = () => {
-    setLoggedIn(false);
+	console.log("logout");
+	localStorage.setItem("loggedIn", false);
+    setLoggedIn(localStorage.getItem("loggedIn"));
   };
 
   return (

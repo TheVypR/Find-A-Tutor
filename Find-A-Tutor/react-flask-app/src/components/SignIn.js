@@ -26,13 +26,12 @@ export default function SignIn() {
   const authContext = useContext(AuthContext);
 
   const loginHandler = function () {
-      authContext.isLoggedIn = true;
+	  authContext.login();
       console.log(authContext);
       nav('/calendar');
   };
 
   const logoutHandler = function () {
-	  authContext.isLoggedIn = false;
       authContext.logout();
       nav('/');
   };
@@ -55,7 +54,7 @@ export default function SignIn() {
       else {
 		setWrongLogin(true)
         logoutHandler();
-		localStorage.setItem("loggedIn", false);
+		localStorage.setItem("logIn", false);
       }
     })
   };
