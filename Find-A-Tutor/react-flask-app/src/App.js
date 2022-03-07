@@ -17,7 +17,7 @@ import CurrentAndBan from './components/CurrentAndBan';
 import { AuthContext } from './components/AuthContext'
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState((localStorage.hasItem("loggedIn") ? localStorage.getItem("loggedIn") : false));
+  const [loggedIn, setLoggedIn] = useState((localStorage.getItem("loggedIn") !== null ? localStorage.getItem("loggedIn") : false));
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
