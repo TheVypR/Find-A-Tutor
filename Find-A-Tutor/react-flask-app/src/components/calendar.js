@@ -384,11 +384,13 @@ function FullCalendarApp() {
         </p>
       </div>
 	  </div>
-    
-      <div className="filter">
-		<div className="filterButton">
-	  		<button type="button">Switch Views</button>
+	  <div className="switchButton">
+	  		<Button >
+				  Switch Views
+			  </Button>
 		</div>
+      <div className="filter">
+		
         <div className="filterHeader">
           <h2>Filter By:</h2>
         </div>
