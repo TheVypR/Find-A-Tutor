@@ -272,15 +272,9 @@ function FullCalendarApp() {
 	}
 	console.log(authContext);
 	
-	function componentDidMount() {
-		console.log("reload");
-		console.log(localStorage.getItem("loggedIn"));
-		authContext.isLoggedIn = localStorage.getItem("loggedIn");
-	}
-	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return localStorage.getItem("loggedIn") && (
+  return authContext.isLoggedIn && (
     <div className="App">
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
