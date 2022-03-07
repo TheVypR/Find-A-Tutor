@@ -4,7 +4,7 @@ from typing import Tuple
 from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
 from flask_wtf import Form
-from pymysql import NULL 
+from pymysql import NULL
 from wtforms import BooleanField
 import profile, signup, appointment, history, adminRoutes
 
@@ -66,10 +66,20 @@ def login():
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
-      conn.close()
       print(user)
       if user is None:
         return jsonify({'error': 'Not Authenticated'})
+    
+  #if user is a tutor
+  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=%s);", str(email))
+  checkIfTutor = cursor.fetchall()
+  if checkIfTutor[0][0] == 1:
+      #get users login prefs
+      cursor.execute("select login_pref from Tutor where tut_email=%s;", email)
+      login_pref = cursor.fetchall()
+      setIsTutor(login_pref[0][0])
+
+  conn.close()
 
   return jsonify({'email': email})
 
@@ -141,7 +151,7 @@ def myProfile():
     else :
         return profile.edit_profile(submission, email)
   else:
-    return profile.retrieve_profile(email)
+    return profile.retrieve_profile(email, isTutor)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
@@ -341,3 +351,12 @@ def splitTimes(timeToSplit):
     'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
     'end':datetime.strftime(endSplit, '%Y-%m-%dT%H:%M:%S')})
     return splitTimeArray
+
+def setIsTutor(login_pref):
+    global isTutor
+    if login_pref == 1: #tutor
+        isTutor = True
+    elif login_pref == 0: #student
+        isTutor = False
+    else:
+        print("Error - Invalid value for login_pref")
