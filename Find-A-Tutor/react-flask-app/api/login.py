@@ -160,6 +160,10 @@ def getRates():
     data = request.get_json()
     return appointment.getRates(data)
   
+@app.route('/getStuClasses/', methods=['GET'])
+def getStuClasses():
+    return appointment.getStuClasses(email)
+  
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     times = mergeTimes(appointment.getTimes(email))
