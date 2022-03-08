@@ -33,28 +33,6 @@ class T_Profile extends React.Component {
         this.checkForEmptyState = this.checkForEmptyState.bind(this);
     }//constructor
 
-    // /**
-    //  * Fetches user info from backend
-    //  */
-    // async componentDidMount() {
-    //     fetch("/myProfile/")
-    //         .then(res => res.json())
-    //         .then(
-    //             (result) => {
-    //                 this.setState({
-    //                     isLoaded: true,
-    //                     items: result
-    //                 });
-    //             },
-    //             (error) => {
-    //                 this.setState({
-    //                     isLoaded: true,
-    //                     error
-    //                 });
-    //             }
-    //         )
-    // }//componentDidMount
-
     /**
      * Collects state values and sends them to the backend
      */
@@ -77,6 +55,7 @@ class T_Profile extends React.Component {
             },
             body: JSON.stringify(post)
         })//fetch
+        this.props.edit();
     }//handleSubmit
 
     /**

@@ -79,8 +79,14 @@ def retrieve_tutor(name, tut_email):
     payment_details = payment[1] #payment_info
     print(payment_method)
     print(payment_details)
+
+    times = retrieve_times(tut_email)
+    classes = retrieve_classes(tut_email)
   
-    return {'name': name, 'email':tut_email, 'isTutor': True, 'loginPref':loginPref, 'contact':contactable, 'payType':payment_method, 'payInfo':payment_details}
+    return {'name': name, 'email':tut_email, 'isTutor': True,
+        'login_pref':loginPref, 'contact':contactable,
+        'pay_type':payment_method, 'pay_info':payment_details,
+        'times': times, 'classes': classes}
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -103,14 +109,15 @@ def retrieve_times(tut_email):
 def retrieve_classes(tut_email):
     conn = mysql.connect()
     cursor = conn.cursor()
-    classes = {}
+    classes = []
     #get the classes and rates
     cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
     
-    #put the classes in a dict {class_code:rate}
-    for rate in classes_rates:
-      classes[rate[0]] = rate[1]
+    #put the classes in a dict 
+    #classes[["code", rate:15], ["code2", 10]]
+    for pair in classes_rates:
+        classes.append(pair)
     
     return classes
 
@@ -169,8 +176,8 @@ def edit_profile(submission, tut_email):
     cursor.execute("update Tutor set"
                     + " pay_type = \"" + submission['pay_type'] + "\"" 
                     + ", pay_info = \"" + submission['pay_info'] + "\""
-                    + ", login_pref = " + str(submission['login_pref'])
-                    + " where tut_email = \"" + tut_email + "\";")
+                    + ", login_pref = \'" + str(submission['login_pref'][0])
+                    + "\' where tut_email=\'" + tut_email + "\';")
 
 #     update Tutor
 # set pay_type="PayPal", pay_info="user"
