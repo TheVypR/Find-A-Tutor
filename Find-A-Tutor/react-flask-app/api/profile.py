@@ -36,21 +36,19 @@ def retrieve_profile(email, isTutor):
     
     #get the tutor information from the DB
     #get the name
-    cursor.execute("select stu_name from Student where stu_email = (%s)", (email))
-    name = cursor.fetchone()
-    print(name[0])
-    
-    #get the email
-    cursor.execute("select stu_email from Student where stu_email = (%s)", (email))
-    email = cursor.fetchone()
-    print(email[0])
+    cursor.execute("select stu_name, stu_email from Student where stu_email = (%s)", (email))
+    data = cursor.fetchone()
+    name = data[0]
+    email = data[1]
+    print(name)
+    print(email)
 
     
     #if so retrieve tutor info
     if isTutor:
         print("TUTOR")
         return retrieve_tutor(name, email)
-    elif isTutor:
+    elif not isTutor:
         print("STUDENT")
         return {'name': name, 'email': email, 'isTutor': False}
     else:

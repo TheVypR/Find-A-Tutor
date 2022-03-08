@@ -6,9 +6,10 @@ import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-i
 import "./StudentProfile.css"
 
 class StudentProfile extends React.Component {
+	
     constructor(props) {
         super(props)
-
+		
         this.state = {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             isLoaded: false,
@@ -18,7 +19,7 @@ class StudentProfile extends React.Component {
         this.AddNewClass = this.AddNewClass.bind(this);
         this.RemoveClass = this.RemoveClass.bind(this);
     }
-    
+	
     handleSubmit = () => {
         const values = [{
             "classes" : this.state.classesList
@@ -49,7 +50,7 @@ class StudentProfile extends React.Component {
             classesList: this.state.classesList
         })
     }
-
+	
     render() {
         var name = this.props.items['name'];
         console.log(name);
