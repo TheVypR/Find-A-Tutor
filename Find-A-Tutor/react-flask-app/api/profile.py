@@ -38,20 +38,18 @@ def retrieve_profile(email, isTutor):
     #get the name
     cursor.execute("select stu_name from Student where stu_email = (%s)", (email))
     name = cursor.fetchone()
-    print(name[0])
+    #print(name[0])
     
     #get the email
     cursor.execute("select stu_email from Student where stu_email = (%s)", (email))
     email = cursor.fetchone()
-    print(email[0])
+    #print(email[0])
 
     
     #if so retrieve tutor info
     if isTutor:
-        print("TUTOR")
         return retrieve_tutor(name, email)
     elif isTutor:
-        print("STUDENT")
         return {'name': name, 'email': email, 'isTutor': False}
     else:
         print("Error - isTutor has invalid data")
@@ -65,12 +63,11 @@ def retrieve_tutor(name, tut_email):
     #get the login preference
     cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
     loginPref = cursor.fetchone()
-    print(loginPref)
     
     #get the contactability
     cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
     contactable = cursor.fetchone()
-    print(contactable)
+    #print(contactable)
     
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
@@ -79,10 +76,16 @@ def retrieve_tutor(name, tut_email):
     #split the payment details
     payment_method = payment[0]  #payment_type
     payment_details = payment[1] #payment_info
-    print(payment_method)
-    print(payment_details)
-  
-    return {'name': name, 'email':tut_email, 'isTutor': True, 'loginPref':loginPref, 'contact':contactable, 'payType':payment_method, 'payInfo':payment_details}
+    #print(payment_method)
+    #print(payment_details)
+
+    times = retrieve_times(tut_email)
+    classes = retrieve_classes(tut_email)
+
+    return {'name': name, 'email':tut_email, 'isTutor': True,
+            'login_pref':loginPref, 'contact':contactable,
+            'pay_type':payment_method, 'pay_info':payment_details,
+            'times': times, 'classes': classes}
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -93,7 +96,7 @@ def retrieve_times(tut_email):
     #get the times
     cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
-    print(times)
+    #print(times)
     
     #put times in dict {start_time:end_time}
     for time in times:
@@ -105,14 +108,16 @@ def retrieve_times(tut_email):
 def retrieve_classes(tut_email):
     conn = mysql.connect()
     cursor = conn.cursor()
-    classes = {}
+    classes = []
     #get the classes and rates
     cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
+    print(classes_rates)
     
     #put the classes in a dict {class_code:rate}
-    for rate in classes_rates:
-      classes[rate[0]] = rate[1]
+    #classes[["code", rate:15], ["code2", 10]]
+    for pair in classes_rates:
+        classes.append(pair)
     
     return classes
 
@@ -172,7 +177,7 @@ def edit_profile(submission, tut_email):
                     + " pay_type = \"" + submission['pay_type'] + "\"" 
                     + ", pay_info = \"" + submission['pay_info'] + "\""
                     + ", login_pref = " + str(submission['login_pref'])
-                    + " where tut_email = \"" + tut_email + "\";")
+                    + " where tut_email = " + tut_email + ";")
 
 #     update Tutor
 # set pay_type="PayPal", pay_info="user"

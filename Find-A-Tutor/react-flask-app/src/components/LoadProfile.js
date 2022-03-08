@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
-import T_Profile from "./TutorProfile/T_Profile";
+import TutorProfileStatic from "./TutorProfileStatic";
+import TutorProfile from "./TutorProfile/T_Profile"
 import StudentProfile from "./StudentProfile";
 
 /**
@@ -10,15 +11,23 @@ class LoadProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {}
+            items: {},
+            isEdit: false
         }
-
+        this.edit = this.edit.bind(this);
     }//constructor
+
+    /**
+     * Toggles isEdit
+     */
+    edit() {
+        this.setState({ isEdit: !this.state.isEdit });
+    }//edit
 
     /**
      * Fetches user info from backend
      */
-     async componentDidMount() {
+    async componentDidMount() {
         fetch("/myProfile/")
             .then(res => res.json())
             .then(
@@ -38,8 +47,12 @@ class LoadProfile extends React.Component {
     }//componentDidMount
 
     render() {
-        var profile = this.state.items['isTutor'] ? 
-            <T_Profile items={this.state.items} /> :
+        console.log(this.state.isEdit)
+        let staticOrEditTutor = this.state.isEdit ?
+            <TutorProfile items={this.state.items} edit={this.edit}/> :
+            <TutorProfileStatic items={this.state.items} edit={this.edit}/>
+        var profile = this.state.items['isTutor'] ?
+            staticOrEditTutor :
             <StudentProfile items={this.state.items} />
         return (
             <>
