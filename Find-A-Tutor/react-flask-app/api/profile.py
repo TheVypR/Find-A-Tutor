@@ -30,7 +30,7 @@ mysql.init_app(app)
 #end database stuff
 
 #retrieve profile details
-def retrieve_profile(email):
+def retrieve_profile(email, isTutor):
     conn = mysql.connect()
     cursor = conn.cursor()
     
@@ -44,11 +44,21 @@ def retrieve_profile(email):
     cursor.execute("select stu_email from Student where stu_email = (%s)", (email))
     email = cursor.fetchone()
     print(email[0])
-        
-    return {'name': name, 'email': email}
+
+    
+    #if so retrieve tutor info
+    if isTutor:
+        print("TUTOR")
+        return retrieve_tutor(name, email)
+    elif isTutor:
+        print("STUDENT")
+        return {'name': name, 'email': email, 'isTutor': False}
+    else:
+        print("Error - isTutor has invalid data")
+        return 'Error'
 
 #retrieve tutor details
-def retrieve_tutor(tut_email):
+def retrieve_tutor(name, tut_email):
     conn = mysql.connect()
     cursor = conn.cursor()
     
@@ -64,7 +74,7 @@ def retrieve_tutor(tut_email):
     
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
-    payment = cursor.fetchone()   
+    payment = cursor.fetchone()
     
     #split the payment details
     payment_method = payment[0]  #payment_type
@@ -72,7 +82,7 @@ def retrieve_tutor(tut_email):
     print(payment_method)
     print(payment_details)
   
-    return {'loginPref':loginPref, 'contact':contactable, 'payType':payment_method, 'payInfo':payment_details}
+    return {'name': name, 'email':tut_email, 'isTutor': True, 'loginPref':loginPref, 'contact':contactable, 'payType':payment_method, 'payInfo':payment_details}
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
