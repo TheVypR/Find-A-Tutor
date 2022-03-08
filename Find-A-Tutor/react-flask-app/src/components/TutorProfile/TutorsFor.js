@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-import './TutorProfile.css';
 import Class from './Class'
 
 /**
