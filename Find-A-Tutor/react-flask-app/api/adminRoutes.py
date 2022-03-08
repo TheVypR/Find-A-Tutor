@@ -68,6 +68,25 @@ def CurrentTutors():
     conn.close()
     return jsonify(allTutors)
 
+def Contactable():
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute("select * from TutorClasses")
+    allTutors = cursor.fetchall()
+    conn.close()
+    
+    returnArray = list(allTutors)
+    LSize = 0
+    for tutor in returnArray:
+        returnArray[LSize] = list(tutor)
+        reportedTutorName = getFunctions.getName(tutor[0])
+        reportedByName = getFunctions.getName(tutor[1])
+        returnArray[LSize].append(reportedTutorName)
+        returnArray[LSize].append(reportedByName)
+        LSize += 1
+
+    return jsonify(returnArray)
+
 def BannedStudents():
     conn = mysql.connect()
     cursor = conn.cursor()

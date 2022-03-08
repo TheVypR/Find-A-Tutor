@@ -396,7 +396,8 @@ function FullCalendarApp() {
 			  </Button>
 			</Modal.Footer>
 		</form>
-      </Modal>	
+      </Modal>
+
 	<div className="title">
       <div className="titleText">
         <p>
@@ -440,6 +441,7 @@ function FullCalendarApp() {
 		<div>
 			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
+		
       </div>
       <StyleWrapper>
         <div className="calendar">

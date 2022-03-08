@@ -73,14 +73,14 @@ def login():
 
   return jsonify({'email': email})
 
-@app.route('/email/', methods=['GET'])
-def getAuth():
-  #print("Email!!!: " + email)
-  return {'authTag':email}
 # provide a list of current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
     return adminRoutes.CurrentTutors()
+
+@app.route('/Contactable/', methods=['GET'])
+def contactable():
+    return adminRoutes.Contactable()
 
 # reported tutors list
 @app.route('/ReportedTutors/', methods=['GET'])
