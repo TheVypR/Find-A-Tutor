@@ -181,6 +181,17 @@ def edit_profile(submission, tut_email):
                     + ", login_pref = \'" + str(submission['login_pref'][0])
                     + "\' where tut_email=\'" + tut_email + "\';")
 
+    #update the tutor classes
+    
+    classes = submission['classes']
+
+    for aClass in classes:
+        if 'class_code' in aClass.keys():
+            cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
+
+    #insert into TutorClasses Values('apelia18@gcc.edu', 'SCIC101G', 5, 0);
+
+
 #     update Tutor
 # set pay_type="PayPal", pay_info="user"
 # where tut_email="apelia18@gcc.edu";
