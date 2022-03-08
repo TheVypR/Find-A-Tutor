@@ -42,6 +42,7 @@ class T_Profile extends React.Component {
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
+            'classes': this.state.classes//TODO: This will have to be different
         }//post
 
         this.checkForEmptyState(post);
@@ -54,7 +55,6 @@ class T_Profile extends React.Component {
             },
             body: JSON.stringify(post)
         })//fetch
-
         this.props.edit();
     }//handleSubmit
 
@@ -64,17 +64,16 @@ class T_Profile extends React.Component {
      * @param {dictionary} post things being sent to backend
      */
     checkForEmptyState(post) {
-        let items = this.props.items;
         //Check for empty values
         for (let postKey in post) {
             if (post[postKey] == "" || post[postKey] == -1 || post[postKey] == [{}]) {
                 //replace with db data
-                Object.keys(items).forEach(item => {
-                    console.log(postKey)
-                    if (postKey == item) {
-                        post[postKey] = items[item];
-                    }
-                });
+                for (let getKey in this.props.items) {
+                    console.log(getKey + ": " + this.props.items[getKey]);
+                    if (postKey == getKey) {
+                        post[postKey] = this.props.items[getKey];
+                    }//if
+                }//for
             }//if
         }//for
     }//checkForEmptyState
@@ -162,6 +161,7 @@ class T_Profile extends React.Component {
     }//setRate
 
     render() {
+        console.log(this.props.items);
         return (
             <>
                 <div className="container-fluid text-center">
