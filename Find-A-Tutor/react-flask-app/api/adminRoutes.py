@@ -94,39 +94,38 @@ def BannedStudents():
     conn.close()
     return jsonify(allBanned)
 
-def AddStudentToBan(tutor):
+def AddStudentToBan(target):
     # get additional info
-    name = getFunctions.getName(tutor['stu_email'])
+    name = getFunctions.getName(target['stu_email'])
 
     # post to db
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    cursor.execute("insert into BannedUsers(stu_email, stu_name, reason, ban_id) values(\""+ tutor['stu_email'] + "\", \""+ name[0] + "\", \""+ tutor['reason'] + "\", 0)")
+    cursor.execute("insert into BannedUsers(stu_email, stu_name, reason, ban_id) values(\""+ target['stu_email'] + "\", \""+ name[0] + "\", \""+ target['reason'] + "\", 0)")
 
     # determining if the user is a tutor
-    cursor.execute("select tut_email from Tutor where tut_email = \""+ tutor['stu_email'] + "\" ")
-    data = list(cursor.fetchall())
-
+    cursor.execute("select tut_email from Tutor where tut_email = \""+ target['stu_email'] + "\" ")
+    data = list(cursor.fetchone())
 
     # delete if student is a tutor
     ban = "Banned@vac_ban.edu"
-    if data[0] != null:
-        cursor.execute("update Appointment set tut_email = \""+ban+"\" where tut_email = \""+ tutor['stu_email'] +"\" ")
-        cursor.execute("delete from TutorTimes where tut_email = \""+ tutor['stu_email'] + "\" ")
-        cursor.execute("delete from TutorClasses where tut_email = \""+ tutor['stu_email'] + "\" ")
-        cursor.execute("delete from Tutor where tut_email = \""+ tutor['stu_email'] + "\" ")
+    if data != None:
+        cursor.execute("update Appointment set tut_email = \""+ban+"\" where tut_email = \""+ target['stu_email'] +"\" ")
+        cursor.execute("delete from TutorTimes where tut_email = \""+ target['stu_email'] + "\" ")
+        cursor.execute("delete from TutorClasses where tut_email = \""+ target['stu_email'] + "\" ")
+        cursor.execute("delete from Tutor where tut_email = \""+ target['stu_email'] + "\" ")
 
     # delete from student as well
-    cursor.execute("update Appointment set stu_email = \""+ban+"\" where stu_email = \""+ tutor['stu_email'] + "\" ")
-    cursor.execute("delete from StudentClasses where stu_email = \""+ tutor['stu_email'] + "\" ")
-    cursor.execute("delete from Student where stu_email = \""+ tutor['stu_email'] + "\" ")
+    cursor.execute("update Appointment set stu_email = \""+ban+"\" where stu_email = \""+ target['stu_email'] + "\" ")
+    cursor.execute("delete from StudentClasses where stu_email = \""+ target['stu_email'] + "\" ")
+    cursor.execute("delete from Student where stu_email = \""+ target['stu_email'] + "\" ")
 
     # close the connection
     conn.close()
 
     # delete from reported users list
-    DeleteUserFromList(tutor)
+    DeleteUserFromList(target)
 
     return 'Done'
 

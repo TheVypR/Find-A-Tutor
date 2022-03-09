@@ -6,45 +6,24 @@ import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-i
 import "./StudentProfile.css"
 
 class StudentProfile extends React.Component {
+	
     constructor(props) {
         super(props)
-
+		
         this.state = {
             classesList: [{ verified: "", courseCode: "", rate: "" }],
             isLoaded: false,
-            items: "",
             isTutorView: true
         }
 
         this.AddNewClass = this.AddNewClass.bind(this);
         this.RemoveClass = this.RemoveClass.bind(this);
     }
-
-    componentDidMount() {
-        fetch("/myProfile")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result.items
-                    });
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
-    }
-    
+	
     handleSubmit = () => {
         const values = [{
-            "classes" : this.state.classesList
+            "classes" : this.state.classesList,
+			'email': localStorage.getItem('email')
         }];
 
         const response = fetch("/myProfile/", {
@@ -72,15 +51,16 @@ class StudentProfile extends React.Component {
             classesList: this.state.classesList
         })
     }
-
+	
     render() {
+        var name = this.props.items['name'];
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.state.items['name']} </h1>
-                    <p id="email"> {this.state.items['email']} </p>
+                    <h1 id="name"> {this.props.items['name']} </h1>
+                    <p id="email"> {this.props.items['email']} </p>
                 </div>
 
                 <div className="d-flex justify-content-center">

@@ -13,7 +13,7 @@ import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
-import ContactMe from './components/ContactMe';
+import LoadProfile from './components/LoadProfile';
 
 import { AuthContext } from './components/AuthContext'
 
@@ -24,6 +24,7 @@ export default function App() {
   const login = () => {
 	setLoggedIn(true);
 	localStorage.setItem("loggedIn", true);
+	
   };
 
   const logout = () => {
@@ -38,7 +39,7 @@ export default function App() {
           <Routes>
             <Route path='/' element={<SignIn />}></Route>
             <Route path='/signup' element={<SignUp />}></Route>
-            <Route path='/myProfile' element={<TutorProfile />} />
+            <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
