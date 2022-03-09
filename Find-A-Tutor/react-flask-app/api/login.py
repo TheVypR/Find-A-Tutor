@@ -14,7 +14,7 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-email = "apelia18@gcc.edu"
+email = ""
 isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
@@ -80,7 +80,7 @@ def currentTutors():
 
 @app.route('/Contactable/', methods=['GET'])
 def contactable():
-    return adminRoutes.Contactable()
+    return adminRoutes.Contactable(email)
 
 # reported tutors list
 @app.route('/ReportedTutors/', methods=['GET'])

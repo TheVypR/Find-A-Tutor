@@ -11,24 +11,25 @@ import React, { useState, useEffect, useContext } from 'react';
 
 //making styles and themes
 const theme = createTheme();
-export default function ContactMe() {
+
+function ContactMe() {
     //authentication
 	const authContext = useContext(AuthContext);
 
-    const [allTutors, setAllTutors] = useState([]);
+    const [contactTutors, setContactTutors] = useState(null);
 
     //Get current tutors for the CurrentAndBan screen
     useEffect(() => { fetch("/Contactable/")
         .then(res => res.json())
         .then(result => {
-            setAllTutors(result);
+            setContactTutors(result);
         },
         (error) => {
             console.log(error);
         })
     }, []);
 
-    console.log(allTutors);
+    console.log(contactTutors);
 
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
@@ -44,14 +45,17 @@ export default function ContactMe() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {allTutors.map((tutor) => tutor[0] == 1 ? (
+                    {contactTutors.map((tutor) => (
                         <TableRow>
                             <TableCell>{tutor[1]}</TableCell>
                             <TableCell>{tutor[0]}</TableCell>
                         </TableRow>
-                    ) : (<div></div>) )}
+                    ))}
                 </TableBody>
             </Table>
         </ThemeProvider>
     );
+	
+	
 }
+export default ContactMe;

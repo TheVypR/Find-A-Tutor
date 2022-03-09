@@ -13,7 +13,7 @@ import styled from "@emotion/styled"
 import './calendar.css'
 import Rating from '@mui/material/Rating';
 import { AuthContext } from './AuthContext';
-
+import { ContactMe } from './ContactMe';
 
 export const StyleWrapper = styled.div`
   .fc td {
@@ -302,6 +302,7 @@ function FullCalendarApp() {
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
     <div className="App">
+		<ContactMe />
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
