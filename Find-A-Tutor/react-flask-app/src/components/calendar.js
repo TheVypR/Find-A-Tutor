@@ -76,7 +76,7 @@ function FullCalendarApp() {
   const [wrongTimes, setWrongTimes] = useState(false);
   
   //loads in the times currently available in the DB -IAA
-  useEffect(() => { fetch("/getTimes/")
+  useEffect(() => { fetch("/getTimes/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -91,7 +91,7 @@ function FullCalendarApp() {
             )
   }, []);
 
-  useEffect(() => { fetch("/getStuClasses/")
+  useEffect(() => { fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -107,7 +107,7 @@ function FullCalendarApp() {
   }, []);
 
   //loads in the appts currently created in the DB - IAA
-  useEffect(() => { fetch("/getAppointments/")
+  useEffect(() => { fetch("/getAppointments/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -155,6 +155,7 @@ function FullCalendarApp() {
 		setStartDate(origStartDate);
 		setEndDate(origEndDate);
 		const myEvent = {
+		  email:localStorage.getItem("email"),
 		  class_code: classCode,
 		  start: startTime,
 		  end: endTime,
@@ -236,6 +237,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([{
+				email:localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -246,6 +248,7 @@ function FullCalendarApp() {
 	
 	const editAppt = function () {
 		const myEvent = {
+		  email:localStorage.getItem("email"),
 		  class_code: classCode,
 		  start: startDate,
 		  end: endDate,
@@ -261,6 +264,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([{
+				email: localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
