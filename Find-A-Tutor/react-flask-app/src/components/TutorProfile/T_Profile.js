@@ -160,12 +160,13 @@ class T_Profile extends React.Component {
     }//setRate
 
     render() {
+        let items = this.props.items;
         return (
             <>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.props.items['name']} </h1>
-                    <p id="email"> {this.props.items['email']} </p>
+                    <h1 id="name"> {items['name']} </h1>
+                    <p id="email"> {items['email']} </p>
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">
@@ -173,6 +174,8 @@ class T_Profile extends React.Component {
                         setPaymentType={this.setPaymentType}
                         setLoginPrefs={this.setLoginPrefs}
                         setPaymentUser={this.setPaymentUser}
+                        pay_type={items['pay_type']}
+                        pay_info={items['pay_info']}
                     />
                     <TutorsFor
                         classes={this.state.classes}
