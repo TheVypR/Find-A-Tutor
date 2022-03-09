@@ -13,6 +13,12 @@ import styled from "@emotion/styled"
 import './calendar.css'
 import Rating from '@mui/material/Rating';
 import { AuthContext } from './AuthContext';
+import Paper from '@mui/material/Paper';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 export const StyleWrapper = styled.div`
@@ -401,27 +407,33 @@ function FullCalendarApp() {
 			</Modal.Footer>
 		</form>
       </Modal>	
-	<div className="title">
-      <div className="titleText">
-        <p>
-          Find-A-Tutor
-        </p>
-      </div>
-	  </div>
-    
-      <div className="filter">
-        <div className="filterHeader">
-          <h2>Filter By:</h2>
-        </div>
-		<div className="class-filter">
-		{studentClasses !== undefined ? <select onChange={(e) => {setFilterClass(e.target.value)}}>
-				<option key="null" value="All Classes">All Classes</option>
-				{studentClasses.map((clss) => {
-					return <option key={clss} value={clss}>{clss}</option>
-				})}
-		</select> : null}
+	
+
+		<div className="filter">
+		<div className='switchViews'>
+			<Button color="blue">Switch Views</Button>
 		</div>
-        <div>
+		<Paper
+		 variant="outlined"
+		 elevation={12}
+		 style={{
+			padding:8,
+			border: "1px solid black"
+		}}>	
+			<div className="filterHeader">
+			<h2>Filter By:</h2>
+			</div>
+			<div className="class-filter">
+			{studentClasses !== undefined ? <select onChange={(e) => {setFilterClass(e.target.value)}}>
+					<option key="null" value="All Classes">All Classes</option>
+					{studentClasses.map((clss) => {
+						return <option key={clss} value={clss}>{clss}</option>
+					})}
+			</select> : null}
+			</div>
+			
+			<div>
+		
           <input
             type = "checkbox"
             id="myApts"
@@ -441,10 +453,16 @@ function FullCalendarApp() {
           />
           Available Times
         </div>
+
+	
 		<div>
 			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
+		</Paper>
+		
       </div>
+
+	  
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
@@ -459,19 +477,16 @@ function FullCalendarApp() {
             switch to day view - add appointment button
           */
           headerToolbar={{
-            center: 'dayGridMonth,timeGridWeek,timeGridDay,profile',
+			start: 'prev',
+            center: 'today,dayGridMonth,timeGridWeek,timeGridDay',
+			end: 'next'
+
           }}
 
           //create buttons
           //TODO: decide if any buttons at top of screen are necessary
           customButtons={{
-            profile: {
-              text: 'To Profile',
-
-              click: function() {
-                nextPage();
-              }
-            },
+          
 
           }}//end button setup
 
