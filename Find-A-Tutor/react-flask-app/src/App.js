@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';
 import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -13,19 +13,22 @@ import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
+import LoadProfile from './components/LoadProfile';
 
 import { AuthContext } from './components/AuthContext'
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState((localStorage.getItem("loggedIn") !== null ? localStorage.getItem("loggedIn") : false));
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
-    setLoggedIn(true);
+	setLoggedIn(true);
+	localStorage.setItem("loggedIn", true);
   };
 
   const logout = () => {
-    setLoggedIn(false);
+	setLoggedIn(false);
+	localStorage.setItem("loggedIn", false);
   };
 
   return (
@@ -35,7 +38,7 @@ export default function App() {
           <Routes>
             <Route path='/' element={<SignIn />}></Route>
             <Route path='/signup' element={<SignUp />}></Route>
-            <Route path='/myProfile' element={<TutorProfile />} />
+            <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />

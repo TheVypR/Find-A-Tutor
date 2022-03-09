@@ -11,6 +11,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import styled from "@emotion/styled"
 import './calendar.css'
+import Rating from '@mui/material/Rating';
 import { AuthContext } from './AuthContext';
 import NavBar from './NavBar';
 
@@ -47,13 +48,15 @@ function FullCalendarApp() {
   const [title, setTitle] = useState("");
   const [blockStart, setBlockStart] = useState("");
   const [blockEnd, setBlockEnd] = useState("");
+  const [rating, setRating] = useState(null);
 
   //filter
   const [evnts, setEvnts] = useState([]);
   const [filterTimes, setFilterTimes] = useState(false);
   const [filterAppts, setFilterAppts] = useState(false);
-  const [lastTimeFilter, setLastTimeFilter] = useState(false);
-  const [lastApptFilter, setLastApptFilter] = useState(false);
+  const [filterClass, setFilterClass] = useState("All Classes");
+  const [studentClasses, setStudentClasses] = useState();
+  
   
   //for authentication
   const authContext = useContext(AuthContext);
@@ -86,7 +89,22 @@ function FullCalendarApp() {
                 (error) => {
                     console.log(error);
                 }
-            ).then(console.log(times))
+            )
+  }, []);
+
+  useEffect(() => { fetch("/getStuClasses/")
+            .then(res => res.json())
+            .then(
+                result => {
+                    setStudentClasses(result['stu_classes']);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
   }, []);
 
   //loads in the appts currently created in the DB - IAA
@@ -102,29 +120,35 @@ function FullCalendarApp() {
                 (error) => {
                     console.log(error);
                 }
-            ).then(console.log(appts))
+            )
   }, []);
 
 	const updateEvents = function() {
-		setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
-		setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
-		if (filterAppts && lastApptFilter != filterAppts) {
-			console.log("appts");
-			setEvnts(evnts.concat(appts));
-			console.log(evnts)
-		} else {
-			console.log("remove appts");
-			setEvnts(evnts.filter(evnt => evnt['type'] != "appt"));
+		let localEvents = [];
+		
+		//filter classes
+		if (filterClass === "All Classes") {
+			if (filterAppts) {
+				console.log("appts");
+				localEvents = localEvents.concat(appts);
+			} else {
+				console.log("remove appts");
+			}
+		} else {		
+			if (filterAppts) {
+				console.log("appts");
+				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] == filterClass));
+			} else {
+				console.log("remove appts");
+			}
 		}
-		if (filterTimes && lastTimeFilter != filterTimes) {
-			console.log("times")
-			setEvnts(evnts.concat(times));
+		if (filterTimes) {
+			console.log("times");
+			localEvents = localEvents.concat(times);
 		} else {
 			console.log("remove times");
-			setEvnts(evnts.filter(evnt => evnt['type'] != "time"));
 		}
-		setLastApptFilter(filterAppts)
-		setLastTimeFilter(filterTimes)
+		setEvnts(localEvents);
   }
 
 	//create appointment
@@ -199,7 +223,9 @@ function FullCalendarApp() {
 				setBlockEnd(e.extendedProps.block_e)	
 				handleShowAppt();
 			} else if(e.extendedProps['type'] == "time") {
-				handleShowTime();				
+				console.log(e.extendedProps.rating);
+				setRating(e.extendedProps.rating);
+				handleShowTime();			
 			} 
 		}
 	};
@@ -271,6 +297,7 @@ function FullCalendarApp() {
 	const GetOptions = () => {
 		return ({providedClasses})
 	}
+	console.log(authContext);
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
@@ -284,8 +311,9 @@ function FullCalendarApp() {
 			</Modal.Header>
 			<Modal.Body>
 				{wrongTimes ? <TimeError /> : null}
-				Make Appointment With: {tutName}<br/>
-				Rate: ${rates[classCode]}/hr<br/>
+				Make Appointment With: {tutName} <br/>
+				Tutor Rating: <Rating value={rating} readOnly/><br/>
+				Rate: $<strong>{rates[classCode]}</strong>/hr<br/>
 					Choose Class:
 					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
 						<option key="null" value="NONE">NONE</option>
@@ -304,13 +332,13 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Close
 			  </Button>
-			  <Button variant="primary"
+			  <Button variant="primary" type="submit"
 					  onClick= {
 						  () => {
 							  verifyTimes();
 						  }
 					}>
-				Save Changes
+				Make Appointment
 			  </Button>
 			</Modal.Footer>
 		</form>
@@ -334,7 +362,7 @@ function FullCalendarApp() {
 		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" type="submit" onClick={handleShowEdit}>
+          <Button variant="primary" onClick={handleShowEdit}>
             Edit Appointment
           </Button>
         </Modal.Footer>
@@ -358,7 +386,7 @@ function FullCalendarApp() {
 			
 			<Modal.Footer>
 			  <Button variant="secondary" onClick={handleClose}>
-				Close
+				Cancel
 			  </Button>
 			  <Button variant="primary"  type="submit"
 					  onClick= {
@@ -383,13 +411,22 @@ function FullCalendarApp() {
         <div className="filterHeader">
           <h2>Filter By:</h2>
         </div>
+		<div className="class-filter">
+		{studentClasses !== undefined ? <select onChange={(e) => {setFilterClass(e.target.value)}}>
+				<option key="null" value="All Classes">All Classes</option>
+				{studentClasses.map((clss) => {
+					return <option key={clss} value={clss}>{clss}</option>
+				})}
+		</select> : null}
+		</div>
         <div>
           <input
             type = "checkbox"
             id="myApts"
             name="filters"
 			value='appt'
-            onClick={(e) => {setFilterAppts(!filterAppts)}}
+			checked={filterAppts}
+            onChange={(e) => {console.log(e.target.value);setFilterAppts(!filterAppts)}}
           />
           My Appointment<br/>
           <input
@@ -397,30 +434,15 @@ function FullCalendarApp() {
             id="availableApts"
             name="filters"
 			value='time'
-            onClick={(e) => {setFilterTimes(!filterTimes)}}
+			checked={filterTimes}
+            onChange={(e) => {setFilterTimes(!filterTimes)}}
           />
           Available Times
         </div>
-			<Button onClick={(e) => {console.log(e);updateEvents()}}>Apply Filters</Button>
+		<div>
+			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
+		</div>
       </div>
-          
-      {/* <div class="filter">
-        <p>
-          Filter By:
-        </p>
-        <div>
-        <label for="myApts">
-          <input type="checkbox" id="myApts" name="My Appointments" value="yes"></input> My Appointments
-        </label>
-        <script>
-          const cb = document.querySelector('#myApts');
-          alert("hi");
-        </script>
-        </div>
-        <input type="checkbox" id="availableApts" name="My Appointments">
-        </input>
-        <label for="availableApts">Available Appointments</label><br></br>
-      </div> */}
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
@@ -452,7 +474,7 @@ function FullCalendarApp() {
           }}//end button setup
 
           //add appointments to calendar
-          events={times.concat(appts)}
+          events={evnts}
 			
           //formatting of appointments
           eventColor="green"	

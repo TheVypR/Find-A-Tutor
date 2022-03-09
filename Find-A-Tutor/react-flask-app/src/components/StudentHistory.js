@@ -14,11 +14,15 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 const theme = createTheme();
 export default function StudentHistory() {
+	//authentication
+	const authContext = useContext(AuthContext);
+	
     const [rating, setRating] = useState(0);
 	const [appts, setAppts] = useState([]);
 	const [target, setTarget] = useState("");
@@ -81,7 +85,7 @@ export default function StudentHistory() {
 		})
 	}
 	
-    return (
+    return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <Container maxWidth="xl" sx={{mt: 12, mb: 12}}>
 				<Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>

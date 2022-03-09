@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
+import './TutorProfile.css';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
@@ -15,7 +16,6 @@ class T_Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {},          //user info stored in database
             paymentType: "",    //Venmo, Paypal, or Cash
             paymentUser: "",    //Username for choosen payment type (unless cash)
             loginPrefs: -1,     //Default profile that loads on login (student or tutor)
@@ -32,28 +32,6 @@ class T_Profile extends React.Component {
         this.setRate = this.setRate.bind(this);
         this.checkForEmptyState = this.checkForEmptyState.bind(this);
     }//constructor
-
-    /**
-     * Fetches user info from backend
-     */
-    async componentDidMount() {
-        fetch("/myProfile/")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
-    }//componentDidMount
 
     /**
      * Collects state values and sends them to the backend
@@ -77,6 +55,7 @@ class T_Profile extends React.Component {
             },
             body: JSON.stringify(post)
         })//fetch
+        this.props.edit();
     }//handleSubmit
 
     /**
@@ -89,10 +68,10 @@ class T_Profile extends React.Component {
         for (let postKey in post) {
             if (post[postKey] == "" || post[postKey] == -1 || post[postKey] == [{}]) {
                 //replace with db data
-                for (let getKey in this.state.items) {
-                    console.log(getKey + ": " + this.state.items[getKey]);
+                for (let getKey in this.props.items) {
+                    console.log(getKey + ": " + this.props.items[getKey]);
                     if (postKey == getKey) {
-                        post[postKey] = this.state.items[getKey];
+                        post[postKey] = this.props.items[getKey];
                     }//if
                 }//for
             }//if
@@ -182,12 +161,13 @@ class T_Profile extends React.Component {
     }//setRate
 
     render() {
+        console.log(this.props.items);
         return (
             <>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.state.items['name']} </h1>
-                    <p id="email"> {this.state.items['email']} </p>
+                    <h1 id="name"> {this.props.items['name']} </h1>
+                    <p id="email"> {this.props.items['email']} </p>
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">

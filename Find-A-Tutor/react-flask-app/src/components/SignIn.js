@@ -26,7 +26,7 @@ export default function SignIn() {
   const authContext = useContext(AuthContext);
 
   const loginHandler = function () {
-      authContext.login();
+	  authContext.login();
       console.log(authContext);
       nav('/calendar');
   };
@@ -48,11 +48,13 @@ export default function SignIn() {
     }).then(resp => resp.json())
     .then(result => {
       if (result['email'] === info[0]) {
-        loginHandler()
+        loginHandler();
+		localStorage.setItem("loggedIn", true);
       }
       else {
 		setWrongLogin(true)
-        logoutHandler()
+        logoutHandler();
+		localStorage.setItem("logIn", false);
       }
     })
   };

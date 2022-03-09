@@ -14,9 +14,10 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Modal } from 'react-bootstrap';
 import './adminView.css';
+import {AuthContext} from './AuthContext';
 
 const theme = createTheme();
 export default function Reports() {
@@ -32,6 +33,9 @@ export default function Reports() {
     const handleEnableReport = function(){setEnableReport(true);};
     const handleBanConfirm = function(){setBanConfirm(true);};
     const [tutor, setTutor] = useState([]);
+
+	//authentication
+	const authContext = useContext(AuthContext);
 
     //get data from server
     // useEffect(() => {
@@ -132,7 +136,7 @@ export default function Reports() {
         handleBanConfirm();
     }
 
-    return (
+    return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
 
             <Modal show={banConfirm} size="md" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>

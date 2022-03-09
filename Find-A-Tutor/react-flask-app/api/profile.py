@@ -30,25 +30,33 @@ mysql.init_app(app)
 #end database stuff
 
 #retrieve profile details
-def retrieve_profile(email):
+def retrieve_profile(email, isTutor):
     conn = mysql.connect()
     cursor = conn.cursor()
     
     #get the tutor information from the DB
     #get the name
-    cursor.execute("select stu_name from Student where stu_email = (%s)", (email))
-    name = cursor.fetchone()
-    print(name[0])
+    cursor.execute("select stu_name, stu_email from Student where stu_email = (%s)", (email))
+    data = cursor.fetchone()
+    name = data[0]
+    email = data[1]
+    print(name)
+    print(email)
+
     
-    #get the email
-    cursor.execute("select stu_email from Student where stu_email = (%s)", (email))
-    email = cursor.fetchone()
-    print(email[0])
-        
-    return {'name': name, 'email': email}
+    #if so retrieve tutor info
+    if isTutor:
+        print("TUTOR")
+        return retrieve_tutor(name, email)
+    elif not isTutor:
+        print("STUDENT")
+        return {'name': name, 'email': email, 'isTutor': False}
+    else:
+        print("Error - isTutor has invalid data")
+        return 'Error'
 
 #retrieve tutor details
-def retrieve_tutor(tut_email):
+def retrieve_tutor(name, tut_email):
     conn = mysql.connect()
     cursor = conn.cursor()
     
@@ -64,15 +72,21 @@ def retrieve_tutor(tut_email):
     
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
-    payment = cursor.fetchone()   
+    payment = cursor.fetchone()
     
     #split the payment details
     payment_method = payment[0]  #payment_type
     payment_details = payment[1] #payment_info
     print(payment_method)
     print(payment_details)
+
+    times = retrieve_times(tut_email)
+    classes = retrieve_classes(tut_email)
   
-    return {'loginPref':loginPref, 'contact':contactable, 'payType':payment_method, 'payInfo':payment_details}
+    return {'name': name, 'email':tut_email, 'isTutor': True,
+        'login_pref':loginPref, 'contact':contactable,
+        'pay_type':payment_method, 'pay_info':payment_details,
+        'times': times, 'classes': classes}
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -95,14 +109,15 @@ def retrieve_times(tut_email):
 def retrieve_classes(tut_email):
     conn = mysql.connect()
     cursor = conn.cursor()
-    classes = {}
+    classes = []
     #get the classes and rates
     cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
     
-    #put the classes in a dict {class_code:rate}
-    for rate in classes_rates:
-      classes[rate[0]] = rate[1]
+    #put the classes in a dict 
+    #classes[["code", rate:15], ["code2", 10]]
+    for pair in classes_rates:
+        classes.append(pair)
     
     return classes
 
@@ -161,8 +176,8 @@ def edit_profile(submission, tut_email):
     cursor.execute("update Tutor set"
                     + " pay_type = \"" + submission['pay_type'] + "\"" 
                     + ", pay_info = \"" + submission['pay_info'] + "\""
-                    + ", login_pref = " + str(submission['login_pref'])
-                    + " where tut_email = \"" + tut_email + "\";")
+                    + ", login_pref = \'" + str(submission['login_pref'][0])
+                    + "\' where tut_email=\'" + tut_email + "\';")
 
 #     update Tutor
 # set pay_type="PayPal", pay_info="user"
