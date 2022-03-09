@@ -45,7 +45,11 @@ class T_Profile extends React.Component {
             'classes': this.state.classes
         }//post
 
+        console.log("loginPref: " + post['login_pref'])
+
         this.checkForEmptyState(post);
+
+        console.log("loginPref: " + post['login_pref'])
 
         //Fetch
         const response = fetch("/myProfile/", {
@@ -66,7 +70,7 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-                if ((post[postKey] == "" || post[postKey] == -1) && postKey != 'classes') {
+                if ((post[postKey] == "" || post[postKey] == -1) && postKey != 'classes' && post[postKey] != 0) {
                     //replace with db data
                     for (let getKey in this.props.items) {
                         if (postKey == getKey) {
@@ -118,7 +122,7 @@ class T_Profile extends React.Component {
             loginPref = 0;
         else
             loginPref = 1;
-
+        console.log(loginPref + ' ' + pref);
         this.setState({ loginPrefs: loginPref });
     }//setLoginPrefs
 
@@ -138,7 +142,6 @@ class T_Profile extends React.Component {
      * @param {int} index given index of class
      */
     setCourseCode(code, index) {
-        console.log("code: " + code + " index: " + index);
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
         aClass['class_code'] = code;
@@ -161,7 +164,6 @@ class T_Profile extends React.Component {
     }//setRate
 
     render() {
-        console.log(this.props.items);
         return (
             <>
                 <div className="container-fluid text-center">

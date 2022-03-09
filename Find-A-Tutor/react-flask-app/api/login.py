@@ -129,6 +129,7 @@ def signUp():
 #profile page
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
+  #check to see if it is a post
   if request.method == 'POST':
     submission = request.get_json()
     #Check to see if this is a removal
@@ -139,8 +140,10 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         splitTimeVals = splitTimes(timeSlot)
         return profile.remove_timeSlot(splitTimeVals, email)
+    #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
+    #check to see if it s a change in available times
     elif 'startTime' in submission.keys() :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
@@ -148,6 +151,7 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
+    #otherwise the user hit the apply button
     else :
         return profile.edit_profile(submission, email)
   else:

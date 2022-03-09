@@ -75,11 +75,9 @@ class Week extends React.Component {
             'Saturday': [],
             'Sunday': []
         }
-        console.log(times);
         times.forEach(slot => {
             let startTime = slot['startTime'];
             let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
-            console.log(day+ ' ' + startTime)
             let endTime = slot['endTime'];
             startTime = moment(startTime.replace(/T/, " ")).format(format);
             endTime = moment(endTime.replace(/T/, " ")).format(format);

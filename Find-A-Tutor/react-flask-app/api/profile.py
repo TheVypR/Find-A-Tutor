@@ -68,12 +68,10 @@ def retrieve_tutor(name, tut_email):
     #get the login preference
     cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
     loginPref = cursor.fetchone()
-    print(loginPref)
     
     #get the contactability
     cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
     contactable = cursor.fetchone()
-    print(contactable)
     
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
@@ -82,8 +80,6 @@ def retrieve_tutor(name, tut_email):
     #split the payment details
     payment_method = payment[0]  #payment_type
     payment_details = payment[1] #payment_info
-    print(payment_method)
-    print(payment_details)
 
     times = retrieve_times(tut_email)
     classes = retrieve_classes(tut_email)
@@ -187,7 +183,7 @@ def edit_profile(submission, tut_email):
     cursor.execute("update Tutor set"
                     + " pay_type = \"" + submission['pay_type'] + "\"" 
                     + ", pay_info = \"" + submission['pay_info'] + "\""
-                    + ", login_pref = \'" + str(submission['login_pref'][0])
+                    + ", login_pref = \'" + str(submission['login_pref'])
                     + "\' where tut_email=\'" + tut_email + "\';")
 
     #update the tutor classes
