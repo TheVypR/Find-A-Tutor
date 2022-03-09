@@ -39,6 +39,7 @@ class T_Profile extends React.Component {
     handleSubmit() {
         //Collect state values
         let post = {
+			'email': localStorage.getItem("email"),
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,

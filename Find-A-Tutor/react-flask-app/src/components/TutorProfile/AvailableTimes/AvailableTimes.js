@@ -19,6 +19,7 @@ class AvailableTimes extends React.Component {
         this.setState({checked: !this.state.checked});
         let value = this.state.checked ? 1:0
         let submission = {
+			'email': localStorage.getItem("email"),
             'contactMe': value
         };
 

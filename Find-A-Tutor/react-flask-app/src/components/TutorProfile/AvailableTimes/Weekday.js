@@ -131,6 +131,7 @@ class Weekday extends React.Component {
      */
     fetchRemoveTimeSlot(index) {
         let times = {
+			'email': localStorage.getItem("email"),
             "remove": {
                 "startTime": this.state.startTime[index].toString(),
                 "endTime": this.state.endTime[index].toString(),
@@ -217,6 +218,7 @@ class Weekday extends React.Component {
     submitFetch(index, day) {
         let date = this.getISO(day)
         let timeSlot = {
+			"email": localStorage.getItem("email"),
             "startTime": this.state.startTime[index].toString(),
             "endTime": this.state.endTime[index].toString(),
             "date": date
