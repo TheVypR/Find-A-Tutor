@@ -89,10 +89,10 @@ def getTimes(email):
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    cursor.execute("select TT.tut_email, start_date, end_date, taken, T.tut_name, T.rating" + 
-                    " from TutorTimes TT, Tutor T" + 
-                    " where TT.tut_email in (select tut_email from TutorClasses where class_code in" + 
-                    " (select class_code from StudentClasses where stu_email = \"" + email + "\")) and TT.tut_email = T.tut_email;")
+    cursor.execute("select T.tut_email, start_date, end_date, taken, P.tut_name, P.rating" + 
+                    " from TutorTimes T, Tutor P" + 
+                    " where T.tut_email in (select tut_email from TutorClasses where class_code in" + 
+                    " (select class_code from StudentClasses where stu_email = \"" + email + "\")) and T.tut_email = P.tut_email;")
     times = cursor.fetchall()
     for time in times:
         if time[3] == 0:
@@ -107,6 +107,7 @@ def getTimes(email):
                                'borderColor':'#00ff00'})
     
     conn.close()
+    print(availTimes)
     return availTimes
     
 def getAppointments(email):
