@@ -124,6 +124,7 @@ def myProfile():
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         submittedTime = submission['remove']
+        print(submittedTime)
         startTime = dateParse(submittedTime['startTime'])
         endTime = dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
@@ -133,17 +134,59 @@ def myProfile():
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
     #check to see if it s a change in available times
-    elif 'startTime' in submission.keys() :
+    elif 'submitTimes' in submission.keys() :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
         endTime = dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
+    #check is this is removing a time populated by the db
+    elif 'removePrefilledTime' in submission.keys():
+        submittedTime = submission['removePrefilledTime']
+        submittedTime = splitUp(submittedTime)
+        return profile.remove_timeSlot(submission['removePrefilledTime'], email)
     #otherwise the user hit the apply button
     else:
         return profile.edit_profile(submission, email)
     
+def splitUp(time):
+    startTime = time['startTime']
+    endTime = time['endTime']
+    day = getDayFromISO(time['day'])
+    
+
+    if 'pm' in startTime:
+        startTime[0] = int(startTime[0])+12
+    startTime = startTime.replace(' am', '').replace(' pm', '')
+    if 'pm' in endTime:
+        endTime[0] = int(endTime[0])+12
+    endTime = endTime.replace(' am', '').replace(' pm', '')
+
+    startSplit = datetime.strptime(startTime, '%H:%M')
+    endSplit = datetime.strptime(endTime, '%H:%M')
+    print("TEST: " + str(startSplit))
+    return ""
+
+def getDayFromISO(day):
+    weekday = ""
+
+    if day==1:
+        weekday="Monday"
+    elif day==2:
+        weekday="Tuesday"
+    elif day==3:
+        weekday="Wednesday"
+    elif day==4:
+        weekday="Thursday"
+    elif day==5:
+        weekday="Friday"
+    elif day==6:
+        weekday="Saturay"
+    else:
+        weekday="Sunday"
+
+    return weekday
 
 @app.route('/myProfile/', methods=['GET'])
 def getProfile():

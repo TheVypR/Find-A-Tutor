@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import moment from 'moment';
+
+const format = 'h:mm a';    //Format for TimePicker
 
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile"
@@ -16,6 +19,7 @@ class LoadProfile extends React.Component {
         }
         this.edit = this.edit.bind(this);
         this.doFetch = this.doFetch.bind(this);
+        this.convertToMoment = this.convertToMoment.bind(this);
     }//constructor
 
     /**
@@ -23,7 +27,7 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     edit() {
-        this.setState({ isEdit: !this.state.isEdit }, function() {
+        this.setState({ isEdit: !this.state.isEdit }, function () {
             this.doFetch();
         });
     }//edit
@@ -43,6 +47,10 @@ class LoadProfile extends React.Component {
             .then(res => res.json())
             .then(
                 (result) => {
+                    //Convert result[times] to moment
+                    console.log(result)
+                    let times = result['times'];
+                    result['times'] = this.convertToMoment(times);
                     this.setState({
                         isLoaded: true,
                         items: result
@@ -56,6 +64,35 @@ class LoadProfile extends React.Component {
                 }
             )
     }//doFetch
+
+    /**
+     * Converts DD-MM-YYYYTHH:mm:ss to moment
+     * 
+     * @param {Array[T]} times 
+     * @returns [{'Monday': {'startTime': moment, 'endTime': moment}, ...]
+     */
+    convertToMoment(times) {
+        var timeSlots = {
+            'Monday': [],
+            'Tuesday': [],
+            'Wednesday': [],
+            'Thursday': [],
+            'Friday': [],
+            'Saturday': [],
+            'Sunday': []
+        }
+        times.forEach(slot => {
+            let startTime = slot['startTime'];
+            let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
+            let endTime = slot['endTime'];
+            startTime = moment(startTime.replace(/T/, " ")).format(format);
+            endTime = moment(endTime.replace(/T/, " ")).format(format);
+
+            timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
+        });
+
+        return timeSlots
+    }//convetToMoment
 
     render() {
         let staticOrEditTutor = this.state.isEdit ?

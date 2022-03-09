@@ -188,7 +188,7 @@ class T_Profile extends React.Component {
                     />
                 </div>
 
-                <AvailableTimes />
+                <AvailableTimes times={items['times']} />
 
                 <div id="bottom">
                     <Button type="submit" id="save"

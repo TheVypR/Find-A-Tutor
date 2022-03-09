@@ -145,9 +145,11 @@ def remove_timeSlot(times, tut_email):
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    #loop through times and run this query for each 15 minute slot
-    for time in times:
-        cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+    #Check type of remove
+    if ('removePrefilledTime' not in times.keys()):
+        #loop through times and run this query for each 15 minute slot
+        for time in times:
+            cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
 
     conn.close()
     
