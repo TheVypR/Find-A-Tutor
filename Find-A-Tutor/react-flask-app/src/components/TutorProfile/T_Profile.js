@@ -45,11 +45,7 @@ class T_Profile extends React.Component {
             'classes': this.state.classes
         }//post
 
-        console.log("loginPref: " + post['login_pref'])
-
         this.checkForEmptyState(post);
-
-        console.log("loginPref: " + post['login_pref'])
 
         //Fetch
         const response = fetch("/myProfile/", {
@@ -70,7 +66,11 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-                if ((post[postKey] == "" || post[postKey] == -1) && postKey != 'classes' && post[postKey] != 0) {
+            if (postKey == 'login_pref') {
+                console.log(post[postKey] === "");
+                console.log(typeof post[postKey]);
+            }
+                if ((post[postKey] === "" || post[postKey] == -1) && postKey != 'classes') {
                     //replace with db data
                     for (let getKey in this.props.items) {
                         if (postKey == getKey) {
@@ -122,7 +122,6 @@ class T_Profile extends React.Component {
             loginPref = 0;
         else
             loginPref = 1;
-        console.log(loginPref + ' ' + pref);
         this.setState({ loginPrefs: loginPref });
     }//setLoginPrefs
 
