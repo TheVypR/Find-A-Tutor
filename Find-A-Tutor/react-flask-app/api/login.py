@@ -65,11 +65,11 @@ def login():
         return jsonify({'error': 'Not Authenticated'})
     
   #if user is a tutor
-  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=%s);", str(email))
+  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=\"" + email + "\")")
   checkIfTutor = cursor.fetchall()
   if checkIfTutor[0][0] == 1:
       #get users login prefs
-      cursor.execute("select login_pref from Tutor where tut_email=%s;", email)
+      cursor.execute("select login_pref from Tutor where tut_email=\"" + email + "\"")
       login_pref = cursor.fetchall()
       setIsTutor(login_pref[0][0])
 
