@@ -53,7 +53,7 @@ function FullCalendarApp() {
   const [evnts, setEvnts] = useState([]);
   const [filterTimes, setFilterTimes] = useState(false);
   const [filterAppts, setFilterAppts] = useState(false);
-  const [filterClass, setFilterClass] = useState("");
+  const [filterClass, setFilterClass] = useState("All Classes");
   const [studentClasses, setStudentClasses] = useState();
   
   
@@ -126,17 +126,17 @@ function FullCalendarApp() {
 		let localEvents = [];
 		
 		//filter classes
-		if (filterClass !== "All Classes") {
+		if (filterClass === "All Classes") {
 			if (filterAppts) {
 				console.log("appts");
-				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] == filterClass));
+				localEvents = localEvents.concat(appts);
 			} else {
 				console.log("remove appts");
 			}
 		} else {		
 			if (filterAppts) {
 				console.log("appts");
-				localEvents = localEvents.concat(appts);
+				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] == filterClass));
 			} else {
 				console.log("remove appts");
 			}
@@ -311,7 +311,7 @@ function FullCalendarApp() {
 				{wrongTimes ? <TimeError /> : null}
 				Make Appointment With: {tutName} <br/>
 				Tutor Rating: <Rating value={rating} readOnly/><br/>
-				Rate: ${rates[classCode]}/hr<br/>
+				Rate: $<strong>{rates[classCode]}</strong>/hr<br/>
 					Choose Class:
 					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
 						<option key="null" value="NONE">NONE</option>
@@ -330,13 +330,13 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Close
 			  </Button>
-			  <Button variant="primary"
+			  <Button variant="primary" type="submit"
 					  onClick= {
 						  () => {
 							  verifyTimes();
 						  }
 					}>
-				Save Changes
+				Make Appointment
 			  </Button>
 			</Modal.Footer>
 		</form>
@@ -360,7 +360,7 @@ function FullCalendarApp() {
 		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" type="submit" onClick={handleShowEdit}>
+          <Button variant="primary" onClick={handleShowEdit}>
             Edit Appointment
           </Button>
         </Modal.Footer>
@@ -384,7 +384,7 @@ function FullCalendarApp() {
 			
 			<Modal.Footer>
 			  <Button variant="secondary" onClick={handleClose}>
-				Close
+				Cancel
 			  </Button>
 			  <Button variant="primary"  type="submit"
 					  onClick= {
