@@ -93,7 +93,7 @@ def AddStudentToBan(tutor):
 
     # delete if student is a tutor
     ban = "Banned@vac_ban.edu"
-    if data[0] != null:
+    if data[0] != None:
         cursor.execute("update Appointment set tut_email = \""+ban+"\" where tut_email = \""+ tutor['stu_email'] +"\" ")
         cursor.execute("delete from TutorTimes where tut_email = \""+ tutor['stu_email'] + "\" ")
         cursor.execute("delete from TutorClasses where tut_email = \""+ tutor['stu_email'] + "\" ")
