@@ -42,12 +42,11 @@ def retrieve_profile(email, isTutor):
     data = cursor.fetchone()
     name = data[0]
     email = data[1]
-
     
     #if so retrieve tutor info
     if isTutor:
         return retrieve_tutor(name, email)
-    elif isTutor:
+    elif not isTutor:
         return {'name': name, 'email': email, 'isTutor': False}
     else:
         print("Error - isTutor has invalid data")
