@@ -74,6 +74,7 @@ function FullCalendarApp() {
 
   const [checked, setChecked] = React.useState(false);
   const [wrongTimes, setWrongTimes] = useState(false);
+  const [wrongClass, setWrongClass] = useState(false);
   
   //loads in the times currently available in the DB -IAA
   useEffect(() => { fetch("/getTimes/?email=" + localStorage.getItem("email"))
@@ -174,8 +175,6 @@ function FullCalendarApp() {
 			},
 			body:JSON.stringify([myEvent])
 		})
-		
-		
 	}
 	
 	const handleEventClick = function (e, editting) {
@@ -244,7 +243,7 @@ function FullCalendarApp() {
 				end: origEndDate
 			}])    
 		})
-	} 
+	}
 	
 	const editAppt = function () {
 		const myEvent = {
@@ -281,12 +280,24 @@ function FullCalendarApp() {
 		)
 	}
 	
-	function verifyTimes() {
+	function verifyTimes(isNew) {
 		if (endTime < startTime) {
-			console.log("Wrong Time")
 			setWrongTimes(true)
 		} else {
-            addEvent();
+			if(isNew){
+				addEvent();
+			} else {
+				editAppt();
+			}
+		}
+	}
+	
+	function verifyClass(isNew) {
+		if(classCode === "NONE" || classCode === "" || classCode === undefined) {
+			setWrongClass(true);
+		} else {
+			console.log(classCode)
+			verifyTimes(isNew);
 		}
 	}
 	
@@ -294,6 +305,13 @@ function FullCalendarApp() {
 		return (
 		<div style={{color : 'red'}}>
 			Start must be before the end time
+		</div>)
+	}
+	
+	const ClassError = () => {
+		return (
+		<div style={{color : 'red'}}>
+			You must choose a class
 		</div>)
 	}
 	
@@ -313,6 +331,7 @@ function FullCalendarApp() {
 			</Modal.Header>
 			<Modal.Body>
 				{wrongTimes ? <TimeError /> : null}
+				{wrongClass ? <ClassError /> : null}
 				Make Appointment With: {tutName} <br/>
 				Tutor Rating: <Rating value={rating} readOnly/><br/>
 				Rate: $<strong>{rates[classCode]}</strong>/hr<br/>
@@ -334,10 +353,10 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Close
 			  </Button>
-			  <Button variant="primary" type="submit"
+			  <Button variant="primary"
 					  onClick= {
 						  () => {
-							  verifyTimes();
+							  verifyClass(true);
 						  }
 					}>
 				Make Appointment
@@ -376,10 +395,18 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+				{wrongTimes ? <TimeError /> : null}
+				{wrongClass ? <ClassError /> : null}
 				Edit Appointment With: {tutName}<br/>
 					Rate: ${rates[classCode]}/hr<br/>
 					Choose Class: 
-					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
+						<option key="null" value="NONE">NONE</option>
+						{(Object.keys(rates)).map((clss) => {
+							return <option key={clss} value={clss}>{clss}</option>
+						})}
+					</select>
+					<br/>
 					Start Time: 
 					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
@@ -390,10 +417,10 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Cancel
 			  </Button>
-			  <Button variant="primary"  type="submit"
+			  <Button variant="primary"
 					  onClick= {
 						  () => {
-							  editAppt()
+							  verifyClass(false)
 						  }
 					}>
 				Save Changes
