@@ -30,6 +30,7 @@ export default function App() {
   const logout = () => {
 	setLoggedIn(false);
 	localStorage.setItem("loggedIn", false);
+  localStorage.setItem("email", "");
   };
 
   return (

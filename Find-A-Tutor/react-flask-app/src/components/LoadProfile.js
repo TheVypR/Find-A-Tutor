@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import moment from 'moment';
+import TutorProfileStatic from "./TutorProfileStatic";
+import TutorProfile from "./TutorProfile/T_Profile";
+import StudentProfile from "./StudentProfile";
 
 const format = 'h:mm a';    //Format for TimePicker
-
-import TutorProfileStatic from "./TutorProfileStatic";
-import TutorProfile from "./TutorProfile/T_Profile"
-import StudentProfile from "./StudentProfile";
 
 /**
  * Determines if a student or tutor has logged in and loads the corresponding profile
