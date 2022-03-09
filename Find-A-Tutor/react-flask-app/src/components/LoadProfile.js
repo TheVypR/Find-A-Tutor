@@ -15,19 +15,30 @@ class LoadProfile extends React.Component {
             isEdit: false
         }
         this.edit = this.edit.bind(this);
+        this.doFetch = this.doFetch.bind(this);
     }//constructor
 
     /**
      * Toggles isEdit
+     * then fetches any changes from the db
      */
     edit() {
-        this.setState({ isEdit: !this.state.isEdit });
+        this.setState({ isEdit: !this.state.isEdit }, function() {
+            this.doFetch();
+        });
     }//edit
 
     /**
-     * Fetches user info from backend
+     * calls doFetch on initial mounting of component
      */
     async componentDidMount() {
+        this.doFetch();
+    }//componentDidMount
+
+    /**
+     * Gets info from db
+     */
+    doFetch() {
         fetch("/myProfile/")
             .then(res => res.json())
             .then(
@@ -44,12 +55,12 @@ class LoadProfile extends React.Component {
                     });
                 }
             )
-    }//componentDidMount
+    }//doFetch
 
     render() {
         let staticOrEditTutor = this.state.isEdit ?
-            <TutorProfile items={this.state.items} edit={this.edit}/> :
-            <TutorProfileStatic items={this.state.items} edit={this.edit}/>
+            <TutorProfile items={this.state.items} edit={this.edit} /> :
+            <TutorProfileStatic items={this.state.items} edit={this.edit} />
         var profile = this.state.items['isTutor'] ?
             staticOrEditTutor :
             <StudentProfile items={this.state.items} />

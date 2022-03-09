@@ -66,10 +66,6 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-            if (postKey == 'login_pref') {
-                console.log(post[postKey] === "");
-                console.log(typeof post[postKey]);
-            }
                 if ((post[postKey] === "" || post[postKey] == -1) && postKey != 'classes') {
                     //replace with db data
                     for (let getKey in this.props.items) {

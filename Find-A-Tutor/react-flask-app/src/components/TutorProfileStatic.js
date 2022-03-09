@@ -167,10 +167,6 @@ class TutorsFor extends React.Component {
             </>)
         })
 
-        // times.forEach((slot) => {
-        //     timeSlotList.push(<TimeSlot startTime={slot['startTime']} endTime={slot['endTime']} />);
-        // });
-
         return (
             <>
                 <fieldset>
@@ -191,19 +187,6 @@ class TutorsFor extends React.Component {
  */
 class TutorProfileStatic extends React.Component {
     render() {
-        // let times = {
-        //     'sunday': [],
-        //     'monday': [
-        //         { 'startTime': '1:00', 'endTime': '2:00' },
-        //         { 'startTime': '2:00', 'endTime': '3:00' }
-        //     ],
-        //     'tuesday': [],
-        //     'wednesday': [],
-        //     'thursday': [],
-        //     'friday': [],
-        //     'saturday': []
-        // }
-
         let items = this.props.items;
         return (
             <>
