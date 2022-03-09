@@ -23,23 +23,23 @@ export default function NavBar() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <AppBar postion="static" color="primary" sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
-                <Container maxWidth="xl">
-                    <Toolbar disableGutter sx={{flexwrap: 'wrap'}}>
-                        <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: {xs:'none', md:'flex'}}}>
-                            Find-A-Tutor
-                        </Typography>
-                        
-                        <Button href="./myProfile" color="inherit" variant="outlined" style={{position: "flex-start"}} sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+                <Toolbar sx={{flexwrap: 'wrap'}}>
+                    <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex'}}>
+                        Find-A-Tutor
+                    </Typography>
+                    
+                    <Button href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+                    <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>
                         </MenuItem>
                         <MenuItem component='a' href='./TutoringHistory'>
                             <Typography textAlign='center'>Tutoring History</Typography>
                         </MenuItem>
-                        <Link to={"/myProfile"}><AccountBoxOutlinedIcon sx={{fontSize: 70}} color='secondary' /></Link>
-                        <Button href='./' color='inherit' variant='outlined' sx={{my:1,mx:1}}>Logout</Button>
                     </Toolbar>
-                </Container>
+                    <Link to={"/myProfile"}><AccountBoxOutlinedIcon sx={{fontSize: 60}} color='secondary' /></Link>
+                    <Button href='./' color='inherit' variant='outlined' sx={{my:1,mx:1}}>Logout</Button>
+                </Toolbar>
             </AppBar>
         </ThemeProvider>
     );
