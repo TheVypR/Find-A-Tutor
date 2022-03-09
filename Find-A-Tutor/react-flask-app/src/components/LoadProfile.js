@@ -28,7 +28,7 @@ class LoadProfile extends React.Component {
      * Fetches user info from backend
      */
     async componentDidMount() {
-        fetch("/myProfile/")
+        fetch("/myProfile/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 (result) => {

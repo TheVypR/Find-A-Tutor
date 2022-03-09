@@ -38,7 +38,7 @@ export default function TutoringHistory() {
 	const handleShowReport = function (){ setShowReport(true)};
 	
 	//get history
-	useEffect(() => { fetch("/loadAppointment/")
+	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -64,7 +64,7 @@ export default function TutoringHistory() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{'target': target, 'rating': event.target.value}])  
+			body:JSON.stringify({'target': target, 'rating': event.target.value})  
 		})
 	}
 	
@@ -82,7 +82,7 @@ export default function TutoringHistory() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{'target': target, 'reason': reason, 'report':report}])  
+			body:JSON.stringify({'email':localStorage.getItem("email"),'target': target, 'reason': reason, 'report':report})  
 		})
 	}
 	

@@ -37,7 +37,7 @@ export default function StudentHistory() {
 	const handleShowReport = function (){ setShowReport(true)};
 	
 	//get history
-	useEffect(() => { fetch("/loadAppointment/")
+	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -56,14 +56,12 @@ export default function StudentHistory() {
 	};
 	
 	const onRatingChange = (event) => {
-		console.log(event.target.value)
-		console.log(target)
 		fetch("/submitRating/", {
 			method: 'POST',
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{'target': target, 'rating': event.target.value}])  
+			body:JSON.stringify({'target': target, 'rating': event.target.value})  
 		})
 	}
 	
@@ -73,15 +71,12 @@ export default function StudentHistory() {
 	}
 	
 	const handleReport = () => {
-		console.log(reason)
-		console.log(target)
-		console.log(report)
 		fetch("/submitReport/", {
 			method: 'POST',
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{'target': target, 'reason': reason, 'report':report}])  
+			body:JSON.stringify({'email':localStorage.getItem("email"), 'target': target, 'reason': reason, 'report':report})  
 		})
 	}
 	

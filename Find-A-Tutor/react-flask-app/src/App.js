@@ -24,6 +24,7 @@ export default function App() {
   const login = () => {
 	setLoggedIn(true);
 	localStorage.setItem("loggedIn", true);
+	
   };
 
   const logout = () => {
