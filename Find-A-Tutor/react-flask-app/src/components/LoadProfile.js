@@ -47,7 +47,6 @@ class LoadProfile extends React.Component {
     }//componentDidMount
 
     render() {
-        console.log(this.state.isEdit)
         let staticOrEditTutor = this.state.isEdit ?
             <TutorProfile items={this.state.items} edit={this.edit}/> :
             <TutorProfileStatic items={this.state.items} edit={this.edit}/>

@@ -52,7 +52,6 @@ class StudentProfile extends React.Component {
 
     render() {
         var name = this.props.items['name'];
-        console.log(name);
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
