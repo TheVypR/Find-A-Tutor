@@ -12,9 +12,9 @@ class PayAndLoginPrefs extends React.Component {
 
         this.handleSelect = this.handleSelect.bind(this);
         this.setPaymentType = this.setPaymentType.bind(this);
+        this.setLoginPrefs = this.setLoginPrefs.bind(this);
         this.getPayType = this.getPayType.bind(this);
         this.getPayInfo = this.getPayInfo.bind(this);
-        this.getPref = this.getPref.bind(this);
     }
 
     /**
@@ -24,6 +24,10 @@ class PayAndLoginPrefs extends React.Component {
      */
     setPaymentType(type) {
         this.props.setPaymentType(type);
+    }
+
+    setLoginPrefs(pref) {
+        this.props.setLoginPrefs(pref);
     }
 
     /**
@@ -65,14 +69,6 @@ class PayAndLoginPrefs extends React.Component {
         }//set pay_info
     }
 
-    getPref(login_pref) {
-        if (login_pref == 0) { //student
-            return true;
-        } else {
-            return false;
-        }
-    }//getPref
-
     render() {
         let pay_type = this.props.pay_type;
         let pay_info = this.props.pay_info;
@@ -109,13 +105,12 @@ class PayAndLoginPrefs extends React.Component {
                             onChange={e => this.props.setPaymentUser(e.target.value)}
                         />
 
-
                         {/*Login Info*/}
-                        <div id="loginInfo" onChange={(e) => this.props.setLoginPrefs(e.target.value)}>
+                        <div id="loginInfo" onChange={(e) => this.setLoginPrefs(e.target.value)}>
                             <p id="loginPreferences"> Login Preferences </p>
-                            <input name="loginPrefs" type="radio" id="studentView" value="StudentView" checked={this.getPref(login_pref)} />
+                            <input name="loginPrefs" type="radio" id="studentView" value="StudentView" />
                             <label htmlFor="stuentView"> Student View </label><br />
-                            <input name="loginPrefs" type="radio" id="tutorView" value="TutorView" checked={!this.getPref(login_pref)} />
+                            <input name="loginPrefs" type="radio" id="tutorView" value="TutorView" />
                             <label htmlFor="tutorView"> Tutor View </label>
                         </div>
                     </div>

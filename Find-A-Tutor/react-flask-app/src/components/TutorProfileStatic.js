@@ -126,7 +126,8 @@ class PayAndLoginPrefs extends React.Component {
     }
 
     getLoginPref(loginPref) {
-        if (loginPref[0] == 0) {//Student
+        console.log(loginPref);
+        if (loginPref == 0) {//Student
             return 'Studnet View';
         } else {
             return 'Tutor View';
