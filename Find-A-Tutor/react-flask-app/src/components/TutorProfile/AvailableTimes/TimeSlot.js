@@ -68,13 +68,10 @@ class Times extends React.Component {
     render() {
         const index = this.props.index;
         const showTimePickers = this.props.showTimePickers[index];
-        console.log("ShowTimePickers: " + showTimePickers);
         //Display either Timepickers or user selected times 
         if (showTimePickers) {
-            console.log(showTimePickers);
             return <TimePickers timeSlotChange={(time, timepicker) => {this.onChangeTimes(time, timepicker)}} />
         } else {
-            console.log(this.props.startTime[index])
             const startTime = this.props.startTime[index].format(format).toString();
             const endTime = this.props.endTime[index].format(format).toString();
             return <p> {startTime} to {endTime} </p>
@@ -92,7 +89,6 @@ class Times extends React.Component {
  */
 class TimeSlot extends React.Component {
     render() {
-        //var timePickers = this.state.showTimePickers ? <TimePickers timeSlotChange={this.timeSlotChange} /> : <p> {this.state.startTime} to {this.state.endTime} </p>
         const day = this.props.day;
         const index = this.props.index;
         const startTime = this.props.startTime;
