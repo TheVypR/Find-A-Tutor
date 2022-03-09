@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import './TutorProfile.css';
+import moment from 'moment';
 import TutorProfile from './TutorProfile/T_Profile'
+
+const format = 'h:mm a';    //Format for TimePicker
+
 
 /**
  * Render a timeslot with given times
@@ -37,9 +41,9 @@ class Weekday extends React.Component {
 
         let timeSlotList = [];
         times.forEach((slot) => {
-            timeSlotList.push(<TimeSlot startTime={slot['startTime']} endTime={slot['endTime']} />);
+            timeSlotList.push(<TimeSlot startTime={slot['startTime']}
+                endTime={slot['endTime']} />);
         });
-
         return (
             <>
                 <div>
@@ -55,25 +59,55 @@ class Weekday extends React.Component {
  * Renders each weekday
  */
 class Week extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.convertToMoment = this.convertToMoment.bind(this);
+    }//constructor
+
+    convertToMoment(times) {
+        var timeSlots = {
+            'Monday': [],
+            'Tuesday': [],
+            'Wednesday': [],
+            'Thursday': [],
+            'Friday': [],
+            'Saturday': [],
+            'Sunday': []
+        }
+        times.forEach(slot => {
+            let startTime = slot['startTime'];
+            let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
+            let endTime = slot['endTime'];
+            startTime = moment(startTime.replace(/T/, " ")).format(format);
+            endTime = moment(endTime.replace(/T/, " ")).format(format);
+            
+            timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
+        });
+
+        return timeSlots
+    }
+
     render() {
         let times = this.props.times;
+        times = this.convertToMoment(times)
         return (
             <>
                 <div className="d-flex justify-content-center">
                     <div className="vr"></div>
-                    <Weekday times={times['sunday']} day={['sunday']} />
+                    <Weekday times={times['Sunday']} day={['sunday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['monday']} day={['monday']} />
+                    <Weekday times={times['Monday']} day={['monday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['tuesday']} day={['tuesday']} />
+                    <Weekday times={times['Tuesday']} day={['tuesday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['wednesday']} day={['wednesday']} />
+                    <Weekday times={times['Wednesday']} day={['wednesday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['thursday']} day={['thursday']} />
+                    <Weekday times={times['Thursday']} day={['thursday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['friday']} day={['friday']} />
+                    <Weekday times={times['Friday']} day={['friday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['saturday']} day={['saturday']} />
+                    <Weekday times={times['Saturday']} day={['saturday']} />
                     <div className="vr"></div>
                 </div>
             </>
@@ -143,7 +177,7 @@ class TutorsFor extends React.Component {
                     <div className="p-2">
                         <p id="header"> Tutoring For </p>
                         <div id="classes">
-                                {classesList}
+                            {classesList}
                         </div>
                     </div>
                 </fieldset>
@@ -157,18 +191,18 @@ class TutorsFor extends React.Component {
  */
 class TutorProfileStatic extends React.Component {
     render() {
-        let times = {
-            'sunday': [],
-            'monday': [
-                { 'startTime': '1:00', 'endTime': '2:00' },
-                { 'startTime': '2:00', 'endTime': '3:00' }
-            ],
-            'tuesday': [],
-            'wednesday': [],
-            'thursday': [],
-            'friday': [],
-            'saturday': []
-        }
+        // let times = {
+        //     'sunday': [],
+        //     'monday': [
+        //         { 'startTime': '1:00', 'endTime': '2:00' },
+        //         { 'startTime': '2:00', 'endTime': '3:00' }
+        //     ],
+        //     'tuesday': [],
+        //     'wednesday': [],
+        //     'thursday': [],
+        //     'friday': [],
+        //     'saturday': []
+        // }
 
         let items = this.props.items;
         return (
@@ -177,8 +211,7 @@ class TutorProfileStatic extends React.Component {
                     <PayAndLoginPrefs items={items} />
                     <TutorsFor classes={items['classes']} />
                 </div>
-                {/* TODO: Times are stored as 15 minute intervals, write a python function which condenses them back into timeslots */}
-                <Week test={"Hello"} times={times} />
+                <Week times={items['times']} />
 
                 <div id="bottom">
                     <Button variant="success" id="save" onClick={this.props.edit}> Edit </Button>

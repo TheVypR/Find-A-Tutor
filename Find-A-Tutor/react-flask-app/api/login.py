@@ -124,6 +124,7 @@ def signUp():
 #profile page
 @app.route('/myProfile/', methods=['GET', 'POST'])
 def myProfile():
+  #check to see if it is a post
   if request.method == 'POST':
     submission = request.get_json()
     #Check to see if this is a removal
@@ -134,8 +135,10 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         splitTimeVals = splitTimes(timeSlot)
         return profile.remove_timeSlot(splitTimeVals, email)
+    #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
+    #check to see if it s a change in available times
     elif 'startTime' in submission.keys() :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
@@ -143,6 +146,7 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
+    #otherwise the user hit the apply button
     else :
         return profile.edit_profile(submission, email)
   else:
@@ -297,30 +301,49 @@ def mergeTimes(timeArray):
     for time in timeArray:
         startTime = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
         endTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
-        if (endTime - curTime) != minDif:
-            #if this is the first don't add last one
-            if not first:
-                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
-                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
-                'type': "time",
-                'title': "Available Time with " + time['tut_name'],
-                'rating': time['rating']})
+        #check if this is for an appointment or not
+        if 'tut_email' in time:
+            if (endTime - curTime) != minDif:
+                #if this is the first don't add last one
+                if not first:
+                    timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                    'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                    'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                    'type': "time",
+                    'title': "Available Time with " + time['tut_name'],
+                    'rating': time['rating']})
+                else:
+                    first = False
+                #add time to the blockArray
+                curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
             else:
-                first = False
-            #add time to the blockArray
-            curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
-            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+                #add 15 minutes to the block
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            if left == 1:
+                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                    'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                    'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                    'type': "time",
+                    'title': "Available Time with " + time['tut_name'],
+                    'rating': time['rating']})
         else:
-            #add 15 minutes to the block
-            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
-        if left == 1:
-            timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
-                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
-                'type': "time",
-                'title': "Available Time with " + time['tut_name'],
-                'rating': time['rating']})
+            if (endTime - curTime) != minDif:
+            #if this is the first don't add last one
+                if not first:
+                    timeBlockArray.append({'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')})
+                else:
+                    first = False
+                 #add time to the blockArray
+                curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            else:
+                #add 15 minutes to the block
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            if left == 1:
+                timeBlockArray.append({'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')})
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1
