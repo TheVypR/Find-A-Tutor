@@ -438,7 +438,6 @@ function FullCalendarApp() {
           customButtons={{
             profile: {
               text: 'To Profile',
-
               click: function() {
                 window.location.href = '/myProfile'
               }
