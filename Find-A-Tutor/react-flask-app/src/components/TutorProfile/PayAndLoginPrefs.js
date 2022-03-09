@@ -14,6 +14,7 @@ class PayAndLoginPrefs extends React.Component {
         this.setPaymentType = this.setPaymentType.bind(this);
         this.getPayType = this.getPayType.bind(this);
         this.getPayInfo = this.getPayInfo.bind(this);
+        this.getPref = this.getPref.bind(this);
     }
 
     /**
@@ -64,9 +65,18 @@ class PayAndLoginPrefs extends React.Component {
         }//set pay_info
     }
 
+    getPref(login_pref) {
+        if (login_pref == 0) { //student
+            return true;
+        } else {
+            return false;
+        }
+    }//getPref
+
     render() {
         let pay_type = this.props.pay_type;
         let pay_info = this.props.pay_info;
+        let login_pref = this.props.login_pref;
 
         return (
             <>
@@ -103,9 +113,9 @@ class PayAndLoginPrefs extends React.Component {
                         {/*Login Info*/}
                         <div id="loginInfo" onChange={(e) => this.props.setLoginPrefs(e.target.value)}>
                             <p id="loginPreferences"> Login Preferences </p>
-                            <input name="loginPrefs" type="radio" id="studentView" value="StudentView" />
+                            <input name="loginPrefs" type="radio" id="studentView" value="StudentView" checked={this.getPref(login_pref)} />
                             <label htmlFor="stuentView"> Student View </label><br />
-                            <input name="loginPrefs" type="radio" id="tutorView" value="TutorView" />
+                            <input name="loginPrefs" type="radio" id="tutorView" value="TutorView" checked={!this.getPref(login_pref)} />
                             <label htmlFor="tutorView"> Tutor View </label>
                         </div>
                     </div>

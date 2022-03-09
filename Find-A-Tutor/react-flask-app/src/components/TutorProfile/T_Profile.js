@@ -176,6 +176,7 @@ class T_Profile extends React.Component {
                         setPaymentUser={this.setPaymentUser}
                         pay_type={items['pay_type']}
                         pay_info={items['pay_info']}
+                        login_pref={items['login_pref']}
                     />
                     <TutorsFor
                         classes={this.state.classes}
