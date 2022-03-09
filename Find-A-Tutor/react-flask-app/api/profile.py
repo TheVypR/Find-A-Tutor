@@ -2,6 +2,7 @@ from flask import Flask, request
 
 from flask_wtf import FlaskForm
 from flask_wtf import Form
+from pymysql import NULL
 from wtforms import BooleanField
 #from MySQLdb import escape_string as thwart
 
@@ -9,6 +10,8 @@ from wtforms import BooleanField
 from flaskext.mysql import MySQL
 
 import json
+
+import login
 
 app = Flask(__name__)
 
@@ -94,18 +97,24 @@ def retrieve_tutor(name, tut_email):
 def retrieve_times(tut_email):
     conn = mysql.connect()
     cursor = conn.cursor()
-    availTimes = {}
+    availTimes = []
     
     #get the times
     cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
-    print(times)
+    #print(times)
     
     #put times in dict {start_time:end_time}
     for time in times:
-      availTimes[time[0]] = time[1]
+        startAndEnd = {'start': time[0], 'end': time[1]}
+        availTimes.append(startAndEnd)
+    print(availTimes)
+
+    #Condense times
+    availTimes = login.mergeTimes(availTimes)
     
     return availTimes
+
 
 #retrieve the classes they tutor and their rates
 def retrieve_classes(tut_email):
