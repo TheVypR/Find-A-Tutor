@@ -80,6 +80,7 @@ def currentTutors():
 
 @app.route('/Contactable/', methods=['GET'])
 def contactable():
+    print("Email " + email)
     return adminRoutes.Contactable(email)
 
 # reported tutors list

@@ -13,7 +13,7 @@ import styled from "@emotion/styled"
 import './calendar.css'
 import Rating from '@mui/material/Rating';
 import { AuthContext } from './AuthContext';
-import { ContactMe } from './ContactMe';
+import ContactMe from './ContactMe';
 
 export const StyleWrapper = styled.div`
   .fc td {

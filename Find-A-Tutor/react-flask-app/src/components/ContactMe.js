@@ -16,7 +16,7 @@ function ContactMe() {
     //authentication
 	const authContext = useContext(AuthContext);
 
-    const [contactTutors, setContactTutors] = useState(null);
+    const [contactTutors, setContactTutors] = useState([]);
 
     //Get current tutors for the CurrentAndBan screen
     useEffect(() => { fetch("/Contactable/")
