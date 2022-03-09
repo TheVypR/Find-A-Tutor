@@ -14,6 +14,7 @@ import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
 import LoadProfile from './components/LoadProfile';
+import ContactMe from './components/ContactMe';
 
 import { AuthContext } from './components/AuthContext'
 

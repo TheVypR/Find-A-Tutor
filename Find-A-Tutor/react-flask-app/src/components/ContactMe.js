@@ -47,8 +47,8 @@ function ContactMe() {
                 <TableBody>
                     {contactTutors.map((tutor) => (
                         <TableRow>
-                            <TableCell>{tutor[1]}</TableCell>
-                            <TableCell>{tutor[0]}</TableCell>
+                            <TableCell>{tutor['tut_name']}</TableCell>
+                            <TableCell>{tutor['tut_email']}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
