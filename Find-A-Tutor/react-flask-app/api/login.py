@@ -179,6 +179,7 @@ def getStuClasses():
 def getTimes():
     email = request.args.get("email")
     times = mergeTimes(appointment.getTimes(email))
+    print(times)
     return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])

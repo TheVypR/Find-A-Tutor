@@ -104,7 +104,7 @@ function FullCalendarApp() {
                     console.log(error);
                 }
             )
-  }, []);
+		}, []);
 
   //loads in the appts currently created in the DB - IAA
   useEffect(() => { fetch("/getAppointments/?email=" + localStorage.getItem("email"))
