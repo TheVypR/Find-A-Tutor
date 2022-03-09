@@ -74,7 +74,7 @@ def Contactable(email):
     cursor.execute("select tut_email, tut_name from Tutor" +
                     " where contactable = 1 "
                     +"and tut_email in (select tut_email from TutorClasses where class_code in" 
-                    +" (select class_code from StudentClasses where stu_email = \"" + email + "\"))")
+                    +" (select class_code from StudentClasses where stu_email = \"" + email + "\") and tut_email != \"" + email + "\")")
     contactTuts = cursor.fetchall()
     conn.close()
     returnArray = []
