@@ -71,7 +71,6 @@ def CurrentTutors():
 def Contactable(email):
     conn = mysql.connect()
     cursor = conn.cursor()
-    print("Email: " + email)
     cursor.execute("select tut_email, tut_name from Tutor" +
                     " where contactable = 1 "
                     +"and tut_email in (select tut_email from TutorClasses where class_code in" 
@@ -82,6 +81,8 @@ def Contactable(email):
     LSize = 0
     for tutor in contactTuts:
         returnArray.append({'tut_email':tutor[0], 'tut_name':tutor[1]})
+    
+    print(returnArray)
 
     return jsonify(returnArray)
 
