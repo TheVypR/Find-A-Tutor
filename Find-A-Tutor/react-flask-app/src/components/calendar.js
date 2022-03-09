@@ -406,7 +406,16 @@ function FullCalendarApp() {
 	
 
 		<div className="filter">
-		<Paper variant="outlined" >	
+		<div className='switchViews'>
+			<Button color="blue">Switch Views</Button>
+		</div>
+		<Paper
+		 variant="outlined"
+		 elevation={12}
+		 style={{
+			padding:8,
+			border: "1px solid black"
+		}}>	
 			<div className="filterHeader">
 			<h2>Filter By:</h2>
 			</div>
@@ -446,6 +455,7 @@ function FullCalendarApp() {
 			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
 		</Paper>
+		
       </div>
 
 	  
@@ -472,7 +482,7 @@ function FullCalendarApp() {
           //create buttons
           //TODO: decide if any buttons at top of screen are necessary
           customButtons={{
-           
+          
 
           }}//end button setup
 
