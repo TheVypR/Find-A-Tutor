@@ -143,30 +143,10 @@ def myProfile():
         return profile.post_timeSlot(times, email)
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
-        submittedTime = submission['removePrefilledTime']
-        submittedTime = splitUp(submittedTime)
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
     #otherwise the user hit the apply button
     else:
         return profile.edit_profile(submission, email)
-    
-def splitUp(time):
-    startTime = time['startTime']
-    endTime = time['endTime']
-    day = getDayFromISO(time['day'])
-    
-
-    if 'pm' in startTime:
-        startTime[0] = int(startTime[0])+12
-    startTime = startTime.replace(' am', '').replace(' pm', '')
-    if 'pm' in endTime:
-        endTime[0] = int(endTime[0])+12
-    endTime = endTime.replace(' am', '').replace(' pm', '')
-
-    startSplit = datetime.strptime(startTime, '%H:%M')
-    endSplit = datetime.strptime(endTime, '%H:%M')
-    print("TEST: " + str(startSplit))
-    return ""
 
 def getDayFromISO(day):
     weekday = ""

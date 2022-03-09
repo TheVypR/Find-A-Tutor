@@ -302,10 +302,6 @@ class Weekday extends React.Component {
                 toReturn.push(
                     <>
                         <p> {startTime} to {endTime} </p>
-                        <Button className="removeTime" variant="danger" onClick={() => {
-                             this.removePreFilledTime(startTime, endTime, this.props.day) }}>
-                            <BsFillTrashFill size="14" />
-                        </Button> <br />
                         <hr />
                     </>);
             }
