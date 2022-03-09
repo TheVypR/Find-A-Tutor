@@ -15,6 +15,7 @@ import login
 
 app = Flask(__name__)
 
+
 mysql = MySQL()
 
 locality = 1 # Have locality set to 1 if you want to test on your local machine
