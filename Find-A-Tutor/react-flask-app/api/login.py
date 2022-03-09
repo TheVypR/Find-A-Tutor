@@ -65,11 +65,11 @@ def login():
         return jsonify({'error': 'Not Authenticated'})
     
   #if user is a tutor
-  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=%s);", str(email))
+  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=\"" + email + "\")")
   checkIfTutor = cursor.fetchall()
   if checkIfTutor[0][0] == 1:
       #get users login prefs
-      cursor.execute("select login_pref from Tutor where tut_email=%s;", email)
+      cursor.execute("select login_pref from Tutor where tut_email=\"" + email + "\"")
       login_pref = cursor.fetchall()
       setIsTutor(login_pref[0][0])
 
@@ -202,6 +202,7 @@ def getStuClasses():
 def getTimes():
     email = request.args.get("email")
     times = mergeTimes(appointment.getTimes(email))
+    print(times)
     return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
@@ -325,6 +326,7 @@ def mergeTimes(timeArray):
     timeBlockArray = []
     curBlockStart = datetime.now()
     curBlockEnd = datetime.now()
+    lastTutorInfo = timeArray[0]
 
     #go through every entry
     for time in timeArray:
@@ -335,12 +337,12 @@ def mergeTimes(timeArray):
             if (endTime - curTime) != minDif:
                 #if this is the first don't add last one
                 if not first:
-                    timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                    timeBlockArray.append({'tut_email':lastTutorInfo['tut_email'], 'tut_name':lastTutorInfo['tut_name'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",
-                    'title': "Available Time with " + time['tut_name'],
-                    'rating': time['rating']})
+                    'title': "Available Time with " + lastTutorInfo['tut_name'],
+                    'rating': lastTutorInfo['rating']})
                 else:
                     first = False
                 #add time to the blockArray
@@ -350,11 +352,11 @@ def mergeTimes(timeArray):
                 #add 15 minutes to the block
                 curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
             if left == 1:
-                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                timeBlockArray.append({'tut_email':lastTutorInfo['tut_email'], 'tut_name':lastTutorInfo['tut_name'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",
-                    'title': "Available Time with " + time['tut_name'],
+                    'title': "Available Time with " + lastTutorInfo['tut_name'],
                     'rating': time['rating']})
         else:
             if (endTime - curTime) != minDif:
@@ -376,6 +378,7 @@ def mergeTimes(timeArray):
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1
+        lastTutorInfo = time
     
     return timeBlockArray
         
