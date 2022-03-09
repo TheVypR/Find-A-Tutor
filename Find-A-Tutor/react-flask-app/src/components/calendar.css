@@ -1,29 +1,58 @@
 .calendar{
+    padding-top: 50px;
     padding-left: 200px;
     padding-right: 100px;
-    background-color: white;
     padding-bottom: 100px;
-    max-height: fit-content;
-    overflow: scroll;
-   
+    background-color: white;
+    
+    /* max-height: fit-content; */
+    /* overflow: scroll; */
+    top:20px;
+    right:30px;
     height: 400px;
+    
     align-self:center;
-    border-style:solid;
-    border-color:black;
-   
-
+    /* border-style:solid;
+    border-color:black; */
 }
 
-::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
-    background: transparent;  /* Optional: just make scrollbar invisible */
+
+button.fc-dayGridMonth-button.fc-button.fc-button-primary {
+    background-color: blue !important;
+    border-color: mediumvioletred;
 }
+button.fc-timeGridWeek-button.fc-button.fc-button-primary {
+    background-color: blue !important;
+    border-color: mediumvioletred;
+}
+button.fc-timeGridDay-button.fc-button.fc-button-primary {
+    background-color: blue !important;
+    border-color: mediumvioletred;
+}
+button.fc-today-button.fc-button.fc-button-primary {
+    background-color: blue !important;
+    border-color: mediumvioletred;
+}
+button.fc-prev-button.fc-button.fc-button-primary {
+    background-color: blue !important;
+    border-color: mediumvioletred;
+}
+button.fc-next-button.fc-button.fc-button-primary {
+    background-color: blue !important;
+    border-color: mediumvioletred;
+}
+/* ::-webkit-scrollbar {
+    width: 0; 
+    background: transparent; 
+} */
+
 
 .filterHeader{
     text-decoration: underline;
     font-style: italic;
+    color: blue;
 }
-.titleText{
+/* .titleText{
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-style: oblique;
     font-weight: bold;
@@ -38,11 +67,14 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-}
+} */
 
 .filter{
     text-align:left;
-    padding-top: 20px;
+    padding-top: 50px;
+    padding-left: 15px;
+    float: left;
+    clear: none;
 }
 
 .switchButton{
