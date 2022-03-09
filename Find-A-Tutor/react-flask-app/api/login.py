@@ -303,6 +303,7 @@ def mergeTimes(timeArray):
     timeBlockArray = []
     curBlockStart = datetime.now()
     curBlockEnd = datetime.now()
+    lastTutorInfo = timeArray[0]
 
     #go through every entry
     for time in timeArray:
@@ -313,12 +314,12 @@ def mergeTimes(timeArray):
             if (endTime - curTime) != minDif:
                 #if this is the first don't add last one
                 if not first:
-                    timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                    timeBlockArray.append({'tut_email':lastTutorInfo['tut_email'], 'tut_name':lastTutorInfo['tut_name'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",
-                    'title': "Available Time with " + time['tut_name'],
-                    'rating': time['rating']})
+                    'title': "Available Time with " + lastTutorInfo['tut_name'],
+                    'rating': lastTutorInfo['rating']})
                 else:
                     first = False
                 #add time to the blockArray
@@ -328,11 +329,11 @@ def mergeTimes(timeArray):
                 #add 15 minutes to the block
                 curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
             if left == 1:
-                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                timeBlockArray.append({'tut_email':lastTutorInfo['tut_email'], 'tut_name':lastTutorInfo['tut_name'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",
-                    'title': "Available Time with " + time['tut_name'],
+                    'title': "Available Time with " + lastTutorInfo['tut_name'],
                     'rating': time['rating']})
         else:
             if (endTime - curTime) != minDif:
@@ -354,6 +355,7 @@ def mergeTimes(timeArray):
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1
+        lastTutorInfo = time
     
     return timeBlockArray
         
