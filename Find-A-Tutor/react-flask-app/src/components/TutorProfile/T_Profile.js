@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
+import './TutorProfile.css';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
@@ -15,11 +16,10 @@ class T_Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {},          //user info stored in database
             paymentType: "",    //Venmo, Paypal, or Cash
             paymentUser: "",    //Username for choosen payment type (unless cash)
             loginPrefs: -1,     //Default profile that loads on login (student or tutor)
-            classes: [{}]       //Classes the tutor tutors for
+            classes: []       //Classes the tutor tutors for
         }//state
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,28 +34,6 @@ class T_Profile extends React.Component {
     }//constructor
 
     /**
-     * Fetches user info from backend
-     */
-    async componentDidMount() {
-        fetch("/myProfile/")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
-    }//componentDidMount
-
-    /**
      * Collects state values and sends them to the backend
      */
     handleSubmit() {
@@ -64,10 +42,14 @@ class T_Profile extends React.Component {
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
-            'classes': this.state.classes//TODO: This will have to be different
+            'classes': this.state.classes
         }//post
 
+        console.log("loginPref: " + post['login_pref'])
+
         this.checkForEmptyState(post);
+
+        console.log("loginPref: " + post['login_pref'])
 
         //Fetch
         const response = fetch("/myProfile/", {
@@ -77,6 +59,7 @@ class T_Profile extends React.Component {
             },
             body: JSON.stringify(post)
         })//fetch
+        this.props.edit();
     }//handleSubmit
 
     /**
@@ -87,15 +70,14 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-            if (post[postKey] == "" || post[postKey] == -1 || post[postKey] == [{}]) {
-                //replace with db data
-                for (let getKey in this.state.items) {
-                    console.log(getKey + ": " + this.state.items[getKey]);
-                    if (postKey == getKey) {
-                        post[postKey] = this.state.items[getKey];
-                    }//if
-                }//for
-            }//if
+                if ((post[postKey] == "" || post[postKey] == -1) && postKey != 'classes' && post[postKey] != 0) {
+                    //replace with db data
+                    for (let getKey in this.props.items) {
+                        if (postKey == getKey) {
+                            post[postKey] = this.props.items[getKey];
+                        }//if
+                    }//for
+                }//if
         }//for
     }//checkForEmptyState
 
@@ -140,7 +122,7 @@ class T_Profile extends React.Component {
             loginPref = 0;
         else
             loginPref = 1;
-
+        console.log(loginPref + ' ' + pref);
         this.setState({ loginPrefs: loginPref });
     }//setLoginPrefs
 
@@ -162,7 +144,7 @@ class T_Profile extends React.Component {
     setCourseCode(code, index) {
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
-        aClass['courseCode'] = code;
+        aClass['class_code'] = code;
         classes[index] = aClass;
         this.setState({ classes: classes })
     }//setCourseCode
@@ -186,8 +168,8 @@ class T_Profile extends React.Component {
             <>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.state.items['name']} </h1>
-                    <p id="email"> {this.state.items['email']} </p>
+                    <h1 id="name"> {this.props.items['name']} </h1>
+                    <p id="email"> {this.props.items['email']} </p>
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">

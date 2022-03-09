@@ -19,7 +19,7 @@ class PayAndLoginPrefs extends React.Component {
      * @param {string} type 
      */
     setPaymentType(type) {
-        this.props.setPaymentType("Venmo");
+        this.props.setPaymentType(type);
     }
 
     /**
