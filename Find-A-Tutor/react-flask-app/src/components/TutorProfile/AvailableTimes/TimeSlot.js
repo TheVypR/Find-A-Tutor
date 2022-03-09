@@ -89,7 +89,6 @@ class Times extends React.Component {
  */
 class TimeSlot extends React.Component {
     render() {
-        //var timePickers = this.state.showTimePickers ? <TimePickers timeSlotChange={this.timeSlotChange} /> : <p> {this.state.startTime} to {this.state.endTime} </p>
         const day = this.props.day;
         const index = this.props.index;
         const startTime = this.props.startTime;
