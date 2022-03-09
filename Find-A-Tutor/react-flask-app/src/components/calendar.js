@@ -276,7 +276,7 @@ function FullCalendarApp() {
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
     <div className="App">
-		<NavBar value={"Calendar"} />
+		<NavBar />
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
