@@ -19,7 +19,7 @@ class T_Profile extends React.Component {
             paymentType: "",    //Venmo, Paypal, or Cash
             paymentUser: "",    //Username for choosen payment type (unless cash)
             loginPrefs: -1,     //Default profile that loads on login (student or tutor)
-            classes: [{}]       //Classes the tutor tutors for
+            classes: []       //Classes the tutor tutors for
         }//state
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,10 +39,11 @@ class T_Profile extends React.Component {
     handleSubmit() {
         //Collect state values
         let post = {
+			'email': localStorage.getItem("email"),
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
-            'classes': this.state.classes//TODO: This will have to be different
+            'classes': this.state.classes
         }//post
 
         this.checkForEmptyState(post);
@@ -66,15 +67,14 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-            if (post[postKey] == "" || post[postKey] == -1 || post[postKey] == [{}]) {
-                //replace with db data
-                for (let getKey in this.props.items) {
-                    console.log(getKey + ": " + this.props.items[getKey]);
-                    if (postKey == getKey) {
-                        post[postKey] = this.props.items[getKey];
-                    }//if
-                }//for
-            }//if
+                if ((post[postKey] === "" || post[postKey] == -1) && postKey != 'classes') {
+                    //replace with db data
+                    for (let getKey in this.props.items) {
+                        if (postKey == getKey) {
+                            post[postKey] = this.props.items[getKey];
+                        }//if
+                    }//for
+                }//if
         }//for
     }//checkForEmptyState
 
@@ -119,7 +119,6 @@ class T_Profile extends React.Component {
             loginPref = 0;
         else
             loginPref = 1;
-
         this.setState({ loginPrefs: loginPref });
     }//setLoginPrefs
 
@@ -141,7 +140,7 @@ class T_Profile extends React.Component {
     setCourseCode(code, index) {
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
-        aClass['courseCode'] = code;
+        aClass['class_code'] = code;
         classes[index] = aClass;
         this.setState({ classes: classes })
     }//setCourseCode
@@ -161,13 +160,13 @@ class T_Profile extends React.Component {
     }//setRate
 
     render() {
-        console.log(this.props.items);
+        let items = this.props.items;
         return (
             <>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.props.items['name']} </h1>
-                    <p id="email"> {this.props.items['email']} </p>
+                    <h1 id="name"> {items['name']} </h1>
+                    <p id="email"> {items['email']} </p>
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">
@@ -175,6 +174,9 @@ class T_Profile extends React.Component {
                         setPaymentType={this.setPaymentType}
                         setLoginPrefs={this.setLoginPrefs}
                         setPaymentUser={this.setPaymentUser}
+                        pay_type={items['pay_type']}
+                        pay_info={items['pay_info']}
+                        login_pref={items['login_pref']}
                     />
                     <TutorsFor
                         classes={this.state.classes}
@@ -182,10 +184,11 @@ class T_Profile extends React.Component {
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
                         setRate={this.setRate}
+                        filledInClasses={items['classes']}
                     />
                 </div>
 
-                <AvailableTimes />
+                <AvailableTimes times={items['times']} />
 
                 <div id="bottom">
                     <Button type="submit" id="save"

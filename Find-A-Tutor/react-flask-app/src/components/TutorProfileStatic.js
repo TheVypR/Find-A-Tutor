@@ -37,9 +37,9 @@ class Weekday extends React.Component {
 
         let timeSlotList = [];
         times.forEach((slot) => {
-            timeSlotList.push(<TimeSlot startTime={slot['startTime']} endTime={slot['endTime']} />);
+            timeSlotList.push(<TimeSlot startTime={slot['startTime']}
+                endTime={slot['endTime']} />);
         });
-
         return (
             <>
                 <div>
@@ -61,19 +61,19 @@ class Week extends React.Component {
             <>
                 <div className="d-flex justify-content-center">
                     <div className="vr"></div>
-                    <Weekday times={times['sunday']} day={['sunday']} />
+                    <Weekday times={times['Sunday']} day={['sunday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['monday']} day={['monday']} />
+                    <Weekday times={times['Monday']} day={['monday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['tuesday']} day={['tuesday']} />
+                    <Weekday times={times['Tuesday']} day={['tuesday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['wednesday']} day={['wednesday']} />
+                    <Weekday times={times['Wednesday']} day={['wednesday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['thursday']} day={['thursday']} />
+                    <Weekday times={times['Thursday']} day={['thursday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['friday']} day={['friday']} />
+                    <Weekday times={times['Friday']} day={['friday']} />
                     <div className="vr"></div>
-                    <Weekday times={times['saturday']} day={['saturday']} />
+                    <Weekday times={times['Saturday']} day={['saturday']} />
                     <div className="vr"></div>
                 </div>
             </>
@@ -92,7 +92,7 @@ class PayAndLoginPrefs extends React.Component {
     }
 
     getLoginPref(loginPref) {
-        if (loginPref[0] == 0) {//Student
+        if (loginPref == 0) {//Student
             return 'Studnet View';
         } else {
             return 'Tutor View';
@@ -133,17 +133,13 @@ class TutorsFor extends React.Component {
             </>)
         })
 
-        // times.forEach((slot) => {
-        //     timeSlotList.push(<TimeSlot startTime={slot['startTime']} endTime={slot['endTime']} />);
-        // });
-
         return (
             <>
                 <fieldset>
                     <div className="p-2">
                         <p id="header"> Tutoring For </p>
                         <div id="classes">
-                                {classesList}
+                            {classesList}
                         </div>
                     </div>
                 </fieldset>
@@ -157,19 +153,6 @@ class TutorsFor extends React.Component {
  */
 class TutorProfileStatic extends React.Component {
     render() {
-        let times = {
-            'sunday': [],
-            'monday': [
-                { 'startTime': '1:00', 'endTime': '2:00' },
-                { 'startTime': '2:00', 'endTime': '3:00' }
-            ],
-            'tuesday': [],
-            'wednesday': [],
-            'thursday': [],
-            'friday': [],
-            'saturday': []
-        }
-
         let items = this.props.items;
         return (
             <>
@@ -177,8 +160,7 @@ class TutorProfileStatic extends React.Component {
                     <PayAndLoginPrefs items={items} />
                     <TutorsFor classes={items['classes']} />
                 </div>
-                {/* TODO: Times are stored as 15 minute intervals, write a python function which condenses them back into timeslots */}
-                <Week test={"Hello"} times={times} />
+                <Week times={items['times']} />
 
                 <div id="bottom">
                     <Button variant="success" id="save" onClick={this.props.edit}> Edit </Button>

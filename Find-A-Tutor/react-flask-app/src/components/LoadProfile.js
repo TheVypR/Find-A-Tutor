@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import moment from 'moment';
+
+const format = 'h:mm a';    //Format for TimePicker
 
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile"
@@ -15,23 +18,39 @@ class LoadProfile extends React.Component {
             isEdit: false
         }
         this.edit = this.edit.bind(this);
+        this.doFetch = this.doFetch.bind(this);
+        this.convertToMoment = this.convertToMoment.bind(this);
     }//constructor
 
     /**
      * Toggles isEdit
+     * then fetches any changes from the db
      */
     edit() {
-        this.setState({ isEdit: !this.state.isEdit });
+        this.setState({ isEdit: !this.state.isEdit }, function () {
+            this.doFetch();
+        });
     }//edit
 
     /**
-     * Fetches user info from backend
+     * calls doFetch on initial mounting of component
      */
     async componentDidMount() {
-        fetch("/myProfile/")
+        this.doFetch();
+    }//componentDidMount
+
+    /**
+     * Gets info from db
+     */
+    doFetch() {
+        fetch("/myProfile/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 (result) => {
+                    //Convert result[times] to moment
+                    console.log(result)
+                    let times = result['times'];
+                    result['times'] = this.convertToMoment(times);
                     this.setState({
                         isLoaded: true,
                         items: result
@@ -44,13 +63,41 @@ class LoadProfile extends React.Component {
                     });
                 }
             )
-    }//componentDidMount
+    }//doFetch
+
+    /**
+     * Converts DD-MM-YYYYTHH:mm:ss to moment
+     * 
+     * @param {Array[T]} times 
+     * @returns [{'Monday': {'startTime': moment, 'endTime': moment}, ...]
+     */
+    convertToMoment(times) {
+        var timeSlots = {
+            'Monday': [],
+            'Tuesday': [],
+            'Wednesday': [],
+            'Thursday': [],
+            'Friday': [],
+            'Saturday': [],
+            'Sunday': []
+        }
+        times.forEach(slot => {
+            let startTime = slot['startTime'];
+            let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
+            let endTime = slot['endTime'];
+            startTime = moment(startTime.replace(/T/, " ")).format(format);
+            endTime = moment(endTime.replace(/T/, " ")).format(format);
+
+            timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
+        });
+
+        return timeSlots
+    }//convetToMoment
 
     render() {
-        console.log(this.state.isEdit)
         let staticOrEditTutor = this.state.isEdit ?
-            <TutorProfile items={this.state.items} edit={this.edit}/> :
-            <TutorProfileStatic items={this.state.items} edit={this.edit}/>
+            <TutorProfile items={this.state.items} edit={this.edit} /> :
+            <TutorProfileStatic items={this.state.items} edit={this.edit} />
         var profile = this.state.items['isTutor'] ?
             staticOrEditTutor :
             <StudentProfile items={this.state.items} />

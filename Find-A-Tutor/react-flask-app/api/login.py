@@ -1,11 +1,6 @@
 import hashlib
 from datetime import datetime, timedelta
-from typing import Tuple 
 from flask import Flask, request, jsonify
-from flask_wtf import FlaskForm
-from flask_wtf import Form
-from pymysql import NULL
-from wtforms import BooleanField
 import profile, signup, appointment, history, adminRoutes
 
 #Database stuff
@@ -14,7 +9,6 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-email = "apelia18@gcc.edu"
 isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
@@ -83,10 +77,6 @@ def login():
 
   return jsonify({'email': email})
 
-@app.route('/email/', methods=['GET'])
-def getAuth():
-  #print("Email!!!: " + email)
-  return {'authTag':email}
 # provide a list of current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -127,36 +117,67 @@ def signUp():
   return signup.signup()
 
 #profile page
-@app.route('/myProfile/', methods=['GET', 'POST'])
+@app.route('/myProfile/', methods=['POST'])
 def myProfile():
-  if request.method == 'POST':
     submission = request.get_json()
+    email = submission['email']
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         submittedTime = submission['remove']
+        print(submittedTime)
         startTime = dateParse(submittedTime['startTime'])
         endTime = dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         splitTimeVals = splitTimes(timeSlot)
         return profile.remove_timeSlot(splitTimeVals, email)
+    #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
-    elif 'startTime' in submission.keys() :
+    #check to see if it s a change in available times
+    elif 'submitTimes' in submission.keys() :
         # else parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
         endTime = dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
-    else :
+    #check is this is removing a time populated by the db
+    elif 'removePrefilledTime' in submission.keys():
+        return profile.remove_timeSlot(submission['removePrefilledTime'], email)
+    #otherwise the user hit the apply button
+    else:
         return profile.edit_profile(submission, email)
-  else:
+
+def getDayFromISO(day):
+    weekday = ""
+
+    if day==1:
+        weekday="Monday"
+    elif day==2:
+        weekday="Tuesday"
+    elif day==3:
+        weekday="Wednesday"
+    elif day==4:
+        weekday="Thursday"
+    elif day==5:
+        weekday="Friday"
+    elif day==6:
+        weekday="Saturay"
+    else:
+        weekday="Sunday"
+
+    return weekday
+
+@app.route('/myProfile/', methods=['GET'])
+def getProfile():
+    email = request.args.get('email')
     return profile.retrieve_profile(email, isTutor)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
+  email = data['email']
   print(data['day'])
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
@@ -164,37 +185,43 @@ def addAppointment():
   
   #add the appointment and mark time as taken
   return appointment.addAppointment(data, email, newStart, newEnd, slots)
-  
+
+#get the rates for classes for a given tutor
 @app.route('/getRates/', methods=['POST'])
 def getRates():
     data = request.get_json()
     return appointment.getRates(data)
-  
+
+#get the classes the student is taking
 @app.route('/getStuClasses/', methods=['GET'])
 def getStuClasses():
+    email = request.args.get("email")
     return appointment.getStuClasses(email)
   
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
+    email = request.args.get("email")
     times = mergeTimes(appointment.getTimes(email))
     return {'times':times}
     
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
+    email = request.args.get("email")
     appts = appointment.getAppointments(email)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
     data = request.get_json()[0]
+    email = data['email']
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
     slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.removeAppointment(email, data, newDate, slots)
 
 @app.route('/editAppointment/', methods=['POST'])
 def editAppointment():
-    print("Edit")
     data = request.get_json()[0]
+    email = data['email']
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
     returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
@@ -209,7 +236,7 @@ def toggleView():
 
 @app.route('/loadAppointment/', methods=['GET'])
 def loadAppointments():
-    print(email)
+    email=request.args.get("email")
     if isTutor:
         return history.loadPreviousAppointmentsTutor(email)
     else:
@@ -218,15 +245,16 @@ def loadAppointments():
 @app.route('/submitRating/', methods=['POST'])
 def rateTutor():
     data = request.get_json()
-    return history.submitRating(data[0])
+    return history.submitRating(data)
 
 @app.route('/submitReport/', methods=['POST'])
 def report():
     data = request.get_json()
+    email=request.args.get("email")
     if isTutor:
-        return history.submitStudentReport(data[0], email)
+        return history.submitStudentReport(data, email)
     else:
-        return history.submitTutorReport(data[0], email)
+        return history.submitTutorReport(data, email)
 
 def dateParse(date):
     #get the parts of the date
@@ -302,30 +330,49 @@ def mergeTimes(timeArray):
     for time in timeArray:
         startTime = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
         endTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
-        if (endTime - curTime) != minDif:
-            #if this is the first don't add last one
-            if not first:
-                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
-                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
-                'type': "time",
-                'title': "Available Time with " + time['tut_name'],
-                'rating': time['rating']})
+        #check if this is for an appointment or not
+        if 'tut_email' in time:
+            if (endTime - curTime) != minDif:
+                #if this is the first don't add last one
+                if not first:
+                    timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                    'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                    'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                    'type': "time",
+                    'title': "Available Time with " + time['tut_name'],
+                    'rating': time['rating']})
+                else:
+                    first = False
+                #add time to the blockArray
+                curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
             else:
-                first = False
-            #add time to the blockArray
-            curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
-            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+                #add 15 minutes to the block
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            if left == 1:
+                timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
+                    'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                    'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                    'type': "time",
+                    'title': "Available Time with " + time['tut_name'],
+                    'rating': time['rating']})
         else:
-            #add 15 minutes to the block
-            curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
-        if left == 1:
-            timeBlockArray.append({'tut_email':time['tut_email'], 'tut_name':time['tut_name'],
-                'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
-                'type': "time",
-                'title': "Available Time with " + time['tut_name'],
-                'rating': time['rating']})
+            if (endTime - curTime) != minDif:
+            #if this is the first don't add last one
+                if not first:
+                    timeBlockArray.append({'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')})
+                else:
+                    first = False
+                 #add time to the blockArray
+                curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            else:
+                #add 15 minutes to the block
+                curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            if left == 1:
+                timeBlockArray.append({'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')})
         #hold the new time
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
         left-=1
