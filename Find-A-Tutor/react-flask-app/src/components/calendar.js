@@ -21,6 +21,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ContactMe from './ContactMe';
+import ToggleView from './ViewToggle'
 
 export const StyleWrapper = styled.div`
   .fc td {
@@ -32,6 +33,7 @@ function FullCalendarApp() {
   //calendar filling
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
+  const [view, setView] = useState(false);
   
   //handle modals
   const [showTime, setShowTime] = useState(false);
@@ -83,52 +85,80 @@ function FullCalendarApp() {
   const [wrongTimes, setWrongTimes] = useState(false);
   const [wrongClass, setWrongClass] = useState(false);
   
-  //loads in the times currently available in the DB -IAA
-  useEffect(() => { fetch("/getTimes/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setTimes(result['times']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
-  }, []);
+  if(localStorage.getItem("view") == "tutor"){
+	TutLoad();
+	
+  } else {
+	StuLoad();
+	
+  }
+  
+  function TutLoad() {
+	let appts = []
+	//loads in the appts currently created in the DB - IAA
+	useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setAppts(result['appts']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+				})
+	  }, []);
+  }
+  
+  function StuLoad() {
+	  useEffect(() => {fetch("/getTimes/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setTimes(result['times']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
+	  }, []);
 
-  useEffect(() => { fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setStudentClasses(result['stu_classes']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
-		}, []);
+	  useEffect(() => {fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setStudentClasses(result['stu_classes']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
+	  }, []);
 
-  //loads in the appts currently created in the DB - IAA
-  useEffect(() => { fetch("/getAppointments/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setAppts(result['appts']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components
-                (error) => {
-                    console.log(error);
-                }
-            )
-  }, []);
+	  //loads in the appts currently created in the DB - IAA
+	  useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setAppts(result['appts']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+					}
+				)
+	  }, []);
+  }
+
 
 	const updateEvents = function() {
 		let localEvents = [];
@@ -440,7 +470,7 @@ function FullCalendarApp() {
 
 		<div className="filter">
 		<div className='switchViews'>
-			<Button color="blue">Switch Views</Button>
+			<Button color="blue" onClick={() => {ToggleView()}} type="submit">Switch Views</Button>
 		</div>
 		<Paper
 		 variant="outlined"

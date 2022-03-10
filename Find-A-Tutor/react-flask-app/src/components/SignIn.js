@@ -50,6 +50,7 @@ export default function SignIn() {
       if (result['email'] === info[0]) {
         loginHandler();
 		localStorage.setItem("email", result['email']);
+		localStorage.setItem("view", "student");
       }
       else {
 		setWrongLogin(true)
