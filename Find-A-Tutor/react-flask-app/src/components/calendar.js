@@ -185,9 +185,7 @@ function FullCalendarApp() {
 		setEvnts(localEvents);
   }
 
-	useEffect(() => {
-		updateEvents();
-	}, []);
+	
 
 	//create appointment
 	function addEvent() {
@@ -357,6 +355,10 @@ function FullCalendarApp() {
 		return ({providedClasses})
 	}
 	console.log(authContext);
+	
+	useEffect(() => {
+		updateEvents(() => appts);
+	}, [times, appts]);
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
