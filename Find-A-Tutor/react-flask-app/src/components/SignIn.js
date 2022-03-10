@@ -56,6 +56,7 @@ export default function SignIn() {
           loginHandler();
         }
 		localStorage.setItem("email", result['email']);
+		localStorage.setItem("view", "student");
       }
       else {
 		setWrongLogin(true)

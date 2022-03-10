@@ -107,31 +107,46 @@ def getTimes(email):
                                'borderColor':'#00ff00'})
     
     conn.close()
-    print(availTimes)
     return availTimes
     
-def getAppointments(email):
+def getAppointments(email, isTutor):
     availAppts = []
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    cursor.execute("select " 
-                    +"appt_id, "
-                    +"A.stu_email, "
-                    +"A.tut_email, "
-                    +"class_code, "
-                    +"start_date, "
-                    +"end_date, "
-                    +"title, "
-                    +"block_start, "
-                    +"block_end, "
-                    +"S.stu_name, "
-                    +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = \"" + email + "\"" 
-                    +"and S.stu_email = \"" + email + "\""
-                    +"and T.tut_email = A.tut_email")
+    if not isTutor:
+        cursor.execute("select " 
+                        +"appt_id, "
+                        +"A.stu_email, "
+                        +"A.tut_email, "
+                        +"class_code, "
+                        +"start_date, "
+                        +"end_date, "
+                        +"title, "
+                        +"block_start, "
+                        +"block_end, "
+                        +"S.stu_name, "
+                        +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = \"" + email + "\"" 
+                        +"and S.stu_email = \"" + email + "\""
+                        +"and T.tut_email = A.tut_email")
+    else:
+        cursor.execute("select " 
+                        +"appt_id, "
+                        +"A.stu_email, "
+                        +"A.tut_email, "
+                        +"class_code, "
+                        +"start_date, "
+                        +"end_date, "
+                        +"title, "
+                        +"block_start, "
+                        +"block_end, "
+                        +"S.stu_name, "
+                        +"T.tut_name from Appointment A, Student S, Tutor T where A.tut_email = \"" + email + "\"" 
+                        +"and T.tut_email = \"" + email + "\""
+                        +"and S.stu_email = A.stu_email")    
     appts = cursor.fetchall()
-    
+    print(appts)
     for appt in appts:
         availAppts.append({
             'stu_email':appt[1],
@@ -147,7 +162,6 @@ def getAppointments(email):
             'type':"appt",
             'backgroundColor':'##0000ff',
             'borderColor':'#0000ff'})
-    
     conn.close()
     print(availAppts)
     return {'appts':availAppts}
