@@ -90,7 +90,7 @@ export default function TutoringHistory() {
 			<NavBar />
 			<Container maxWidth="xl" sx={{mt: 12, mb: 12}}>
 				<Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-					<Modal show={showReport} onHide={handleClose}>
+					<Modal show={showReport} centered onHide={handleClose}>
 						<form>
 							<Modal.Header closeButton>
 							<Modal.Title>Report </Modal.Title>

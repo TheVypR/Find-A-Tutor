@@ -365,7 +365,7 @@ function FullCalendarApp() {
   return authContext.isLoggedIn === "true" && (
     <div className="App">
 		<NavBar />
-		<Modal show={showTime} onHide={handleClose}>
+		<Modal show={showTime} centered onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
 			  <Modal.Title>{title}</Modal.Title>
@@ -406,7 +406,7 @@ function FullCalendarApp() {
 		</form>
       </Modal>
 	  
-	  <Modal show={showAppt} onHide={handleClose}>
+	  <Modal show={showAppt} centered onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
@@ -430,7 +430,7 @@ function FullCalendarApp() {
         </Modal.Footer>
       </Modal>
 		
-	  <Modal show={showEdit} onHide={handleClose}>
+	  <Modal show={showEdit} centered onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
 			  <Modal.Title>{title}</Modal.Title>
