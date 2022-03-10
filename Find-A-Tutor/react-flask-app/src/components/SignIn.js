@@ -48,7 +48,13 @@ export default function SignIn() {
     }).then(resp => resp.json())
     .then(result => {
       if (result['email'] === info[0]) {
-        loginHandler();
+        if (result['isAdmin'] === 1) {
+          authContext.login();
+          nav('/Reports');
+        }
+        else {
+          loginHandler();
+        }
 		localStorage.setItem("email", result['email']);
       }
       else {

@@ -112,12 +112,14 @@ def AddStudentToBan(target):
     ban = "Banned@vac_ban.edu"
     if data != None:
         cursor.execute("update Appointment set tut_email = \""+ban+"\" where tut_email = \""+ target['stu_email'] +"\" ")
+        cursor.execute("delete from ReportedTutors where tut_email = \""+ target['stu_email'] +"\" ")
         cursor.execute("delete from TutorTimes where tut_email = \""+ target['stu_email'] + "\" ")
         cursor.execute("delete from TutorClasses where tut_email = \""+ target['stu_email'] + "\" ")
         cursor.execute("delete from Tutor where tut_email = \""+ target['stu_email'] + "\" ")
 
     # delete from student as well
     cursor.execute("update Appointment set stu_email = \""+ban+"\" where stu_email = \""+ target['stu_email'] + "\" ")
+    cursor.execute("delete from ReportedStudents where stu_email = \""+ target['stu_email'] +"\" ")
     cursor.execute("delete from StudentClasses where stu_email = \""+ target['stu_email'] + "\" ")
     cursor.execute("delete from Student where stu_email = \""+ target['stu_email'] + "\" ")
 

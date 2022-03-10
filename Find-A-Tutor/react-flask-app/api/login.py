@@ -56,7 +56,7 @@ def login():
           100000 #100,000 iterations of SHA-256 
       )
       password = salt + password
-      cursor.execute("select stu_email from Student where stu_email = \""
+      cursor.execute("select stu_email, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
@@ -75,7 +75,7 @@ def login():
 
   conn.close()
 
-  return jsonify({'email': email})
+  return jsonify({'email': email, 'isAdmin': user[1]})
 
 # provide a list of current tutors
 @app.route('/CurrentTutors/', methods=['GET'])

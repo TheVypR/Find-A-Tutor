@@ -17,6 +17,7 @@ import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import NavBar from './NavBar';
 
 const theme = createTheme();
 export default function StudentHistory() {
@@ -82,6 +83,7 @@ export default function StudentHistory() {
 	
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
+			<NavBar />
             <Container maxWidth="xl" sx={{mt: 12, mb: 12}}>
 				<Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
 					<Modal show={showReport} onHide={handleClose}>

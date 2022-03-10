@@ -3,6 +3,7 @@ import moment from 'moment';
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile";
 import StudentProfile from "./StudentProfile";
+import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
 
@@ -102,6 +103,7 @@ class LoadProfile extends React.Component {
             <StudentProfile items={this.state.items} />
         return (
             <>
+            <div style={{margin: '130px'}}><NavBar /></div>
                 {profile}
             </>
         );//return
