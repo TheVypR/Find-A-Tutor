@@ -21,6 +21,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ContactMe from './ContactMe';
+import ToggleView from './ViewToggle'
 
 export const StyleWrapper = styled.div`
   .fc td {
@@ -469,7 +470,7 @@ function FullCalendarApp() {
 
 		<div className="filter">
 		<div className='switchViews'>
-			<Button color="blue">Switch Views</Button>
+			<Button color="blue" onClick={() => {ToggleView()}} type="submit">Switch Views</Button>
 		</div>
 		<Paper
 		 variant="outlined"
