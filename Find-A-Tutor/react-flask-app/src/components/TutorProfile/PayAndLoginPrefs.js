@@ -37,23 +37,24 @@ class PayAndLoginPrefs extends React.Component {
      * @param {String} type selected payment method
      */
     handleSelect(type) {
-        this.setState({ paymentType: type })
-
-        var user = document.getElementById("paymentUser");
-        if (user.style.display != "none" && this.paymentType == "Cash") {
-            user.style.display = "none";
-        } else {
-            user.style.display = "block";
-        }
+        this.setState({ paymentType: type }, function() {
+            var user = document.getElementById("paymentUser");
+            if (user.style.display != "none" && this.state.paymentType === "Cash") {
+                user.style.display = "none";
+            } else {
+                user.style.display = "block";
+            }    
+        });
 
         //Send to parent
         this.setPaymentType(type);
     }//handleSelect
 
     getPayType(pay_type) {
+        console.log(pay_type);
         //Set pay_type state to props
         if (pay_type != "") {
-            return pay_type;
+            return this.state.paymentType;
         } else {
             return "Payment Type";
         }//set paymentType

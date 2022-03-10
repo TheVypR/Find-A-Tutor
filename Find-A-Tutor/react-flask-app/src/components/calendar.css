@@ -41,9 +41,8 @@ button.fc-next-button.fc-button.fc-button-primary {
 }
 
 .filterHeader{
-    text-decoration: underline;
-    font-style: italic;
-    color: blue;
+    font-family: sans-serif;
+    color: #0275d8;
 }
 /* .titleText{
     font-family: Georgia, 'Times New Roman', Times, serif;
