@@ -53,14 +53,14 @@ class StudentProfile extends React.Component {
     }
 	
     render() {
-        var name = this.props.items['name'];
+        var items = this.props.items;
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.props.items['name']} </h1>
-                    <p id="email"> {this.props.items['email']} </p>
+                    <h1 id="name"> {items['name']} </h1>
+                    <p id="email"> {items['email']} </p>
                 </div>
 
                 <div className="d-flex justify-content-center">

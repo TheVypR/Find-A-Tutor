@@ -156,6 +156,7 @@ class TutorProfileStatic extends React.Component {
         let items = this.props.items;
         return (
             <>
+                <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
                     <h1 id="name"> {items['name']} </h1>
