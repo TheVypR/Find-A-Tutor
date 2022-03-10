@@ -329,7 +329,7 @@ function FullCalendarApp() {
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return authContext.isLoggedIn && (
+  return authContext.isLoggedIn === "true" && (
     <div className="App">
 		<NavBar />
 		<Modal show={showTime} onHide={handleClose}>
