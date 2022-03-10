@@ -157,10 +157,8 @@ class Weekday extends React.Component {
      * @param {*} timepicker String identifying which timepicker was changed
      */
     timeSlotChange(time, timepicker, index) {
-        console.log(index);
         //Update TimeSlot according to the changed timepicker
         if (timepicker == 'start') {
-            console.log("set");
             this.setStartTime(time, index);
         } else {
             this.setEndTime(time, index);
@@ -249,7 +247,6 @@ class Weekday extends React.Component {
         }
         let startTimeCopy = this.state.startTime;
         startTimeCopy.splice(index, 1, time);
-        console.log(startTimeCopy);
 
         this.setState({ startTime: startTimeCopy })
     }

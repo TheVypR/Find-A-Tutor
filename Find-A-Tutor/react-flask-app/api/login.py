@@ -124,7 +124,6 @@ def myProfile():
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         submittedTime = submission['remove']
-        print(submittedTime)
         startTime = dateParse(submittedTime['startTime'])
         endTime = dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
