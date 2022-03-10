@@ -48,9 +48,11 @@ class LoadProfile extends React.Component {
             .then(
                 (result) => {
                     //Convert result[times] to moment
-                    console.log(result)
-                    let times = result['times'];
-                    result['times'] = this.convertToMoment(times);
+                    if ('times' in result) {
+                        console.log("STOP");
+                        let times = result['times'];
+                        result['times'] = this.convertToMoment(times);
+                    }
                     this.setState({
                         isLoaded: true,
                         items: result
