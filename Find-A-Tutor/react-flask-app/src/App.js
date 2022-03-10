@@ -46,7 +46,7 @@ export default function App() {
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
-            <Route path='/ContactMe' element={<ContactMe />} />
+            <Route path='/Contactable' element={<ContactMe />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

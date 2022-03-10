@@ -68,6 +68,24 @@ def CurrentTutors():
     conn.close()
     return jsonify(allTutors)
 
+def Contactable(email):
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute("select tut_email, tut_name from Tutor" +
+                    " where contactable = 1 "
+                    +"and tut_email in (select tut_email from TutorClasses where class_code in" 
+                    +" (select class_code from StudentClasses where stu_email = \"" + email + "\") and tut_email != \"" + email + "\")")
+    contactTuts = cursor.fetchall()
+    conn.close()
+    returnArray = []
+    LSize = 0
+    for tutor in contactTuts:
+        returnArray.append({'tut_email':tutor[0], 'tut_name':tutor[1]})
+    
+    print(returnArray)
+
+    return jsonify(returnArray)
+
 def BannedStudents():
     conn = mysql.connect()
     cursor = conn.cursor()
