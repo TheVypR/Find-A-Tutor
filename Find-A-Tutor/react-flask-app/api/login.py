@@ -208,7 +208,13 @@ def getTimes():
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
     email = request.args.get("email")
-    appts = appointment.getAppointments(email)
+    appts = appointment.getAppointments(email, False)
+    return appts
+    
+@app.route('/getTutAppointments/', methods=['GET'])
+def getTutAppointments():
+    email = request.args.get("email")
+    appts = appointment.getAppointments(email, True)
     return appts
     
 @app.route('/deleteAppointment/', methods=['POST'])
