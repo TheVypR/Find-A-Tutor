@@ -73,7 +73,7 @@ export default function StudentHistory() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify({'email':localStorage.getItem("email"), 'target': target, 'reason': reason, 'report':report})  
+			body:JSON.stringify({'email':localStorage.getItem("email"), 'target': target, 'reason': reason, 'report':report, 'view':localStorage.getItem("view")})  
 		})
 	}
 	

@@ -264,8 +264,9 @@ def rateTutor():
 @app.route('/submitReport/', methods=['POST'])
 def report():
     data = request.get_json()
-    email=request.args.get("email")
-    if isTutor:
+    email=data["email"]
+    isTutor = data["view"]
+    if isTutor == "tutor":
         return history.submitStudentReport(data, email)
     else:
         return history.submitTutorReport(data, email)
