@@ -208,7 +208,8 @@ def getTimes():
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
     email = request.args.get("email")
-    appts = appointment.getAppointments(email, False)
+    tutView = request.args.get("view")
+    appts = appointment.getAppointments(email, tutView)
     return appts
     
 @app.route('/getTutAppointments/', methods=['GET'])

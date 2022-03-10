@@ -131,23 +131,6 @@ def getAppointments(email, isTutor):
                         +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = \"" + email + "\"" 
                         +"and S.stu_email = \"" + email + "\""
                         +"and T.tut_email = A.tut_email")
-        appts = cursor.fetchall()
-        
-        for appt in appts:
-            availAppts.append({
-                'stu_email':appt[1],
-                'stu_name':appt[9],
-                'tut_email':appt[2],
-                'tut_name':appt[10],
-                'class_code':appt[3], 
-                'start':appt[4],
-                'end':appt[5],
-                'title':appt[6],
-                'block_s':appt[7],
-                'block_e':appt[8],
-                'type':"appt",
-                'backgroundColor':'##0000ff',
-                'borderColor':'#0000ff'})
     else:
         cursor.execute("select " 
                         +"appt_id, "
@@ -161,26 +144,25 @@ def getAppointments(email, isTutor):
                         +"block_end, "
                         +"S.stu_name, "
                         +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = \"" + email + "\"" 
-                        +"and S.stu_email = \"" + email + "\""
-                        +"and T.tut_email = A.tut_email")
-        appts = cursor.fetchall()
+                        +"and T.tut_email = \"" + email + "\""
+                        +"and S.stu_email = A.stu_email")    
+    appts = cursor.fetchall()
         
-        for appt in appts:
-            availAppts.append({
-                'stu_email':appt[1],
-                'stu_name':appt[9],
-                'tut_email':appt[2],
-                'tut_name':appt[10],
-                'class_code':appt[3], 
-                'start':appt[4],
-                'end':appt[5],
-                'title':appt[6],
-                'block_s':appt[7],
-                'block_e':appt[8],
-                'type':"appt",
-                'backgroundColor':'##0000ff',
-                'borderColor':'#0000ff'})
-    
+    for appt in appts:
+        availAppts.append({
+            'stu_email':appt[1],
+            'stu_name':appt[9],
+            'tut_email':appt[2],
+            'tut_name':appt[10],
+            'class_code':appt[3], 
+            'start':appt[4],
+            'end':appt[5],
+            'title':appt[6],
+            'block_s':appt[7],
+            'block_e':appt[8],
+            'type':"appt",
+            'backgroundColor':'##0000ff',
+            'borderColor':'#0000ff'})
     conn.close()
     print(availAppts)
     return {'appts':availAppts}

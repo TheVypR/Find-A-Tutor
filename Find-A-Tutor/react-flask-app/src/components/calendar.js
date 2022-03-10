@@ -83,52 +83,82 @@ function FullCalendarApp() {
   const [wrongTimes, setWrongTimes] = useState(false);
   const [wrongClass, setWrongClass] = useState(false);
   
-  //loads in the times currently available in the DB -IAA
-  useEffect(() => { fetch("/getTimes/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setTimes(result['times']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
-  }, []);
+  if(localStorage.getItem("view") == "tutor"){
+	TutLoad();
+  } else {
+	StuLoad();
+  }
+  
+  function TutLoad() {
+	let appts = []
+	//loads in the appts currently created in the DB - IAA
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") + "")
+				.then(res => res.json())
+				.then(
+					result => {
+						appts = result['appts'];
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+					})
+  }
+  
+  function StuLoad() {
+	  let appts = []
+	  let times = []
+	  let stuClass = []
+	  
+	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						times = (result['times']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
 
-  useEffect(() => { fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setStudentClasses(result['stu_classes']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
-		}, []);
+	  fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						stuClass = (result['stu_classes']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
 
-  //loads in the appts currently created in the DB - IAA
-  useEffect(() => { fetch("/getAppointments/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setAppts(result['appts']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components
-                (error) => {
-                    console.log(error);
-                }
-            )
-  }, []);
+	  //loads in the appts currently created in the DB - IAA
+	  fetch("/getAppointments/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						appts = (result['appts']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+					}
+				)
+				
+	  setAppts(appts);
+	  setTimes(times);
+	  setStudentClasses(stuClass);
+  }
+
 
 	const updateEvents = function() {
 		let localEvents = [];
