@@ -20,7 +20,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 import ContactMe from './ContactMe';
 
 export const StyleWrapper = styled.div`
@@ -445,7 +444,6 @@ function FullCalendarApp() {
 		</div>
 		<Paper
 		 variant="outlined"
-		 elevation={12}
 		 style={{
 			padding:8,
 			border: "1px solid black"
@@ -489,13 +487,19 @@ function FullCalendarApp() {
 			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
 		</Paper>
-		
+		<div className="infoChart">
+		  <Paper
+		  variant="outlined"
+		  style={{
+			 padding:8,
+			 border: "1px solid black"
+		  }}>
+			<ContactMe />
+		  </Paper>
+	  </div>
       </div>
 
-	  <div className="infoChart">
-
-
-	  </div>
+	 
 
 	  
       <StyleWrapper>
