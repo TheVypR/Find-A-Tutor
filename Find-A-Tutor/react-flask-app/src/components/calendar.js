@@ -59,7 +59,7 @@ function FullCalendarApp() {
   const [rating, setRating] = useState(null);
 
   //filter
-  const [evnts, setEvnts] = useState([]);
+  const [evnts, setEvnts] = useState(times.concat(appts));
   const [filterTimes, setFilterTimes] = useState(true);
   const [filterAppts, setFilterAppts] = useState(true);
   const [filterClass, setFilterClass] = useState("All Classes");
@@ -85,18 +85,19 @@ function FullCalendarApp() {
   const [wrongTimes, setWrongTimes] = useState(false);
   const [wrongClass, setWrongClass] = useState(false);
   
-  if(localStorage.getItem("view") == "tutor"){
-	TutLoad();
-	
-  } else {
-	StuLoad();
-	
-  }
+  useEffect (() => {
+	if(localStorage.getItem("view") == "tutor"){
+		TutLoad();
+	} else {
+		StuLoad();
+	}
+  }, []);
+  
+
   
   function TutLoad() {
-	let appts = []
 	//loads in the appts currently created in the DB - IAA
-	useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -107,12 +108,12 @@ function FullCalendarApp() {
 					// exceptions from actual bugs in components
 					(error) => {
 						console.log(error);
-				})
-	  }, []);
+					}
+				)
   }
   
   function StuLoad() {
-	  useEffect(() => {fetch("/getTimes/?email=" + localStorage.getItem("email"))
+	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -125,9 +126,8 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-	  }, []);
 
-	  useEffect(() => {fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+	fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -140,10 +140,9 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-	  }, []);
 
 	  //loads in the appts currently created in the DB - IAA
-	  useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -156,9 +155,7 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-	  }, []);
   }
-
 
 	const updateEvents = function() {
 		let localEvents = [];
@@ -187,6 +184,10 @@ function FullCalendarApp() {
 		}
 		setEvnts(localEvents);
   }
+
+	useEffect(() => {
+		updateEvents();
+	}, []);
 
 	//create appointment
 	function addEvent() {
@@ -561,7 +562,7 @@ function FullCalendarApp() {
           }}//end button setup
 		  
           //add appointments to calendar
-          events={(evnts ? evnts : times.concat(appts))}
+          events={evnts}
 
           //formatting of appointments
           eventColor="green"	
