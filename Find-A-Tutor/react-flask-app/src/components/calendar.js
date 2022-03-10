@@ -470,7 +470,7 @@ function FullCalendarApp() {
 
 		<div className="filter">
 		<div className='switchViews'>
-			<Button color="blue" onClick={() => {ToggleView()}} type="submit">Switch Views</Button>
+			<Button color="blue" onClick={() => {ToggleView(localStorage.getItem("view"))}} type="submit">Switch Views</Button>
 		</div>
 		<Paper
 		 variant="outlined"
