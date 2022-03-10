@@ -136,7 +136,7 @@ export default function Reports() {
         handleBanConfirm();
     }
 
-    return authContext.isLoggedIn && (
+    return authContext.isLoggedIn==="true" && (
         <ThemeProvider theme={theme}>
 
             <Modal show={banConfirm} size="md" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
@@ -199,7 +199,7 @@ export default function Reports() {
                     <MenuItem component='a' href='./CurrentAndBan'>
                         <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Tutors and Banned List</Typography>
                     </MenuItem>
-                    <Button href="./" color="inherit" variant="outlined" sx={{my: 1, mx: 5}}>Logout</Button>
+                    <Button onClick={authContext.logout} href="./" color="inherit" variant="outlined" sx={{my: 1, mx: 5}}>Logout</Button>
                 </Toolbar>
             </AppBar>
             <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
