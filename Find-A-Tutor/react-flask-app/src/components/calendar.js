@@ -32,6 +32,7 @@ function FullCalendarApp() {
   //calendar filling
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
+  const [view, setView] = useState(false);
   
   //handle modals
   const [showTime, setShowTime] = useState(false);
@@ -85,37 +86,36 @@ function FullCalendarApp() {
   
   if(localStorage.getItem("view") == "tutor"){
 	TutLoad();
+	
   } else {
 	StuLoad();
+	
   }
   
   function TutLoad() {
 	let appts = []
 	//loads in the appts currently created in the DB - IAA
-	fetch("/getAppointments/?email=" + localStorage.getItem("email") + "")
+	useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
-						appts = result['appts'];
+						setAppts(result['appts']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
 					// exceptions from actual bugs in components
 					(error) => {
 						console.log(error);
-					})
+				})
+	  }, []);
   }
   
   function StuLoad() {
-	  let appts = []
-	  let times = []
-	  let stuClass = []
-	  
-	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
+	  useEffect(() => {fetch("/getTimes/?email=" + localStorage.getItem("email"))
 				.then(res => res.json())
 				.then(
 					result => {
-						times = (result['times']);
+						setTimes(result['times']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -124,12 +124,13 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
+	  }, []);
 
-	  fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+	  useEffect(() => {fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
 				.then(res => res.json())
 				.then(
 					result => {
-						stuClass = (result['stu_classes']);
+						setStudentClasses(result['stu_classes']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -138,13 +139,14 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
+	  }, []);
 
 	  //loads in the appts currently created in the DB - IAA
-	  fetch("/getAppointments/?email=" + localStorage.getItem("email"))
+	  useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
-						appts = (result['appts']);
+						setAppts(result['appts']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -153,10 +155,7 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-				
-	  setAppts(appts);
-	  setTimes(times);
-	  setStudentClasses(stuClass);
+	  }, []);
   }
 
 
