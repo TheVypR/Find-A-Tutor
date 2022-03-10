@@ -46,7 +46,7 @@ function ContactMe() {
                 </TableHead>
                 <TableBody>
                     {contactTutors.map((tutor) => (
-                        <TableRow>
+                        <TableRow key={tutor['tut_email']}>
                             <TableCell>{tutor['tut_name']}</TableCell>
                             <TableCell>{tutor['tut_email']}</TableCell>
                         </TableRow>
