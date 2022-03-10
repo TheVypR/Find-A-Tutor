@@ -121,7 +121,7 @@ export default function StudentHistory() {
 								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell>Student</TableCell>
+											<TableCell>Tutor</TableCell>
 											<TableCell>Class</TableCell>
 											<TableCell>Date Tutored</TableCell>
 											<TableCell>Leave A Rating</TableCell>

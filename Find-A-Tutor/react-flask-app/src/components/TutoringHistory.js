@@ -129,7 +129,7 @@ export default function TutoringHistory() {
 								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell>Tutor</TableCell>
+											<TableCell>Student</TableCell>
 											<TableCell>Class</TableCell>
 											<TableCell>Date Tutored</TableCell>
 											<TableCell>Leave A Review</TableCell>

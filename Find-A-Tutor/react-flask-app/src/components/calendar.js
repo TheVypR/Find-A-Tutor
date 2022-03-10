@@ -210,7 +210,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([myEvent])
-		})
+		}).then(document.location.reload())
 	}
 	
 	const handleEventClick = function (e, editting) {
@@ -278,7 +278,7 @@ function FullCalendarApp() {
 				start: origStartDate,
 				end: origEndDate
 			}])    
-		})
+		}).then(document.location.reload())
 	}
 	
 	const editAppt = function () {
@@ -312,7 +312,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([myEvent])  
-		})
+		}).then(document.location.reload())
 		)
 	}
 	
