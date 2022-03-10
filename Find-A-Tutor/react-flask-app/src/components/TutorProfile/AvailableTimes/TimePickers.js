@@ -20,8 +20,15 @@ class TimePickers extends React.Component {
         super(props);
 
         this.onChangeTimes = this.onChangeTimes.bind(this);
-    }
+    }//constructor
 
+    /**
+     * sets seconds to zero
+     * calls parent method for timeslots onChange
+     * 
+     * @param {moment} time         user inputted time
+     * @param {string} timepicker   user inputted timepicker
+     */
     onChangeTimes(time, timepicker) {
         this.props.timeSlotChange(time, timepicker);
     }
