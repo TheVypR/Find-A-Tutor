@@ -20,7 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import ContactMe from './ContactMe';
 
 export const StyleWrapper = styled.div`
   .fc td {
@@ -359,7 +359,7 @@ function FullCalendarApp() {
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return authContext.isLoggedIn && (
+  return authContext.isLoggedIn === "true" && (
     <div className="App">
 		<NavBar />
 		<Modal show={showTime} onHide={handleClose}>
@@ -474,7 +474,6 @@ function FullCalendarApp() {
 		</div>
 		<Paper
 		 variant="outlined"
-		 elevation={12}
 		 style={{
 			padding:8,
 			border: "1px solid black"
@@ -518,13 +517,25 @@ function FullCalendarApp() {
 			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
 		</Paper>
-		
+		<div className="infoChart">
+		  <Paper
+		  variant="outlined"
+		  style={{
+			 padding:8,
+			 border: "1px solid black"
+		  }}>
+			<ContactMe />
+		  </Paper>
+	  </div>
       </div>
+
+	 
 
 	  
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
+		  height={500}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 
           //user defaults to week view
@@ -548,7 +559,7 @@ function FullCalendarApp() {
           
 
           }}//end button setup
-
+		  
           //add appointments to calendar
           events={evnts}
 			

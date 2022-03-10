@@ -19,7 +19,7 @@ function ContactMe() {
     const [contactTutors, setContactTutors] = useState([]);
 
     //Get current tutors for the CurrentAndBan screen
-    useEffect(() => { fetch("/Contactable/")
+    useEffect(() => { fetch("/Contactable/?email=" + localStorage.getItem("email"))
         .then(res => res.json())
         .then(result => {
             setContactTutors(result);
@@ -46,9 +46,9 @@ function ContactMe() {
                 </TableHead>
                 <TableBody>
                     {contactTutors.map((tutor) => (
-                        <TableRow>
-                            <TableCell>{tutor[1]}</TableCell>
-                            <TableCell>{tutor[0]}</TableCell>
+                        <TableRow key={tutor['tut_email']}>
+                            <TableCell>{tutor['tut_name']}</TableCell>
+                            <TableCell>{tutor['tut_email']}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

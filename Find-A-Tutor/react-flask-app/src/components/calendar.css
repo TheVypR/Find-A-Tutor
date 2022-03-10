@@ -1,10 +1,10 @@
 .calendar{
-    padding-top: 50px;
-    padding-left: 250px;
-    padding-right: 50px;
+    padding-top: 100px;
+    padding-left: 300px;
+    padding-right: 10px;
     padding-bottom: 100px;
     background-color: white;
-    
+    max-height: 10px;
     top:20px;
     right:30px;
     height: 400px;
@@ -16,27 +16,27 @@
 
 
 button.fc-dayGridMonth-button.fc-button.fc-button-primary {
-    background-color: blue !important;
+    background-color: #0275d8 !important;
     border-color: black;
 }
 button.fc-timeGridWeek-button.fc-button.fc-button-primary {
-    background-color: blue !important;
+    background-color: #0275d8 !important;
     border-color: black;
 }
 button.fc-timeGridDay-button.fc-button.fc-button-primary {
-    background-color: blue !important;
+    background-color: #0275d8 !important;
     border-color: black;
 }
 button.fc-today-button.fc-button.fc-button-primary {
-    background-color: blue !important;
+    background-color: #0275d8 !important;
     border-color: black;
 }
 button.fc-prev-button.fc-button.fc-button-primary {
-    background-color: blue !important;
+    background-color: #0275d8 !important;
     border-color: black;
 }
 button.fc-next-button.fc-button.fc-button-primary {
-    background-color: blue !important;
+    background-color: #0275d8 !important;
     border-color: black;
 }
 
@@ -64,14 +64,24 @@ button.fc-next-button.fc-button.fc-button-primary {
 
 .filter{
     text-align:left;
-    padding-top: 50px;
-    padding-left: 15px;
+    padding-top: 125px;
+    padding-left: 5px;
+    padding-right: 10px;
     float: left;
     clear: none;
+    max-width: 300px;
+}
+
+.infoChart{
+    
+    padding-top: 30px;
+  
+    
 }
 
 .switchViews{
     padding-bottom: 10px;
+    
     
 }
 

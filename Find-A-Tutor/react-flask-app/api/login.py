@@ -82,6 +82,11 @@ def login():
 def currentTutors():
     return adminRoutes.CurrentTutors()
 
+@app.route('/Contactable/', methods=['GET'])
+def contactable():
+    email = request.args.get("email")
+    return adminRoutes.Contactable(email)
+
 # reported tutors list
 @app.route('/ReportedTutors/', methods=['GET'])
 def reportedTutors():

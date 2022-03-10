@@ -14,6 +14,7 @@ import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
 import LoadProfile from './components/LoadProfile';
+import ContactMe from './components/ContactMe';
 
 import { AuthContext } from './components/AuthContext'
 
@@ -22,9 +23,8 @@ export default function App() {
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
-	setLoggedIn(true);
 	localStorage.setItem("loggedIn", true);
-	
+  setLoggedIn(localStorage.getItem("loggedIn"));	
   };
 
   const logout = () => {
@@ -46,6 +46,7 @@ export default function App() {
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
+            <Route path='/Contactable' element={<ContactMe />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
