@@ -492,10 +492,16 @@ function FullCalendarApp() {
 		
       </div>
 
+	  <div className="infoChart">
+
+
+	  </div>
+
 	  
       <StyleWrapper>
         <div className="calendar">
         <FullCalendar
+		  height={500}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 
           //user defaults to week view
@@ -519,7 +525,7 @@ function FullCalendarApp() {
           
 
           }}//end button setup
-
+		  
           //add appointments to calendar
           events={evnts}
 			
