@@ -22,13 +22,14 @@ export default function App() {
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
-	setLoggedIn(true);
 	localStorage.setItem("loggedIn", true);
+  setLoggedIn(localStorage.getItem("loggedIn"));	
   };
 
   const logout = () => {
 	setLoggedIn(false);
 	localStorage.setItem("loggedIn", false);
+  localStorage.setItem("email", "");
   };
 
   return (

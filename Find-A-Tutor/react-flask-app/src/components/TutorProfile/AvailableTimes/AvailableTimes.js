@@ -19,6 +19,7 @@ class AvailableTimes extends React.Component {
         this.setState({checked: !this.state.checked});
         let value = this.state.checked ? 1:0
         let submission = {
+			'email': localStorage.getItem("email"),
             'contactMe': value
         };
 
@@ -32,6 +33,7 @@ class AvailableTimes extends React.Component {
     }
 
     render() {
+        let times = this.props.times;
         return (
             <>
                 <div className="row justify-content-start">
@@ -41,7 +43,7 @@ class AvailableTimes extends React.Component {
                     </div>
                     <h6 id="header" className="col-4 text-center"> Available Times</h6>
                 </div>
-                <Week />
+                <Week times={times}/>
             </>
         );//Return
     }//render

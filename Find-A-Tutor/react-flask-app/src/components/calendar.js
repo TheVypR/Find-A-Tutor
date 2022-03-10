@@ -13,6 +13,7 @@ import styled from "@emotion/styled"
 import './calendar.css'
 import Rating from '@mui/material/Rating';
 import { AuthContext } from './AuthContext';
+import NavBar from './NavBar';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -80,9 +81,10 @@ function FullCalendarApp() {
 
   const [checked, setChecked] = React.useState(false);
   const [wrongTimes, setWrongTimes] = useState(false);
+  const [wrongClass, setWrongClass] = useState(false);
   
   //loads in the times currently available in the DB -IAA
-  useEffect(() => { fetch("/getTimes/")
+  useEffect(() => { fetch("/getTimes/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -97,7 +99,7 @@ function FullCalendarApp() {
             )
   }, []);
 
-  useEffect(() => { fetch("/getStuClasses/")
+  useEffect(() => { fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -110,10 +112,10 @@ function FullCalendarApp() {
                     console.log(error);
                 }
             )
-  }, []);
+		}, []);
 
   //loads in the appts currently created in the DB - IAA
-  useEffect(() => { fetch("/getAppointments/")
+  useEffect(() => { fetch("/getAppointments/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -161,6 +163,7 @@ function FullCalendarApp() {
 		setStartDate(origStartDate);
 		setEndDate(origEndDate);
 		const myEvent = {
+		  email:localStorage.getItem("email"),
 		  class_code: classCode,
 		  start: startTime,
 		  end: endTime,
@@ -179,8 +182,6 @@ function FullCalendarApp() {
 			},
 			body:JSON.stringify([myEvent])
 		})
-		
-		
 	}
 	
 	const handleEventClick = function (e, editting) {
@@ -242,16 +243,18 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([{
+				email:localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
 				end: origEndDate
 			}])    
 		})
-	} 
+	}
 	
 	const editAppt = function () {
 		const myEvent = {
+		  email:localStorage.getItem("email"),
 		  class_code: classCode,
 		  start: startDate,
 		  end: endDate,
@@ -267,6 +270,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([{
+				email: localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -283,12 +287,24 @@ function FullCalendarApp() {
 		)
 	}
 	
-	function verifyTimes() {
+	function verifyTimes(isNew) {
 		if (endTime < startTime) {
-			console.log("Wrong Time")
 			setWrongTimes(true)
 		} else {
-            addEvent();
+			if(isNew){
+				addEvent();
+			} else {
+				editAppt();
+			}
+		}
+	}
+	
+	function verifyClass(isNew) {
+		if(classCode === "NONE" || classCode === "" || classCode === undefined) {
+			setWrongClass(true);
+		} else {
+			console.log(classCode)
+			verifyTimes(isNew);
 		}
 	}
 	
@@ -299,6 +315,13 @@ function FullCalendarApp() {
 		</div>)
 	}
 	
+	const ClassError = () => {
+		return (
+		<div style={{color : 'red'}}>
+			You must choose a class
+		</div>)
+	}
+	
 	const GetOptions = () => {
 		return ({providedClasses})
 	}
@@ -306,8 +329,9 @@ function FullCalendarApp() {
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return authContext.isLoggedIn && (
+  return authContext.isLoggedIn === "true" && (
     <div className="App">
+		<NavBar />
 		<Modal show={showTime} onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
@@ -315,6 +339,7 @@ function FullCalendarApp() {
 			</Modal.Header>
 			<Modal.Body>
 				{wrongTimes ? <TimeError /> : null}
+				{wrongClass ? <ClassError /> : null}
 				Make Appointment With: {tutName} <br/>
 				Tutor Rating: <Rating value={rating} readOnly/><br/>
 				Rate: $<strong>{rates[classCode]}</strong>/hr<br/>
@@ -336,10 +361,10 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Close
 			  </Button>
-			  <Button variant="primary" type="submit"
+			  <Button variant="primary"
 					  onClick= {
 						  () => {
-							  verifyTimes();
+							  verifyClass(true);
 						  }
 					}>
 				Make Appointment
@@ -378,10 +403,18 @@ function FullCalendarApp() {
 			  <Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+				{wrongTimes ? <TimeError /> : null}
+				{wrongClass ? <ClassError /> : null}
 				Edit Appointment With: {tutName}<br/>
 					Rate: ${rates[classCode]}/hr<br/>
 					Choose Class: 
-					<input type="text" class_code="class" placeholder="COMP447A" onChange={(e) => {setClassCode(e.target.value)}} required/><br/>
+					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
+						<option key="null" value="NONE">NONE</option>
+						{(Object.keys(rates)).map((clss) => {
+							return <option key={clss} value={clss}>{clss}</option>
+						})}
+					</select>
+					<br/>
 					Start Time: 
 					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
 					End Time: 
@@ -392,10 +425,10 @@ function FullCalendarApp() {
 			  <Button variant="secondary" onClick={handleClose}>
 				Cancel
 			  </Button>
-			  <Button variant="primary"  type="submit"
+			  <Button variant="primary"
 					  onClick= {
 						  () => {
-							  editAppt()
+							  verifyClass(false)
 						  }
 					}>
 				Save Changes

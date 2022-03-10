@@ -16,6 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import NavBar from './NavBar';
 import { AuthContext } from './AuthContext'
 
 
@@ -38,7 +39,7 @@ export default function TutoringHistory() {
 	const handleShowReport = function (){ setShowReport(true)};
 	
 	//get history
-	useEffect(() => { fetch("/loadAppointment/")
+	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email"))
             .then(res => res.json())
             .then(
                 result => {
@@ -64,7 +65,7 @@ export default function TutoringHistory() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{'target': target, 'rating': event.target.value}])  
+			body:JSON.stringify({'target': target, 'rating': event.target.value})  
 		})
 	}
 	
@@ -82,7 +83,7 @@ export default function TutoringHistory() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{'target': target, 'reason': reason, 'report':report}])  
+			body:JSON.stringify({'email':localStorage.getItem("email"),'target': target, 'reason': reason, 'report':report})  
 		})
 	}
 	
@@ -90,6 +91,7 @@ export default function TutoringHistory() {
 	
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
+			<NavBar />
 			<Container maxWidth="xl" sx={{mt: 12, mb: 12}}>
 				<Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
 					<Modal show={showReport} onHide={handleClose}>

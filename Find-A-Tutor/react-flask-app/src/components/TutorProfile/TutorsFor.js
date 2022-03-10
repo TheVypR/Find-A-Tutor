@@ -77,12 +77,23 @@ class TutorsFor extends React.Component {
     }//setRate
 
     render() {
+        let filledInClasses = this.props.filledInClasses;
+        let classesList = [];
+        filledInClasses.forEach(aClass => {
+            classesList.push(<>
+                <div className='d-flex '>
+                    <p className='courseCodeStatic'> {aClass[0]} </p>
+                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
+                </div>
+            </>)
+        })
         return (
             <>
                 <fieldset>
                     <div className="p-2">
                         <p id="header"> Tutoring For </p>
                         <div id="classes">
+                            {classesList}
                             {this.renderClass()}
                         </div>
                         <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>

@@ -15,6 +15,7 @@ import login
 
 app = Flask(__name__)
 
+
 mysql = MySQL()
 
 locality = 1 # Have locality set to 1 if you want to test on your local machine
@@ -38,21 +39,15 @@ def retrieve_profile(email, isTutor):
     cursor = conn.cursor()
     
     #get the tutor information from the DB
-    #get the name
     cursor.execute("select stu_name, stu_email from Student where stu_email = (%s)", (email))
     data = cursor.fetchone()
     name = data[0]
     email = data[1]
-    print(name)
-    print(email)
-
     
     #if so retrieve tutor info
     if isTutor:
-        print("TUTOR")
         return retrieve_tutor(name, email)
     elif not isTutor:
-        print("STUDENT")
         return {'name': name, 'email': email, 'isTutor': False}
     else:
         print("Error - isTutor has invalid data")
@@ -81,6 +76,10 @@ def retrieve_tutor(name, tut_email):
 
     times = retrieve_times(tut_email)
     classes = retrieve_classes(tut_email)
+
+    #login prefs are an array, make it just a single int
+    loginPref = loginPref[0]
+    print(loginPref)
   
     return {'name': name, 'email':tut_email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
@@ -102,7 +101,6 @@ def retrieve_times(tut_email):
     for time in times:
         startAndEnd = {'start': time[0], 'end': time[1]}
         availTimes.append(startAndEnd)
-    print(availTimes)
 
     #Condense times
     availTimes = login.mergeTimes(availTimes)
@@ -147,9 +145,11 @@ def remove_timeSlot(times, tut_email):
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    #loop through times and run this query for each 15 minute slot
-    for time in times:
-        cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+    #Check type of remove
+    if ('removePrefilledTime' not in times.keys()):
+        #loop through times and run this query for each 15 minute slot
+        for time in times:
+            cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
 
     conn.close()
     

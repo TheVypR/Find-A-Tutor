@@ -49,12 +49,11 @@ export default function SignIn() {
     .then(result => {
       if (result['email'] === info[0]) {
         loginHandler();
-		localStorage.setItem("loggedIn", true);
+		localStorage.setItem("email", result['email']);
       }
       else {
 		setWrongLogin(true)
         logoutHandler();
-		localStorage.setItem("logIn", false);
       }
     })
   };

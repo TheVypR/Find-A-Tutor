@@ -6,23 +6,24 @@ import Weekday from './Weekday'
  */
 class Week extends React.Component {
     render() {
+        let times = this.props.times;
         return (
             <>
                 <div className="d-flex justify-content-center">
                     <div className="vr"></div>
-                    <Weekday day="sunday" />
+                    <Weekday day="sunday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="monday" />
+                    <Weekday day="monday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="tuesday" />
+                    <Weekday day="tuesday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="wednesday" />
+                    <Weekday day="wednesday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="thursday" />
+                    <Weekday day="thursday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="friday" />
+                    <Weekday day="friday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="sunday" />
+                    <Weekday day="sunday" times={times} />
                     <div className="vr"></div>
                 </div>
             </>

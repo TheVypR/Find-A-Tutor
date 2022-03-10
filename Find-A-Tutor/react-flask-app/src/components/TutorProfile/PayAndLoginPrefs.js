@@ -6,11 +6,15 @@ class PayAndLoginPrefs extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            paymentType: "Payment Type"
+            paymentType: this.props.pay_type,
+            pay_info: this.props.pay_info
         }
 
         this.handleSelect = this.handleSelect.bind(this);
         this.setPaymentType = this.setPaymentType.bind(this);
+        this.setLoginPrefs = this.setLoginPrefs.bind(this);
+        this.getPayType = this.getPayType.bind(this);
+        this.getPayInfo = this.getPayInfo.bind(this);
     }
 
     /**
@@ -20,6 +24,10 @@ class PayAndLoginPrefs extends React.Component {
      */
     setPaymentType(type) {
         this.props.setPaymentType(type);
+    }
+
+    setLoginPrefs(pref) {
+        this.props.setLoginPrefs(pref);
     }
 
     /**
@@ -40,9 +48,32 @@ class PayAndLoginPrefs extends React.Component {
 
         //Send to parent
         this.setPaymentType(type);
+    }//handleSelect
+
+    getPayType(pay_type) {
+        //Set pay_type state to props
+        if (pay_type != "") {
+            return pay_type;
+        } else {
+            return "Payment Type";
+        }//set paymentType
+    }
+
+    getPayInfo(pay_type, pay_info) {
+        //Set Pay info state to props
+        if (pay_info != "") {
+            return pay_info;
+        } else {
+            pay_type = this.getPayType(pay_type);
+            return pay_type + "Username";
+        }//set pay_info
     }
 
     render() {
+        let pay_type = this.props.pay_type;
+        let pay_info = this.props.pay_info;
+        let login_pref = this.props.login_pref;
+
         return (
             <>
                 <fieldset>
@@ -56,7 +87,7 @@ class PayAndLoginPrefs extends React.Component {
                                     id={'dropdown-button-drop-${idx}'}
                                     size="sm"
                                     variant="primary"
-                                    title={this.state.paymentType}
+                                    title={this.getPayType(pay_type)}
                                     onSelect={e => this.handleSelect(e)}
                                 >
                                     <Dropdown.Item eventKey="Venmo">Venmo</Dropdown.Item>
@@ -70,13 +101,12 @@ class PayAndLoginPrefs extends React.Component {
                         <input
                             type="text"
                             id="paymentUser"
-                            placeholder={this.state.paymentType + " Username"}
+                            placeholder={this.getPayInfo(pay_type, pay_info)}
                             onChange={e => this.props.setPaymentUser(e.target.value)}
                         />
 
-
                         {/*Login Info*/}
-                        <div id="loginInfo" onChange={(e) => this.props.setLoginPrefs(e.target.value)}>
+                        <div id="loginInfo" onChange={(e) => this.setLoginPrefs(e.target.value)}>
                             <p id="loginPreferences"> Login Preferences </p>
                             <input name="loginPrefs" type="radio" id="studentView" value="StudentView" />
                             <label htmlFor="stuentView"> Student View </label><br />

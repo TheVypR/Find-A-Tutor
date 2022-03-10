@@ -39,17 +39,14 @@ class T_Profile extends React.Component {
     handleSubmit() {
         //Collect state values
         let post = {
+			'email': localStorage.getItem("email"),
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
             'classes': this.state.classes
         }//post
 
-        console.log("loginPref: " + post['login_pref'])
-
         this.checkForEmptyState(post);
-
-        console.log("loginPref: " + post['login_pref'])
 
         //Fetch
         const response = fetch("/myProfile/", {
@@ -70,7 +67,7 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-                if ((post[postKey] == "" || post[postKey] == -1) && postKey != 'classes' && post[postKey] != 0) {
+                if ((post[postKey] === "" || post[postKey] == -1) && postKey != 'classes') {
                     //replace with db data
                     for (let getKey in this.props.items) {
                         if (postKey == getKey) {
@@ -122,7 +119,6 @@ class T_Profile extends React.Component {
             loginPref = 0;
         else
             loginPref = 1;
-        console.log(loginPref + ' ' + pref);
         this.setState({ loginPrefs: loginPref });
     }//setLoginPrefs
 
@@ -164,12 +160,13 @@ class T_Profile extends React.Component {
     }//setRate
 
     render() {
+        let items = this.props.items;
         return (
             <>
                 <div className="container-fluid text-center">
                     {/* User Info */}
-                    <h1 id="name"> {this.props.items['name']} </h1>
-                    <p id="email"> {this.props.items['email']} </p>
+                    <h1 id="name"> {items['name']} </h1>
+                    <p id="email"> {items['email']} </p>
                 </div>
 
                 <div id="center" className="d-flex justify-content-around">
@@ -177,6 +174,9 @@ class T_Profile extends React.Component {
                         setPaymentType={this.setPaymentType}
                         setLoginPrefs={this.setLoginPrefs}
                         setPaymentUser={this.setPaymentUser}
+                        pay_type={items['pay_type']}
+                        pay_info={items['pay_info']}
+                        login_pref={items['login_pref']}
                     />
                     <TutorsFor
                         classes={this.state.classes}
@@ -184,10 +184,11 @@ class T_Profile extends React.Component {
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
                         setRate={this.setRate}
+                        filledInClasses={items['classes']}
                     />
                 </div>
 
-                <AvailableTimes />
+                <AvailableTimes times={items['times']} />
 
                 <div id="bottom">
                     <Button type="submit" id="save"

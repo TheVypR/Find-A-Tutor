@@ -1,7 +1,7 @@
 import { DayCellRoot } from "@fullcalendar/react";
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-import { BsFillPlusCircleFill } from "react-icons/bs";
+import { BsFillPlusCircleFill, BsFillTrashFill } from "react-icons/bs";
 import TimeSlot from './TimeSlot'
 
 
@@ -53,6 +53,9 @@ class Weekday extends React.Component {
         this.setEndTime = this.setEndTime.bind(this);
         this.setShowTimePickers = this.setShowTimePickers.bind(this);
         this.getISO = this.getISO.bind(this);
+
+        this.getFilledOutTimes = this.getFilledOutTimes.bind(this);
+        this.removePreFilledTime = this.removePreFilledTime.bind(this);
     }
 
     /**
@@ -62,10 +65,7 @@ class Weekday extends React.Component {
      */
     handleAddTimeSlot = (e) => {
         e.preventDefault();
-        //Here i form the object
-        const slot = {
-            //key:value
-        }
+        const slot = {};
         this.setState({ children: [...this.state.children, slot] })
 
         //update related states
@@ -82,6 +82,7 @@ class Weekday extends React.Component {
      */
     renderTimeSlot(day) {
         return this.state.children.map(item => {
+            //Otherwise add a timeslot
             let index = this.state.children.indexOf(item);
             return <TimeSlot day={day}
                 index={index}
@@ -95,7 +96,7 @@ class Weekday extends React.Component {
                 submitTimes={this.submitTimes}
             />
         })
-    }
+    }//renderTimeSlot
 
     /**
      * removes timeslot of given index
@@ -108,17 +109,17 @@ class Weekday extends React.Component {
         let filteredChildren = this.state.children.filter(child => child !== this.state.children[index]);
         this.setState({ children: filteredChildren });
         console.log("index: " + index + "day: " + day);
-        
+
         //remove related state variables
         //startTime
-        let filteredStart = this.state.startTime.filter(child => child!== this.state.startTime[index]);
-        this.setState({startTime: filteredStart});
+        let filteredStart = this.state.startTime.filter(child => child !== this.state.startTime[index]);
+        this.setState({ startTime: filteredStart });
         //endTime
-        let filteredEnd = this.state.endTime.filter(child => child!== this.state.endTime[index]);
-        this.setState({endTime: filteredEnd});
+        let filteredEnd = this.state.endTime.filter(child => child !== this.state.endTime[index]);
+        this.setState({ endTime: filteredEnd });
         //showTimePickers
-        let filteredPickers = this.state.showTimePickers.filter(child => child!== this.state.showTimePickers[index]);
-        this.setState({showTimePickers: filteredPickers});
+        let filteredPickers = this.state.showTimePickers.filter(child => child !== this.state.showTimePickers[index]);
+        this.setState({ showTimePickers: filteredPickers });
 
         //remove timeslot from db
         this.fetchRemoveTimeSlot(index);
@@ -131,6 +132,7 @@ class Weekday extends React.Component {
      */
     fetchRemoveTimeSlot(index) {
         let times = {
+            'email': localStorage.getItem("email"),
             "remove": {
                 "startTime": this.state.startTime[index].toString(),
                 "endTime": this.state.endTime[index].toString(),
@@ -217,6 +219,8 @@ class Weekday extends React.Component {
     submitFetch(index, day) {
         let date = this.getISO(day)
         let timeSlot = {
+            'submitTimes': true,
+            "email": localStorage.getItem("email"),
             "startTime": this.state.startTime[index].toString(),
             "endTime": this.state.endTime[index].toString(),
             "date": date
@@ -284,15 +288,57 @@ class Weekday extends React.Component {
         showTimePickersCopy[index] = bool
 
         this.setState({ showTimePickers: showTimePickersCopy })
+    }//setShowTimePickers
+
+    getFilledOutTimes(times, day) {
+        day = day[0].toUpperCase() + day.slice(1)
+        let toReturn = []
+        //Go through given times
+        for (let slot in times[day]) {
+            //if there is a time filled out for that day display it
+            if (times[day].length > 0) {
+                let startTime = times[day][slot]['startTime'];
+                let endTime = times[day][slot]['endTime'];
+                toReturn.push(
+                    <>
+                        <p> {startTime} to {endTime} </p>
+                        <hr />
+                    </>);
+            }
+        }
+        return toReturn;
     }
 
+    removePreFilledTime(startTime, endTime, day) {
+        let times = {
+            'email': localStorage.getItem("email"),
+            "removePrefilledTime": {
+                "startTime": startTime,
+                "endTime": endTime,
+                "day": this.getISO(day)
+            }
+        };
+
+        const response = fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(times)
+        })//fetch
+    }
 
     render() {
         const day = this.props.day;
+        let times = this.props.times;
+
+        let filledOutTimes = this.getFilledOutTimes(times, day);
+
         return (
             <>
                 <div>
                     <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    {filledOutTimes}
                     {this.renderTimeSlot(day)}
                     <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />
                 </div>
