@@ -144,3 +144,16 @@ def DeleteUserFromList(tutor):
     cursor.execute("delete from "+ table +" where report_id = " + str(tutor['id']))
     conn.close()
     return 'Done'
+
+def BecomeATutor(student):
+
+    name = getFunctions.getName(student['stu_email'])
+    pay = "Venmo"
+    print(name)
+
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("insert into Tutor values( \""+ student['stu_email'] + "\", \""+ name[0] + "\", \""+pay+"\", \"""\", 0, 0, 0 )")
+    conn.close()
+    return 'Done'

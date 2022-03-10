@@ -82,6 +82,11 @@ def login():
 def currentTutors():
     return adminRoutes.CurrentTutors()
 
+@app.route('/AddTutor/', methods=['POST'])
+def addTutor():
+    student = request.get_json()
+    return adminRoutes.BecomeATutor(student)
+
 @app.route('/Contactable/', methods=['GET'])
 def contactable():
     email = request.args.get("email")
@@ -205,7 +210,10 @@ def getStuClasses():
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     email = request.args.get("email")
-    times = mergeTimes(appointment.getTimes(email))
+    if len(appointment.getTimes(email)) != 0:
+        times = mergeTimes(appointment.getTimes(email))
+    else:
+        times = []
     print(times)
     return {'times':times}
     
