@@ -14,6 +14,7 @@ import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
 import LoadProfile from './components/LoadProfile';
+import ContactMe from './components/ContactMe';
 
 import { AuthContext } from './components/AuthContext'
 
@@ -45,6 +46,7 @@ export default function App() {
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
+            <Route path='/ContactMe' element={<ContactMe />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
