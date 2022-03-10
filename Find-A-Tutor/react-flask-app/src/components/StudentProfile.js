@@ -94,9 +94,6 @@ class StudentProfile extends React.Component {
                     <Button type="submit" id="save"
                         onClick={this.handleSubmit}
                     > Apply </Button>
-                    <Link to='/calendar'>
-                        <Button id="submit"> To Calendar </Button>
-                    </Link>
                 </div>
             </>
         )
