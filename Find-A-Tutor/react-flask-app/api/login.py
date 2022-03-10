@@ -247,17 +247,11 @@ def editAppointment():
     takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
 
-@app.route('/toggleView/')
-def toggleView():
-    global isTutor
-    isTutor = not isTutor
-    print(isTutor)
-    return str(isTutor)
-
 @app.route('/loadAppointment/', methods=['GET'])
 def loadAppointments():
     email=request.args.get("email")
-    if isTutor:
+    isTutor=request.args.get("view")
+    if isTutor == "tutor":
         return history.loadPreviousAppointmentsTutor(email)
     else:
         return history.loadPreviousAppointmentsStudent(email)

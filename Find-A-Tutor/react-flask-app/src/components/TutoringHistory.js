@@ -39,7 +39,7 @@ export default function TutoringHistory() {
 	const handleShowReport = function (){ setShowReport(true)};
 	
 	//get history
-	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email"))
+	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
             .then(
                 result => {
@@ -52,10 +52,6 @@ export default function TutoringHistory() {
 	}, []);
 	
 	useEffect(() => {setRating(appts['rating']);}, []);
-	
-	function toggleView() {
-		fetch("/toggleView/")
-	};
 	
 	const onRatingChange = (event) => {
 		console.log(event.target.value)
@@ -133,10 +129,9 @@ export default function TutoringHistory() {
 								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell>Student</TableCell>
+											<TableCell>Tutor</TableCell>
 											<TableCell>Class</TableCell>
 											<TableCell>Date Tutored</TableCell>
-											<TableCell>Rate</TableCell>
 											<TableCell>Leave A Review</TableCell>
 											<TableCell>Report Tutor</TableCell>
 										</TableRow>
@@ -147,7 +142,6 @@ export default function TutoringHistory() {
 											<TableCell>{row['with']}</TableCell>
 											<TableCell>{row['class']}</TableCell>
 											<TableCell>{row['time']}</TableCell>
-											<TableCell>$14/hr</TableCell>
 											<TableCell>
 												<Rating
 												name="simple-controlled"
@@ -167,9 +161,6 @@ export default function TutoringHistory() {
 							</React.Fragment>
 						</Grid>
 					</Container>
-					<Button type="submit" variant="contained" sx={{mt: 1, mb: 1}} onClick={() => toggleView()}>
-						<Link to="/StudentHistory">Go to Student History</Link>
-					</Button>
 				</Paper>
 			</Container>
         </ThemeProvider>
