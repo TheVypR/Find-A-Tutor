@@ -9,7 +9,6 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -175,7 +174,8 @@ def getDayFromISO(day):
 @app.route('/myProfile/', methods=['GET'])
 def getProfile():
     email = request.args.get('email')
-    return profile.retrieve_profile(email, isTutor)
+    isTutor = request.args.get('view')
+    return profile.retrieve_profile(email, isTutor=="tutor")
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])

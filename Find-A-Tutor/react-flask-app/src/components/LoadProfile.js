@@ -42,7 +42,7 @@ class LoadProfile extends React.Component {
      * Gets info from db
      */
     doFetch() {
-        fetch("/myProfile/?email=" + localStorage.getItem("email"))
+        fetch("/myProfile/?email=" + localStorage.getItem("email") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
             .then(
                 (result) => {
