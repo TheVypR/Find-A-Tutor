@@ -156,6 +156,11 @@ class TutorProfileStatic extends React.Component {
         let items = this.props.items;
         return (
             <>
+                <div className="container-fluid text-center">
+                    {/* User Info */}
+                    <h1 id="name"> {items['name']} </h1>
+                    <p id="email"> {items['email']} </p>
+                </div>
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs items={items} />
                     <TutorsFor classes={items['classes']} />
