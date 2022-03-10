@@ -103,7 +103,7 @@ class LoadProfile extends React.Component {
             <StudentProfile items={this.state.items} />
         return (
             <>
-            <div style={{margin: '130px'}}><NavBar /></div>
+            <div style={{margin: '75px'}}><NavBar /></div>
                 {profile}
             </>
         );//return
