@@ -60,8 +60,8 @@ function FullCalendarApp() {
 
   //filter
   const [evnts, setEvnts] = useState([]);
-  const [filterTimes, setFilterTimes] = useState(false);
-  const [filterAppts, setFilterAppts] = useState(false);
+  const [filterTimes, setFilterTimes] = useState(true);
+  const [filterAppts, setFilterAppts] = useState(true);
   const [filterClass, setFilterClass] = useState("All Classes");
   const [studentClasses, setStudentClasses] = useState();
   
@@ -561,8 +561,8 @@ function FullCalendarApp() {
           }}//end button setup
 		  
           //add appointments to calendar
-          events={evnts}
-			
+          events={(evnts ? evnts : times.concat(appts))}
+
           //formatting of appointments
           eventColor="green"	
           nowIndicator
