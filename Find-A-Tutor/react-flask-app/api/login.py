@@ -1,15 +1,17 @@
-import hashlib
-from datetime import datetime, timedelta
-from flask import Flask, request, jsonify
-import profile, signup, appointment, history, adminRoutes
+#FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
+import hashlib                                              #used to hash pw to check against pw in DB
+from datetime import datetime, timedelta                    #used to compare dates
+from flask import Flask, request, jsonify                   #used for Flask API
+import profile, signup, appointment, history, adminRoutes   #used to call functions
+from flaskext.mysql import MySQL                            #used to connect to DB
 
-#Database stuff
-from flaskext.mysql import MySQL
-
+#setup flask
 app = Flask(__name__)
 
+#setup DB
 mysql = MySQL()
 
+#toggle for accessing the DB on a local machine
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
@@ -24,29 +26,33 @@ else:
 
 mysql.init_app(app)
 
+#checks provided email and password for existence in the DB
 @app.route('/login/', methods=['POST'])
 def login():
-  #sql setup
+  #connect to DB
   conn = mysql.connect()
   conn.autocommit(True)
   cursor = conn.cursor()
+  
   #get the login provided
   info = request.get_json()
-  global email
   email = info[0]
   pw = info[1]
-  print(email)
-  print(pw)
 
-  #get the salt
+  #get the salt used for pw associated with this email
   cursor.execute("select stu_salt from Student where stu_email = \""
                           + email + "\"")               
   result = cursor.fetchone()
 
+  #check that email existed in users (Student table)
   if result is None:
     return jsonify({'error': 'Not Authenticated'})
-
+  
+  #on user existing
+  #hash their login attempt password
+  #check hash against stored password to verify identity
   if(result):
+      #use salt to hash given password
       salt = bytes.fromhex(result[0])
       password = hashlib.pbkdf2_hmac(
           'sha256', # The hash digest algorithm for HMAC
@@ -54,17 +60,21 @@ def login():
           salt, # Provide the salt
           100000 #100,000 iterations of SHA-256 
       )
+      
+      #combine password and salt
       password = salt + password
+      #check for password in DB
       cursor.execute("select stu_email, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
-      print(user)
+      
+      #if password not found -> ERROR
       if user is None:
         return jsonify({'error': 'Not Authenticated'})
     
   #if user is a tutor
-  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=\"" + email + "\")")
+  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where tut_email=\"" + email + "\")")
   checkIfTutor = cursor.fetchall()
   if checkIfTutor[0][0] == 1:
       #get users login prefs
@@ -123,7 +133,8 @@ def addStudentToBan():
 #signUp page
 @app.route('/signup/', methods=['POST'])
 def signUp():
-  return signup.signup()
+  data = request.get_json()
+  return signup.signup(data)
 
 #profile page
 @app.route('/myProfile/', methods=['POST'])
