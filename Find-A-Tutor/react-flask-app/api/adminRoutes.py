@@ -112,12 +112,14 @@ def AddStudentToBan(target):
     ban = "Banned@vac_ban.edu"
     if data != None:
         cursor.execute("update Appointment set tut_email = \""+ban+"\" where tut_email = \""+ target['stu_email'] +"\" ")
+        cursor.execute("delete from ReportedTutors where tut_email = \""+ target['stu_email'] +"\" ")
         cursor.execute("delete from TutorTimes where tut_email = \""+ target['stu_email'] + "\" ")
         cursor.execute("delete from TutorClasses where tut_email = \""+ target['stu_email'] + "\" ")
         cursor.execute("delete from Tutor where tut_email = \""+ target['stu_email'] + "\" ")
 
     # delete from student as well
     cursor.execute("update Appointment set stu_email = \""+ban+"\" where stu_email = \""+ target['stu_email'] + "\" ")
+    cursor.execute("delete from ReportedStudents where stu_email = \""+ target['stu_email'] +"\" ")
     cursor.execute("delete from StudentClasses where stu_email = \""+ target['stu_email'] + "\" ")
     cursor.execute("delete from Student where stu_email = \""+ target['stu_email'] + "\" ")
 
@@ -140,5 +142,18 @@ def DeleteUserFromList(tutor):
     conn.autocommit(True)
     cursor = conn.cursor()
     cursor.execute("delete from "+ table +" where report_id = " + str(tutor['id']))
+    conn.close()
+    return 'Done'
+
+def BecomeATutor(student):
+
+    name = getFunctions.getName(student['stu_email'])
+    pay = "Venmo"
+    print(name)
+
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("insert into Tutor values( \""+ student['stu_email'] + "\", \""+ name[0] + "\", \""+pay+"\", \"""\", 0, 0, 0 )")
     conn.close()
     return 'Done'

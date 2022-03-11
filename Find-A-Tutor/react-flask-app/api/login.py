@@ -9,7 +9,6 @@ from flaskext.mysql import MySQL
 app = Flask(__name__)
 
 mysql = MySQL()
-isTutor = False
 
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
@@ -56,7 +55,7 @@ def login():
           100000 #100,000 iterations of SHA-256 
       )
       password = salt + password
-      cursor.execute("select stu_email from Student where stu_email = \""
+      cursor.execute("select stu_email, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
@@ -75,12 +74,17 @@ def login():
 
   conn.close()
 
-  return jsonify({'email': email})
+  return jsonify({'email': email, 'isAdmin': user[1]})
 
 # provide a list of current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
     return adminRoutes.CurrentTutors()
+
+@app.route('/AddTutor/', methods=['POST'])
+def addTutor():
+    student = request.get_json()
+    return adminRoutes.BecomeATutor(student)
 
 @app.route('/Contactable/', methods=['GET'])
 def contactable():
@@ -175,7 +179,8 @@ def getDayFromISO(day):
 @app.route('/myProfile/', methods=['GET'])
 def getProfile():
     email = request.args.get('email')
-    return profile.retrieve_profile(email, isTutor)
+    isTutor = request.args.get('view')
+    return profile.retrieve_profile(email, isTutor=="tutor")
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
@@ -205,7 +210,10 @@ def getStuClasses():
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     email = request.args.get("email")
-    times = mergeTimes(appointment.getTimes(email))
+    if len(appointment.getTimes(email)) != 0:
+        times = mergeTimes(appointment.getTimes(email))
+    else:
+        times = []
     print(times)
     return {'times':times}
     
@@ -239,17 +247,11 @@ def editAppointment():
     takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
     return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
 
-@app.route('/toggleView/')
-def toggleView():
-    global isTutor
-    isTutor = not isTutor
-    print(isTutor)
-    return str(isTutor)
-
 @app.route('/loadAppointment/', methods=['GET'])
 def loadAppointments():
     email=request.args.get("email")
-    if isTutor:
+    isTutor=request.args.get("view")
+    if isTutor == "tutor":
         return history.loadPreviousAppointmentsTutor(email)
     else:
         return history.loadPreviousAppointmentsStudent(email)
@@ -262,8 +264,9 @@ def rateTutor():
 @app.route('/submitReport/', methods=['POST'])
 def report():
     data = request.get_json()
-    email=request.args.get("email")
-    if isTutor:
+    email=data["email"]
+    isTutor = data["view"]
+    if isTutor == "tutor":
         return history.submitStudentReport(data, email)
     else:
         return history.submitTutorReport(data, email)

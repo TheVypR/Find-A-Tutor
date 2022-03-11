@@ -59,9 +59,9 @@ function FullCalendarApp() {
   const [rating, setRating] = useState(null);
 
   //filter
-  const [evnts, setEvnts] = useState([]);
-  const [filterTimes, setFilterTimes] = useState(false);
-  const [filterAppts, setFilterAppts] = useState(false);
+  const [evnts, setEvnts] = useState(times.concat(appts));
+  const [filterTimes, setFilterTimes] = useState(true);
+  const [filterAppts, setFilterAppts] = useState(true);
   const [filterClass, setFilterClass] = useState("All Classes");
   const [studentClasses, setStudentClasses] = useState();
   
@@ -85,18 +85,19 @@ function FullCalendarApp() {
   const [wrongTimes, setWrongTimes] = useState(false);
   const [wrongClass, setWrongClass] = useState(false);
   
-  if(localStorage.getItem("view") == "tutor"){
-	TutLoad();
-	
-  } else {
-	StuLoad();
-	
-  }
+  useEffect (() => {
+	if(localStorage.getItem("view") == "tutor"){
+		TutLoad();
+	} else {
+		StuLoad();
+	}
+  }, []);
+  
+
   
   function TutLoad() {
-	let appts = []
 	//loads in the appts currently created in the DB - IAA
-	useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -107,12 +108,12 @@ function FullCalendarApp() {
 					// exceptions from actual bugs in components
 					(error) => {
 						console.log(error);
-				})
-	  }, []);
+					}
+				)
   }
   
   function StuLoad() {
-	  useEffect(() => {fetch("/getTimes/?email=" + localStorage.getItem("email"))
+	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -125,9 +126,8 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-	  }, []);
 
-	  useEffect(() => {fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+	fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -140,10 +140,9 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-	  }, []);
 
 	  //loads in the appts currently created in the DB - IAA
-	  useEffect(() => {fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -156,9 +155,7 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
-	  }, []);
   }
-
 
 	const updateEvents = function() {
 		let localEvents = [];
@@ -188,6 +185,8 @@ function FullCalendarApp() {
 		setEvnts(localEvents);
   }
 
+	
+
 	//create appointment
 	function addEvent() {
 		setStartDate(origStartDate);
@@ -211,7 +210,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([myEvent])
-		})
+		}).then(document.location.reload())
 	}
 	
 	const handleEventClick = function (e, editting) {
@@ -279,7 +278,7 @@ function FullCalendarApp() {
 				start: origStartDate,
 				end: origEndDate
 			}])    
-		})
+		}).then(document.location.reload())
 	}
 	
 	const editAppt = function () {
@@ -313,12 +312,12 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([myEvent])  
-		})
+		}).then(document.location.reload())
 		)
 	}
 	
 	function verifyTimes(isNew) {
-		if (endTime < startTime) {
+		if (endTime <= startTime) {
 			setWrongTimes(true)
 		} else {
 			if(isNew){
@@ -357,12 +356,16 @@ function FullCalendarApp() {
 	}
 	console.log(authContext);
 	
+	useEffect(() => {
+		updateEvents(() => appts);
+	}, [times, appts]);
+	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn === "true" && (
     <div className="App">
 		<NavBar />
-		<Modal show={showTime} onHide={handleClose}>
+		<Modal show={showTime} centered onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
 			  <Modal.Title>{title}</Modal.Title>
@@ -403,7 +406,7 @@ function FullCalendarApp() {
 		</form>
       </Modal>
 	  
-	  <Modal show={showAppt} onHide={handleClose}>
+	  <Modal show={showAppt} centered onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
@@ -427,7 +430,7 @@ function FullCalendarApp() {
         </Modal.Footer>
       </Modal>
 		
-	  <Modal show={showEdit} onHide={handleClose}>
+	  <Modal show={showEdit} centered onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
 			  <Modal.Title>{title}</Modal.Title>
@@ -470,7 +473,7 @@ function FullCalendarApp() {
 
 		<div className="filter">
 		<div className='switchViews'>
-			<Button color="blue" onClick={() => {ToggleView()}} type="submit">Switch Views</Button>
+			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
 		</div>
 		<Paper
 		 variant="outlined"
@@ -562,7 +565,7 @@ function FullCalendarApp() {
 		  
           //add appointments to calendar
           events={evnts}
-			
+
           //formatting of appointments
           eventColor="green"	
           nowIndicator

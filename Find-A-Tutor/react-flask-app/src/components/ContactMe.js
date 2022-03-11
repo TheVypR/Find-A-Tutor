@@ -29,13 +29,11 @@ function ContactMe() {
         })
     }, []);
 
-    console.log(contactTutors);
-
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Current Tutors
+                Contactable Tutors
             </Typography>
             <Table size="small">
                 <TableHead>

@@ -3,6 +3,7 @@ import moment from 'moment';
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile";
 import StudentProfile from "./StudentProfile";
+import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
 
@@ -42,7 +43,7 @@ class LoadProfile extends React.Component {
      * Gets info from db
      */
     doFetch() {
-        fetch("/myProfile/?email=" + localStorage.getItem("email"))
+        fetch("/myProfile/?email=" + localStorage.getItem("email") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
             .then(
                 (result) => {
@@ -104,6 +105,7 @@ class LoadProfile extends React.Component {
             <StudentProfile items={this.state.items} />
         return (
             <>
+            <div style={{margin: '75px'}}><NavBar /></div>
                 {profile}
             </>
         );//return

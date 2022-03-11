@@ -98,12 +98,15 @@ def retrieve_times(tut_email):
     #print(times)
     
     #put times in dict {start_time:end_time}
-    for time in times:
-        startAndEnd = {'start': time[0], 'end': time[1]}
-        availTimes.append(startAndEnd)
+    if len(times) != 0:
+        for time in times:
+            startAndEnd = {'start': time[0], 'end': time[1]}
+            availTimes.append(startAndEnd)
 
-    #Condense times
-    availTimes = login.mergeTimes(availTimes)
+        #Condense times
+        availTimes = login.mergeTimes(availTimes)
+    else:
+        availTimes = []
     
     return availTimes
 
