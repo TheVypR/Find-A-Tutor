@@ -7,7 +7,8 @@ import "./AvailableTimes.css"
 const format = 'h:mm a';                //Format for TimePicker
 const now = moment().hour(0).minute(0); //Default value for TimePickers
 
-/** TimePickers Component
+/**
+ * TimePickers Component
  * 
  * Displays two rc-time-pickers with start and end time labels
  * 
@@ -31,7 +32,7 @@ class TimePickers extends React.Component {
      */
     onChangeTimes(time, timepicker) {
         this.props.timeSlotChange(time, timepicker);
-    }
+    }//onChangeTimes
 
     render() {
         return (
