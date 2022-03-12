@@ -271,13 +271,13 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{
+			body:JSON.stringify({
 				email:localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
 				end: origEndDate
-			}])    
+			})    
 		}).then(document.location.reload())
 	}
 	
@@ -290,6 +290,7 @@ function FullCalendarApp() {
 		  day: origStartDate,
 		  title: title,
 		  tut_email: tutEmail,
+		  tut_name: tutName,
 		  block_start: blockStart,
 		  block_end: blockEnd
 		};
@@ -298,13 +299,13 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{
+			body:JSON.stringify({
 				email: localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
 				end: origEndDate
-			}])
+			})
 		}).then(
 			fetch("/addAppointment/", {
 			method: 'POST',

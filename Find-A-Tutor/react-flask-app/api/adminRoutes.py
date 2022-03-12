@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
-#from sqlalchemy import null
-import getFunctions
+import getFunctions                         #used to get names
 
 # database stuff
 from flaskext.mysql import MySQL
