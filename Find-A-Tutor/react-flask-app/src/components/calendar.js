@@ -265,6 +265,7 @@ function FullCalendarApp() {
 		}
 	};
 
+	//delete appointment
 	const cancelAppt = function () {
 		fetch("/deleteAppointment/", {
 			method: 'POST',
@@ -281,6 +282,7 @@ function FullCalendarApp() {
 		}).then(document.location.reload())
 	}
 	
+	//edit apppointment
 	const editAppt = function () {
 		const myEvent = {
 		  email:localStorage.getItem("email"),
@@ -476,6 +478,7 @@ function FullCalendarApp() {
 		<div className='switchViews'>
 			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
 		</div>
+		{/* tab to filter calendar */}
 		<Paper
 		 variant="outlined"
 		 style={{
@@ -520,6 +523,7 @@ function FullCalendarApp() {
 		<div>
 			<Button onClick={(e) => {updateEvents()}}>Apply Filters</Button>
 		</div>
+		{/* Information about current tutors */}
 		</Paper>
 		<div className="infoChart">
 		  <Paper
