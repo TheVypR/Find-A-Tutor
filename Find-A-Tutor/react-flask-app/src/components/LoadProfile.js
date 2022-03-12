@@ -14,7 +14,7 @@ class LoadProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {},
+            items: {},      //submission from get_profile
             isEdit: false
         }
         this.edit = this.edit.bind(this);
@@ -49,7 +49,6 @@ class LoadProfile extends React.Component {
                 (result) => {
                     //Convert result[times] to moment
                     if ('times' in result) {
-                        console.log("STOP");
                         let times = result['times'];
                         result['times'] = this.convertToMoment(times);
                     }
