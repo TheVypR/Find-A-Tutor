@@ -1,3 +1,4 @@
+#FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
 from flask import Flask, request, jsonify   #used for Flask API
 import getFunctions                         #used to get names
 from flaskext.mysql import MySQL            #used to connect to DB

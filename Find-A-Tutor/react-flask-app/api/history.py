@@ -1,3 +1,4 @@
+#FIND-A-TUTOR ~ Appointment History Backend ~ Authors: Isaac A., Aaron S.
 from datetime import datetime   #used to compare dates
 from flask import Flask         #used for Flask API
 from flaskext.mysql import MySQL#used for DB connection
