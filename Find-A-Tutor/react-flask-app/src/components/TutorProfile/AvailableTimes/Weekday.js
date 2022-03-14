@@ -219,9 +219,8 @@ class Weekday extends React.Component {
         let timeSlot = {
             'submitTimes': true,
             "email": localStorage.getItem("email"),
-            "startTime": this.state.startTime[index].toString(),
-            "endTime": this.state.endTime[index].toString(),
-            "date": date
+            "startTime": this.state.startTime[index].day(day).toString(),
+            "endTime": this.state.endTime[index].day(day).toString()
         };
 
         const response = fetch("/myProfile/", {
@@ -232,6 +231,8 @@ class Weekday extends React.Component {
             body: JSON.stringify(timeSlot)
         })//fetch
     }
+
+
 
     /**
      * sets starttime state
