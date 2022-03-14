@@ -320,7 +320,7 @@ function FullCalendarApp() {
 	}
 	
 	function verifyTimes(isNew) {
-		if (endTime <= startTime) {
+		if (endTime < startTime) {
 			setWrongTimes(true)
 		} else {
 			if(isNew){
