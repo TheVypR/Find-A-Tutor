@@ -221,7 +221,7 @@ def BecomeATutor(student):
     
     #add student to Tutor table
     cursor.execute("insert into Tutor values(\""+ student['stu_email'] 
-                    + "\", (select stu_name from Student where stu_email = \"" + target['stu_email'] 
+                    + "\", (select stu_name from Student where stu_email = \"" + student['stu_email'] 
                     + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
     #close the connection
     conn.close()
