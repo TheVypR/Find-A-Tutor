@@ -350,8 +350,13 @@ def dateParse(date):
     #put the day into the new datetime
     newDate += dateArray[2] + "T"
     
-    #put the time into the new datetime
-    newDate += dateArray[4]
+    #if seconds is not 00 reset to 00
+    checkSec = dateArray[4].split(':')
+    if checkSec[2] not "00":
+        newDate += checkSec[0] + ":" + checkSec[1] + ":00" 
+    else:
+        #put the time into the new datetime
+        newDate += dateArray[4]
     
     #return the new datetime    
     return newDate
