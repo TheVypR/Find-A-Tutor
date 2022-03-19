@@ -98,7 +98,7 @@ def CurrentTutors():
     return jsonify(allTutors)
 
 #retrieve all tutors who can be contacted for times not shown on calendar
-def Contactable(email):
+def Contactable(token):
     #connect to DB
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -107,7 +107,8 @@ def Contactable(email):
     cursor.execute("select tut_email, tut_name from Tutor" +
                     " where contactable = 1 "
                     +"and tut_email in (select tut_email from TutorClasses where class_code in" 
-                    +" (select class_code from StudentClasses where stu_email = \"" + email + "\") and tut_email != \"" + email + "\")")
+                    +" (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
+                    + token + "\") and tut_email not in = (select stu_email from Student where token = \"" + token + "\"))")
     contactTuts = cursor.fetchall()
     
     #close the connection
@@ -143,9 +144,6 @@ def BannedStudents():
 #mark a user as being banned
 #target -> user to be banned's info
 def AddStudentToBan(target):
-    # get additional info
-    name = getFunctions.getName(target['stu_email'])
-
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)

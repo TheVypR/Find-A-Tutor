@@ -34,12 +34,12 @@ mysql.init_app(app)
 #end database stuff
 
 #retrieve profile details
-def retrieve_profile(email, isTutor):
+def retrieve_profile(token, isTutor):
     conn = mysql.connect()
     cursor = conn.cursor()
     
     #get the tutor information from the DB
-    cursor.execute("select stu_name, stu_email from Student where stu_email = (%s)", (email))
+    cursor.execute("select stu_name, stu_email from Student where token = (%s)", (token))
     data = cursor.fetchone()
     name = data[0]
     email = data[1]

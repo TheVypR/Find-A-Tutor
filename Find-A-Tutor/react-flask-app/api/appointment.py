@@ -29,15 +29,15 @@ mysql.init_app(app)
 #start -> appointment start time
 #end -> appointment end time
 #timeslots -> array of 15 minute time blocks that are being taken
-def addAppointment(data, email, start, end, timeslots):
+def addAppointment(data, token, start, end, timeslots):
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
     #create the entry in the Appointment table
-    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(\"" 
-                    + email + "\", \"" 
+    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(" 
+                    + "(select stu_email from Student where token = \"" + token + "\")," " \"" 
                     + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + start + "', '"
@@ -81,7 +81,7 @@ def getRates(data):
     return tutorRates
 
 #get the classes a student is taking
-def getStuClasses(email):
+def getStuClasses(token):
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -91,7 +91,7 @@ def getStuClasses(email):
     classes = []
     
     #get the classes for the student
-    cursor.execute("select class_code from StudentClasses where stu_email = \"" + email +"\"")
+    cursor.execute("select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" + token +"\")")
     classList = cursor.fetchall()
 
     #add classes to array
@@ -103,7 +103,7 @@ def getStuClasses(email):
 
 #get the available times available with tutors
 #only returns tutor's who teach classes that overlap with the students taken classes
-def getTimes(email):
+def getTimes(token):
     #init the times array
     availTimes = []
     
@@ -116,7 +116,8 @@ def getTimes(email):
     cursor.execute("select T.tut_email, start_date, end_date, taken, P.tut_name, P.rating" + 
                     " from TutorTimes T, Tutor P" + 
                     " where T.tut_email in (select tut_email from TutorClasses where class_code in" + 
-                    " (select class_code from StudentClasses where stu_email = \"" + email + "\")) and T.tut_email = P.tut_email;")
+                    " (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
+                    + token + "\"))) and T.tut_email = P.tut_email;")
     times = cursor.fetchall()
     
     #put times into array of dictionaries
@@ -142,7 +143,7 @@ def getTimes(email):
 
 #get the appointments for a student or tutor
 #isTutor -> whether the person is a student or tutor
-def getAppointments(email, isTutor):
+def getAppointments(token, isTutor):
     #init the array of appointments
     availAppts = []
     
@@ -165,8 +166,8 @@ def getAppointments(email, isTutor):
                         +"block_start, "
                         +"block_end, "
                         +"S.stu_name, "
-                        +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = \"" + email + "\"" 
-                        +"and S.stu_email = \"" + email + "\""
+                        +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = (select stu_email from Student where token = \"" + token + "\")" 
+                        +"and S.token = \"" + token + "\""
                         +"and T.tut_email = A.tut_email")
     else:
         #get the appointments for a given tutor
@@ -181,8 +182,8 @@ def getAppointments(email, isTutor):
                         +"block_start, "
                         +"block_end, "
                         +"S.stu_name, "
-                        +"T.tut_name from Appointment A, Student S, Tutor T where A.tut_email = \"" + email + "\"" 
-                        +"and T.tut_email = \"" + email + "\""
+                        +"T.tut_name from Appointment A, Student S, Tutor T where A.tut_email = (select stu_email from Student where token = \"" + token + "\")" 
+                        +"and T.tut_email = (select stu_email from Student where token = \"" + token + "\")"
                         +"and S.stu_email = A.stu_email")    
     appts = cursor.fetchall()
     
@@ -213,15 +214,15 @@ def getAppointments(email, isTutor):
 #data -> appointment info
 #dates -> the formated start and end of the appointment
 #slots -> the tutor time slots to make available again
-def removeAppointment(email, data, dates, slots):
+def removeAppointment(token, data, dates, slots):
     #connect to the DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
     #remove the appointments for the given student, with the given tutor, at the given time
-    cursor.execute("delete from Appointment where stu_email=\"" 
-                    + email + "\" and tut_email=\"" 
+    cursor.execute("delete from Appointment where stu_email= (select stu_email from Student where token = \"" 
+                    + token + "\") and tut_email=\"" 
                     + data['tut_email'] + "\" and start_date=\"" 
                     + dates['start'] + "\"")
     
