@@ -219,3 +219,19 @@ def edit_profile(submission, tut_email):
 
     conn.close()
     return 'Done'
+
+def remove_tutor(tutor):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("select tut_email from Appointment where tut_email = \"" + tutor['email'] + "\" ")
+    data = list(cursor.fetchone())
+
+    if data != None:
+        return 'Done'
+    else:
+        cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor['email'] +"\" ")
+        cursor.execute("delete from TutorTimes where tut_email = \""+ tutor['email'] + "\" ")
+        cursor.execute("delete from TutorClasses where tut_email = \""+ tutor['email'] + "\" ")
+        cursor.execute("delete from Tutor where tut_email = \""+ tutor['email'] + "\" ")
+        return 'Done'

@@ -59,6 +59,21 @@ class T_Profile extends React.Component {
         this.props.edit();
     }//handleSubmit
 
+    handleStopTutoring() {
+        //post email to remove tutor
+        let post = {
+            'email': localStorage.getItem("email")
+        }
+        //Fetch
+        const response = fetch("/removeTutor/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post)
+        })//fetch
+    }
+
     /**
      * If the state is empty if fills in with db data
      * 
@@ -194,7 +209,7 @@ class T_Profile extends React.Component {
                     <Button type="submit" id="save"
                         onClick={this.handleSubmit}
                     > Apply </Button>
-                    <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                    <Button id="stopTutoring" variant="danger" onClick={() => this.handleStopTutoring}> Stop Tutoring </Button>
                 </div>
             </>
         );//return

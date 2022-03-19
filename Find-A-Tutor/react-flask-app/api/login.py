@@ -91,6 +91,11 @@ def login():
   #return email, permissions, and login preference
   return jsonify({'email': email, 'isAdmin': user[1], 'loginPref':loginPref})
 
+@app.route('/removeTutor/', methods=['POST'])
+def removeTutor():
+    tutor = request.get_json()
+    return profile.remove_tutor(tutor)
+
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
