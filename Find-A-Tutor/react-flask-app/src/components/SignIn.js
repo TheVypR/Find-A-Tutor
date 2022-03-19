@@ -55,7 +55,7 @@ export default function SignIn() {
         else {
           loginHandler();
         }
-		localStorage.setItem("email", result['email']);
+		localStorage.setItem("token", result['token']);
 		localStorage.setItem("view", (result['loginPref'] == 1 ? "tutor" : "student"));
       }
       else {
