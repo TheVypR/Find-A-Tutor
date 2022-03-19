@@ -64,7 +64,7 @@ def login():
       #combine password and salt
       password = salt + password
       #check for password in DB
-      cursor.execute("select stu_email, isAdmin from Student where stu_email = \""
+      cursor.execute("select token, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
@@ -89,7 +89,7 @@ def login():
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': email, 'isAdmin': user[1], 'loginPref':loginPref})
+  return jsonify({'token': user[0], 'isAdmin': user[1], 'loginPref':loginPref})
 
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
