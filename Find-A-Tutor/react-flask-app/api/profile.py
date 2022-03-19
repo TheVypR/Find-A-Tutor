@@ -225,13 +225,19 @@ def remove_tutor(tutor):
     conn.autocommit(True)
     cursor = conn.cursor()
     cursor.execute("select tut_email from Appointment where tut_email = \"" + tutor['email'] + "\" ")
-    data = list(cursor.fetchone())
 
+    data = cursor.fetchone()
+
+    retStr = ""
     if data != None:
-        return 'Done'
+        print("MADE IT HERRRRRRRRRRREEEEE!!!!!!!!!!")
+        retStr = 'Done'
     else:
         cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor['email'] +"\" ")
         cursor.execute("delete from TutorTimes where tut_email = \""+ tutor['email'] + "\" ")
         cursor.execute("delete from TutorClasses where tut_email = \""+ tutor['email'] + "\" ")
         cursor.execute("delete from Tutor where tut_email = \""+ tutor['email'] + "\" ")
-        return 'Done'
+        retStr = 'Done'
+    
+    conn.close()
+    return retStr

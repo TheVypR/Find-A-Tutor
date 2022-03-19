@@ -152,6 +152,22 @@ class TutorsFor extends React.Component {
  * Renders the static version of the profile screen which the user can then choose to edit
  */
 class TutorProfileStatic extends React.Component {
+    // made so you can stop being a tutor
+    handleStopTutoring() {
+        //post email to remove tutor
+        let post = {
+            'email': localStorage.getItem("email")
+        }
+        //Fetch
+        const response = fetch("/removeTutor/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post)
+        })//fetch
+    }
+
     render() {
         let items = this.props.items;
         return (
@@ -170,7 +186,7 @@ class TutorProfileStatic extends React.Component {
 
                 <div id="bottom">
                     <Button variant="success" id="save" onClick={this.props.edit}> Edit </Button>
-                    <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                    <Button id="stopTutoring" variant="danger" onClick={this.handleStopTutoring}> Stop Tutoring </Button>
                 </div>
             </>
         );//return
