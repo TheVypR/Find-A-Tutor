@@ -2,7 +2,7 @@
 import hashlib                                              #used to hash pw to check against pw in DB
 from datetime import datetime, timedelta                    #used to compare dates
 from flask import Flask, request, jsonify                   #used for Flask API
-import profile, signup, appointment, history, adminRoutes   #used to call functions
+import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
 
 #setup flask
@@ -90,6 +90,11 @@ def login():
 
   #return email, permissions, and login preference
   return jsonify({'token': user[0], 'isAdmin': user[1], 'loginPref':loginPref})
+
+@app.route('/authCheck/', methods=['GET'])
+def checkLogIn():
+    token = request.args.get("token")
+    return authentication.checkLogIn(token)
 
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])

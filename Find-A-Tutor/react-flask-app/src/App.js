@@ -18,18 +18,16 @@ import LoadProfile from './components/LoadProfile';
 import { AuthContext } from './components/AuthContext'
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState((localStorage.getItem("loggedIn") !== null ? localStorage.getItem("loggedIn") : false));
+  const [loggedIn, setLoggedIn] = useState((localStorage.getItem("token") !== null ? fetch("/authCheck/token=" + localStorage.getItem("token")) : false));
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
-	localStorage.setItem("loggedIn", true);
-  setLoggedIn(localStorage.getItem("loggedIn"));	
+	setLoggedIn(true);	
   };
 
   const logout = () => {
 	setLoggedIn(false);
-	localStorage.setItem("loggedIn", false);
-  localStorage.setItem("email", "");
+	localStorage.setItem("token", "");
   };
 
   return (
@@ -50,33 +48,4 @@ export default function App() {
       </AuthContext.Provider>
     </div>
   )
-}
-
-function useProvideAuth() {
-
-}
-
-function PrivateRoute({ children }) {
-  // let auth = useAuth();
-
-  // const [user, setUser] = useState("");
-
-  // useEffect(() => {
-    // fetch("/email/", {
-      // method: 'GET',
-      // headers: {
-        // 'Content-Type' : 'application/json'
-      // },
-      // })
-      // .then(res => res.json())
-      // .then(authTag => setUser(authTag))
-      // //.then(console.log(user.authTag))
-      // .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
-  // }, []);
-
-  // //console.log(user.authTag);
-
-  // return (
-    // user.authTag != "USER NOT FOUND" ? children : <SignIn />
-  // );
 }
