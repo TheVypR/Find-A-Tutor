@@ -39,7 +39,7 @@ def retrieve_profile(token, isTutor):
     cursor = conn.cursor()
     
     #get the tutor information from the DB
-    cursor.execute("select stu_name, stu_email from Student where token = (%s)", (token))
+    cursor.execute("select stu_name, stu_email from Student where token = \"" + token + "\"")
     data = cursor.fetchone()
     name = data[0]
     email = data[1]
