@@ -99,6 +99,7 @@ def CurrentTutors():
 
 #retrieve all tutors who can be contacted for times not shown on calendar
 def Contactable(token):
+    print(token)
     #connect to DB
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -108,7 +109,7 @@ def Contactable(token):
                     " where contactable = 1 "
                     +"and tut_email in (select tut_email from TutorClasses where class_code in" 
                     +" (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
-                    + token + "\") and tut_email not in = (select stu_email from Student where token = \"" + token + "\"))")
+                    + token + "\") and tut_email not in (select stu_email from Student where token = \"" + token + "\")))")
     contactTuts = cursor.fetchall()
     
     #close the connection

@@ -97,7 +97,7 @@ function FullCalendarApp() {
   
   function TutLoad() {
 	//loads in the appts currently created in the DB - IAA
-	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?token=" + localStorage.getItem("token") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -113,7 +113,7 @@ function FullCalendarApp() {
   }
   
   function StuLoad() {
-	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
+	  fetch("/getTimes/?token=" + localStorage.getItem("token"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -127,7 +127,7 @@ function FullCalendarApp() {
 					}
 				)
 
-	fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+	fetch("/getStuClasses/?token=" + localStorage.getItem("token"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -142,7 +142,7 @@ function FullCalendarApp() {
 				)
 
 	  //loads in the appts currently created in the DB - IAA
-	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?token=" + localStorage.getItem("token") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -192,7 +192,7 @@ function FullCalendarApp() {
 		setStartDate(origStartDate);
 		setEndDate(origEndDate);
 		const myEvent = {
-		  email:localStorage.getItem("email"),
+		  token:localStorage.getItem("token"),
 		  class_code: classCode,
 		  start: startTime,
 		  end: endTime,
@@ -272,7 +272,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify({
-				email:localStorage.getItem("email"),
+				token:localStorage.getItem("token"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -283,7 +283,7 @@ function FullCalendarApp() {
 	
 	const editAppt = function () {
 		const myEvent = {
-		  email:localStorage.getItem("email"),
+		  token:localStorage.getItem("token"),
 		  class_code: classCode,
 		  start: startDate,
 		  end: endDate,
@@ -300,7 +300,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify({
-				email: localStorage.getItem("email"),
+				token: localStorage.getItem("token"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -355,7 +355,6 @@ function FullCalendarApp() {
 	const GetOptions = () => {
 		return ({providedClasses})
 	}
-	console.log(authContext);
 	
 	useEffect(() => {
 		updateEvents(() => appts);
@@ -363,7 +362,7 @@ function FullCalendarApp() {
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return authContext.isLoggedIn === "true" && (
+  return authContext.isLoggedIn && (
     <div className="App">
 		<NavBar />
 		<Modal show={showTime} centered onHide={handleClose}>

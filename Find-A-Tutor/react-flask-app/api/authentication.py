@@ -28,7 +28,18 @@ def checkLogIn(token):
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    cursor.execute("select in ")
+    #check if a token was given
+    if token:    
+        #check if the given token is associated with a student
+        cursor.execute("select stu_email from Student where token = \"" + token + "\"")
+        email = cursor.fetchone()
+        
+        if email:
+            return jsonify({'loggedIn':True})
+        else:
+            return jsonify({'loggedIn':False})
+    else:
+        return jsonify({'loggedIn':False})
     
 def getEmail(token):
     #connect to DB
@@ -36,4 +47,11 @@ def getEmail(token):
     conn.autocommit(True)
     cursor = conn.cursor()
     
-    cursor.execute("")
+    #check if a token is given
+    if token:
+        #check if the given token is associated with a student
+        cursor.execute("select stu_email from Student where token = \"" + token + "\"")
+        email = cursor.fetchone()
+        return email
+    else:
+        return "NO TOKEN"

@@ -64,7 +64,7 @@ def login():
       #combine password and salt
       password = salt + password
       #check for password in DB
-      cursor.execute("select token, isAdmin from Student where stu_email = \""
+      cursor.execute("select stu_email, token, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
@@ -89,11 +89,12 @@ def login():
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'token': user[0], 'isAdmin': user[1], 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref})
 
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
     token = request.args.get("token")
+    print(authentication.checkLogIn(token))
     return authentication.checkLogIn(token)
 
 #return a list of all current tutors
@@ -307,14 +308,15 @@ def rateTutor():
 def report():
     data = request.get_json()
     token=data["token"]
+    email = authentication.getEmail(token)
     isTutor = data["view"]
     #if reporter is a tutor
     if isTutor == "tutor":
         #report a student
-        return history.submitStudentReport(data, token)
+        return history.submitStudentReport(data, email)
     else:
         #report a tutor
-        return history.submitTutorReport(data, token)
+        return history.submitTutorReport(data, email)
 
 #take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
 #needed for storage and calendar display
