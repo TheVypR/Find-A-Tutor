@@ -2,15 +2,18 @@ import React, { Component } from "react";
 import Week from './Week'
 
 
+/**
+ * Renders the available times and contact me check box
+ */
 class AvailableTimes extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             checked: false  //Boolean that stores in state if the contact me checkbox is checked or not
-        }
+        }//state
 
         this.contactMe = this.contactMe.bind(this);
-    }
+    }//constructor
 
     /**
      * Post for contact me check box change
@@ -30,10 +33,10 @@ class AvailableTimes extends React.Component {
             },
             body: JSON.stringify(submission)
         })//fetch
-    }
+    }//contact me
 
     render() {
-        let times = this.props.times;
+        let times = this.props.times;   // Tutors available times from the db
         return (
             <>
                 <div className="row justify-content-start">

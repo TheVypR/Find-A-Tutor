@@ -1,38 +1,41 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';
-import './components/App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//FIND-A-TUTOR ~ Core Frontend ~
+import React, { useState, useEffect, useContext } from 'react';					//used for authentication
+import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';	//used for authentication
+import './components/App.css';													//used for styling
+import 'bootstrap/dist/css/bootstrap.min.css';									//used for styling
+import Calendar from './components/calendar'									//calendar screen
+import SignIn from "./components/SignIn"										//SignIn screen
+import SignUp from "./components/SignUp"										//SignUp screen
+import TutorProfile from "./components/TutorProfile/T_Profile"					//TutorProfile screen
+import StudentProfile from "./components/StudentProfile"						//StudentProfile screen
+import TutoringHistory from './components/TutoringHistory';						//TutorHistory screen
+import StudentHistory from './components/StudentHistory';						//StudentHistory screen
+import Reports from './components/Reports';										//Admin reports screen
+import CurrentAndBan from './components/CurrentAndBan';							//Admin banning screen
+import LoadProfile from './components/LoadProfile';								//LoadProfile route
+import { AuthContext } from './components/AuthContext'							//used for authentication
 
-import Calendar from './components/calendar'
-import SignIn from "./components/SignIn"
-import SignUp from "./components/SignUp"
-import TutorProfile from "./components/TutorProfile/T_Profile"
-import StudentProfile from "./components/StudentProfile"
-import { createContext } from 'react';
-import TutoringHistory from './components/TutoringHistory';
-import StudentHistory from './components/StudentHistory';
-import Reports from './components/Reports';
-import CurrentAndBan from './components/CurrentAndBan';
-import LoadProfile from './components/LoadProfile';
-import ContactMe from './components/ContactMe';
-
-import { AuthContext } from './components/AuthContext'
-
+//the core function
+//calls all other pages and manages authentication
 export default function App() {
+  //check if user is logged in
   const [loggedIn, setLoggedIn] = useState((localStorage.getItem("loggedIn") !== null ? localStorage.getItem("loggedIn") : false));
 
   //set login and logout; this is where we will set the authentication from the backend
+  //changes the user to be logged in
   const login = () => {
 	localStorage.setItem("loggedIn", true);
   setLoggedIn(localStorage.getItem("loggedIn"));	
   };
-
+  
+  //changes the user to be logged out
   const logout = () => {
 	setLoggedIn(false);
 	localStorage.setItem("loggedIn", false);
   localStorage.setItem("email", "");
   };
 
+  //renders the correct screen based on navs in other .js files
   return (
     <div className="App">
       <AuthContext.Provider value={{isLoggedIn: loggedIn, login: login, logout: logout}}>
@@ -46,39 +49,9 @@ export default function App() {
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
-            <Route path='/Contactable' element={<ContactMe />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
     </div>
   )
-}
-
-function useProvideAuth() {
-
-}
-
-function PrivateRoute({ children }) {
-  // let auth = useAuth();
-
-  // const [user, setUser] = useState("");
-
-  // useEffect(() => {
-    // fetch("/email/", {
-      // method: 'GET',
-      // headers: {
-        // 'Content-Type' : 'application/json'
-      // },
-      // })
-      // .then(res => res.json())
-      // .then(authTag => setUser(authTag))
-      // //.then(console.log(user.authTag))
-      // .catch(error => console.log("COULD NOT FETCH /EMAIL/"));
-  // }, []);
-
-  // //console.log(user.authTag);
-
-  // return (
-    // user.authTag != "USER NOT FOUND" ? children : <SignIn />
-  // );
 }

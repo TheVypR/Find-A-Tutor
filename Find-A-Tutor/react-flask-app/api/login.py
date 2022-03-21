@@ -1,16 +1,17 @@
-import hashlib
-from datetime import datetime, timedelta
-from flask import Flask, request, jsonify
-import profile, signup, appointment, history, adminRoutes
+#FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
+import hashlib                                              #used to hash pw to check against pw in DB
+from datetime import datetime, timedelta                    #used to compare dates
+from flask import Flask, request, jsonify                   #used for Flask API
+import profile, signup, appointment, history, adminRoutes   #used to call functions
+from flaskext.mysql import MySQL                            #used to connect to DB
 
-#Database stuff
-from flaskext.mysql import MySQL
-
+#setup flask
 app = Flask(__name__)
 
+#setup DB
 mysql = MySQL()
-isTutor = False
 
+#toggle for accessing the DB on a local machine
 locality = 1 # have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
@@ -25,29 +26,33 @@ else:
 
 mysql.init_app(app)
 
+#checks provided email and password for existence in the DB
 @app.route('/login/', methods=['POST'])
 def login():
-  #sql setup
+  #connect to DB
   conn = mysql.connect()
   conn.autocommit(True)
   cursor = conn.cursor()
+  
   #get the login provided
   info = request.get_json()
-  global email
   email = info[0]
   pw = info[1]
-  print(email)
-  print(pw)
 
-  #get the salt
+  #get the salt used for pw associated with this email
   cursor.execute("select stu_salt from Student where stu_email = \""
                           + email + "\"")               
   result = cursor.fetchone()
 
+  #check that email existed in users (Student table)
   if result is None:
     return jsonify({'error': 'Not Authenticated'})
-
+  
+  #on user existing
+  #hash their login attempt password
+  #check hash against stored password to verify identity
   if(result):
+      #use salt to hash given password
       salt = bytes.fromhex(result[0])
       password = hashlib.pbkdf2_hmac(
           'sha256', # The hash digest algorithm for HMAC
@@ -55,81 +60,103 @@ def login():
           salt, # Provide the salt
           100000 #100,000 iterations of SHA-256 
       )
+      
+      #combine password and salt
       password = salt + password
-      cursor.execute("select stu_email from Student where stu_email = \""
+      #check for password in DB
+      cursor.execute("select stu_email, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
-      print(user)
+      
+      #if password not found -> ERROR
       if user is None:
         return jsonify({'error': 'Not Authenticated'})
     
-  #if user is a tutor
-  cursor.execute("select exists(select stu_name from Tutor join Student on Student.stu_name = Tutor.tut_name where stu_email=\"" + email + "\")")
-  checkIfTutor = cursor.fetchall()
-  if checkIfTutor[0][0] == 1:
-      #get users login prefs
-      cursor.execute("select login_pref from Tutor where tut_email=\"" + email + "\"")
-      login_pref = cursor.fetchall()
-      setIsTutor(login_pref[0][0])
+  #if user is a tutor, check login preference
+  cursor.execute("select login_pref from Tutor where tut_email = \"" + email + "\"")
+  checkIfTutor = cursor.fetchone()
+  
+  #if the user is found in Tutor table
+  #send their login pref to frontend
+  #else login pref is student
+  if checkIfTutor:
+      loginPref = checkIfTutor[0]
+  else:
+      loginPref = 0
 
+  #close connection
   conn.close()
 
-  return jsonify({'email': email})
+  #return email, permissions, and login preference
+  return jsonify({'email': email, 'isAdmin': user[1], 'loginPref':loginPref})
 
-# provide a list of current tutors
+#return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
     return adminRoutes.CurrentTutors()
 
+#add a student's information to the Tutor table 
+@app.route('/AddTutor/', methods=['POST'])
+def addTutor():
+    student = request.get_json()
+    return adminRoutes.BecomeATutor(student)
+
+#retrieve a dictionary of all relevant tutors who are available on call
+#only shows tutors who teach a class that the student (email) is taking
 @app.route('/Contactable/', methods=['GET'])
 def contactable():
-    email = request.args.get("email")
+    email = request.args.get("email")       #get email of student to compare classes
     return adminRoutes.Contactable(email)
 
-# reported tutors list
+#list of all outstanding reports on tutors
 @app.route('/ReportedTutors/', methods=['GET'])
 def reportedTutors():
     return adminRoutes.ReportedTutors()
 
-# reported students list
+#list of all outstanding reports on students
 @app.route('/ReportedStudents/', methods=['GET'])
 def reportedStudents():
     return adminRoutes.ReportedStudents()
 
-# provide a list of banned students
+#list of all students who have been banned
 @app.route('/BannedStudents/', methods=['GET'])
 def bannedStudents():
     return adminRoutes.BannedStudents()
 
-# remove student from reported students or tutors list
+# remove report from reported students or reported tutors list
 @app.route('/DimissReport/', methods=['POST'])
 def dismissReport():
-    tutor = request.get_json()
-    adminRoutes.DeleteUserFromList(tutor)
+    target = request.get_json()             #get report to dismiss
+    adminRoutes.DeleteUserFromList(target)
     return 'Done'
 
-# add student to the banned list
+#ban a student or tutor
+#removes user from all Tutor and Student tables
+#replaces user in Appointments with the "banned" id
 @app.route('/AddStudentToBan/', methods=['POST'])
 def addStudentToBan():
-    tutor = request.get_json()
-    adminRoutes.AddStudentToBan(tutor)
+    target = request.get_json()          #get target info
+    adminRoutes.AddStudentToBan(target)
     return 'Done'
 
-#signUp page
+#submit data to sign up for site
 @app.route('/signup/', methods=['POST'])
 def signUp():
-  return signup.signup()
+  data = request.get_json() #get signup data
+  return signup.signup(data)#return success or fail
 
-#profile page
+#submit changed profile information to the DB
 @app.route('/myProfile/', methods=['POST'])
 def myProfile():
+    #get information to change
     submission = request.get_json()
     email = submission['email']
+    
     #Check to see if this is a removal
     if 'remove' in submission.keys():
+        #remove timeslot from TutorTimes
         submittedTime = submission['remove']
-        print(submittedTime)
         startTime = dateParse(submittedTime['startTime'])
         endTime = dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
@@ -138,9 +165,9 @@ def myProfile():
     #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
-    #check to see if it s a change in available times
+    #check to see if it's an addition to available times
     elif 'submitTimes' in submission.keys() :
-        # else parse timeslot and divide it into 15 min chunks for storage
+        #parse timeslot and divide it into 15 min chunks for storage
         startTime = dateParse(submission['startTime'])
         endTime = dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
@@ -149,10 +176,12 @@ def myProfile():
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
-    #otherwise the user hit the apply button
+    #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)
 
+#retrieve the weekday from an ISO date
+### TODO: Currently not used but needed for future ###
 def getDayFromISO(day):
     weekday = ""
 
@@ -173,102 +202,126 @@ def getDayFromISO(day):
 
     return weekday
 
+#retrieve the profile information for a user
 @app.route('/myProfile/', methods=['GET'])
 def getProfile():
+    #get user email
     email = request.args.get('email')
-    return profile.retrieve_profile(email, isTutor)
+    
+    #determine what profile is being populated
+    isTutor = request.args.get('view')
+    return profile.retrieve_profile(email, isTutor=="tutor")
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
   email = data['email']
-  print(data['day'])
+  
+  #combine times and a day to make a datetime
   newStart = createDateFromTime(data['day'], data['start'])
   newEnd = createDateFromTime(data['day'], data['end'])
+  
+  #split the datetimes into 15 minute intervals for storage
   slots = splitTimes({'start':newStart, 'end':newEnd})
   
-  #add the appointment and mark time as taken
+  #add the appointment and mark tutor time as taken
   return appointment.addAppointment(data, email, newStart, newEnd, slots)
 
-#get the rates for classes for a given tutor
+#get the rates for all classes for a specific tutor
 @app.route('/getRates/', methods=['POST'])
 def getRates():
-    data = request.get_json()
+    data = request.get_json()           #get tutor email
     return appointment.getRates(data)
 
-#get the classes the student is taking
+#get all classes a student is taking
 @app.route('/getStuClasses/', methods=['GET'])
 def getStuClasses():
     email = request.args.get("email")
     return appointment.getStuClasses(email)
-  
+
+#get all times from relevant tutors
+#only retrieves from tutors that teach classes the student is taking
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
+    #get student email to compare tutor classes to
     email = request.args.get("email")
-    times = mergeTimes(appointment.getTimes(email))
-    print(times)
-    return {'times':times}
     
+    #if there are times returned
+    if len(appointment.getTimes(email)) != 0:
+        #merge 15 minute intervals into time blocks for displaying
+        times = mergeTimes(appointment.getTimes(email))
+    else:
+        #return empty times array
+        times = []
+    return {'times':times}
+
+#retrieve all the appointments for a student or tutor
 @app.route('/getAppointments/', methods=['GET'])
 def getAppointments():
-    email = request.args.get("email")
-    appts = appointment.getAppointments(email)
-    return appts
-    
+    email = request.args.get("email")   #email to get appointments for
+    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
+    return appointment.getAppointments(email, tutView=="tutor")
+
+#remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
-    data = request.get_json()[0]
-    email = data['email']
+    data = request.get_json()   #get data from frontend
+    email = data['email']       #get the email from data
+    
+    #parse moments into datetimes for storage
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    
+    #split the datetimes into 15 minute intervals
     slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+  
     return appointment.removeAppointment(email, data, newDate, slots)
 
-@app.route('/editAppointment/', methods=['POST'])
-def editAppointment():
-    data = request.get_json()[0]
-    email = data['email']
-    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
-    returnSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
-    takeSlots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
-    return appointment.editAppointment(email, data, newDate, returnSlots, takeSlots)
-
-@app.route('/toggleView/')
-def toggleView():
-    global isTutor
-    isTutor = not isTutor
-    print(isTutor)
-    return str(isTutor)
-
+#load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])
 def loadAppointments():
     email=request.args.get("email")
-    if isTutor:
+    isTutor=request.args.get("view")
+    
+    #if user is on tutor view
+    if isTutor == "tutor":
+        #load previous appointments with user's students
         return history.loadPreviousAppointmentsTutor(email)
     else:
+        #load previous appointments with user's tutors
         return history.loadPreviousAppointmentsStudent(email)
 
+#submit a rating for a student or tutor
 @app.route('/submitRating/', methods=['POST'])
 def rateTutor():
     data = request.get_json()
     return history.submitRating(data)
 
+#report a student or tutor for an issue on a past appointment
 @app.route('/submitReport/', methods=['POST'])
 def report():
     data = request.get_json()
-    email=request.args.get("email")
-    if isTutor:
+    email=data["email"]
+    isTutor = data["view"]
+    #if reporter is a tutor
+    if isTutor == "tutor":
+        #report a student
         return history.submitStudentReport(data, email)
     else:
+        #report a tutor
         return history.submitTutorReport(data, email)
 
+#take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
+#needed for storage and calendar display
 def dateParse(date):
     #get the parts of the date
+    #separated by whitespace
     dateArray = date.split()
     
-    #get the year
+    #put the year into the new datetime
     newDate = dateArray[3] + "-"
-    #get the month
+    
+    #put the month into the new datetime
     if(dateArray[1] == "Jan"):
         newDate += "01-"
     elif(dateArray[1] == "Feb"):
@@ -293,125 +346,162 @@ def dateParse(date):
         newDate += "11-"
     elif(dateArray[1] == "Dec"):
         newDate += "12-"
-    #get the day
+    
+    #put the day into the new datetime
     newDate += dateArray[2] + "T"
-    #get the time
-    newDate += dateArray[4]
     
-    print(newDate)
+    #if seconds is not 00 reset to 00
+    checkSec = dateArray[4].split(':')
+    if checkSec[2] != "00":
+        newDate += checkSec[0] + ":" + checkSec[1] + ":00" 
+    else:
+        #put the time into the new datetime
+        newDate += dateArray[4]
     
+    #return the new datetime    
     return newDate
-    
+
+#take a datetime (YYYY-MM-DDThh:mm:ss) and a time (HH:MM)
+#combine them into a new datetime (YYYY-MM-DDThh:mm:ss)
+#needed for storage recieved from timepickers
 def createDateFromTime(day, time):
-    #split up the day
+    #check for proper format
     if len(day) == 19 and 'T' in day:
+        #leave day as is
         date = day
     else:
+        #parse day to proper format
         date = dateParse(day)
+        
+    #split on "T" and store the first part (YYYY-MM-DD) in new datetime
     newDay = date.split("T")[0]
     
-    #add the time
+    #add the separator, time, and seconds
     newDate = newDay + "T" + time + ":00"
     
-    print(newDate + " 179")
-    
+    #return new datetime
     return newDate
     
 #takes all the 15min times and makes them one block
 #input must be an array of datetimes formatted like this
-##### YYYY-MM-DDTHH:mm:SS #####
+##### YYYY-MM-DDThh:mm:ss #####
 def mergeTimes(timeArray):
     #make sure to exclude the first and include the last block
     first = True
     left = len(timeArray)
-    #set the expected difference
+    print(timeArray)
+    #set the expected difference between timeblocks
     minDif = timedelta(minutes=15)
+    
     #management vars
-    curTime = datetime.now()
-    timeBlockArray = []
-    curBlockStart = datetime.now()
-    curBlockEnd = datetime.now()
-    lastTutorInfo = timeArray[0]
+    curTime = datetime.now()        #the last time (for comparing)
+    timeBlockArray = []             #the new array of merged timeblocks
+    curBlockStart = datetime.now()  #the current start time for a merged block
+    curBlockEnd = datetime.now()    #the current end time for a merged block
+    lastTutorInfo = timeArray[0]    #the information for the first tutor block (needed to make sure the last block for a user doesn't take the next user's info)
 
-    #go through every entry
+    #go through every in the timeArray
     for time in timeArray:
+        #get the start and end times for the entry
         startTime = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
         endTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+        
         #check if this is for an appointment or not
         if 'tut_email' in time:
+            #if the difference between the last entry and this one is not 15 minutes, start the new merged block
             if (endTime - curTime) != minDif:
-                #if this is the first don't add last one
+                #if this is the first don't add last entry's info
                 if not first:
-                    timeBlockArray.append({'tut_email':lastTutorInfo['tut_email'], 'tut_name':lastTutorInfo['tut_name'],
-                    'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                    'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
-                    'type': "time",
-                    'title': "Available Time with " + lastTutorInfo['tut_name'],
-                    'rating': lastTutorInfo['rating']})
+                    timeBlockArray.append({
+                        'tut_email':lastTutorInfo['tut_email'], 
+                        'tut_name':lastTutorInfo['tut_name'],
+                        'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                        'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
+                        'type': "time",
+                        'title': "Available Time with " + lastTutorInfo['tut_name'],
+                        'rating': lastTutorInfo['rating']
+                    })
                 else:
+                    #no longer the first ever entry
                     first = False
-                #add time to the blockArray
+                
+                #set new blocks start and end
                 curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
                 curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
             else:
-                #add 15 minutes to the block
+                #make the new block end equal to the last entry's end time
                 curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+                
+            #if this is the last block, finalize the block
             if left == 1:
-                timeBlockArray.append({'tut_email':lastTutorInfo['tut_email'], 'tut_name':lastTutorInfo['tut_name'],
+                timeBlockArray.append({
+                    'tut_email':lastTutorInfo['tut_email'], 
+                    'tut_name':lastTutorInfo['tut_name'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",
                     'title': "Available Time with " + lastTutorInfo['tut_name'],
-                    'rating': time['rating']})
+                    'rating': time['rating']
+                })
         else:
+            #if the difference between the last entry and this one is not 15 minutes, create a new merged block
             if (endTime - curTime) != minDif:
-            #if this is the first don't add last one
+            #if this is the first don't add last entry
                 if not first:
-                    timeBlockArray.append({'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')})
+                    #add the information to the array
+                    timeBlockArray.append({
+                        'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')
+                    })
                 else:
+                    #no longer the first entry
                     first = False
-                 #add time to the blockArray
+                
+                #start the new block's info
                 curBlockStart = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
                 curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
             else:
-                #add 15 minutes to the block
+                #make the new block end equal to the last entry's end time
                 curBlockEnd = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
+            
+            #if this is the last block, finalize the block
             if left == 1:
-                timeBlockArray.append({'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
-                                        'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')})
-        #hold the new time
+                timeBlockArray.append({
+                    'startTime': datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
+                    'endTime': datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S')
+                })
+        
+        #hold the new last time's end (curTime)
         curTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
-        left-=1
-        lastTutorInfo = time
+        left-=1                 #decrement the counter
+        lastTutorInfo = time    #hold the info from the last tutor
     
+    #return the new array of merged times
     return timeBlockArray
         
+#split a large block of time into 15 minute increments
 def splitTimes(timeToSplit):
-    startSplit = datetime.strptime(timeToSplit['start'], '%Y-%m-%dT%H:%M:%S')
-    endSplit = datetime.strptime(timeToSplit['end'], '%Y-%m-%dT%H:%M:%S')
-    curEnd = startSplit + timedelta(minutes=15)
-    splitTimeArray = []
+    startSplit = datetime.strptime(timeToSplit['start'], '%Y-%m-%dT%H:%M:%S')   #the start of the block to split
+    endSplit = datetime.strptime(timeToSplit['end'], '%Y-%m-%dT%H:%M:%S')       #the end of the block to split
+    curEnd = startSplit + timedelta(minutes=15)                                 #the end of the first 15 minute intervals
+    splitTimeArray = []                                                         #the array of 15 minute time blocks
 
-    #go through the time until the end
+    #go through the time block until the end in found
     while curEnd < endSplit:
-        print(curEnd)
+        #add shortened block into the array
         splitTimeArray.append({
-        'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
-        'end':datetime.strftime(curEnd, '%Y-%m-%dT%H:%M:%S')})
+            'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
+            'end':datetime.strftime(curEnd, '%Y-%m-%dT%H:%M:%S')
+        })
+        #get the end and start for the next 15 minute block
         startSplit = curEnd
         curEnd = startSplit + timedelta(minutes=15)
+    
     #put last time in array
     splitTimeArray.append({
-    'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
-    'end':datetime.strftime(endSplit, '%Y-%m-%dT%H:%M:%S')})
+        'start':datetime.strftime(startSplit, '%Y-%m-%dT%H:%M:%S'), 
+        'end':datetime.strftime(endSplit, '%Y-%m-%dT%H:%M:%S')
+    })
+    
+    #return array of 15 minute increments
     return splitTimeArray
-
-def setIsTutor(login_pref):
-    global isTutor
-    if login_pref == 1: #tutor
-        isTutor = True
-    elif login_pref == 0: #student
-        isTutor = False
-    else:
-        print("Error - Invalid value for login_pref")

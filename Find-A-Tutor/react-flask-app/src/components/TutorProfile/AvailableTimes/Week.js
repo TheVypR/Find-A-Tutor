@@ -6,7 +6,7 @@ import Weekday from './Weekday'
  */
 class Week extends React.Component {
     render() {
-        let times = this.props.times;
+        let times = this.props.times;   // Available times from the DB
         return (
             <>
                 <div className="d-flex justify-content-center">
@@ -23,7 +23,7 @@ class Week extends React.Component {
                     <div className="vr"></div>
                     <Weekday day="friday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="sunday" times={times} />
+                    <Weekday day="saturday" times={times} />
                     <div className="vr"></div>
                 </div>
             </>

@@ -20,7 +20,21 @@ const theme = createTheme({
     }
 });
 export default function NavBar() {
+    function AddTutor() {
+        const tutorToAdd = {
+            stu_email: localStorage.getItem("email"),
+        };
+        fetch('/AddTutor/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tutorToAdd)
+        });
+    }
+
     const auth = useContext(AuthContext);
+
     return auth.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -30,7 +44,7 @@ export default function NavBar() {
                         Find-A-Tutor
                     </Typography>
                     
-                    <Button href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+                    <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
                     <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>

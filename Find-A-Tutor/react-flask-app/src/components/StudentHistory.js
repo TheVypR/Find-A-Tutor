@@ -17,6 +17,7 @@ import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import NavBar from './NavBar';
 
 const theme = createTheme();
 export default function StudentHistory() {
@@ -37,7 +38,7 @@ export default function StudentHistory() {
 	const handleShowReport = function (){ setShowReport(true)};
 	
 	//get history
-	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email"))
+	useEffect(() => { fetch("/loadAppointment/?email=" + localStorage.getItem("email") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
             .then(
                 result => {
@@ -50,10 +51,6 @@ export default function StudentHistory() {
 	}, []);
 	
 	useEffect(() => {setRating(appts['rating']);}, []);
-	
-	function toggleView() {
-		fetch("/toggleView/")
-	};
 	
 	const onRatingChange = (event) => {
 		fetch("/submitRating/", {
@@ -76,15 +73,16 @@ export default function StudentHistory() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify({'email':localStorage.getItem("email"), 'target': target, 'reason': reason, 'report':report})  
+			body:JSON.stringify({'email':localStorage.getItem("email"), 'target': target, 'reason': reason, 'report':report, 'view':localStorage.getItem("view")})  
 		})
 	}
 	
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
+			<NavBar />
             <Container maxWidth="xl" sx={{mt: 12, mb: 12}}>
 				<Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-					<Modal show={showReport} onHide={handleClose}>
+					<Modal show={showReport} centered onHide={handleClose}>
 						<form>
 							<Modal.Header closeButton>
 							<Modal.Title>Report </Modal.Title>
@@ -123,7 +121,7 @@ export default function StudentHistory() {
 								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell>Student</TableCell>
+											<TableCell>Tutor</TableCell>
 											<TableCell>Class</TableCell>
 											<TableCell>Date Tutored</TableCell>
 											<TableCell>Leave A Rating</TableCell>
@@ -151,9 +149,6 @@ export default function StudentHistory() {
 							</React.Fragment>
 						</Grid>
 					</Container>
-					<Button type="submit" variant="contained" sx={{mt: 1, mb: 1}} onClick={() => toggleView()}>
-					<Link to="/TutoringHistory">Go to Tutor History</Link>
-					</Button>
 				</Paper>
             </Container>
         </ThemeProvider>

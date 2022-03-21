@@ -21,6 +21,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ContactMe from './ContactMe';
+import ToggleView from './ViewToggle'
 
 export const StyleWrapper = styled.div`
   .fc td {
@@ -32,6 +33,7 @@ function FullCalendarApp() {
   //calendar filling
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
+  const [view, setView] = useState(false);
   
   //handle modals
   const [showTime, setShowTime] = useState(false);
@@ -57,9 +59,9 @@ function FullCalendarApp() {
   const [rating, setRating] = useState(null);
 
   //filter
-  const [evnts, setEvnts] = useState([]);
-  const [filterTimes, setFilterTimes] = useState(false);
-  const [filterAppts, setFilterAppts] = useState(false);
+  const [evnts, setEvnts] = useState(times.concat(appts));
+  const [filterTimes, setFilterTimes] = useState(true);
+  const [filterAppts, setFilterAppts] = useState(true);
   const [filterClass, setFilterClass] = useState("All Classes");
   const [studentClasses, setStudentClasses] = useState();
   
@@ -83,52 +85,77 @@ function FullCalendarApp() {
   const [wrongTimes, setWrongTimes] = useState(false);
   const [wrongClass, setWrongClass] = useState(false);
   
-  //loads in the times currently available in the DB -IAA
-  useEffect(() => { fetch("/getTimes/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setTimes(result['times']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
+  useEffect (() => {
+	if(localStorage.getItem("view") == "tutor"){
+		TutLoad();
+	} else {
+		StuLoad();
+	}
   }, []);
+  
 
-  useEffect(() => { fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setStudentClasses(result['stu_classes']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
-            )
-		}, []);
+  
+  function TutLoad() {
+	//loads in the appts currently created in the DB - IAA
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setAppts(result['appts']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+					}
+				)
+  }
+  
+  function StuLoad() {
+	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setTimes(result['times']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
 
-  //loads in the appts currently created in the DB - IAA
-  useEffect(() => { fetch("/getAppointments/?email=" + localStorage.getItem("email"))
-            .then(res => res.json())
-            .then(
-                result => {
-                    setAppts(result['appts']);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components
-                (error) => {
-                    console.log(error);
-                }
-            )
-  }, []);
+	fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setStudentClasses(result['stu_classes']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
+
+	  //loads in the appts currently created in the DB - IAA
+	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setAppts(result['appts']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+					}
+				)
+  }
 
 	const updateEvents = function() {
 		let localEvents = [];
@@ -158,6 +185,8 @@ function FullCalendarApp() {
 		setEvnts(localEvents);
   }
 
+	
+
 	//create appointment
 	function addEvent() {
 		setStartDate(origStartDate);
@@ -181,7 +210,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([myEvent])
-		})
+		}).then(document.location.reload())
 	}
 	
 	const handleEventClick = function (e, editting) {
@@ -243,14 +272,14 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{
+			body:JSON.stringify({
 				email:localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
 				end: origEndDate
-			}])    
-		})
+			})    
+		}).then(document.location.reload())
 	}
 	
 	//edit apppointment
@@ -263,6 +292,7 @@ function FullCalendarApp() {
 		  day: origStartDate,
 		  title: title,
 		  tut_email: tutEmail,
+		  tut_name: tutName,
 		  block_start: blockStart,
 		  block_end: blockEnd
 		};
@@ -271,13 +301,13 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify([{
+			body:JSON.stringify({
 				email: localStorage.getItem("email"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
 				end: origEndDate
-			}])
+			})
 		}).then(
 			fetch("/addAppointment/", {
 			method: 'POST',
@@ -285,12 +315,12 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify([myEvent])  
-		})
+		}).then(document.location.reload())
 		)
 	}
 	
 	function verifyTimes(isNew) {
-		if (endTime < startTime) {
+		if (endTime <= startTime) {
 			setWrongTimes(true)
 		} else {
 			if(isNew){
@@ -329,12 +359,16 @@ function FullCalendarApp() {
 	}
 	console.log(authContext);
 	
+	useEffect(() => {
+		updateEvents(() => appts);
+	}, [times, appts]);
+	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn === "true" && (
     <div className="App">
 		<NavBar />
-		<Modal show={showTime} onHide={handleClose}>
+		<Modal show={showTime} centered onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
 			  <Modal.Title>{title}</Modal.Title>
@@ -375,7 +409,7 @@ function FullCalendarApp() {
 		</form>
       </Modal>
 	  
-	  <Modal show={showAppt} onHide={handleClose}>
+	  <Modal show={showAppt} centered onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
@@ -399,7 +433,7 @@ function FullCalendarApp() {
         </Modal.Footer>
       </Modal>
 		
-	  <Modal show={showEdit} onHide={handleClose}>
+	  <Modal show={showEdit} centered onHide={handleClose}>
 		<form>
 			<Modal.Header closeButton>
 			  <Modal.Title>{title}</Modal.Title>
@@ -442,7 +476,7 @@ function FullCalendarApp() {
 
 		<div className="filter">
 		<div className='switchViews'>
-			<Button color="blue">Switch Views</Button>
+			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
 		</div>
 		{/* tab to filter calendar */}
 		<Paper
@@ -536,7 +570,7 @@ function FullCalendarApp() {
 		  
           //add appointments to calendar
           events={evnts}
-			
+
           //formatting of appointments
           eventColor="green"	
           nowIndicator

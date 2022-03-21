@@ -169,6 +169,7 @@ class T_Profile extends React.Component {
                     <p id="email"> {items['email']} </p>
                 </div>
 
+                {/* Render top two sections */}
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs
                         setPaymentType={this.setPaymentType}
@@ -190,6 +191,7 @@ class T_Profile extends React.Component {
 
                 <AvailableTimes times={items['times']} />
 
+                {/* Bottom Buttons */}
                 <div id="bottom">
                     <Button type="submit" id="save"
                         onClick={this.handleSubmit}

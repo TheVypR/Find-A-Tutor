@@ -3,6 +3,7 @@ import moment from 'moment';
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile";
 import StudentProfile from "./StudentProfile";
+import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
 
@@ -13,9 +14,10 @@ class LoadProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {},
-            isEdit: false
+            items: {},      //submission from get_profile
+            isEdit: false   // boolean which tracks whether or not the user has hit the edit button
         }
+
         this.edit = this.edit.bind(this);
         this.doFetch = this.doFetch.bind(this);
         this.convertToMoment = this.convertToMoment.bind(this);
@@ -42,14 +44,15 @@ class LoadProfile extends React.Component {
      * Gets info from db
      */
     doFetch() {
-        fetch("/myProfile/?email=" + localStorage.getItem("email"))
+        fetch("/myProfile/?email=" + localStorage.getItem("email") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
             .then(
                 (result) => {
                     //Convert result[times] to moment
-                    console.log(result)
-                    let times = result['times'];
-                    result['times'] = this.convertToMoment(times);
+                    if ('times' in result) {
+                        let times = result['times'];
+                        result['times'] = this.convertToMoment(times);
+                    }
                     this.setState({
                         isLoaded: true,
                         items: result
@@ -71,7 +74,7 @@ class LoadProfile extends React.Component {
      * @returns [{'Monday': {'startTime': moment, 'endTime': moment}, ...]
      */
     convertToMoment(times) {
-        var timeSlots = {
+        var timeSlots = {   //Stores timeslots for each weekday
             'Monday': [],
             'Tuesday': [],
             'Wednesday': [],
@@ -80,6 +83,7 @@ class LoadProfile extends React.Component {
             'Saturday': [],
             'Sunday': []
         }
+
         times.forEach(slot => {
             let startTime = slot['startTime'];
             let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
@@ -94,14 +98,18 @@ class LoadProfile extends React.Component {
     }//convetToMoment
 
     render() {
+        //Condition rendering for Tutor Profile static and edit
         let staticOrEditTutor = this.state.isEdit ?
             <TutorProfile items={this.state.items} edit={this.edit} /> :
-            <TutorProfileStatic items={this.state.items} edit={this.edit} />
+            <TutorProfileStatic items={this.state.items} edit={this.edit} />;
+        
+        //Conditional rendering for student  and tutor profile
         var profile = this.state.items['isTutor'] ?
             staticOrEditTutor :
-            <StudentProfile items={this.state.items} />
+            <StudentProfile items={this.state.items} />;
         return (
             <>
+            <div style={{margin: '75px'}}><NavBar /></div>
                 {profile}
             </>
         );//return

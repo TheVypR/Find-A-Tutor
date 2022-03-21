@@ -1,22 +1,18 @@
-from multiprocessing import connection
-import os
-import hashlib
-from base64 import b64encode
-from sqlite3 import connect
-from flask import Flask, request
+#FIND-A-TUTOR ~ SignUp backend ~ Author: Isaac A.
+import os                           #used for random byte generation
+import hashlib                      #used to hash pw
+from base64 import b64encode        #used to encode/decode pw
+from flask import Flask             #used for Flask API
+from flaskext.mysql import MySQL    #used to connect to DB
 
-from flask_wtf import FlaskForm
-from flask_wtf import Form
-from wtforms import BooleanField
-
-#Database stuff
-from flaskext.mysql import MySQL
-
+#flask setup
 app = Flask(__name__)
 
+#DB setup
 mysql = MySQL()
 
-locality = 1 # have locality set to 1 if you want to test on your local machine
+#toggle for accessing the DB on a local machine
+locality = 1 #have locality set to 1 if you want to test on your local machine
 if (locality == 1):
     app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
     app.config['MYSQL_DATABASE_USER'] = 'test'
@@ -29,33 +25,38 @@ else:
     app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
-#end database stuff
 
-def signup():
+#Hash the given password then
+#add the user's email, name, hashed password, and permissions to DB
+def signup(info):
+    #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    info = request.get_json()    
-    print(info)
     
-    #get salt
+    #create the password salt
     salt = os.urandom(32)
     
+    #hash the password
     password = hashlib.pbkdf2_hmac(
-        'sha256', # The hash digest algorithm for HMAC
-        info[3].encode('utf-8'), # Convert the password to bytes
-        salt, # Provide the salt
-        100000 #100,000 iterations of SHA-256 
+        'sha256',                   # The hash digest algorithm for HMAC
+        info[3].encode('utf-8'),    # Convert the password to bytes
+        salt,                       # Provide the salt
+        100000                      #100,000 is standard for SHA-256 
     )
     
+    #combine password and salt
     password = salt + password
-       
+    
+    #insert data into DB
     cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt, isAdmin) values (\"" 
                     + info[2] + "\", \"" 
                     + info[0] + " " + info[1] +"\", \"" 
                     + password.hex() + "\", \"" 
                     + salt.hex() + "\", false)")
     
+    #close the connection
     conn.close()
-
+    
+    #confirm completion
     return 'Done'
