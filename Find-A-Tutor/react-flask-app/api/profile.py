@@ -8,9 +8,7 @@ from wtforms import BooleanField
 
 #Database stuff
 from flaskext.mysql import MySQL
-
 import json
-
 import login
 
 app = Flask(__name__)

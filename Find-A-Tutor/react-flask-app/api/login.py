@@ -286,7 +286,7 @@ def deleteAppointment():
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])
 def loadAppointments():
-    email=request.args.get("token")
+    token=request.args.get("token")
     isTutor=request.args.get("view")
     
     #if user is on tutor view
