@@ -254,6 +254,7 @@ def getTimes():
     else:
         #return empty times array
         times = []
+    print(times)
     return {'times':times}
 
 #retrieve all the appointments for a student or tutor
@@ -415,6 +416,7 @@ def mergeTimes(timeArray):
                     timeBlockArray.append({
                         'tut_email':lastTutorInfo['tut_email'], 
                         'tut_name':lastTutorInfo['tut_name'],
+                        'classes':lastTutorInfo['classes'],
                         'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                         'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                         'type': "time",
@@ -437,6 +439,7 @@ def mergeTimes(timeArray):
                 timeBlockArray.append({
                     'tut_email':lastTutorInfo['tut_email'], 
                     'tut_name':lastTutorInfo['tut_name'],
+                    'classes':lastTutorInfo['classes'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",

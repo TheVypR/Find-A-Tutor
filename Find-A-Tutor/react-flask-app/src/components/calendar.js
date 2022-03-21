@@ -132,6 +132,7 @@ function FullCalendarApp() {
 				.then(
 					result => {
 						setStudentClasses(result['stu_classes']);
+						console.log(result);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -159,29 +160,24 @@ function FullCalendarApp() {
 
 	const updateEvents = function() {
 		let localEvents = [];
-		
+		console.log(times);
 		//filter classes
 		if (filterClass === "All Classes") {
 			if (filterAppts) {
-				console.log("appts");
 				localEvents = localEvents.concat(appts);
-			} else {
-				console.log("remove appts");
+			}
+			if (filterTimes) {
+				localEvents = localEvents.concat(times);
 			}
 		} else {		
 			if (filterAppts) {
-				console.log("appts");
-				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] == filterClass));
-			} else {
-				console.log("remove appts");
+				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] === filterClass));
+			}
+			if (filterTimes) {
+				localEvents = localEvents.concat(times.filter(time => time['classes'].includes(filterClass, 0)));
 			}
 		}
-		if (filterTimes) {
-			console.log("times");
-			localEvents = localEvents.concat(times);
-		} else {
-			console.log("remove times");
-		}
+		
 		setEvnts(localEvents);
   }
 
