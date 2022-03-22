@@ -91,7 +91,7 @@ def login():
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2],'isTutor': isTutor, 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref})
 
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():

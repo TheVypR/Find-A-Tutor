@@ -1,13 +1,17 @@
-import React from "react";
+import React, { Component } from "react";
 import moment from 'moment';
-import Profiles from './Profiles'
+import TutorProfileStatic from "./TutorProfileStatic";
+import TutorProfile from "./TutorProfile/T_Profile";
+import StudentProfile from "./StudentProfile";
+import StaticStudentProfile from "./StudentProfileStatic"
+import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
 
 /**
  * Determines if a student or tutor has logged in and loads the corresponding profile
  */
-class LoadProfile extends React.Component {
+class Profiles extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +40,7 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     editStudent() {
-        this.setState({ isEditStudent: !this.state.isEditStudent }, function () {
+        this.setState({ isEditStudent: !this.state.isEditStudent}, function () {
             this.doFetch();
         });
     }//editStudent
@@ -45,7 +49,7 @@ class LoadProfile extends React.Component {
      * calls doFetch on initial mounting of component
      */
     async componentDidMount() {
-        this.doFetch();
+        //this.doFetch();
     }//componentDidMount
 
     /**
@@ -106,12 +110,26 @@ class LoadProfile extends React.Component {
     }//convetToMoment
 
     render() {
+        console.log(this.props.items);
+
+        let staticOrEditTutor = this.state.isEdit ?
+            <TutorProfile items={this.props.items} edit={this.edit} /> :
+            <TutorProfileStatic items={this.props.items} edit={this.edit} />
+
+        let staticOrEditStudent = this.state.isEditStudent ?
+            <StudentProfile items={this.props.items} edit={this.editStudent} /> :
+            <StaticStudentProfile items={this.props.items} edit={this.editStudent} />
+
+        var profile = this.props.isTutor ?
+            staticOrEditTutor :
+            staticOrEditStudent
         return (
             <>
-                <Profiles items={this.state.items} />
+            <div style={{margin: '75px'}}><NavBar /></div>
+                {profile}
             </>
         );//return
     }//render
 }//LoadProfile
 
-export default LoadProfile;
+export default Profiles;
