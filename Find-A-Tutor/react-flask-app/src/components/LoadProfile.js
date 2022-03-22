@@ -3,7 +3,7 @@ import moment from 'moment';
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile";
 import StudentProfile from "./StudentProfile";
-import StudentProfileStatic from "./StudentProfileStatic"
+import StaticStudentProfile from "./StudentProfileStatic"
 import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
@@ -117,7 +117,7 @@ class LoadProfile extends React.Component {
 
         let staticOrEditStudent = this.state.isEditStudent ?
             <StudentProfile items={this.state.items} edit={this.editStudent} /> :
-            <StudentProfileStatic items={this.state.items} edit={this.editStudent} />
+            <StaticStudentProfile items={this.state.items} edit={this.editStudent} />
 
         var profile = this.state.items['isTutor'] ?
             staticOrEditTutor :

@@ -33,7 +33,6 @@ mysql.init_app(app)
 
 #retrieve profile details
 def retrieve_profile(token, isTutor):
-    print("HELLO THERE")
     conn = mysql.connect()
     cursor = conn.cursor()
     
@@ -47,7 +46,6 @@ def retrieve_profile(token, isTutor):
     if isTutor:
         return retrieve_tutor(name, email)
     elif not isTutor:
-        print("HI")
         return retrieve_student(name, email)
     else:
         print("Error - isTutor has invalid data")

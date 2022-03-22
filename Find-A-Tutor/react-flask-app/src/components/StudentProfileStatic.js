@@ -11,8 +11,7 @@ class ClassesStudying extends React.Component {
         classes.forEach(aClass => {
             classesList.push(<>
                 <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass[0]} </p>
-                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
+                    <p className='courseCodeStatic'> {aClass} </p>
                 </div>
             </>)
         })
@@ -37,7 +36,7 @@ class StudentProfileStatic extends React.Component {
         super(props)
 
         this.state = {
-            classesList: [{ verified: "", courseCode: "", rate: "" }],
+            classesList: [],
             isLoaded: false,
             isTutorView: true
         }
@@ -45,7 +44,7 @@ class StudentProfileStatic extends React.Component {
 
     render() {
         var items = this.props.items;
-        console.log(items);
+        console.log(items['classes']);
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
