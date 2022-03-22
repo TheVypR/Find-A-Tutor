@@ -23,7 +23,7 @@ class StudentProfile extends React.Component {
     handleSubmit = () => {
         const values = [{
             "classes" : this.state.classesList,
-			'email': localStorage.getItem('email')
+			'token': localStorage.getItem('token')
         }];
 
         const response = fetch("/myProfile/", {

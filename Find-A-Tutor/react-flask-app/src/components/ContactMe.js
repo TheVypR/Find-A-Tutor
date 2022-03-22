@@ -19,7 +19,7 @@ function ContactMe() {
     const [contactTutors, setContactTutors] = useState([]);
 
     //Get current tutors for the CurrentAndBan screen
-    useEffect(() => { fetch("/Contactable/?email=" + localStorage.getItem("email"))
+    useEffect(() => { fetch("/Contactable/?token=" + localStorage.getItem("token"))
         .then(res => res.json())
         .then(result => {
             setContactTutors(result);
