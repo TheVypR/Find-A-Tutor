@@ -3,6 +3,7 @@ import moment from 'moment';
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile";
 import StudentProfile from "./StudentProfile";
+import StudentProfileStatic from "./StudentProfileStatic"
 import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
@@ -15,9 +16,11 @@ class LoadProfile extends React.Component {
         super(props);
         this.state = {
             items: {},
-            isEdit: false
+            isEdit: false,
+            isEditStudent: false
         }
         this.edit = this.edit.bind(this);
+        this.editStudent = this.editStudent.bind(this);
         this.doFetch = this.doFetch.bind(this);
         this.convertToMoment = this.convertToMoment.bind(this);
     }//constructor
@@ -31,6 +34,16 @@ class LoadProfile extends React.Component {
             this.doFetch();
         });
     }//edit
+
+    /**
+     * Toggles isEditSTudent
+     * then fetches any changes from the db
+     */
+    editStudent() {
+        this.setState({ isEditStudent: !this.state.isEditStudent}, function () {
+            this.doFetch();
+        });
+    }//editStudent
 
     /**
      * calls doFetch on initial mounting of component
@@ -49,10 +62,10 @@ class LoadProfile extends React.Component {
                 (result) => {
                     //Convert result[times] to moment
                     if ('times' in result) {
-                        console.log("STOP");
                         let times = result['times'];
                         result['times'] = this.convertToMoment(times);
                     }
+                    console.log(result);
                     this.setState({
                         isLoaded: true,
                         items: result
@@ -97,12 +110,18 @@ class LoadProfile extends React.Component {
     }//convetToMoment
 
     render() {
+
         let staticOrEditTutor = this.state.isEdit ?
             <TutorProfile items={this.state.items} edit={this.edit} /> :
             <TutorProfileStatic items={this.state.items} edit={this.edit} />
+
+        let staticOrEditStudent = this.state.isEditStudent ?
+            <StudentProfile items={this.state.items} edit={this.editStudent} /> :
+            <StudentProfileStatic items={this.state.items} edit={this.editStudent} />
+
         var profile = this.state.items['isTutor'] ?
             staticOrEditTutor :
-            <StudentProfile items={this.state.items} />
+            staticOrEditStudent
         return (
             <>
             <div style={{margin: '75px'}}><NavBar /></div>
