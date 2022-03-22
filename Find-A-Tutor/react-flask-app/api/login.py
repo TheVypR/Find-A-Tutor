@@ -4,9 +4,11 @@ from datetime import datetime, timedelta                    #used to compare dat
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
+from flask_cors import CORS
 
 #setup flask
 app = Flask(__name__)
+CORS(app)
 
 #setup DB
 mysql = MySQL()
@@ -96,7 +98,14 @@ def checkLogIn():
     token = request.args.get("token")
     print(authentication.checkLogIn(token))
     return authentication.checkLogIn(token)
-
+    
+#retrieve all the appointments for a student or tutor
+@app.route('/getAppointments/', methods=['GET'])
+def getAppointments():
+    token = request.args.get("token")   #token to get appointments for
+    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
+    return appointment.getAppointments(token, tutView=="tutor")
+    
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -262,12 +271,7 @@ def getTimes():
         times = []
     return {'times':times}
 
-#retrieve all the appointments for a student or tutor
-@app.route('/getAppointments/', methods=['GET'])
-def getAppointments():
-    token = request.args.get("token")   #token to get appointments for
-    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
-    return appointment.getAppointments(token, tutView=="tutor")
+
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
