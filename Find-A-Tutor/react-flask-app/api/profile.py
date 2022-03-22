@@ -29,19 +29,13 @@ mysql.init_app(app)
 #End of DB Setup
 
 
-def retrieve_profile(email, isTutor):
-    """Retrieve details of the users profile
-
-    Gets the name and email of the tutor from the DB
-    and checks if the Tutor or Student profile should be loaded.
-    """
-
-    #Connect to DB
+# retrieve profile details
+def retrieve_profile(token, isTutor):
     conn = mysql.connect()
     cursor = conn.cursor()
     
     #get the tutor information from the DB
-    cursor.execute("select stu_name, stu_email from Student where stu_email = (%s)", (email))
+    cursor.execute("select stu_name, stu_email from Student where token = \"" + token + "\"")
     data = cursor.fetchone()
     name = data[0]
     email = data[1]

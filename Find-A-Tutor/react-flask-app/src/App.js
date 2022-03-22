@@ -18,21 +18,28 @@ import { AuthContext } from './components/AuthContext'							//used for authenti
 //the core function
 //calls all other pages and manages authentication
 export default function App() {
-  //check if user is logged in
-  const [loggedIn, setLoggedIn] = useState((localStorage.getItem("loggedIn") !== null ? localStorage.getItem("loggedIn") : false));
+	
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") !== null ? true : false);
+
+  //doesn't work with cors and without cors doesn't like the JSON
+  // useEffect(() => {
+	 // if (localStorage.getItem("token") !== null) {
+		// fetch("/authCheck?token=" + localStorage.getItem("token"), {method: 'GET', mode: 'no-cors'}).then(res => {console.log(res); res.json()}).then(result => {console.log(result['loggedIn']); setLoggedIn(result['loggedIn'])})
+	 // } else {
+		// setLoggedIn(false);
+	 // }
+  // }, [])
 
   //set login and logout; this is where we will set the authentication from the backend
   //changes the user to be logged in
   const login = () => {
-	localStorage.setItem("loggedIn", true);
-  setLoggedIn(localStorage.getItem("loggedIn"));	
+	setLoggedIn(true);
   };
   
   //changes the user to be logged out
   const logout = () => {
 	setLoggedIn(false);
-	localStorage.setItem("loggedIn", false);
-  localStorage.setItem("email", "");
+	localStorage.setItem("token", "");
   };
 
   //renders the correct screen based on navs in other .js files
