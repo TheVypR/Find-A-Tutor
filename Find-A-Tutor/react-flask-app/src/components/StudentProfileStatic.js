@@ -44,7 +44,6 @@ class StudentProfileStatic extends React.Component {
 
     render() {
         var items = this.props.items;
-        console.log(items['classes']);
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
@@ -56,7 +55,7 @@ class StudentProfileStatic extends React.Component {
 
                 <div className="d-flex justify-content-center">
                     {/*Classes*/}
-                    <ClassesStudying classes={items['classes']} />
+                    <ClassesStudying classes={[1,2]} />
                 </div>
 
                 {/* Bottom Buttons */}

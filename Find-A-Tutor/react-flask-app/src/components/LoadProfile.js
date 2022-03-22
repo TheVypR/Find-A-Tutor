@@ -49,7 +49,7 @@ class LoadProfile extends React.Component {
      * calls doFetch on initial mounting of component
      */
     async componentDidMount() {
-        this.doFetch();
+        //this.doFetch();
     }//componentDidMount
 
     /**
@@ -110,16 +110,17 @@ class LoadProfile extends React.Component {
     }//convetToMoment
 
     render() {
+        let items = this.props.items;
 
         let staticOrEditTutor = this.state.isEdit ?
-            <TutorProfile items={this.state.items} edit={this.edit} /> :
-            <TutorProfileStatic items={this.state.items} edit={this.edit} />
+            <TutorProfile items={this.props.items} edit={this.edit} /> :
+            <TutorProfileStatic items={this.props.items} edit={this.edit} />
 
         let staticOrEditStudent = this.state.isEditStudent ?
-            <StudentProfile items={this.state.items} edit={this.editStudent} /> :
-            <StaticStudentProfile items={this.state.items} edit={this.editStudent} />
+            <StudentProfile items={this.props.items} edit={this.editStudent} /> :
+            <StaticStudentProfile items={this.props.items} edit={this.editStudent} />
 
-        var profile = this.state.items['isTutor'] ?
+        var profile = this.props.isTutor ?
             staticOrEditTutor :
             staticOrEditStudent
         return (

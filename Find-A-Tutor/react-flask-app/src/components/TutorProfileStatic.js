@@ -164,7 +164,7 @@ class TutorProfileStatic extends React.Component {
                 </div>
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs items={items} />
-                    <TutorsFor classes={items['classes']} />
+                    <TutorsFor classes={[items['classes']]} />
                 </div>
                 <Week times={items['times']} />
 

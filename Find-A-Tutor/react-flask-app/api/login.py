@@ -82,14 +82,16 @@ def login():
   #else login pref is student
   if checkIfTutor:
       loginPref = checkIfTutor[0]
+      isTutor = True
   else:
       loginPref = 0
+      isTutor = False
 
   #close connection
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2],'isTutor': isTutor, 'loginPref':loginPref})
 
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():

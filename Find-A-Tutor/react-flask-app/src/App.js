@@ -30,6 +30,10 @@ export default function App() {
 	 // }
   // }, [])
 
+  const [isTutor, setIsTutor] = useState(false);
+  const [items, setItems] = useState();
+
+
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
 	setLoggedIn(true);
@@ -45,9 +49,9 @@ export default function App() {
       <AuthContext.Provider value={{isLoggedIn: loggedIn, login: login, logout: logout}}>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<SignIn />}></Route>
+            <Route path='/' element={<SignIn setIsTutor={setIsTutor} setItems={setItems}/>}></Route>
             <Route path='/signup' element={<SignUp />}></Route>
-            <Route path='/myProfile' element={<LoadProfile />} />
+            <Route path='/myProfile' element={<LoadProfile isTutor={isTutor}/>} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />

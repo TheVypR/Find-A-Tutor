@@ -14,26 +14,29 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import moment from 'moment';
 
+
+const format = 'h:mm a';    //Format for TimePicker
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn(props) {
   const nav = useNavigate();
   const [wrongLogin, setWrongLogin] = useState(false);
-  
+
   //authentication information
   const authContext = useContext(AuthContext);
 
   const loginHandler = function () {
-	  authContext.login();
-      console.log(authContext);
-      nav('/calendar');
+    authContext.login();
+    console.log(authContext);
+    nav('/calendar');
   };
 
   const logoutHandler = function () {
-      authContext.logout();
-      nav('/');
+    authContext.logout();
+    nav('/');
   };
 
 
@@ -43,37 +46,91 @@ export default function SignIn() {
     const info = [data.get('email'), data.get('password')]
     fetch("/login/", {
       method: 'POST',
-      headers: {'Content-Type' : 'application/json'},
-      body:JSON.stringify(info)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(info)
     }).then(resp => resp.json())
-    .then(result => {
-      if (result['email'] === info[0]) {
-        if (result['isAdmin'] === 1) {
-          authContext.login();
-          nav('/Reports');
+      .then(result => {
+        if (result['email'] === info[0]) {
+          if (result['isAdmin'] === 1) {
+            authContext.login();
+            nav('/Reports');
+          }
+          else {
+            if (result['isTutor']) {
+              props.setIsTutor(true)
+            }
+            loginHandler();
+          }
+          localStorage.setItem("token", result['token']);
+          localStorage.setItem("view", (result['loginPref'] == 1 ? "tutor" : "student"));
         }
         else {
-          loginHandler();
+          setWrongLogin(true)
+          logoutHandler();
         }
-		localStorage.setItem("token", result['token']);
-		localStorage.setItem("view", (result['loginPref'] == 1 ? "tutor" : "student"));
-      }
-      else {
-		setWrongLogin(true)
-        logoutHandler();
-      }
-    })
+      })
+
+    //fetch profile info
+    profileFetch();
   };
-  
-  
+
+  /**
+     * Gets profile info from db
+     */
+  const profileFetch = () => {
+    fetch("/myProfile/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
+      .then(res => res.json())
+      .then(
+        (result) => {
+          //Convert result[times] to moment
+          if ('times' in result) {
+            let times = result['times'];
+            result['times'] = convertToMoment(times);
+          }
+          props.setItems(result);      
+        }
+      )
+  }//profileFetch
+
+  /**
+     * Converts DD-MM-YYYYTHH:mm:ss to moment
+     * 
+     * @param {Array[T]} times 
+     * @returns [{'Monday': {'startTime': moment, 'endTime': moment}, ...]
+     */
+   const convertToMoment = (times) => {
+    var timeSlots = {
+        'Monday': [],
+        'Tuesday': [],
+        'Wednesday': [],
+        'Thursday': [],
+        'Friday': [],
+        'Saturday': [],
+        'Sunday': []
+    }
+    times.forEach(slot => {
+        let startTime = slot['startTime'];
+        let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
+        let endTime = slot['endTime'];
+        startTime = moment(startTime.replace(/T/, " ")).format(format);
+        endTime = moment(endTime.replace(/T/, " ")).format(format);
+
+        timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
+    });
+
+    return timeSlots
+}//convetToMoment
+
+
+
   const WrongSignIn = () => {
-	return (
-		<div style={{color : 'red'}}>
-			Incorrect Email or Password
-		</div>
-	)
+    return (
+      <div style={{ color: 'red' }}>
+        Incorrect Email or Password
+      </div>
+    )
   }
-  
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -92,7 +149,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-		  {wrongLogin ? <WrongSignIn /> : null}
+          {wrongLogin ? <WrongSignIn /> : null}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
