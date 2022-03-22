@@ -54,6 +54,15 @@ class StudentProfile extends React.Component {
 	
     render() {
         var items = this.props.items;
+        let filledInClasses = this.props.classes;
+        let classesList = [];
+        filledInClasses.forEach(aClass => {
+            classesList.push(<>
+                <div className='d-flex '>
+                    <p className='courseCodeStatic'> {aClass} </p>
+                </div>
+            </>)
+        })
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
@@ -69,7 +78,7 @@ class StudentProfile extends React.Component {
                         <div className="p-2">
                             <p id="header"> Classes </p>
                             <div id="classes">
-
+                                {classesList}
                                 {this.state.classesList.map((thisClass, index) => {
                                     return (
                                         <div className="input-group mb-3">
