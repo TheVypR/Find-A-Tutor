@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
+
 const theme = createTheme({
     palette: {
         secondary: {
@@ -19,7 +20,11 @@ const theme = createTheme({
         }
     }
 });
+
+
+
 export default function NavBar() {
+    const [isTutor, setIsTutor] = useState(false);
     function AddTutor() {
         const tutorToAdd = {
             stu_email: localStorage.getItem("email"),
@@ -32,8 +37,17 @@ export default function NavBar() {
             body: JSON.stringify(tutorToAdd)
         });
     }
-
     const auth = useContext(AuthContext);
+    this.state = {isTutor: false};
+
+    const checkIfTutor = () => {
+        if(/*student logged in as tutor */isTutor){
+            setIsTutor(isTutor = true);
+        }
+        if(/* student not logged in as tutor*/ !isTutor){
+            setIsTutor(isTutor = false);
+        }
+    }
 
     return auth.isLoggedIn && (
         <ThemeProvider theme={theme}>
@@ -43,8 +57,12 @@ export default function NavBar() {
                     <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex'}}>
                         Find-A-Tutor
                     </Typography>
+                    if(!isTutor){
+                        <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+                    }else{
+                        <Button onClick={() => this.nextPath('/studentProfile')} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
+                    }
                     
-                    <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
                     <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>
