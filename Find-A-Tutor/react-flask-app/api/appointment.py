@@ -122,12 +122,14 @@ def getTimes(token):
     
     #put times into array of dictionaries
     for time in times:
+        classes = []            
         #if the time isn't already taken by an appointment
         if time[3] == 0:
             #add a dictionary to the array
             availTimes.append({'tut_email':time[0],
                                'start':time[1],
                                'end':time[2],
+                               'classes':list(getRates(time[0]).keys()),
                                'title': "Available Session with " + time[4],
                                'tut_name':time[4],
                                'rating':time[5],
