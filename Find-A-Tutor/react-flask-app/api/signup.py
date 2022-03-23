@@ -1,5 +1,7 @@
 #FIND-A-TUTOR ~ SignUp backend ~ Author: Isaac A.
 import os                           #used for random byte generation
+import random                       #used for random string generation
+import string                       #used for controlling random string gen
 import hashlib                      #used to hash pw
 from base64 import b64encode        #used to encode/decode pw
 from flask import Flask             #used for Flask API
@@ -48,12 +50,18 @@ def signup(info):
     #combine password and salt
     password = salt + password
     
+    #generate a token
+    for i in range(64):
+        token += random.choice(string.ascii_letters)
+    
     #insert data into DB
-    cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt, isAdmin) values (\"" 
+    cursor.execute("insert into Student(stu_email, stu_name, stu_pass, stu_salt, isAdmin, token) values (\"" 
                     + info[2] + "\", \"" 
                     + info[0] + " " + info[1] +"\", \"" 
                     + password.hex() + "\", \"" 
-                    + salt.hex() + "\", false)")
+                    + salt.hex() + "\", "
+                    + "false, \"" 
+                    + token + "\")")
     
     #close the connection
     conn.close()
