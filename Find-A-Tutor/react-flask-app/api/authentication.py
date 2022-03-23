@@ -1,6 +1,9 @@
 from flask import Flask, jsonify
 from flaskext.mysql import MySQL
 
+#error constants
+INVALID_AUTHENTICATION = 401
+
 #setup flask
 app = Flask(__name__)
 
@@ -31,7 +34,7 @@ def checkLogIn(token):
     #check if a token was given
     if token:    
         #check if the given token is associated with a student
-        cursor.execute("select stu_email from Student where token = \"" + token + "\"")
+        cursor.execute("select stu_email from Student where token = \"" + token + "\"")  
         email = cursor.fetchone()
         
         if email:
@@ -54,4 +57,4 @@ def getEmail(token):
         email = cursor.fetchone()
         return email
     else:
-        return "NO TOKEN"
+        return 'Token Not Found', INVALID_AUTHENTICATION

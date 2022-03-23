@@ -6,13 +6,15 @@ from pymysql import NULL
 from wtforms import BooleanField
 #from MySQLdb import escape_string as thwart
 
+#error constants
+
+
 #Database stuff
 from flaskext.mysql import MySQL
 import json
 import login
 
 app = Flask(__name__)
-
 
 mysql = MySQL()
 
@@ -39,6 +41,8 @@ def retrieve_profile(token, isTutor):
     #get the tutor information from the DB
     cursor.execute("select stu_name, stu_email from Student where token = \"" + token + "\"")
     data = cursor.fetchone()
+    if not data:
+        return 'Profile not Found', 
     name = data[0]
     email = data[1]
     
@@ -48,8 +52,7 @@ def retrieve_profile(token, isTutor):
     elif not isTutor:
         return {'name': name, 'email': email, 'isTutor': False}
     else:
-        print("Error - isTutor has invalid data")
-        return 'Error'
+        return ''
 
 #retrieve tutor details
 def retrieve_tutor(name, tut_email):
@@ -93,7 +96,7 @@ def retrieve_times(tut_email):
     #get the times
     cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
-    #print(times)
+
     
     #put times in dict {start_time:end_time}
     if len(times) != 0:

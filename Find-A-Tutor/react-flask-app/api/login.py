@@ -6,6 +6,10 @@ import profile, signup, appointment, history, adminRoutes, authentication   #use
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS
 
+#error constants
+INVALID_AUTHENTICATION = 401
+
+
 #setup flask
 app = Flask(__name__)
 CORS(app)
@@ -48,7 +52,7 @@ def login():
 
   #check that email existed in users (Student table)
   if result is None:
-    return jsonify({'error': 'Not Authenticated'})
+    return 'Invalid Email', INVALID_AUTHENTICATION
   
   #on user existing
   #hash their login attempt password
@@ -60,7 +64,7 @@ def login():
           'sha256', # The hash digest algorithm for HMAC
           pw.encode('utf-8'), # Convert the password to bytes
           salt, # Provide the salt
-          100000 #100,000 iterations of SHA-256 
+          100000 #100,000 iterations of SHA-256
       )
       
       #combine password and salt
@@ -73,7 +77,7 @@ def login():
       
       #if password not found -> ERROR
       if user is None:
-        return jsonify({'error': 'Not Authenticated'})
+        return 'Incorrect Password', INVALID_AUTHENTICATION
     
   #if user is a tutor, check login preference
   cursor.execute("select login_pref from Tutor where tut_email = \"" + email + "\"")
@@ -96,7 +100,6 @@ def login():
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
     token = request.args.get("token")
-    print(authentication.checkLogIn(token))
     return authentication.checkLogIn(token)
     
 #retrieve all the appointments for a student or tutor

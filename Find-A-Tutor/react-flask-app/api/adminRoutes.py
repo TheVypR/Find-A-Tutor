@@ -209,6 +209,8 @@ def DeleteUserFromList(target):
     return 'Done'
 
 
+#adds a user to the Tutor table
+#thereby making them a tutor
 def BecomeATutor(student):
     #set the default pay method
     pay = "Cash"
