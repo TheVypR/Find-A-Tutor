@@ -25,7 +25,7 @@ else:
 mysql.init_app(app)
 
 #retrieve all the appointments a student has attended previously
-def loadPreviousAppointmentsStudent(email):
+def loadPreviousAppointmentsStudent(token):
     #init appointment array
     apptHistory = []
     
@@ -35,7 +35,7 @@ def loadPreviousAppointmentsStudent(email):
     cursor = conn.cursor()  
     
     #get all appointments for a student
-    cursor.execute("select * from Appointment where stu_email = \"" + email + "\"")
+    cursor.execute("select * from Appointment where stu_email = (select stu_email from Student where token = \"" + token + "\")")
     history = cursor.fetchall()
     
     #go through each appointment
@@ -52,7 +52,7 @@ def loadPreviousAppointmentsStudent(email):
     return {'appts': apptHistory}
 
 #retrieve all the appointments a tutor has attended previously
-def loadPreviousAppointmentsTutor(email):
+def loadPreviousAppointmentsTutor(token):
     #init appointment array
     apptHistory = []
     
@@ -62,7 +62,7 @@ def loadPreviousAppointmentsTutor(email):
     cursor = conn.cursor()
 
     #get all appointments for a tutor
-    cursor.execute("select * from Appointment where tut_email = \"" + email + "\"")
+    cursor.execute("select * from Appointment where tut_email = (select stu_email from Student where token = \"" + token + "\")")
     history = cursor.fetchall()
     
     #go through each appointment

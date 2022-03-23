@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
+
 const theme = createTheme({
     palette: {
         secondary: {
@@ -19,7 +20,11 @@ const theme = createTheme({
         }
     }
 });
+
+
+
 export default function NavBar() {
+    const [isTutor, setIsTutor] = useState(false);
     function AddTutor() {
         const tutorToAdd = {
             stu_email: localStorage.getItem("email"),
@@ -32,9 +37,26 @@ export default function NavBar() {
             body: JSON.stringify(tutorToAdd)
         });
     }
-
     const auth = useContext(AuthContext);
 
+    useEffect(() => {
+        if(localStorage.getItem("view") === "tutor"){
+            setIsTutor(false);
+           
+        }
+        else{
+            setIsTutor(true);
+        
+        }
+        }, []);
+    
+    let button;
+    if(isTutor){
+        button = <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+    }else{
+        button = <Button onClick={() => this.nextPath('/studentProfile')} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
+    }
+   
     return auth.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -43,8 +65,7 @@ export default function NavBar() {
                     <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex'}}>
                         Find-A-Tutor
                     </Typography>
-                    
-                    <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+                    {button}   
                     <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>

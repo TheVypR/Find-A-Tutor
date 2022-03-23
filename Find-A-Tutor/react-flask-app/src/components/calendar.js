@@ -97,7 +97,7 @@ function FullCalendarApp() {
   
   function TutLoad() {
 	//loads in the appts currently created in the DB - IAA
-	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?token=" + localStorage.getItem("token") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -113,7 +113,7 @@ function FullCalendarApp() {
   }
   
   function StuLoad() {
-	  fetch("/getTimes/?email=" + localStorage.getItem("email"))
+	  fetch("/getTimes/?token=" + localStorage.getItem("token"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -127,11 +127,12 @@ function FullCalendarApp() {
 					}
 				)
 
-	fetch("/getStuClasses/?email=" + localStorage.getItem("email"))
+	fetch("/getStuClasses/?token=" + localStorage.getItem("token"))
 				.then(res => res.json())
 				.then(
 					result => {
 						setStudentClasses(result['stu_classes']);
+						console.log(result);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -142,7 +143,7 @@ function FullCalendarApp() {
 				)
 
 	  //loads in the appts currently created in the DB - IAA
-	fetch("/getAppointments/?email=" + localStorage.getItem("email") +"&view=" + localStorage.getItem("view"))
+	fetch("/getAppointments/?token=" + localStorage.getItem("token") +"&view=" + localStorage.getItem("view"))
 				.then(res => res.json())
 				.then(
 					result => {
@@ -159,29 +160,24 @@ function FullCalendarApp() {
 
 	const updateEvents = function() {
 		let localEvents = [];
-		
+		console.log(times);
 		//filter classes
 		if (filterClass === "All Classes") {
 			if (filterAppts) {
-				console.log("appts");
 				localEvents = localEvents.concat(appts);
-			} else {
-				console.log("remove appts");
+			}
+			if (filterTimes) {
+				localEvents = localEvents.concat(times);
 			}
 		} else {		
 			if (filterAppts) {
-				console.log("appts");
-				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] == filterClass));
-			} else {
-				console.log("remove appts");
+				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] === filterClass));
+			}
+			if (filterTimes) {
+				localEvents = localEvents.concat(times.filter(time => time['classes'].includes(filterClass, 0)));
 			}
 		}
-		if (filterTimes) {
-			console.log("times");
-			localEvents = localEvents.concat(times);
-		} else {
-			console.log("remove times");
-		}
+		
 		setEvnts(localEvents);
   }
 
@@ -192,7 +188,7 @@ function FullCalendarApp() {
 		setStartDate(origStartDate);
 		setEndDate(origEndDate);
 		const myEvent = {
-		  email:localStorage.getItem("email"),
+		  token:localStorage.getItem("token"),
 		  class_code: classCode,
 		  start: startTime,
 		  end: endTime,
@@ -273,7 +269,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify({
-				email:localStorage.getItem("email"),
+				token:localStorage.getItem("token"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -285,7 +281,7 @@ function FullCalendarApp() {
 	//edit apppointment
 	const editAppt = function () {
 		const myEvent = {
-		  email:localStorage.getItem("email"),
+		  token:localStorage.getItem("token"),
 		  class_code: classCode,
 		  start: startDate,
 		  end: endDate,
@@ -302,7 +298,7 @@ function FullCalendarApp() {
 			'Content-Type' : 'application/json'
 			},
 			body:JSON.stringify({
-				email: localStorage.getItem("email"),
+				token: localStorage.getItem("token"),
 				tut_email: tutEmail,
 				class_code: classCode,
 				start: origStartDate,
@@ -357,7 +353,6 @@ function FullCalendarApp() {
 	const GetOptions = () => {
 		return ({providedClasses})
 	}
-	console.log(authContext);
 	
 	useEffect(() => {
 		updateEvents(() => appts);
@@ -365,7 +360,7 @@ function FullCalendarApp() {
 	
 //list of appointments to add to calendar
 //TODO: dynamically load appointments into list via database
-  return authContext.isLoggedIn === "true" && (
+  return authContext.isLoggedIn && (
     <div className="App">
 		<NavBar />
 		<Modal show={showTime} centered onHide={handleClose}>
