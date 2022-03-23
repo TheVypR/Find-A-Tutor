@@ -51,6 +51,7 @@ def signup(info):
     password = salt + password
     
     #generate a token
+    token = ""
     for i in range(64):
         token += random.choice(string.ascii_letters)
     

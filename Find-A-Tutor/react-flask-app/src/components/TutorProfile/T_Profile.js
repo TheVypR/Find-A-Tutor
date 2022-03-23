@@ -196,7 +196,7 @@ class T_Profile extends React.Component {
                     <Button type="submit" id="save"
                         onClick={this.handleSubmit}
                     > Apply </Button>
-                    <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                    <Button type="submit" id="stopTutoring" variant="danger"> Stop Tutoring </Button>
                 </div>
             </>
         );//return

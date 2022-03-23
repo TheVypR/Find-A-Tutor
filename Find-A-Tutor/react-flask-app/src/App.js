@@ -22,13 +22,17 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") !== null ? true : false);
 
   //doesn't work with cors and without cors doesn't like the JSON
-  // useEffect(() => {
-	 // if (localStorage.getItem("token") !== null) {
-		// fetch("/authCheck?token=" + localStorage.getItem("token"), {method: 'GET', mode: 'no-cors'}).then(res => {console.log(res); res.json()}).then(result => {console.log(result['loggedIn']); setLoggedIn(result['loggedIn'])})
-	 // } else {
-		// setLoggedIn(false);
-	 // }
-  // }, [])
+  useEffect(() => {
+	 if (localStorage.getItem("token") !== null) {
+		fetch("/authCheck/?token=" + localStorage.getItem("token"), {method: 'GET'})
+			.then(res => res.json())
+			.then(result => {console.log(result); setLoggedIn(result['loggedIn'])})
+	 } else {
+		setLoggedIn(false);
+	 }
+  }, [])
+  
+  
 
   //set login and logout; this is where we will set the authentication from the backend
   //changes the user to be logged in

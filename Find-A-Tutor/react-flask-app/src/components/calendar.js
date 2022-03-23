@@ -331,7 +331,6 @@ function FullCalendarApp() {
 		if(classCode === "NONE" || classCode === "" || classCode === undefined) {
 			setWrongClass(true);
 		} else {
-			console.log(classCode)
 			verifyTimes(isNew);
 		}
 	}

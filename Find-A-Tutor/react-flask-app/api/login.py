@@ -4,9 +4,11 @@ from datetime import datetime, timedelta                    #used to compare dat
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
+from flask_cors import CORS
 
 #setup flask
 app = Flask(__name__)
+CORS(app)
 
 #setup DB
 mysql = MySQL()
@@ -91,12 +93,25 @@ def login():
   #return email, permissions, and login preference
   return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref})
 
+@app.route('/removeTutor/', methods=['POST'])
+def removeTutor():
+    tutor = request.get_json()
+    tutor = authentication.getEmail(tutor)
+    return profile.remove_tutor(tutor)
+
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
     token = request.args.get("token")
     print(authentication.checkLogIn(token))
     return authentication.checkLogIn(token)
-
+    
+#retrieve all the appointments for a student or tutor
+@app.route('/getAppointments/', methods=['GET'])
+def getAppointments():
+    token = request.args.get("token")   #token to get appointments for
+    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
+    return appointment.getAppointments(token, tutView=="tutor")
+    
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -105,8 +120,9 @@ def currentTutors():
 #add a student's information to the Tutor table 
 @app.route('/AddTutor/', methods=['POST'])
 def addTutor():
-    student = request.get_json()
-    return adminRoutes.BecomeATutor(student)
+    token = request.get_json()
+    email = authentication.getEmail(token)
+    return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
 #only shows tutors who teach a class that the student (token) is taking
@@ -158,7 +174,7 @@ def myProfile():
     #get information to change
     submission = request.get_json()
     token = submission['token']
-    
+    email = authentication.getEmail(token)
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
@@ -167,10 +183,10 @@ def myProfile():
         endTime = dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         splitTimeVals = splitTimes(timeSlot)
-        return profile.remove_timeSlot(splitTimeVals, token)
+        return profile.remove_timeSlot(splitTimeVals, email)
     #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
-        return profile.contactMe_change(submission['contactMe'], token)
+        return profile.contactMe_change(submission['contactMe'], email)
     #check to see if it's an addition to available times
     elif 'submitTimes' in submission.keys() :
         #parse timeslot and divide it into 15 min chunks for storage
@@ -178,13 +194,13 @@ def myProfile():
         endTime = dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
-        return profile.post_timeSlot(times, token)
+        return profile.post_timeSlot(times, email)
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
-        return profile.remove_timeSlot(submission['removePrefilledTime'], token)
+        return profile.remove_timeSlot(submission['removePrefilledTime'], email)
     #otherwise the user hit the apply button for other changes
     else:
-        return profile.edit_profile(submission, token)
+        return profile.edit_profile(submission, email)
 
 #retrieve the weekday from an ISO date
 ### TODO: Currently not used but needed for future ###
@@ -263,18 +279,13 @@ def getTimes():
     print(times)
     return {'times':times}
 
-#retrieve all the appointments for a student or tutor
-@app.route('/getAppointments/', methods=['GET'])
-def getAppointments():
-    token = request.args.get("token")   #token to get appointments for
-    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
-    return appointment.getAppointments(token, tutView=="tutor")
+
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
     data = request.get_json()   #get data from frontend
-    email = data['token']       #get the token from data
+    token = data['token']       #get the token from data
     
     #parse moments into datetimes for storage
     newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}

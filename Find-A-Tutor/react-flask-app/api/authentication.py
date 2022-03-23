@@ -52,6 +52,6 @@ def getEmail(token):
         #check if the given token is associated with a student
         cursor.execute("select stu_email from Student where token = \"" + token + "\"")
         email = cursor.fetchone()
-        return email
+        return email[0]
     else:
         return "NO TOKEN"

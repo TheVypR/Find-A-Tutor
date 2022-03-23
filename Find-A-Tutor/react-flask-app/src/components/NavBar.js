@@ -26,15 +26,12 @@ const theme = createTheme({
 export default function NavBar() {
     const [isTutor, setIsTutor] = useState(false);
     function AddTutor() {
-        const tutorToAdd = {
-            stu_email: localStorage.getItem("email"),
-        };
         fetch('/AddTutor/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(tutorToAdd)
+            body: JSON.stringify(localStorage.getItem("token"))
         });
     }
     const auth = useContext(AuthContext);
