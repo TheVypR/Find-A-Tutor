@@ -209,7 +209,7 @@ def DeleteUserFromList(target):
     return 'Done'
 
 
-def BecomeATutor(student):
+def BecomeATutor(email):
     #set the default pay method
     pay = "Cash"
 
@@ -219,8 +219,8 @@ def BecomeATutor(student):
     cursor = conn.cursor()
     
     #add student to Tutor table
-    cursor.execute("insert into Tutor values(\""+ student['stu_email'] 
-                    + "\", (select stu_name from Student where stu_email = \"" + student['stu_email'] 
+    cursor.execute("insert into Tutor values(\""+ email 
+                    + "\", (select stu_name from Student where stu_email = \"" + email 
                     + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
     #close the connection
     conn.close()

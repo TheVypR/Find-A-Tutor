@@ -67,16 +67,24 @@ def retrieve_tutor(name, tut_email):
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
     payment = cursor.fetchone()
+    print(payment)
     
     #split the payment details
-    payment_method = payment[0]  #payment_type
-    payment_details = payment[1] #payment_info
+    if payment == None:
+        payment_method = "Cash"
+        payment_details = ""
+    else:
+        payment_method = payment[0]  #payment_type
+        payment_details = payment[1] #payment_info
 
     times = retrieve_times(tut_email)
     classes = retrieve_classes(tut_email)
 
     #login prefs are an array, make it just a single int
-    loginPref = loginPref[0]
+    if loginPref == None:
+        loginPref = 1
+    else:
+        loginPref = loginPref[0]
     print(loginPref)
   
     return {'name': name, 'email':tut_email, 'isTutor': True,
@@ -228,7 +236,6 @@ def remove_tutor(tutor):
 
     retStr = ""
     if data != None:
-        print("MADE IT HERRRRRRRRRRREEEEE!!!!!!!!!!")
         retStr = 'Done'
     else:
         cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor['email'] +"\" ")

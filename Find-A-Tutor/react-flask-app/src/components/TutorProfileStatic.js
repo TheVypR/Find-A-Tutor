@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import './TutorProfile.css';
 import TutorProfile from './TutorProfile/T_Profile'
 
@@ -152,26 +152,69 @@ class TutorsFor extends React.Component {
  * Renders the static version of the profile screen which the user can then choose to edit
  */
 class TutorProfileStatic extends React.Component {
+    state = {
+        appts: null,
+        showModal: false,
+    }
+
     // made so you can stop being a tutor
     handleStopTutoring() {
-        //post email to remove tutor
-        let post = {
-            'email': localStorage.getItem("email")
+        //check for appointments
+        fetch("/getAppointments/?token=" + localStorage.getItem("token") +"&view=" + localStorage.getItem("view"))
+				.then(res => res.json())
+				.then(
+					result => {
+                        this.setState({ appts: result['appts'] })
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components
+					(error) => {
+						console.log(error);
+					}
+				)
+                
+        if (this.state.appts === null) {
+            //post email to remove tutor
+            let post = {
+                'email': localStorage.getItem("email")
+            }
+            //Fetch
+            const response = fetch("/removeTutor/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(post)
+            })//fetch
         }
-        //Fetch
-        const response = fetch("/removeTutor/", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(post)
-        })//fetch
+        else {
+            this.setState({ showModal: true });
+        }
+    }
+
+    handleClose() {
+        this.setState({ showModal: false })
     }
 
     render() {
         let items = this.props.items;
         return (
             <>
+
+<Modal show={this.state.showModal} centered onHide={this.handleClose}>
+		<form>
+			<Modal.Header>
+			  <Modal.Title>Cancel All Appointments before stopping tutoring</Modal.Title>
+			</Modal.Header>			
+			<Modal.Footer>
+			  <Button variant="secondary" onClick={this.handleClose}>
+				Close
+			  </Button>
+			</Modal.Footer>
+		</form>
+      </Modal>
+
                 <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
