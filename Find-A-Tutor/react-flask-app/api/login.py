@@ -431,7 +431,7 @@ def mergeTimes(timeArray):
         #check if this is for an appointment or not
         if 'tut_email' in time:
             #if the difference between the last entry and this one is not 15 minutes, start the new merged block
-            if (endTime - curTime) != minDif:
+            if ((endTime - curTime) != minDif) or lastTutorInfo['tut_email'] != time['tut_email']:
                 #if this is the first don't add last entry's info
                 if not first:
                     timeBlockArray.append({
