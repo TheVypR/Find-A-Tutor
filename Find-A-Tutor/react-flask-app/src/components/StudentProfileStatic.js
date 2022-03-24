@@ -55,7 +55,7 @@ class StudentProfileStatic extends React.Component {
 
                 <div className="d-flex justify-content-center">
                     {/*Classes*/}
-                    <ClassesStudying classes={items['classes']} />
+                    <ClassesStudying classes={items['classesTaking']} />
                 </div>
 
                 {/* Bottom Buttons */}

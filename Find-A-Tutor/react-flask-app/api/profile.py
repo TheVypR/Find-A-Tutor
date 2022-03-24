@@ -45,14 +45,56 @@ def retrieve_profile(token, isTutor):
         return 'Profile not Found', 
     name = data[0]
     email = data[1]
+
+    #get classes
+    cursor.execute("select class_code from StudentClasses where stu_email=(%s)", (email))
+    classesTaking = cursor.fetchall()
+    #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
+
+    #get the login preference
+    cursor.execute("select login_pref from Tutor where tut_email = (%s)", (email))
+    loginPref = cursor.fetchone()
+    
+    #get the contactability
+    cursor.execute("select contactable from Tutor where tut_email = (%s)", (email))
+    contactable = cursor.fetchone()
+    
+    #get the payment
+    cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (email))
+    payment = cursor.fetchone()
+    
+    #split the payment details
+    if payment == None:
+        payment_method = "Cash"
+        payment_details = ""
+    else:
+        payment_method = payment[0]  #payment_type
+        payment_details = payment[1] #payment_info
+
+    times = retrieve_times(email)
+    tutorsFor = retrieve_classes(email)
+
+    #login prefs are an array, make it just a single int
+    if loginPref == None:
+        loginPref = 1
+    else:
+        loginPref = loginPref[0]
+  
+    conn.close()
+
+    return {'name': name, 'email':email, 'isTutor': True,
+        'login_pref':loginPref, 'contact':contactable,
+        'pay_type':payment_method, 'pay_info':payment_details,
+        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
+
     
     #if so retrieve tutor info
-    if isTutor:
-        return retrieve_tutor(name, email)
-    elif not isTutor:
-        return retrieve_student(name, email)
-    else:
-        return ''
+    # if isTutor:
+    #     return retrieve_tutor(name, email)
+    # elif not isTutor:
+    #     return retrieve_student(name, email)
+    # else:
+    #     return ''
 
 #retrieve student details
 def retrieve_student(name, tut_email):

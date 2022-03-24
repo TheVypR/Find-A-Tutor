@@ -11,13 +11,16 @@ class LoadProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {},
+            studentItems: {},
+            tutorItems: {},
             isEdit: false,
-            isEditStudent: false
+            isEditStudent: false,
+            isLoaded: false
         }
         this.edit = this.edit.bind(this);
         this.editStudent = this.editStudent.bind(this);
-        this.doFetch = this.doFetch.bind(this);
+        this.tutorFetch = this.tutorFetch.bind(this);
+        this.studentFetch = this.studentFetch.bind(this);
         this.convertToMoment = this.convertToMoment.bind(this);
     }//constructor
 
@@ -27,7 +30,7 @@ class LoadProfile extends React.Component {
      */
     edit() {
         this.setState({ isEdit: !this.state.isEdit }, function () {
-            this.doFetch();
+            this.tutorFetch();
         });
     }//edit
 
@@ -37,7 +40,7 @@ class LoadProfile extends React.Component {
      */
     editStudent() {
         this.setState({ isEditStudent: !this.state.isEditStudent }, function () {
-            this.doFetch();
+            this.tutorFetch();
         });
     }//editStudent
 
@@ -45,13 +48,15 @@ class LoadProfile extends React.Component {
      * calls doFetch on initial mounting of component
      */
     async componentDidMount() {
-        this.doFetch();
+        //gets the studnent info
+        this.studentFetch();
+        //gets tutor info
     }//componentDidMount
 
     /**
      * Gets info from db
      */
-    doFetch() {
+    tutorFetch() {
         fetch("/myProfile/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
             .then(
@@ -61,10 +66,9 @@ class LoadProfile extends React.Component {
                         let times = result['times'];
                         result['times'] = this.convertToMoment(times);
                     }
-                    console.log(result);
                     this.setState({
                         isLoaded: true,
-                        items: result
+                        tutorItems: result
                     });
                 },
                 (error) => {
@@ -74,7 +78,31 @@ class LoadProfile extends React.Component {
                     });
                 }
             )
-    }//doFetch
+    }//tutorFetch
+
+    studentFetch() {
+        fetch("/myProfile/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    //Convert result[times] to moment
+                    if ('times' in result) {
+                        let times = result['times'];
+                        result['times'] = this.convertToMoment(times);
+                    }
+                    this.setState({
+                        isLoaded: true,
+                        studentItems: result
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }//studentFetch
 
     /**
      * Converts DD-MM-YYYYTHH:mm:ss to moment
@@ -106,9 +134,17 @@ class LoadProfile extends React.Component {
     }//convetToMoment
 
     render() {
+        let profiles = this.state.isLoaded ?
+            <Profiles isTutor={this.props.isTutor}
+                items={this.state.studentItems}
+                edit={this.edit}
+                editStudent={this.editStudent} /> :
+            <h1> Loading... </h1>
         return (
             <>
-                <Profiles items={this.state.items} />
+                {/* instead of passing items, 
+                pass map containing items for tutor profile and items for student profile */}
+                {profiles}
             </>
         );//return
     }//render

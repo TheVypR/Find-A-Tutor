@@ -3,7 +3,7 @@ import moment from 'moment';
 import TutorProfileStatic from "./TutorProfileStatic";
 import TutorProfile from "./TutorProfile/T_Profile";
 import StudentProfile from "./StudentProfile";
-import StaticStudentProfile from "./StudentProfileStatic"
+import StudentProfileStatic from "./StudentProfileStatic"
 import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
@@ -30,9 +30,7 @@ class Profiles extends React.Component {
      * then fetches any changes from the db
      */
     edit() {
-        this.setState({ isEdit: !this.state.isEdit }, function () {
-            this.doFetch();
-        });
+        this.props.edit;
     }//edit
 
     /**
@@ -40,9 +38,7 @@ class Profiles extends React.Component {
      * then fetches any changes from the db
      */
     editStudent() {
-        this.setState({ isEditStudent: !this.state.isEditStudent}, function () {
-            this.doFetch();
-        });
+        this.props.editStudent;
     }//editStudent
 
     /**
@@ -110,15 +106,17 @@ class Profiles extends React.Component {
     }//convetToMoment
 
     render() {
-        console.log(this.props.items);
+        let items = this.props.items;
+
+        console.log(items);
 
         let staticOrEditTutor = this.state.isEdit ?
-            <TutorProfile items={this.props.items} edit={this.edit} /> :
-            <TutorProfileStatic items={this.props.items} edit={this.edit} />
+            <TutorProfile items={items} edit={this.edit} /> :
+            <TutorProfileStatic items={items} edit={this.edit} />
 
         let staticOrEditStudent = this.state.isEditStudent ?
-            <StudentProfile items={this.props.items} edit={this.editStudent} /> :
-            <StaticStudentProfile items={this.props.items} edit={this.editStudent} />
+            <StudentProfile items={items} edit={this.editStudent} /> :
+            <StudentProfileStatic items={items} edit={this.editStudent} />
 
         var profile = this.props.isTutor ?
             staticOrEditTutor :

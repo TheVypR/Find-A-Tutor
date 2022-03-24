@@ -184,7 +184,7 @@ class T_Profile extends React.Component {
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
                         setRate={this.setRate}
-                        filledInClasses={items['classes']}
+                        filledInClasses={items['tutorsFor']}
                     />
                 </div>
 
