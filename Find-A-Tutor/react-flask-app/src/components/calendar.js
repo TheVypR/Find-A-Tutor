@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-do
 import { Button, Modal } from 'react-bootstrap';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
+import moment from 'moment'
 import './App.css';
 import TimePicker from 'react-time-picker';
 import React, { useState, useEffect, useContext, Component } from "react";
@@ -11,17 +12,21 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import styled from "@emotion/styled"
 import './calendar.css'
+
+//mui imports
 import Rating from '@mui/material/Rating';
-import { AuthContext } from './AuthContext';
-import NavBar from './NavBar';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+//import other react components
 import ContactMe from './ContactMe';
 import ToggleView from './ViewToggle'
+import NavBar from './NavBar';
+import { AuthContext } from './AuthContext';
 
 export const StyleWrapper = styled.div`
   .fc td {
@@ -132,7 +137,6 @@ function FullCalendarApp() {
 				.then(
 					result => {
 						setStudentClasses(result['stu_classes']);
-						console.log(result);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -160,7 +164,6 @@ function FullCalendarApp() {
 
 	const updateEvents = function() {
 		let localEvents = [];
-		console.log(times);
 		//filter classes
 		if (filterClass === "All Classes") {
 			if (filterAppts) {
@@ -196,10 +199,9 @@ function FullCalendarApp() {
 		  title: title,
 		  tut_email: tutEmail,
 		  tut_name:tutName,
-		  block_start: origStartDate,
-		  block_end: origEndDate
+		  block_start: moment(origStartDate).format('HH:mm'),
+		  block_end: moment(origEndDate).format('HH:mm')
 		};
-		console.log(myEvent)
 		fetch("/addAppointment/", {
 			method: 'POST',
 			headers: {
@@ -233,28 +235,21 @@ function FullCalendarApp() {
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
 		
-		var options = {
-		  hour: '2-digit',
-		  minute: '2-digit',
-		  hour12: false
-		};
-		
 		//set dates and times
 		setOrigStartDate(e.start.toString());
 		setOrigEndDate(e.end.toString());
-		setStartTime(e.start.toLocaleString('en-US', options))
-		setEndTime(e.end.toLocaleString('en-US', options))
+		setStartTime(moment(e.start).format('HH:mm'))
+		setEndTime(moment(e.end).format('HH:mm'))
 		
 		//find which modal to load
 		if(editting) {
 			handleShowEdit();
 		} else {
 			if(e.extendedProps['type'] == "appt") {
-				setBlockStart(e.extendedProps.block_s)
-				setBlockEnd(e.extendedProps.block_e)	
+				setBlockStart(e.extendedProps.block_s);
+				setBlockEnd(e.extendedProps.block_e);
 				handleShowAppt();
 			} else if(e.extendedProps['type'] == "time") {
-				console.log(e.extendedProps.rating);
 				setRating(e.extendedProps.rating);
 				handleShowTime();			
 			} 
@@ -329,7 +324,6 @@ function FullCalendarApp() {
 		if(classCode === "NONE" || classCode === "" || classCode === undefined) {
 			setWrongClass(true);
 		} else {
-			console.log(classCode)
 			verifyTimes(isNew);
 		}
 	}
@@ -346,10 +340,6 @@ function FullCalendarApp() {
 		<div style={{color : 'red'}}>
 			You must choose a class
 		</div>)
-	}
-	
-	const GetOptions = () => {
-		return ({providedClasses})
 	}
 	
 	useEffect(() => {
@@ -373,7 +363,7 @@ function FullCalendarApp() {
 				Tutor Rating: <Rating value={rating} readOnly/><br/>
 				Rate: $<strong>{rates[classCode]}</strong>/hr<br/>
 					Choose Class:
-					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
+					<select onChange={(e) => {setClassCode(e.target.value)}} required>
 						<option key="null" value="NONE">NONE</option>
 						{(Object.keys(rates)).map((clss) => {
 							return <option key={clss} value={clss}>{clss}</option>
@@ -437,7 +427,7 @@ function FullCalendarApp() {
 				Edit Appointment With: {tutName}<br/>
 					Rate: ${rates[classCode]}/hr<br/>
 					Choose Class: 
-					<select onChange={(e) => {console.log(e);setClassCode(e.target.value)}} required>
+					<select onChange={(e) => {setClassCode(e.target.value)}} required>
 						<option key="null" value="NONE">NONE</option>
 						{(Object.keys(rates)).map((clss) => {
 							return <option key={clss} value={clss}>{clss}</option>
@@ -445,9 +435,9 @@ function FullCalendarApp() {
 					</select>
 					<br/>
 					Start Time: 
-					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={startDate} onChange={(e) => {setStartDate(e.target.value)}} required/><br/>
+					<input type="time" id="s_date" step="900" min={blockStart} max={blockEnd} value={startTime} onChange={(e) => {setStartTime(e.target.value)}} required/><br/>
 					End Time: 
-					<input type="time" id="e_date" step="900" min={blockStart} max={blockEnd} value={endDate} onChange={(e) => {setEndDate(e.target.value)}} required/>
+					<input type="time" id="e_date" step="900" min={blockStart} max={blockEnd} value={endTime} onChange={(e) => {setEndTime(e.target.value)}} required/>
 			</Modal.Body>
 			
 			<Modal.Footer>
@@ -497,7 +487,7 @@ function FullCalendarApp() {
             name="filters"
 			value='appt'
 			checked={filterAppts}
-            onChange={(e) => {console.log(e.target.value);setFilterAppts(!filterAppts)}}
+            onChange={(e) => {setFilterAppts(!filterAppts)}}
           />
           My Appointment<br/>
           <input
@@ -565,9 +555,6 @@ function FullCalendarApp() {
           //formatting of appointments
           eventColor="green"	
           nowIndicator
-
-          //ability to click dates
-          dateClick={() => console.log(evnts)}
 
           //ability to click appointments
           eventClick={function (e) {handleEventClick(e.event, false)}}

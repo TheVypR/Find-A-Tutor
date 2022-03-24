@@ -132,7 +132,7 @@ class Weekday extends React.Component {
      */
     fetchRemoveTimeSlot(index) {
         let times = {
-            'email': localStorage.getItem("email"),
+            'token': localStorage.getItem("token"),
             "remove": {
                 "startTime": this.state.startTime[index].toString(),
                 "endTime": this.state.endTime[index].toString(),
@@ -218,7 +218,7 @@ class Weekday extends React.Component {
         let date = this.getISO(day)
         let timeSlot = {
             'submitTimes': true,
-            "email": localStorage.getItem("email"),
+            "token": localStorage.getItem("token"),
             "startTime": this.state.startTime[index].day(day).toString(),
             "endTime": this.state.endTime[index].day(day).toString()
         };
@@ -309,7 +309,7 @@ class Weekday extends React.Component {
 
     removePreFilledTime(startTime, endTime, day) {
         let times = {
-            'email': localStorage.getItem("email"),
+            'token': localStorage.getItem("token"),
             "removePrefilledTime": {
                 "startTime": startTime,
                 "endTime": endTime,
