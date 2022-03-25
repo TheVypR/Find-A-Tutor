@@ -249,7 +249,6 @@ def addAppointment():
   
   #split the datetimes into 15 minute intervals for storage
   slots = splitTimes({'start':newStart, 'end':newEnd})
-  
   #add the appointment and mark tutor time as taken
   return appointment.addAppointment(data, token, newStart, newEnd, slots)
 
@@ -279,7 +278,6 @@ def getTimes():
     else:
         #return empty times array
         times = []
-    print(times)
     return {'times':times}
 
 
@@ -291,10 +289,10 @@ def deleteAppointment():
     token = data['token']       #get the token from data
     
     #parse moments into datetimes for storage
-    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
-    slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    slots = splitTimes({'start':data['start'], 'end':data['end']})
   
     return appointment.removeAppointment(token, data, newDate, slots)
 
@@ -397,10 +395,9 @@ def createDateFromTime(day, time):
         
     #split on "T" and store the first part (YYYY-MM-DD) in new datetime
     newDay = date.split("T")[0]
-    
     #add the separator, time, and seconds
     newDate = newDay + "T" + time + ":00"
-    
+
     #return new datetime
     return newDate
     
@@ -411,7 +408,6 @@ def mergeTimes(timeArray):
     #make sure to exclude the first and include the last block
     first = True
     left = len(timeArray)
-    print(timeArray)
     #set the expected difference between timeblocks
     minDif = timedelta(minutes=15)
     

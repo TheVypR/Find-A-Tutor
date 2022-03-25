@@ -30,6 +30,7 @@ mysql.init_app(app)
 #end -> appointment end time
 #timeslots -> array of 15 minute time blocks that are being taken
 def addAppointment(data, token, start, end, timeslots):
+    print(timeslots)
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
