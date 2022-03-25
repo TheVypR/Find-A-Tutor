@@ -6,10 +6,6 @@ import profile, signup, appointment, history, adminRoutes, authentication   #use
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS
 
-#error constants
-INVALID_AUTHENTICATION = 401
-
-
 #setup flask
 app = Flask(__name__)
 CORS(app)
@@ -52,7 +48,7 @@ def login():
 
   #check that email existed in users (Student table)
   if result is None:
-    return 'Invalid Email', INVALID_AUTHENTICATION
+    return 'Invalid Email', 401
   
   #on user existing
   #hash their login attempt password
@@ -77,7 +73,7 @@ def login():
       
       #if password not found -> ERROR
       if user is None:
-        return 'Incorrect Password', INVALID_AUTHENTICATION
+        return 'Incorrect Password', 401
     
   #if user is a tutor, check login preference
   cursor.execute("select login_pref from Tutor where tut_email = \"" + email + "\"")
@@ -95,7 +91,7 @@ def login():
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref}), 200
 
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
@@ -274,7 +270,7 @@ def getTimes():
     #if there are times returned
     if len(appointment.getTimes(token)) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        times = mergeTimes(appointment.getTimes(token))
+        times = mergeTimes(appointment.getTimes(token)[0])
     else:
         #return empty times array
         times = []

@@ -175,7 +175,6 @@ def contactMe_change(contactMe, tut_email):
     c = 1
 
     cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
-    #update Tutor set contactable=1 where tut_email='apelia18@gcc.edu';
 
     conn.close()
     return 'Done'
@@ -184,10 +183,6 @@ def edit_profile(submission, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-
-    #Check for empty values
-    # for key in submission.keys():
-    #     if (submission)
     
     #update the profile
     cursor.execute("update Tutor set"
@@ -203,28 +198,6 @@ def edit_profile(submission, tut_email):
     for aClass in classes:
         if 'class_code' in aClass.keys():
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
-
-    #insert into TutorClasses Values('apelia18@gcc.edu', 'SCIC101G', 5, 0);
-
-
-#     update Tutor
-# set pay_type="PayPal", pay_info="user"
-# where tut_email="apelia18@gcc.edu";
-    #+ "\", log_in_as_tutor = \"" + submission['login_pref'] 
-    #+ "\", classes = \"" + submission['classes']
-
-                    
-    # #delete the classes and rates
-    # cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
-    
-    # #add the new classes and rates
-    # for c in classes:
-        # cursor.execute("insert into TutorRates(tutor_id, class_code, rate) values(" 
-                    # + tutor_id + ", class_code = \"" 
-                    # + c['class_code'] + "\", rate = \"" 
-                    # + c[rate] + "\")")
-                    
-    # print(info['payInfo'])
 
     conn.close()
     return 'Done'
@@ -248,4 +221,4 @@ def remove_tutor(tutor):
         retStr = 'Done'
     
     conn.close()
-    return retStr
+    return 'SUCCESS'

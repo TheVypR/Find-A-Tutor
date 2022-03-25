@@ -34,6 +34,7 @@ export const StyleWrapper = styled.div`
   }
 `
 
+//displays the calendar screen for students and tutors
 function FullCalendarApp() {
   //calendar filling
   const [times, setTimes] = useState([]);
