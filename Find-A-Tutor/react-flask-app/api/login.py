@@ -104,6 +104,7 @@ def removeTutor():
 
 @app.route('/verificationRequest/', methods=['POST'])
 def requestVerify():
+    return 404
     
 
 @app.route('/authCheck/', methods=['GET'])

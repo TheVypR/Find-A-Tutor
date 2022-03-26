@@ -14,6 +14,8 @@ from flaskext.mysql import MySQL
 import json
 import login
 
+import numpy as np
+
 app = Flask(__name__)
 
 mysql = MySQL()
@@ -73,6 +75,7 @@ def retrieve_profile(token, isTutor):
 
     times = retrieve_times(email)
     tutorsFor = retrieve_classes(email)
+    print(tutorsFor)
 
     #login prefs are an array, make it just a single int
     if loginPref == None:
@@ -143,7 +146,6 @@ def retrieve_tutor(name, tut_email):
         loginPref = 1
     else:
         loginPref = loginPref[0]
-    print(loginPref)
   
     return {'name': name, 'email':tut_email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
@@ -187,9 +189,10 @@ def retrieve_classes(tut_email):
     #put the classes in a dict 
     #classes[["code", rate:15], ["code2", 10]]
     for pair in classes_rates:
-        classes.append(pair)
+        classes.append(np.asarray(pair))
+    print(classes)
     
-    return classes, 200
+    return classes
 
 # Submit time slots to db for given weekday
 def post_timeSlot(times, tut_email):
