@@ -50,7 +50,7 @@ def ReportedTutors():
         LSize += 1
 
     #return array of reports
-    return jsonify(returnArray)
+    return jsonify(returnArray), 200
 
 #retrieve the students that have been reported
 def ReportedStudents():
@@ -79,7 +79,7 @@ def ReportedStudents():
         LSize += 1
 
     #return the array of reports
-    return jsonify(returnArray)
+    return jsonify(returnArray), 200
 
 #get all current Tutors in the DB
 def CurrentTutors():
@@ -95,7 +95,7 @@ def CurrentTutors():
     conn.close()
     
     #return all tutors in DB
-    return jsonify(allTutors)
+    return jsonify(allTutors), 200
 
 #retrieve all tutors who can be contacted for times not shown on calendar
 def Contactable(token):
@@ -124,7 +124,7 @@ def Contactable(token):
         returnArray.append({'tut_email':tutor[0], 'tut_name':tutor[1]})
     
     #return contactable tutors
-    return jsonify(returnArray)
+    return jsonify(returnArray), 200
 
 #get all the users that have been banned
 def BannedStudents():
@@ -140,7 +140,7 @@ def BannedStudents():
     conn.close()
     
     #return banned students
-    return jsonify(allBanned)
+    return jsonify(allBanned), 200
 
 #mark a user as being banned
 #target -> user to be banned's info
@@ -182,7 +182,7 @@ def AddStudentToBan(target):
     DeleteUserFromList(target)
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 #delete a report from the reported list
 #target -> report info
@@ -206,7 +206,7 @@ def DeleteUserFromList(target):
     conn.close()
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 
 #adds a user to the Tutor table
@@ -228,4 +228,4 @@ def BecomeATutor(email):
     conn.close()
     
     #return success
-    return 'Done'
+    return 'Done', 200

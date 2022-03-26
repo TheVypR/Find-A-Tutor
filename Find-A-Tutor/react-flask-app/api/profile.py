@@ -42,7 +42,7 @@ def retrieve_profile(token, isTutor):
     cursor.execute("select stu_name, stu_email from Student where token = \"" + token + "\"")
     data = cursor.fetchone()
     if not data:
-        return 'Profile not Found', 
+        return 'Profile not Found', 404
     name = data[0]
     email = data[1]
     
@@ -50,9 +50,9 @@ def retrieve_profile(token, isTutor):
     if isTutor:
         return retrieve_tutor(name, email)
     elif not isTutor:
-        return {'name': name, 'email': email, 'isTutor': False}
+        return {'name': name, 'email': email, 'isTutor': False}, 200
     else:
-        return ''
+        return 'No view provided', 404
 
 #retrieve tutor details
 def retrieve_tutor(name, tut_email):
@@ -70,7 +70,6 @@ def retrieve_tutor(name, tut_email):
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
     payment = cursor.fetchone()
-    print(payment)
     
     #split the payment details
     if payment == None:
@@ -93,7 +92,7 @@ def retrieve_tutor(name, tut_email):
     return {'name': name, 'email':tut_email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'classes': classes}
+        'times': times, 'classes': classes}, 200
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -117,7 +116,7 @@ def retrieve_times(tut_email):
     else:
         availTimes = []
     
-    return availTimes
+    return availTimes, 200
 
 
 #retrieve the classes they tutor and their rates
@@ -134,7 +133,7 @@ def retrieve_classes(tut_email):
     for pair in classes_rates:
         classes.append(pair)
     
-    return classes
+    return classes, 200
 
 # Submit time slots to db for given weekday
 def post_timeSlot(times, tut_email):
@@ -150,7 +149,7 @@ def post_timeSlot(times, tut_email):
                         "\",false)")
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def remove_timeSlot(times, tut_email):
     conn = mysql.connect()
@@ -165,7 +164,7 @@ def remove_timeSlot(times, tut_email):
 
     conn.close()
     
-    return 'Done'
+    return 'SUCCESS', 200
 
 def contactMe_change(contactMe, tut_email):
     conn = mysql.connect()
@@ -177,7 +176,7 @@ def contactMe_change(contactMe, tut_email):
     cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def edit_profile(submission, tut_email):
     conn = mysql.connect()
@@ -200,7 +199,7 @@ def edit_profile(submission, tut_email):
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def remove_tutor(tutor):
     conn = mysql.connect()
@@ -221,4 +220,4 @@ def remove_tutor(tutor):
         retStr = 'Done'
     
     conn.close()
-    return 'SUCCESS'
+    return 'SUCCESS', 200

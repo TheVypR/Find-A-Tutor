@@ -49,7 +49,7 @@ class LoadProfile extends React.Component {
                 (result) => {
                     //Convert result[times] to moment
                     if ('times' in result) {
-                        console.log("STOP");
+                        console.log(result);
                         let times = result['times'];
                         result['times'] = this.convertToMoment(times);
                     }
@@ -85,10 +85,10 @@ class LoadProfile extends React.Component {
         }
         times.forEach(slot => {
             let startTime = slot['startTime'];
-            let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
+            let day = moment(slot['startTime']).format('dddd');
             let endTime = slot['endTime'];
-            startTime = moment(startTime.replace(/T/, " ")).format(format);
-            endTime = moment(endTime.replace(/T/, " ")).format(format);
+            startTime = moment(startTime).format(format);
+            endTime = moment(endTime).format(format);
 
             timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
         });

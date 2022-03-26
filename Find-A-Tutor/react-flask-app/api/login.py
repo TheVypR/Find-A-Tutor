@@ -120,7 +120,7 @@ def currentTutors():
 @app.route('/AddTutor/', methods=['POST'])
 def addTutor():
     token = request.get_json()
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -150,7 +150,7 @@ def bannedStudents():
 def dismissReport():
     target = request.get_json()             #get report to dismiss
     adminRoutes.DeleteUserFromList(target)
-    return 'Done'
+    return 'Done', 200
 
 #ban a student or tutor
 #removes user from all Tutor and Student tables
@@ -159,7 +159,7 @@ def dismissReport():
 def addStudentToBan():
     target = request.get_json()          #get target info
     adminRoutes.AddStudentToBan(target)
-    return 'Done'
+    return 'Done', 200
 
 #submit data to sign up for site
 @app.route('/signup/', methods=['POST'])
@@ -173,7 +173,7 @@ def myProfile():
     #get information to change
     submission = request.get_json()
     token = submission['token']
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
@@ -274,7 +274,7 @@ def getTimes():
     else:
         #return empty times array
         times = []
-    return {'times':times}
+    return {'times':times}, 200
 
 
 
