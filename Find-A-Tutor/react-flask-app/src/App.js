@@ -33,6 +33,10 @@ export default function App() {
   
 
   const [isTutor, setIsTutor] = useState(false)
+  const setType = (bool) => {
+    setIsTutor(bool);
+    console.log(bool);
+  }
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
@@ -49,7 +53,7 @@ export default function App() {
       <AuthContext.Provider value={{isLoggedIn: loggedIn, login: login, logout: logout}}>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<SignIn setIsTutor={setIsTutor}/>}></Route>
+            <Route path='/' element={<SignIn setIsTutor={setType}/>}></Route>
             <Route path='/signup' element={<SignUp />}></Route>
             <Route path='/myProfile' element={<LoadProfile isTutor={isTutor}/>} />
             <Route path='/calendar' element={<Calendar />} />

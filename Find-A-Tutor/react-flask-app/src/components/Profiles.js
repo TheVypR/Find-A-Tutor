@@ -108,7 +108,7 @@ class Profiles extends React.Component {
     render() {
         let items = this.props.items;
 
-        console.log(items);
+        console.log(this.props.isTutor);
 
         let staticOrEditTutor = this.state.isEdit ?
             <TutorProfile items={items} edit={this.edit} /> :
