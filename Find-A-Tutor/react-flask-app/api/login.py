@@ -1,14 +1,11 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
+import random                                               #used for random string generation
 from datetime import datetime, timedelta                    #used to compare dates
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS
-
-#error constants
-INVALID_AUTHENTICATION = 401
-
 
 #setup flask
 app = Flask(__name__)
@@ -52,7 +49,7 @@ def login():
 
   #check that email existed in users (Student table)
   if result is None:
-    return 'Invalid Email', INVALID_AUTHENTICATION
+    return 'Invalid Email', 401
   
   #on user existing
   #hash their login attempt password
@@ -77,7 +74,7 @@ def login():
       
       #if password not found -> ERROR
       if user is None:
-        return 'Incorrect Password', INVALID_AUTHENTICATION
+        return 'Incorrect Password', 401
     
   #if user is a tutor, check login preference
   cursor.execute("select login_pref from Tutor where tut_email = \"" + email + "\"")
@@ -97,13 +94,17 @@ def login():
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
     tutor = request.get_json()
     tutor = authentication.getEmail(tutor)
     return profile.remove_tutor(tutor)
+
+@app.route('/verificationRequest/', methods=['POST'])
+def requestVerify():
+    
 
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
@@ -126,7 +127,7 @@ def currentTutors():
 @app.route('/AddTutor/', methods=['POST'])
 def addTutor():
     token = request.get_json()
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -156,7 +157,7 @@ def bannedStudents():
 def dismissReport():
     target = request.get_json()             #get report to dismiss
     adminRoutes.DeleteUserFromList(target)
-    return 'Done'
+    return 'Done', 200
 
 #ban a student or tutor
 #removes user from all Tutor and Student tables
@@ -165,7 +166,7 @@ def dismissReport():
 def addStudentToBan():
     target = request.get_json()          #get target info
     adminRoutes.AddStudentToBan(target)
-    return 'Done'
+    return 'Done', 200
 
 #submit data to sign up for site
 @app.route('/signup/', methods=['POST'])
@@ -179,7 +180,7 @@ def myProfile():
     #get information to change
     submission = request.get_json()
     token = submission['token']
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
@@ -251,7 +252,6 @@ def addAppointment():
   
   #split the datetimes into 15 minute intervals for storage
   slots = splitTimes({'start':newStart, 'end':newEnd})
-  
   #add the appointment and mark tutor time as taken
   return appointment.addAppointment(data, token, newStart, newEnd, slots)
 
@@ -277,12 +277,11 @@ def getTimes():
     #if there are times returned
     if len(appointment.getTimes(token)) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        times = mergeTimes(appointment.getTimes(token))
+        times = mergeTimes(appointment.getTimes(token)[0])
     else:
         #return empty times array
         times = []
-    print(times)
-    return {'times':times}
+    return {'times':times}, 200
 
 
 
@@ -293,10 +292,10 @@ def deleteAppointment():
     token = data['token']       #get the token from data
     
     #parse moments into datetimes for storage
-    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
-    slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    slots = splitTimes({'start':data['start'], 'end':data['end']})
   
     return appointment.removeAppointment(token, data, newDate, slots)
 
@@ -399,10 +398,9 @@ def createDateFromTime(day, time):
         
     #split on "T" and store the first part (YYYY-MM-DD) in new datetime
     newDay = date.split("T")[0]
-    
     #add the separator, time, and seconds
     newDate = newDay + "T" + time + ":00"
-    
+
     #return new datetime
     return newDate
     
@@ -413,7 +411,6 @@ def mergeTimes(timeArray):
     #make sure to exclude the first and include the last block
     first = True
     left = len(timeArray)
-    print(timeArray)
     #set the expected difference between timeblocks
     minDif = timedelta(minutes=15)
     

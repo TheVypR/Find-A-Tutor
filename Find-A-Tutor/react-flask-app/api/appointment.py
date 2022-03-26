@@ -56,7 +56,7 @@ def addAppointment(data, token, start, end, timeslots):
     conn.close()
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 #get the rates for a tutor
 #data -> tutor email
@@ -78,7 +78,7 @@ def getRates(data):
         tutorRates[clss[0]] = clss[1]
     
     #return the class_code -> rate dictionary
-    return tutorRates
+    return tutorRates, 200
 
 #get the classes a student is taking
 def getStuClasses(token):
@@ -99,7 +99,7 @@ def getStuClasses(token):
         classes.append(clss[0])
     
     #return dictionary with array of classes (fetch calls want a dictionary)
-    return {'stu_classes':classes}
+    return {'stu_classes':classes}, 200
 
 #get the available times available with tutors
 #only returns tutor's who teach classes that overlap with the students taken classes
@@ -129,7 +129,7 @@ def getTimes(token):
             availTimes.append({'tut_email':time[0],
                                'start':time[1],
                                'end':time[2],
-                               'classes':list(getRates(time[0]).keys()),
+                               'classes':list(getRates(time[0])[0].keys()),
                                'title': "Available Session with " + time[4],
                                'tut_name':time[4],
                                'rating':time[5],
@@ -139,9 +139,9 @@ def getTimes(token):
 
     #close the connection
     conn.close()
-        
+    
     #return the times
-    return availTimes
+    return availTimes, 200
 
 #get the appointments for a student or tutor
 #isTutor -> whether the person is a student or tutor
@@ -210,7 +210,7 @@ def getAppointments(token, isTutor):
     conn.close()
     
     #return the appointments
-    return {'appts':availAppts}
+    return {'appts':availAppts}, 200
 
 #cancel an appointment with a tutor
 #data -> appointment info
@@ -238,4 +238,4 @@ def removeAppointment(token, data, dates, slots):
     conn.close()
     
     #return success
-    return "Done"
+    return 'SUCCESS', 200

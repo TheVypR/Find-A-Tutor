@@ -42,7 +42,7 @@ def retrieve_profile(token, isTutor):
     cursor.execute("select stu_name, stu_email from Student where token = \"" + token + "\"")
     data = cursor.fetchone()
     if not data:
-        return 'Profile not Found', 
+        return 'Profile not Found', 404
     name = data[0]
     email = data[1]
 
@@ -126,7 +126,6 @@ def retrieve_tutor(name, tut_email):
     #get the payment
     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
     payment = cursor.fetchone()
-    print(payment)
     
     #split the payment details
     if payment == None:
@@ -149,7 +148,7 @@ def retrieve_tutor(name, tut_email):
     return {'name': name, 'email':tut_email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'classes': classes}
+        'times': times, 'classes': classes}, 200
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -173,7 +172,7 @@ def retrieve_times(tut_email):
     else:
         availTimes = []
     
-    return availTimes
+    return availTimes, 200
 
 
 #retrieve the classes they tutor and their rates
@@ -190,7 +189,7 @@ def retrieve_classes(tut_email):
     for pair in classes_rates:
         classes.append(pair)
     
-    return classes
+    return classes, 200
 
 # Submit time slots to db for given weekday
 def post_timeSlot(times, tut_email):
@@ -206,7 +205,7 @@ def post_timeSlot(times, tut_email):
                         "\",false)")
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def remove_timeSlot(times, tut_email):
     conn = mysql.connect()
@@ -221,7 +220,7 @@ def remove_timeSlot(times, tut_email):
 
     conn.close()
     
-    return 'Done'
+    return 'SUCCESS', 200
 
 def contactMe_change(contactMe, tut_email):
     conn = mysql.connect()
@@ -231,19 +230,14 @@ def contactMe_change(contactMe, tut_email):
     c = 1
 
     cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
-    #update Tutor set contactable=1 where tut_email='apelia18@gcc.edu';
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def edit_profile(submission, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-
-    #Check for empty values
-    # for key in submission.keys():
-    #     if (submission)
     
     #update the profile
     cursor.execute("update Tutor set"
@@ -260,36 +254,14 @@ def edit_profile(submission, tut_email):
         if 'class_code' in aClass.keys():
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 
-    #insert into TutorClasses Values('apelia18@gcc.edu', 'SCIC101G', 5, 0);
-
-
-#     update Tutor
-# set pay_type="PayPal", pay_info="user"
-# where tut_email="apelia18@gcc.edu";
-    #+ "\", log_in_as_tutor = \"" + submission['login_pref'] 
-    #+ "\", classes = \"" + submission['classes']
-
-                    
-    # #delete the classes and rates
-    # cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
-    
-    # #add the new classes and rates
-    # for c in classes:
-        # cursor.execute("insert into TutorRates(tutor_id, class_code, rate) values(" 
-                    # + tutor_id + ", class_code = \"" 
-                    # + c['class_code'] + "\", rate = \"" 
-                    # + c[rate] + "\")")
-                    
-    # print(info['payInfo'])
-
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def remove_tutor(tutor):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    cursor.execute("select tut_email from Appointment where tut_email = \"" + tutor['email'] + "\" ")
+    cursor.execute("select tut_email from Appointment where tut_email = \"" + tutor + "\" ")
 
     data = cursor.fetchone()
 
@@ -297,11 +269,11 @@ def remove_tutor(tutor):
     if data != None:
         retStr = 'Done'
     else:
-        cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor['email'] +"\" ")
-        cursor.execute("delete from TutorTimes where tut_email = \""+ tutor['email'] + "\" ")
-        cursor.execute("delete from TutorClasses where tut_email = \""+ tutor['email'] + "\" ")
-        cursor.execute("delete from Tutor where tut_email = \""+ tutor['email'] + "\" ")
+        cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor +"\" ")
+        cursor.execute("delete from TutorTimes where tut_email = \""+ tutor + "\" ")
+        cursor.execute("delete from TutorClasses where tut_email = \""+ tutor + "\" ")
+        cursor.execute("delete from Tutor where tut_email = \""+ tutor + "\" ")
         retStr = 'Done'
     
     conn.close()
-    return retStr
+    return 'SUCCESS', 200

@@ -152,9 +152,14 @@ class TutorsFor extends React.Component {
  * Renders the static version of the profile screen which the user can then choose to edit
  */
 class TutorProfileStatic extends React.Component {
-    state = {
-        appts: null,
-        showModal: false,
+    constructor(props) {
+        super(props);
+        this.state = {
+            appts: [],
+            showModal: false,
+        };
+        this.handleClose = this.handleClose.bind(this);
+        this.handleStopTutoring = this.handleStopTutoring.bind(this);
     }
 
     // made so you can stop being a tutor
@@ -164,7 +169,7 @@ class TutorProfileStatic extends React.Component {
 				.then(res => res.json())
 				.then(
 					result => {
-                        this.setState({ appts: result['appts'] })
+                        this.setState({ appts: result['appts'] });
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -172,25 +177,24 @@ class TutorProfileStatic extends React.Component {
 					(error) => {
 						console.log(error);
 					}
-				)
-                
-        if (this.state.appts === null) {
-            //post email to remove tutor
-            let post = {
-                'email': localStorage.getItem("email")
-            }
-            //Fetch
-            const response = fetch("/removeTutor/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(post)
-            })//fetch
-        }
-        else {
-            this.setState({ showModal: true });
-        }
+				).then (() => {
+                    if (this.state.appts.length === 0) {
+                        //post email to remove tutor
+                        let token = localStorage.getItem("token")
+                        //Fetch
+                        const response = fetch("/removeTutor/", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(token)
+                        })//fetch
+                        window.location.href = "./calendar";
+                    }
+                    else {
+                        this.setState({ showModal: true });
+                    }
+                })
     }
 
     handleClose() {
