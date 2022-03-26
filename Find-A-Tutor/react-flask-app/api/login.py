@@ -1,5 +1,6 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
+import random                                               #used for random string generation
 from datetime import datetime, timedelta                    #used to compare dates
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
@@ -98,6 +99,10 @@ def removeTutor():
     tutor = request.get_json()
     tutor = authentication.getEmail(tutor)
     return profile.remove_tutor(tutor)
+
+@app.route('/verificationRequest/', methods=['POST'])
+def requestVerify():
+    
 
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
