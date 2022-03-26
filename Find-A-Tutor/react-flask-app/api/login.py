@@ -100,10 +100,6 @@ def removeTutor():
     tutor = authentication.getEmail(tutor)
     return profile.remove_tutor(tutor)
 
-@app.route('/verificationRequest/', methods=['POST'])
-def requestVerify():
-    
-
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
     token = request.args.get("token")
@@ -275,7 +271,11 @@ def getTimes():
     #if there are times returned
     if len(appointment.getTimes(token)) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        times = mergeTimes(appointment.getTimes(token)[0])
+        unmerged = appointment.getTimes(token)[0]
+        if type(unmerged) == type([]):
+            times = mergeTimes(unmerged)
+        else:
+            return "No times found", 401
     else:
         #return empty times array
         times = []
@@ -288,6 +288,7 @@ def getTimes():
 def deleteAppointment():
     data = request.get_json()   #get data from frontend
     token = data['token']       #get the token from data
+    view = data['view']         #get the view
     
     #parse moments into datetimes for storage
     newDate = {'start': data['start'], 'end': data['end']}
@@ -295,7 +296,7 @@ def deleteAppointment():
     #split the datetimes into 15 minute intervals
     slots = splitTimes({'start':data['start'], 'end':data['end']})
   
-    return appointment.removeAppointment(token, data, newDate, slots)
+    return appointment.removeAppointment(token, data, newDate, slots, view)
 
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])

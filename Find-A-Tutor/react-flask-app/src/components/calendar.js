@@ -49,7 +49,9 @@ function FullCalendarApp() {
   //appointment creation
   const [tutEmail, setTutEmail] = useState("");
   const [tutName, setTutName] = useState("");
-  const [rates, setRates] = useState({})
+  const [stuEmail, setStuEmail] = useState("");
+  const [stuName, setStuName] = useState("");
+  const [rates, setRates] = useState({});
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -102,8 +104,6 @@ function FullCalendarApp() {
 		StuLoad();
 	}
   }, []);
-  
-
   
   function TutLoad() {
 	//loads in the appts currently created in the DB - IAA
@@ -198,6 +198,7 @@ function FullCalendarApp() {
 		console.log(origStartDate);
 		const myEvent = {
 		  token:localStorage.getItem("token"),
+		  view:localStorage.getItem("view"),
 		  class_code: classCode,
 		  start: startTime,
 		  end: endTime,
@@ -240,6 +241,8 @@ function FullCalendarApp() {
 		//set the tutor info
 		setTutEmail(e.extendedProps.tut_email);
 		setTutName(e.extendedProps.tut_name);
+		setStuEmail(e.extendedProps.stu_email);
+		setStuName(e.extendedProps.stu_name);
 		setClassCode(e.extendedProps.class_code);
 		setTitle(e.title);
 		
@@ -275,7 +278,8 @@ function FullCalendarApp() {
 			},
 			body:JSON.stringify({
 				token:localStorage.getItem("token"),
-				tut_email: tutEmail,
+				view:localStorage.getItem("view"),
+				email: (localStorage.getItem("view") == "tutor" ? stuEmail : tutEmail),
 				class_code: classCode,
 				start: moment(origStartDate).format('YYYY-MM-DDTHH:mm:ss'),
 				end: moment(origEndDate).format('YYYY-MM-DDTHH:mm:ss')
@@ -286,6 +290,7 @@ function FullCalendarApp() {
 	const editAppt = function () {
 		const myEvent = {
 		  token:localStorage.getItem("token"),
+		  view:localStorage.getItem("view"),
 		  class_code: classCode,
 		  start: startTime,
 		  end: endTime,
