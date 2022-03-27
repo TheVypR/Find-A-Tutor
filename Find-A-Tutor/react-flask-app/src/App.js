@@ -14,6 +14,7 @@ import Reports from './components/Reports';										//Admin reports screen
 import CurrentAndBan from './components/CurrentAndBan';							//Admin banning screen
 import LoadProfile from './components/LoadProfile';								//LoadProfile route
 import { AuthContext } from './components/AuthContext'							//used for authentication
+import AddGroupTutoring from './components/AddGroupTutoring';     //used for admin side to add group tutoring
 
 //the core function
 //calls all other pages and manages authentication
@@ -49,6 +50,7 @@ export default function App() {
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
+            <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
