@@ -124,7 +124,7 @@ class TutorsFor extends React.Component {
     render() {
         let classes = this.props.classes;
         let classesList = [];
-        classes.forEach(aClass => {
+        classes.map(aClass => {
             classesList.push(<>
                 <div className='d-flex '>
                     <p className='courseCodeStatic'> {aClass[0]} </p>
@@ -165,36 +165,36 @@ class TutorProfileStatic extends React.Component {
     // made so you can stop being a tutor
     handleStopTutoring() {
         //check for appointments
-        fetch("/getAppointments/?token=" + localStorage.getItem("token") +"&view=" + localStorage.getItem("view"))
-				.then(res => res.json())
-				.then(
-					result => {
-                        this.setState({ appts: result['appts'] });
-					},
-					// Note: it's important to handle errors here
-					// instead of a catch() block so that we don't swallow
-					// exceptions from actual bugs in components
-					(error) => {
-						console.log(error);
-					}
-				).then (() => {
-                    if (this.state.appts.length === 0) {
-                        //post email to remove tutor
-                        let token = localStorage.getItem("token")
-                        //Fetch
-                        const response = fetch("/removeTutor/", {
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(token)
-                        })//fetch
-                        window.location.href = "./calendar";
-                    }
-                    else {
-                        this.setState({ showModal: true });
-                    }
-                })
+        fetch("/getAppointments/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
+            .then(res => res.json())
+            .then(
+                result => {
+                    this.setState({ appts: result['appts'] });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components
+                (error) => {
+                    console.log(error);
+                }
+            ).then(() => {
+                if (this.state.appts.length === 0) {
+                    //post email to remove tutor
+                    let token = localStorage.getItem("token")
+                    //Fetch
+                    const response = fetch("/removeTutor/", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(token)
+                    })//fetch
+                    window.location.href = "./calendar";
+                }
+                else {
+                    this.setState({ showModal: true });
+                }
+            })
     }
 
     handleClose() {
@@ -203,21 +203,22 @@ class TutorProfileStatic extends React.Component {
 
     render() {
         let items = this.props.items;
+
         return (
             <>
 
-<Modal show={this.state.showModal} centered onHide={this.handleClose}>
-		<form>
-			<Modal.Header>
-			  <Modal.Title>Cancel All Appointments before stopping tutoring</Modal.Title>
-			</Modal.Header>			
-			<Modal.Footer>
-			  <Button variant="secondary" onClick={this.handleClose}>
-				Close
-			  </Button>
-			</Modal.Footer>
-		</form>
-      </Modal>
+                <Modal show={this.state.showModal} centered onHide={this.handleClose}>
+                    <form>
+                        <Modal.Header>
+                            <Modal.Title>Cancel All Appointments before stopping tutoring</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleClose}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </form>
+                </Modal>
 
                 <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
                 <div className="container-fluid text-center">
@@ -227,7 +228,7 @@ class TutorProfileStatic extends React.Component {
                 </div>
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs items={items} />
-                    <TutorsFor classes={items['classes']} />
+                    <TutorsFor classes={items['tutorsFor']} />
                 </div>
                 <Week times={items['times']} />
 

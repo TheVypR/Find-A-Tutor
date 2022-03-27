@@ -1,20 +1,21 @@
-import React from "react";
+import React, { Component } from "react";
 import moment from 'moment';
-import Profiles from './Profiles'
+import TutorProfileStatic from "./TutorProfileStatic";
+import TutorProfile from "./TutorProfile/T_Profile";
+import StudentProfile from "./StudentProfile";
+import StudentProfileStatic from "./StudentProfileStatic"
+import NavBar from './NavBar';
 
 const format = 'h:mm a';    //Format for TimePicker
 
 /**
  * Determines if a student or tutor has logged in and loads the corresponding profile
  */
-class LoadProfile extends React.Component {
+class Profiles extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             items: {},
-            isEdit: false,
-            isEditStudent: false,
-            isLoaded: false
         }
         this.edit = this.edit.bind(this);
         this.editStudent = this.editStudent.bind(this);
@@ -27,9 +28,7 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     edit() {
-        this.setState({ isEdit: !this.state.isEdit }, function () {
-            this.doFetch();
-        });
+        this.props.edit();
     }//edit
 
     /**
@@ -37,20 +36,19 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     editStudent() {
-        this.setState({ isEditStudent: !this.state.isEditStudent }, function () {
-            this.doFetch();
-        });
+        this.props.editStudent();
     }//editStudent
 
     /**
      * calls doFetch on initial mounting of component
      */
     async componentDidMount() {
-        //gets the studnent info
-        this.doFetch();
-        //gets tutor info
+        //this.doFetch();
     }//componentDidMount
 
+    /**
+     * Gets info from db
+     */
     doFetch() {
         fetch("/myProfile/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
             .then(res => res.json())
@@ -93,10 +91,10 @@ class LoadProfile extends React.Component {
         }
         times.forEach(slot => {
             let startTime = slot['startTime'];
-            let day = moment(slot['startTime']).format('dddd');
+            let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
             let endTime = slot['endTime'];
-            startTime = moment(startTime).format(format);
-            endTime = moment(endTime).format(format);
+            startTime = moment(startTime.replace(/T/, " ")).format(format);
+            endTime = moment(endTime.replace(/T/, " ")).format(format);
 
             timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
         });
@@ -105,22 +103,28 @@ class LoadProfile extends React.Component {
     }//convetToMoment
 
     render() {
-        let profiles = this.state.isLoaded ?
-            <Profiles
-                items={this.state.items}
-                edit={this.edit}
-                editStudent={this.editStudent}
-                isEdit={this.state.isEdit}
-                isEditStudent={this.state.isEditStudent} /> :
-            <h1> Loading... </h1>
+        let items = this.props.items;
+        let isTutor = (localStorage.getItem("view")=== "tutor");
+        console.log(isTutor);
+
+        let staticOrEditTutor = this.props.isEdit ?
+            <TutorProfile items={items} edit={this.edit} /> :
+            <TutorProfileStatic items={items} edit={this.edit} />
+
+        let staticOrEditStudent = this.props.isEditStudent ?
+            <StudentProfile items={items} edit={this.editStudent} /> :
+            <StudentProfileStatic items={items} edit={this.editStudent} />
+
+        var profile = isTutor ?
+            staticOrEditTutor :
+            staticOrEditStudent
         return (
             <>
-                {/* instead of passing items, 
-                pass map containing items for tutor profile and items for student profile */}
-                {profiles}
+            <div style={{margin: '75px'}}><NavBar /></div>
+                {profile}
             </>
         );//return
     }//render
 }//LoadProfile
 
-export default LoadProfile;
+export default Profiles;

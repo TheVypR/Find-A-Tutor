@@ -85,14 +85,16 @@ def login():
   #else login pref is student
   if checkIfTutor:
       loginPref = checkIfTutor[0]
+      isTutor = True
   else:
       loginPref = 0
+      isTutor = False
 
   #close connection
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref}), 200
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
@@ -198,6 +200,8 @@ def myProfile():
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
+    elif 'classesTaking' in submission.keys():
+        return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)
@@ -232,7 +236,7 @@ def getProfile():
     
     #determine what profile is being populated
     isTutor = request.args.get('view')
-    return profile.retrieve_profile(token, isTutor=="tutor")
+    return profile.retrieve_profile(token)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])

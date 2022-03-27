@@ -18,7 +18,7 @@ import { AuthContext } from './AuthContext';
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn(props) {
   const nav = useNavigate();
   const [wrongLogin, setWrongLogin] = useState(false);
   
@@ -53,6 +53,9 @@ export default function SignIn() {
           nav('/Reports');
         }
         else {
+          if (result['isTutor']) {
+            localStorage.setItem("view", true);
+          }
           loginHandler();
         }
 		localStorage.setItem("token", result['token']);
