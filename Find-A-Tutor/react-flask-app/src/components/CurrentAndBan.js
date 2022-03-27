@@ -20,6 +20,7 @@ import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import './adminView.css';
 import {AuthContext} from './AuthContext';
+import AdminNavBar from './AdminNavBar';
 
 //making styles and themes
 const theme = createTheme();
@@ -56,20 +57,7 @@ export default function CurrentAndBan() {
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <AppBar postion="static" color="primary" elevation={0} sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
-                <Toolbar sx={{flexwrap: 'wrap'}}>
-                    <Typography component="h1" variant="h4" color="inherit" sx={{px: 5, flexGrow: 1, display: 'flex'}}>
-                        Admin View
-                    </Typography>
-                    <MenuItem component='a' href='./Reports'>
-                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Reports</Typography>
-                    </MenuItem>
-                    <MenuItem component='a' href='./CurrentAndBan'>
-                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Current Tutors</Typography>
-                    </MenuItem>
-                    <Button href="./" color="inherit" variant="outlined" sx={{my: 1, mx: 5}}>Logout</Button>
-                </Toolbar>
-            </AppBar>
+            <AdminNavBar />
             <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
             <Container maxWidth="xl" sx={{mt: 8, mb: 8}}>
                 <Grid container spacing={5}>

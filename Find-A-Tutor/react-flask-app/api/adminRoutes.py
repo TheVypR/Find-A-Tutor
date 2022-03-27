@@ -1,6 +1,5 @@
 #FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
 from flask import Flask, request, jsonify   #used for Flask API
-import getFunctions                         #used to get names
 from flaskext.mysql import MySQL            #used to connect to DB
 
 #Flask setup
@@ -144,9 +143,6 @@ def BannedStudents():
 #mark a user as being banned
 #target -> user to be banned's info
 def AddStudentToBan(target):
-    # get additional info
-    name = getFunctions.getName(target['stu_email'])
-
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -222,7 +218,7 @@ def BecomeATutor(student):
     
     #add student to Tutor table
     cursor.execute("insert into Tutor values(\""+ student['stu_email'] 
-                    + "\", (select stu_name from Student where stu_email = \"" + target['stu_email'] 
+                    + "\", (select stu_name from Student where stu_email = \"" + student['stu_email'] 
                     + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
     #close the connection
     conn.close()
