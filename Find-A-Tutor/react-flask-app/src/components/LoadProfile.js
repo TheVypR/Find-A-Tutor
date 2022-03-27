@@ -106,7 +106,7 @@ class LoadProfile extends React.Component {
 
     render() {
         let profiles = this.state.isLoaded ?
-            <Profiles isTutor={this.props.isTutor}
+            <Profiles
                 items={this.state.items}
                 edit={this.edit}
                 editStudent={this.editStudent}

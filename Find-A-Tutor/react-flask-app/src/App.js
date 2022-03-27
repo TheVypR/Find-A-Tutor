@@ -24,19 +24,12 @@ export default function App() {
 	 if (localStorage.getItem("token") !== null) {
 		fetch("/authCheck/?token=" + localStorage.getItem("token"), {method: 'GET'})
 			.then(res => res.json())
-			.then(result => {console.log(result); setLoggedIn(result['loggedIn'])})
+			.then(result => {setLoggedIn(result['loggedIn'])})
+      
 	 } else {
 		setLoggedIn(false);
 	 }
   }, [])
-  
-  
-
-  const [isTutor, setIsTutor] = useState(false)
-  const setType = (bool) => {
-    setIsTutor(bool);
-    console.log(bool);
-  }
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
@@ -53,9 +46,9 @@ export default function App() {
       <AuthContext.Provider value={{isLoggedIn: loggedIn, login: login, logout: logout}}>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<SignIn setIsTutor={setType}/>}></Route>
+            <Route path='/' element={<SignIn />}></Route>
             <Route path='/signup' element={<SignUp />}></Route>
-            <Route path='/myProfile' element={<LoadProfile isTutor={isTutor}/>} />
+            <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />

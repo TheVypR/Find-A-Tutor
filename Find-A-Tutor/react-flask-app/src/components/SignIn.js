@@ -54,7 +54,7 @@ export default function SignIn(props) {
         }
         else {
           if (result['isTutor']) {
-            props.setIsTutor(true);
+            localStorage.setItem("view", true);
           }
           loginHandler();
         }
