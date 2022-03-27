@@ -61,7 +61,6 @@ class Profiles extends React.Component {
                         let times = result['times'];
                         result['times'] = this.convertToMoment(times);
                     }
-                    console.log(result);
                     this.setState({
                         isLoaded: true,
                         items: result
@@ -107,8 +106,6 @@ class Profiles extends React.Component {
 
     render() {
         let items = this.props.items;
-
-        console.log(this.props.isTutor);
 
         let staticOrEditTutor = this.state.isEdit ?
             <TutorProfile items={items} edit={this.edit} /> :

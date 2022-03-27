@@ -14,8 +14,6 @@ from flaskext.mysql import MySQL
 import json
 import login
 
-import numpy as np
-
 app = Flask(__name__)
 
 mysql = MySQL()
@@ -100,57 +98,57 @@ def retrieve_profile(token, isTutor):
     #     return ''
 
 #retrieve student details
-def retrieve_student(name, tut_email):
-    conn = mysql.connect()
-    cursor = conn.cursor()
+# def retrieve_student(name, tut_email):
+#     conn = mysql.connect()
+#     cursor = conn.cursor()
 
-    #get classes
-    cursor.execute("select class_code from StudentClasses where stu_email=(%s)", (tut_email))
-    classes = cursor.fetchone()
-    #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
+#     #get classes
+#     cursor.execute("select class_code from StudentClasses where stu_email=(%s)", (tut_email))
+#     classes = cursor.fetchone()
+#     #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
 
-    conn.close()
+#     conn.close()
 
-    return {'name': name, 'email': tut_email, 'classes': classes, 'isTutor': False}
+#     return {'name': name, 'email': tut_email, 'classes': classes, 'isTutor': False}
 
 #retrieve tutor details
-def retrieve_tutor(name, tut_email):
-    conn = mysql.connect()
-    cursor = conn.cursor()
+# def retrieve_tutor(name, tut_email):
+#     conn = mysql.connect()
+#     cursor = conn.cursor()
     
-    #get the login preference
-    cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
-    loginPref = cursor.fetchone()
+#     #get the login preference
+#     cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
+#     loginPref = cursor.fetchone()
     
-    #get the contactability
-    cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
-    contactable = cursor.fetchone()
+#     #get the contactability
+#     cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
+#     contactable = cursor.fetchone()
     
-    #get the payment
-    cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
-    payment = cursor.fetchone()
+#     #get the payment
+#     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
+#     payment = cursor.fetchone()
     
-    #split the payment details
-    if payment == None:
-        payment_method = "Cash"
-        payment_details = ""
-    else:
-        payment_method = payment[0]  #payment_type
-        payment_details = payment[1] #payment_info
+#     #split the payment details
+#     if payment == None:
+#         payment_method = "Cash"
+#         payment_details = ""
+#     else:
+#         payment_method = payment[0]  #payment_type
+#         payment_details = payment[1] #payment_info
 
-    times = retrieve_times(tut_email)
-    classes = retrieve_classes(tut_email)
+#     times = retrieve_times(tut_email)
+#     classes = retrieve_classes(tut_email)
 
-    #login prefs are an array, make it just a single int
-    if loginPref == None:
-        loginPref = 1
-    else:
-        loginPref = loginPref[0]
+#     #login prefs are an array, make it just a single int
+#     if loginPref == None:
+#         loginPref = 1
+#     else:
+#         loginPref = loginPref[0]
   
-    return {'name': name, 'email':tut_email, 'isTutor': True,
-        'login_pref':loginPref, 'contact':contactable,
-        'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'classes': classes}, 200
+#     return {'name': name, 'email':tut_email, 'isTutor': True,
+#         'login_pref':loginPref, 'contact':contactable,
+#         'pay_type':payment_method, 'pay_info':payment_details,
+#         'times': times, 'classes': classes}, 200
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -189,8 +187,7 @@ def retrieve_classes(tut_email):
     #put the classes in a dict 
     #classes[["code", rate:15], ["code2", 10]]
     for pair in classes_rates:
-        classes.append(np.asarray(pair))
-    print(classes)
+        classes.append(pair)
     
     return classes
 

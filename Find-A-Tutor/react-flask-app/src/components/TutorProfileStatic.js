@@ -127,8 +127,8 @@ class TutorsFor extends React.Component {
         classes.map(aClass => {
             classesList.push(<>
                 <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass} </p>
-                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[0]} </p>
+                    <p className='courseCodeStatic'> {aClass[0]} </p>
+                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
                 </div>
             </>)
         })
@@ -204,8 +204,6 @@ class TutorProfileStatic extends React.Component {
     render() {
         let items = this.props.items;
 
-        console.log(items['tutorsFor']);
-
         return (
             <>
 
@@ -230,7 +228,7 @@ class TutorProfileStatic extends React.Component {
                 </div>
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs items={items} />
-                    <TutorsFor classes={[items['tutorsFor']]} />
+                    <TutorsFor classes={items['tutorsFor']} />
                 </div>
                 <Week times={items['times']} />
 
