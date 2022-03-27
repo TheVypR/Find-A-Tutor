@@ -106,7 +106,7 @@ def getStuClasses(token):
 def getTimes(token):
     #init the times array
     availTimes = []
-    
+        
     #connect to the DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -119,7 +119,6 @@ def getTimes(token):
                     " (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
                     + token + "\"))) and T.tut_email = P.tut_email;")
     times = cursor.fetchall()
-    
     if times:
         #put times into array of dictionaries
         for time in times:
@@ -140,7 +139,7 @@ def getTimes(token):
 
         #close the connection
         conn.close()
-        
+                
         #return the times
         return availTimes, 200
     else:
