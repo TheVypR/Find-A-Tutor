@@ -19,8 +19,6 @@ class Profiles extends React.Component {
         }
         this.edit = this.edit.bind(this);
         this.editStudent = this.editStudent.bind(this);
-        this.doFetch = this.doFetch.bind(this);
-        this.convertToMoment = this.convertToMoment.bind(this);
     }//constructor
 
     /**
@@ -38,69 +36,6 @@ class Profiles extends React.Component {
     editStudent() {
         this.props.editStudent();
     }//editStudent
-
-    /**
-     * calls doFetch on initial mounting of component
-     */
-    async componentDidMount() {
-        //this.doFetch();
-    }//componentDidMount
-
-    /**
-     * Gets info from db
-     */
-    doFetch() {
-        fetch("/myProfile/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    //Convert result[times] to moment
-                    if ('times' in result) {
-                        let times = result['times'];
-                        result['times'] = this.convertToMoment(times);
-                    }
-                    this.setState({
-                        isLoaded: true,
-                        items: result
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
-    }//doFetch
-
-    /**
-     * Converts DD-MM-YYYYTHH:mm:ss to moment
-     * 
-     * @param {Array[T]} times 
-     * @returns [{'Monday': {'startTime': moment, 'endTime': moment}, ...]
-     */
-    convertToMoment(times) {
-        var timeSlots = {
-            'Monday': [],
-            'Tuesday': [],
-            'Wednesday': [],
-            'Thursday': [],
-            'Friday': [],
-            'Saturday': [],
-            'Sunday': []
-        }
-        times.forEach(slot => {
-            let startTime = slot['startTime'];
-            let day = moment(slot['startTime'].replace(/T/, " ")).format('dddd');
-            let endTime = slot['endTime'];
-            startTime = moment(startTime.replace(/T/, " ")).format(format);
-            endTime = moment(endTime.replace(/T/, " ")).format(format);
-
-            timeSlots[day].push({ 'startTime': startTime, 'endTime': endTime })
-        });
-
-        return timeSlots
-    }//convetToMoment
 
     render() {
         let items = this.props.items;
