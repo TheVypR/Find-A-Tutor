@@ -48,6 +48,11 @@ class T_Profile extends React.Component {
 
         this.checkForEmptyState(post);
 
+        //check if cash and set username accordingly
+        if (this.state.paymentType === "Cash") {
+            post['pay_info'] = "";
+        }
+
         //Fetch
         const response = fetch("/myProfile/", {
             method: "POST",
