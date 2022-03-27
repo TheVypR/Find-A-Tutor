@@ -34,7 +34,7 @@ mysql.init_app(app)
 #end database stuff
 
 #retrieve profile details
-def retrieve_profile(token, isTutor):
+def retrieve_profile(token):
     conn = mysql.connect()
     cursor = conn.cursor()
     
@@ -73,7 +73,6 @@ def retrieve_profile(token, isTutor):
 
     times = retrieve_times(email)
     tutorsFor = retrieve_classes(email)
-    print(tutorsFor)
 
     #login prefs are an array, make it just a single int
     if loginPref == None:
@@ -87,68 +86,6 @@ def retrieve_profile(token, isTutor):
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
         'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
-
-    
-    #if so retrieve tutor info
-    # if isTutor:
-    #     return retrieve_tutor(name, email)
-    # elif not isTutor:
-    #     return retrieve_student(name, email)
-    # else:
-    #     return ''
-
-#retrieve student details
-# def retrieve_student(name, tut_email):
-#     conn = mysql.connect()
-#     cursor = conn.cursor()
-
-#     #get classes
-#     cursor.execute("select class_code from StudentClasses where stu_email=(%s)", (tut_email))
-#     classes = cursor.fetchone()
-#     #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
-
-#     conn.close()
-
-#     return {'name': name, 'email': tut_email, 'classes': classes, 'isTutor': False}
-
-#retrieve tutor details
-# def retrieve_tutor(name, tut_email):
-#     conn = mysql.connect()
-#     cursor = conn.cursor()
-    
-#     #get the login preference
-#     cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
-#     loginPref = cursor.fetchone()
-    
-#     #get the contactability
-#     cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
-#     contactable = cursor.fetchone()
-    
-#     #get the payment
-#     cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
-#     payment = cursor.fetchone()
-    
-#     #split the payment details
-#     if payment == None:
-#         payment_method = "Cash"
-#         payment_details = ""
-#     else:
-#         payment_method = payment[0]  #payment_type
-#         payment_details = payment[1] #payment_info
-
-#     times = retrieve_times(tut_email)
-#     classes = retrieve_classes(tut_email)
-
-#     #login prefs are an array, make it just a single int
-#     if loginPref == None:
-#         loginPref = 1
-#     else:
-#         loginPref = loginPref[0]
-  
-#     return {'name': name, 'email':tut_email, 'isTutor': True,
-#         'login_pref':loginPref, 'contact':contactable,
-#         'pay_type':payment_method, 'pay_info':payment_details,
-#         'times': times, 'classes': classes}, 200
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -247,12 +184,27 @@ def edit_profile(submission, tut_email):
                     + "\' where tut_email=\'" + tut_email + "\';")
 
     #update the tutor classes
-    
     classes = submission['classes']
 
     for aClass in classes:
         if 'class_code' in aClass.keys():
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
+
+    conn.close()
+    return 'SUCCESS', 200
+
+def edit_student_classes(submission, tut_email) :
+    '''Updates classes the student is taking'''
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #update the classes the student is taking
+    classes = submission['classesTaking']
+
+    #loop through each class added and insert it into the db
+    for aClass in classes:
+        cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass))
 
     conn.close()
     return 'SUCCESS', 200

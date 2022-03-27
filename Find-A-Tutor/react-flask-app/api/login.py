@@ -200,6 +200,8 @@ def myProfile():
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
+    elif 'classesTaking' in submission.keys():
+        return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)
@@ -234,7 +236,7 @@ def getProfile():
     
     #determine what profile is being populated
     isTutor = request.args.get('view')
-    return profile.retrieve_profile(token, isTutor=="tutor")
+    return profile.retrieve_profile(token)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
