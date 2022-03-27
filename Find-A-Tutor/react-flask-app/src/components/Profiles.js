@@ -16,8 +16,6 @@ class Profiles extends React.Component {
         super(props);
         this.state = {
             items: {},
-            isEdit: false,
-            isEditStudent: false
         }
         this.edit = this.edit.bind(this);
         this.editStudent = this.editStudent.bind(this);
@@ -30,7 +28,7 @@ class Profiles extends React.Component {
      * then fetches any changes from the db
      */
     edit() {
-        this.props.edit;
+        this.props.edit();
     }//edit
 
     /**
@@ -38,7 +36,7 @@ class Profiles extends React.Component {
      * then fetches any changes from the db
      */
     editStudent() {
-        this.props.editStudent;
+        this.props.editStudent();
     }//editStudent
 
     /**
@@ -107,11 +105,11 @@ class Profiles extends React.Component {
     render() {
         let items = this.props.items;
 
-        let staticOrEditTutor = this.state.isEdit ?
+        let staticOrEditTutor = this.props.isEdit ?
             <TutorProfile items={items} edit={this.edit} /> :
             <TutorProfileStatic items={items} edit={this.edit} />
 
-        let staticOrEditStudent = this.state.isEditStudent ?
+        let staticOrEditStudent = this.props.isEditStudent ?
             <StudentProfile items={items} edit={this.editStudent} /> :
             <StudentProfileStatic items={items} edit={this.editStudent} />
 
