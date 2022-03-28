@@ -225,3 +225,19 @@ def BecomeATutor(student):
     
     #return success
     return 'Done'
+
+#get a list of group tutoring from the backend
+def GroupTutoringList():
+    #connect to DB
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    
+    #get all group tutoring items
+    cursor.execute("select * from GroupTutoring")
+    allGroup = cursor.fetchall()
+    
+    #close connection
+    conn.close()
+    
+    #return banned students
+    return jsonify(allGroup)
