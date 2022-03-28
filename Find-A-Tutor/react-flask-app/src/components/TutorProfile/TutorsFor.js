@@ -35,9 +35,9 @@ class TutorsFor extends React.Component {
      * 
      * @returns : map of rendered classes
      */
-    renderClass() {
+    renderClass(classesNum) {
         return this.props.classes.map(item => {
-            let index = this.props.classes.indexOf(item);
+            let index = this.props.classes.indexOf(item)+classesNum;
             return <Class
                 index={index}
                 removeClass={() => { this.removeClass(index) }}
@@ -82,18 +82,19 @@ class TutorsFor extends React.Component {
         filledInClasses.forEach(aClass => {
             classesList.push(<>
                 <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass[0]} </p>
-                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
+                    <p className='courseCode'> {aClass[0]} </p>
+                    <p className='hourlyRate'> Hourly Rate: ${aClass[1]} </p>
                 </div>
             </>)
         })
+        let classesNum = classesList.length;
         return (
             <>
                 <div className="p-2" id="fieldset">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
                         {classesList}
-                        {this.renderClass()}
+                        {this.renderClass(classesNum)}
                     </div>
                     <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>
                 </div>

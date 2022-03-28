@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-import './TutorProfile.css';
+import '../TutorProfile.css';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
@@ -100,8 +100,13 @@ class T_Profile extends React.Component {
      * @param {int} index index of class to be removed
      */
     removeClass(index) {
+        var classes = this.props.items['tutorsFor'];
+        if (index > classes.length) {
+            //newly added class that hasn't been submitted
+            classes.append("newClassToRemove")
+        }
         //remove class from DOM
-        let filteredClasses = this.props.classes.filter(aClass => aClass !== this.props.classes[index]);
+        let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
         this.setState({ classes: filteredClasses });
     }//removeClass
 

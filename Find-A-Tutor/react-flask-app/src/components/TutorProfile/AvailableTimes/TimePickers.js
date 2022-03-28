@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import moment from 'moment';
 import Time from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
-import "./AvailableTimes.css"
 
 const format = 'h:mm a';                //Format for TimePicker
 const now = moment().hour(0).minute(0); //Default value for TimePickers

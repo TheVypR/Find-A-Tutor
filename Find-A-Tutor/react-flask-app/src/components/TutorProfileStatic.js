@@ -44,7 +44,7 @@ class Weekday extends React.Component {
             <>
                 <div>
                     <h6 className="day" id={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
-                    <hr classname="hr" />
+                    <hr className="hr" />
                     {timeSlotList}
                 </div>
             </>
@@ -132,8 +132,8 @@ class TutorsFor extends React.Component {
         classes.map(aClass => {
             classesList.push(<>
                 <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass[0]} </p>
-                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
+                    <p> {aClass[0]} </p>
+                    <p className='hourlyRate'> Hourly Rate: ${aClass[1]} </p>
                 </div>
             </>)
         })

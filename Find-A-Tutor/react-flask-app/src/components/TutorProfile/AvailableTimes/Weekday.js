@@ -336,6 +336,7 @@ class Weekday extends React.Component {
             <>
                 <div className="day">
                     <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    <hr classname="hr" />
                     {filledOutTimes}
                     {this.renderTimeSlot(day)}
                     <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />

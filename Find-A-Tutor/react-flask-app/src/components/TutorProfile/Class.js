@@ -39,7 +39,7 @@ class Class extends React.Component {
                     <input name="rate"
                         type="number"
                         id={index}
-                        className="hourlyRate"
+                        className='hourlyRate'
                         min="0"
                         size="2"
                         onKeyPress={e => this.onlyNumbers(e)}

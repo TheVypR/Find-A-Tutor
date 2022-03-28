@@ -73,9 +73,6 @@
     margin-right: 5px;
 }
 
-.courseCode {
-    margin-right: 5px;
-}
 
 .timeLabel {
     font-size: 10px;
@@ -115,10 +112,6 @@ fieldset {
     border-left: thin solid black;
 }
 
-.hr {
-    color: black;
-}
-
 #fieldset {
     border: thin solid black;
     border-radius: 5px;
@@ -146,4 +139,12 @@ fieldset {
 
 .day {
     margin: 15px
+}
+
+.paymentType {
+    margin-bottom: 5px;
+}
+
+.courseCode {
+    margin-right: 5px;
 }
