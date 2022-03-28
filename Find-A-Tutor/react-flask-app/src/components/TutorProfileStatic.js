@@ -61,19 +61,19 @@ class Week extends React.Component {
             <>
                 <div className="d-flex justify-content-center">
                     <div className="vr"></div>
-                    <Weekday times={times['Sunday']} day={['sunday']} />
+                    <Weekday times={times['Sunday']} day={'sunday'} />
                     <div className="vr"></div>
-                    <Weekday times={times['Monday']} day={['monday']} />
+                    <Weekday times={times['Monday']} day={'monday'} />
                     <div className="vr"></div>
-                    <Weekday times={times['Tuesday']} day={['tuesday']} />
+                    <Weekday times={times['Tuesday']} day={'tuesday'} />
                     <div className="vr"></div>
-                    <Weekday times={times['Wednesday']} day={['wednesday']} />
+                    <Weekday times={times['Wednesday']} day={'wednesday'} />
                     <div className="vr"></div>
-                    <Weekday times={times['Thursday']} day={['thursday']} />
+                    <Weekday times={times['Thursday']} day={'thursday'} />
                     <div className="vr"></div>
-                    <Weekday times={times['Friday']} day={['friday']} />
+                    <Weekday times={times['Friday']} day={'friday'} />
                     <div className="vr"></div>
-                    <Weekday times={times['Saturday']} day={['saturday']} />
+                    <Weekday times={times['Saturday']} day={'saturday'} />
                     <div className="vr"></div>
                 </div>
             </>
@@ -101,13 +101,21 @@ class PayAndLoginPrefs extends React.Component {
 
     render() {
         let items = this.props.items;
+        var pay_info = items['pay_info']
+        if (pay_info === "") {
+            pay_info = "None"
+        }
+        var pay_info_conditional = <p> Username: {pay_info} </p>
+        if (items['pay_type'] === "Cash") {
+            pay_info_conditional = <></>
+        }
         return (
             <>
                 <fieldset>
                     <div className="p-2">
                         <p id="header"> Payment Info </p>
                         <p> Payment Type: {items['pay_type']}</p>
-                        <p> Username: {items['pay_info']} </p>
+                        {pay_info_conditional}
                         <p id="loginPreferences"> Login Preference: </p>
                         <p> {this.getLoginPref(items['login_pref'])} </p>
                     </div>
