@@ -234,7 +234,7 @@ class TutorProfileStatic extends React.Component {
                     <Week times={items['times']} />
                     <TutorsFor classes={items['tutorsFor']} />
                 </div>
-            
+
                 <div id="bottom">
                     <Button variant="success" id="save" onClick={this.props.edit}> Edit </Button>
                     <Button id="stopTutoring" variant="danger" onClick={this.handleStopTutoring}> Stop Tutoring </Button>

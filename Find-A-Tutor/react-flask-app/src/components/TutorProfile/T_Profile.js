@@ -176,6 +176,7 @@ class T_Profile extends React.Component {
 
         return (
             <>
+                <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
                     <h1 id="name"> {items['name']} </h1>
@@ -191,6 +192,9 @@ class T_Profile extends React.Component {
                         pay_info={items['pay_info']}
                         login_pref={items['login_pref']}
                     />
+
+                    <AvailableTimes times={items['times']} />
+
                     <TutorsFor
                         classes={this.state.classes}
                         addClass={this.addClass}
@@ -200,8 +204,6 @@ class T_Profile extends React.Component {
                         filledInClasses={items['tutorsFor']}
                     />
                 </div>
-
-                <AvailableTimes times={items['times']} />
 
                 <div id="bottom">
                     {apply}
