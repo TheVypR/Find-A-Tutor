@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import './TutorProfile.css';
-import Alert from '@mui/material/Alert';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
@@ -160,18 +159,12 @@ class T_Profile extends React.Component {
      * @param {int} index given index
      */
     setRate(rate, index) {
-        if (rate >= 0) {
-            this.setState({ applyState: true })
-            let classes = this.state.classes;
-            let aClass = { ...classes[index] };
-            aClass['rate'] = rate;
-            classes[index] = aClass;
-            this.setState({ classes: classes });
-        } else {
-            this.setState({ applyState: false });
-            console.log("Hourly rates cannot be a negative number");
-            <Alert severity="error">Hourly rates cannot be a negative number </Alert>
-        }
+        this.setState({ applyState: true })
+        let classes = this.state.classes;
+        let aClass = { ...classes[index] };
+        aClass['rate'] = rate;
+        classes[index] = aClass;
+        this.setState({ classes: classes });
     }//setRate
 
     render() {
