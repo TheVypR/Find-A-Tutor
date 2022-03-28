@@ -115,8 +115,25 @@ fieldset {
     border-left: thin solid black;
 }
 
+.hr {
+    color: black;
+}
+
+#fieldset {
+    border: thin solid black;
+    border-radius: 5px;
+}
+
 #stopTutoring {
     margin-left: 5px;
+}
+
+.availableTimes {
+    margin-top: 12px;
+    margin-right: 275px;
+    margin-left: 275px;
+    border: thin solid black;
+    border-radius: 5px;
 }
 
 .submitTime {
@@ -127,4 +144,8 @@ fieldset {
 
 .SubmittedTimeSlot {
     font-size: 12px;
+}
+
+.day {
+    margin: 15px
 }

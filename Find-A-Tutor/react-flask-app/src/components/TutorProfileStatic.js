@@ -21,7 +21,7 @@ class TimeSlot extends React.Component {
                 <div className="d-flex justify-content-center" id="sundayTimeSlot">
                     <p> {startTime} to {endTime} </p>
                 </div>
-                <hr />
+                <hr className="hr" />
             </>
         );//return
     }//render
@@ -43,7 +43,8 @@ class Weekday extends React.Component {
         return (
             <>
                 <div>
-                    <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    <h6 className="day" id={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    <hr classname="hr" />
                     {timeSlotList}
                 </div>
             </>
@@ -59,8 +60,7 @@ class Week extends React.Component {
         let times = this.props.times;
         return (
             <>
-                <div className="d-flex justify-content-center">
-                    <div className="vr"></div>
+                <div className="d-flex justify-content-center availableTimes">
                     <Weekday times={times['Sunday']} day={'sunday'} />
                     <div className="vr"></div>
                     <Weekday times={times['Monday']} day={'monday'} />
@@ -74,7 +74,6 @@ class Week extends React.Component {
                     <Weekday times={times['Friday']} day={'friday'} />
                     <div className="vr"></div>
                     <Weekday times={times['Saturday']} day={'saturday'} />
-                    <div className="vr"></div>
                 </div>
             </>
         );//return
@@ -93,9 +92,9 @@ class PayAndLoginPrefs extends React.Component {
 
     getLoginPref(loginPref) {
         if (loginPref == 0) {//Student
-            return 'Studnet View';
+            return <p> Studnet View </p>;
         } else {
-            return 'Tutor View';
+            return <p> Tutor View </p>;
         }
     }
 
@@ -111,15 +110,13 @@ class PayAndLoginPrefs extends React.Component {
         }
         return (
             <>
-                <fieldset>
-                    <div className="p-2">
-                        <p id="header"> Payment Info </p>
-                        <p> Payment Type: {items['pay_type']}</p>
-                        {pay_info_conditional}
-                        <p id="loginPreferences"> Login Preference: </p>
-                        <p> {this.getLoginPref(items['login_pref'])} </p>
-                    </div>
-                </fieldset>
+                <div className="p-2" id="fieldset">
+                    <p id="header"> Payment Info </p>
+                    <p> Payment Type: {items['pay_type']}</p>
+                    {pay_info_conditional}
+                    <p id="loginPreferences"> Login Preference: </p>
+                    {this.getLoginPref(items['login_pref'])}
+                </div>
             </>
         );//return
     }//render
@@ -143,14 +140,12 @@ class TutorsFor extends React.Component {
 
         return (
             <>
-                <fieldset>
-                    <div className="p-2">
-                        <p id="header"> Tutoring For </p>
-                        <div id="classes">
-                            {classesList}
-                        </div>
+                <div className="p-2" id="fieldset">
+                    <p id="header"> Tutoring For </p>
+                    <div id="classes">
+                        {classesList}
                     </div>
-                </fieldset>
+                </div>
             </>
         );//return
     }//render
