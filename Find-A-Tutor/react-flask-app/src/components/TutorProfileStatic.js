@@ -112,9 +112,9 @@ class PayAndLoginPrefs extends React.Component {
             <>
                 <div className="p-2" id="fieldset">
                     <p id="header"> Payment Info </p>
-                    <p> Payment Type: {items['pay_type']}</p>
+                    <p> Payment Type {items['pay_type']}</p>
                     {pay_info_conditional}
-                    <p id="loginPreferences"> Login Preference: </p>
+                    <p id="loginPreferences"> Login Preference </p>
                     {this.getLoginPref(items['login_pref'])}
                 </div>
             </>
@@ -231,10 +231,10 @@ class TutorProfileStatic extends React.Component {
                 </div>
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs items={items} />
+                    <Week times={items['times']} />
                     <TutorsFor classes={items['tutorsFor']} />
                 </div>
-                <Week times={items['times']} />
-
+            
                 <div id="bottom">
                     <Button variant="success" id="save" onClick={this.props.edit}> Edit </Button>
                     <Button id="stopTutoring" variant="danger" onClick={this.handleStopTutoring}> Stop Tutoring </Button>
