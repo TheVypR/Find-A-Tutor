@@ -25,7 +25,7 @@ else:
 mysql.init_app(app)
 
 #retrieve all the appointments a student has attended previously
-def loadPreviousAppointmentsStudent(email):
+def loadPreviousAppointmentsStudent(token):
     #init appointment array
     apptHistory = []
     
@@ -35,7 +35,7 @@ def loadPreviousAppointmentsStudent(email):
     cursor = conn.cursor()  
     
     #get all appointments for a student
-    cursor.execute("select * from Appointment where stu_email = \"" + email + "\"")
+    cursor.execute("select * from Appointment where stu_email = (select stu_email from Student where token = \"" + token + "\")")
     history = cursor.fetchall()
     
     #go through each appointment
@@ -49,10 +49,10 @@ def loadPreviousAppointmentsStudent(email):
     conn.close()
     
     #return appointment history for student
-    return {'appts': apptHistory}
+    return {'appts': apptHistory}, 200
 
 #retrieve all the appointments a tutor has attended previously
-def loadPreviousAppointmentsTutor(email):
+def loadPreviousAppointmentsTutor(token):
     #init appointment array
     apptHistory = []
     
@@ -62,7 +62,7 @@ def loadPreviousAppointmentsTutor(email):
     cursor = conn.cursor()
 
     #get all appointments for a tutor
-    cursor.execute("select * from Appointment where tut_email = \"" + email + "\"")
+    cursor.execute("select * from Appointment where tut_email = (select stu_email from Student where token = \"" + token + "\")")
     history = cursor.fetchall()
     
     #go through each appointment
@@ -76,7 +76,7 @@ def loadPreviousAppointmentsTutor(email):
     conn.close()
     
     #return appointment history for tutor
-    return {'appts': apptHistory}
+    return {'appts': apptHistory}, 200
 
 #give a rating to a tutor
 def submitRating(data):
@@ -98,7 +98,7 @@ def submitRating(data):
     cursor.execute("update Tutor set rating = " + str(newRate) + " where tut_email = \"" + data['target'] + "\"")
     
     #return success
-    return "Done"
+    return "SUCCESS", 200
 
 #report a student for misconduct
 def submitStudentReport(data, email):
@@ -115,7 +115,7 @@ def submitStudentReport(data, email):
                         + data['report'] + "\")")
     
     #return success
-    return "DONE"
+    return "SUCCESS", 200
 
 #report a tutor for misconduct
 def submitTutorReport(data, email):
@@ -132,4 +132,4 @@ def submitTutorReport(data, email):
                         + data['report'] + "\")")
     
     #return success
-    return "DONE"
+    return "SUCCESS", 200

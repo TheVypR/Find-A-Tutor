@@ -48,7 +48,7 @@ class PayAndLoginPrefs extends React.Component {
                 user.style.display = "none";
             } else {
                 user.style.display = "block";
-            }//if  
+            }
         });
 
         //Send to parent
@@ -85,14 +85,11 @@ class PayAndLoginPrefs extends React.Component {
             return pay_info;
         } else {
             pay_type = this.getPayType(pay_type);
-            return pay_type + "Username";
+            return pay_type + " Username";
         }//set pay_info
     }//getPayInfo
 
     render() {
-        let pay_type = this.props.pay_type;     //given payment type
-        let pay_info = this.props.pay_info;     //given payment username if applicable
-
         return (
             <>
                 <fieldset>
@@ -106,7 +103,7 @@ class PayAndLoginPrefs extends React.Component {
                                     id={'dropdown-button-drop-${idx}'}
                                     size="sm"
                                     variant="primary"
-                                    title={this.getPayType(pay_type)}
+                                    title={this.getPayType(this.state.paymentType)}
                                     onSelect={e => this.handleSelect(e)}
                                 >
                                     <Dropdown.Item eventKey="Venmo">Venmo</Dropdown.Item>
@@ -120,7 +117,7 @@ class PayAndLoginPrefs extends React.Component {
                         <input
                             type="text"
                             id="paymentUser"
-                            placeholder={this.getPayInfo(pay_type, pay_info)}
+                            placeholder={this.getPayInfo(this.state.paymentType, this.state.pay_info)}
                             onChange={e => this.props.setPaymentUser(e.target.value)}
                         />
 

@@ -1,12 +1,15 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
+import random                                               #used for random string generation
 from datetime import datetime, timedelta                    #used to compare dates
 from flask import Flask, request, jsonify                   #used for Flask API
-import profile, signup, appointment, history, adminRoutes   #used to call functions
+import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
+from flask_cors import CORS
 
 #setup flask
 app = Flask(__name__)
+CORS(app)
 
 #setup DB
 mysql = MySQL()
@@ -46,7 +49,7 @@ def login():
 
   #check that email existed in users (Student table)
   if result is None:
-    return jsonify({'error': 'Not Authenticated'})
+    return 'Invalid Email', 401
   
   #on user existing
   #hash their login attempt password
@@ -58,20 +61,20 @@ def login():
           'sha256', # The hash digest algorithm for HMAC
           pw.encode('utf-8'), # Convert the password to bytes
           salt, # Provide the salt
-          100000 #100,000 iterations of SHA-256 
+          100000 #100,000 iterations of SHA-256
       )
       
       #combine password and salt
       password = salt + password
       #check for password in DB
-      cursor.execute("select stu_email, isAdmin from Student where stu_email = \""
+      cursor.execute("select stu_email, token, isAdmin from Student where stu_email = \""
                               + email + "\" and stu_pass = \""
                               + password.hex() + "\"")
       user = cursor.fetchone()
       
       #if password not found -> ERROR
       if user is None:
-        return jsonify({'error': 'Not Authenticated'})
+        return 'Incorrect Password', 401
     
   #if user is a tutor, check login preference
   cursor.execute("select login_pref from Tutor where tut_email = \"" + email + "\"")
@@ -82,15 +85,35 @@ def login():
   #else login pref is student
   if checkIfTutor:
       loginPref = checkIfTutor[0]
+      isTutor = True
   else:
       loginPref = 0
+      isTutor = False
 
   #close connection
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': email, 'isAdmin': user[1], 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
+@app.route('/removeTutor/', methods=['POST'])
+def removeTutor():
+    tutor = request.get_json()
+    tutor = authentication.getEmail(tutor)
+    return profile.remove_tutor(tutor)
+
+@app.route('/authCheck/', methods=['GET'])
+def checkLogIn():
+    token = request.args.get("token")
+    return authentication.checkLogIn(token)
+    
+#retrieve all the appointments for a student or tutor
+@app.route('/getAppointments/', methods=['GET'])
+def getAppointments():
+    token = request.args.get("token")   #token to get appointments for
+    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
+    return appointment.getAppointments(token, tutView=="tutor")
+    
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -99,15 +122,16 @@ def currentTutors():
 #add a student's information to the Tutor table 
 @app.route('/AddTutor/', methods=['POST'])
 def addTutor():
-    student = request.get_json()
-    return adminRoutes.BecomeATutor(student)
+    token = request.get_json()
+    email = authentication.getEmail(token)[0]
+    return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
-#only shows tutors who teach a class that the student (email) is taking
+#only shows tutors who teach a class that the student (token) is taking
 @app.route('/Contactable/', methods=['GET'])
 def contactable():
-    email = request.args.get("email")       #get email of student to compare classes
-    return adminRoutes.Contactable(email)
+    token = request.args.get("token")       #get token of student to compare classes
+    return adminRoutes.Contactable(token)
 
 #list of all outstanding reports on tutors
 @app.route('/ReportedTutors/', methods=['GET'])
@@ -129,7 +153,7 @@ def bannedStudents():
 def dismissReport():
     target = request.get_json()             #get report to dismiss
     adminRoutes.DeleteUserFromList(target)
-    return 'Done'
+    return 'Done', 200
 
 #list of all group tutoring sessions
 @app.route('/GroupTutoring/', methods=['GET'])
@@ -150,7 +174,7 @@ def editTutoring():
 def addStudentToBan():
     target = request.get_json()          #get target info
     adminRoutes.AddStudentToBan(target)
-    return 'Done'
+    return 'Done', 200
 
 #submit data to sign up for site
 @app.route('/signup/', methods=['POST'])
@@ -163,8 +187,8 @@ def signUp():
 def myProfile():
     #get information to change
     submission = request.get_json()
-    email = submission['email']
-    
+    token = submission['token']
+    email = authentication.getEmail(token)[0]
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
@@ -188,6 +212,8 @@ def myProfile():
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
+    elif 'classesTaking' in submission.keys():
+        return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)
@@ -218,17 +244,17 @@ def getDayFromISO(day):
 @app.route('/myProfile/', methods=['GET'])
 def getProfile():
     #get user email
-    email = request.args.get('email')
+    token = request.args.get('token')
     
     #determine what profile is being populated
     isTutor = request.args.get('view')
-    return profile.retrieve_profile(email, isTutor=="tutor")
+    return profile.retrieve_profile(token)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  email = data['email']
+  token = data['token']
   
   #combine times and a day to make a datetime
   newStart = createDateFromTime(data['day'], data['start'])
@@ -236,72 +262,71 @@ def addAppointment():
   
   #split the datetimes into 15 minute intervals for storage
   slots = splitTimes({'start':newStart, 'end':newEnd})
-  
   #add the appointment and mark tutor time as taken
-  return appointment.addAppointment(data, email, newStart, newEnd, slots)
+  return appointment.addAppointment(data, token, newStart, newEnd, slots)
 
 #get the rates for all classes for a specific tutor
 @app.route('/getRates/', methods=['POST'])
 def getRates():
-    data = request.get_json()           #get tutor email
+    data = request.get_json()           #get tutor token
     return appointment.getRates(data)
 
 #get all classes a student is taking
 @app.route('/getStuClasses/', methods=['GET'])
 def getStuClasses():
-    email = request.args.get("email")
-    return appointment.getStuClasses(email)
+    token = request.args.get("token")
+    return appointment.getStuClasses(token)
 
 #get all times from relevant tutors
 #only retrieves from tutors that teach classes the student is taking
 @app.route('/getTimes/', methods=['GET'])
 def getTimes():
     #get student email to compare tutor classes to
-    email = request.args.get("email")
+    token = request.args.get("token")
     
     #if there are times returned
-    if len(appointment.getTimes(email)) != 0:
+    if len(appointment.getTimes(token)) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        times = mergeTimes(appointment.getTimes(email))
+        unmerged = appointment.getTimes(token)[0]
+        if type(unmerged) == type([]):
+            times = mergeTimes(unmerged)
+        else:
+            return "No times found", 401
     else:
         #return empty times array
         times = []
-    return {'times':times}
+    return {'times':times}, 200
 
-#retrieve all the appointments for a student or tutor
-@app.route('/getAppointments/', methods=['GET'])
-def getAppointments():
-    email = request.args.get("email")   #email to get appointments for
-    tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
-    return appointment.getAppointments(email, tutView=="tutor")
+
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
     data = request.get_json()   #get data from frontend
-    email = data['email']       #get the email from data
+    token = data['token']       #get the token from data
+    view = data['view']         #get the view
     
     #parse moments into datetimes for storage
-    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
-    slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    slots = splitTimes({'start':data['start'], 'end':data['end']})
   
-    return appointment.removeAppointment(email, data, newDate, slots)
+    return appointment.removeAppointment(token, data, newDate, slots, view)
 
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])
 def loadAppointments():
-    email=request.args.get("email")
+    token=request.args.get("token")
     isTutor=request.args.get("view")
     
     #if user is on tutor view
     if isTutor == "tutor":
         #load previous appointments with user's students
-        return history.loadPreviousAppointmentsTutor(email)
+        return history.loadPreviousAppointmentsTutor(token)
     else:
         #load previous appointments with user's tutors
-        return history.loadPreviousAppointmentsStudent(email)
+        return history.loadPreviousAppointmentsStudent(token)
 
 #submit a rating for a student or tutor
 @app.route('/submitRating/', methods=['POST'])
@@ -313,7 +338,8 @@ def rateTutor():
 @app.route('/submitReport/', methods=['POST'])
 def report():
     data = request.get_json()
-    email=data["email"]
+    token=data["token"]
+    email = authentication.getEmail(token)
     isTutor = data["view"]
     #if reporter is a tutor
     if isTutor == "tutor":
@@ -362,8 +388,13 @@ def dateParse(date):
     #put the day into the new datetime
     newDate += dateArray[2] + "T"
     
-    #put the time into the new datetime
-    newDate += dateArray[4]
+    #if seconds is not 00 reset to 00
+    checkSec = dateArray[4].split(':')
+    if checkSec[2] != "00":
+        newDate += checkSec[0] + ":" + checkSec[1] + ":00" 
+    else:
+        #put the time into the new datetime
+        newDate += dateArray[4]
     
     #return the new datetime    
     return newDate
@@ -382,10 +413,9 @@ def createDateFromTime(day, time):
         
     #split on "T" and store the first part (YYYY-MM-DD) in new datetime
     newDay = date.split("T")[0]
-    
     #add the separator, time, and seconds
     newDate = newDay + "T" + time + ":00"
-    
+
     #return new datetime
     return newDate
     
@@ -396,7 +426,6 @@ def mergeTimes(timeArray):
     #make sure to exclude the first and include the last block
     first = True
     left = len(timeArray)
-    print(timeArray)
     #set the expected difference between timeblocks
     minDif = timedelta(minutes=15)
     
@@ -416,12 +445,13 @@ def mergeTimes(timeArray):
         #check if this is for an appointment or not
         if 'tut_email' in time:
             #if the difference between the last entry and this one is not 15 minutes, start the new merged block
-            if (endTime - curTime) != minDif:
+            if ((endTime - curTime) != minDif) or lastTutorInfo['tut_email'] != time['tut_email']:
                 #if this is the first don't add last entry's info
                 if not first:
                     timeBlockArray.append({
                         'tut_email':lastTutorInfo['tut_email'], 
                         'tut_name':lastTutorInfo['tut_name'],
+                        'classes':lastTutorInfo['classes'],
                         'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                         'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                         'type': "time",
@@ -444,6 +474,7 @@ def mergeTimes(timeArray):
                 timeBlockArray.append({
                     'tut_email':lastTutorInfo['tut_email'], 
                     'tut_name':lastTutorInfo['tut_name'],
+                    'classes':lastTutorInfo['classes'],
                     'start':datetime.strftime(curBlockStart, '%Y-%m-%dT%H:%M:%S'),
                     'end':datetime.strftime(curBlockEnd, '%Y-%m-%dT%H:%M:%S'),
                     'type': "time",

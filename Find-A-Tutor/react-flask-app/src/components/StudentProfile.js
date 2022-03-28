@@ -6,25 +6,26 @@ import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-i
 import "./StudentProfile.css"
 
 class StudentProfile extends React.Component {
-	
+
     constructor(props) {
         super(props)
-		
+
         this.state = {
-            classesList: [{ verified: "", courseCode: "", rate: "" }],
+            classesList: [],
             isLoaded: false,
             isTutorView: true
         }
 
         this.AddNewClass = this.AddNewClass.bind(this);
         this.RemoveClass = this.RemoveClass.bind(this);
+        this.setCourseCode = this.setCourseCode.bind(this);
     }
-	
+
     handleSubmit = () => {
-        const values = [{
-            "classes" : this.state.classesList,
-			'email': localStorage.getItem('email')
-        }];
+        const values = {
+            'token': localStorage.getItem("token"),
+            "classesTaking": this.state.classesList
+        };
 
         const response = fetch("/myProfile/", {
             method: "POST",
@@ -33,16 +34,31 @@ class StudentProfile extends React.Component {
             },
             body: JSON.stringify(values)
         })
+        this.props.edit();
     }
 
     AddNewClass() {
         this.setState({
             classesList: [
                 ...this.state.classesList,
-                { verified: "", courseCode: "", rate: "" }
+                ""
             ]
         });
     }
+
+    /**
+     * sets the courseCode for a class in the classes state
+     * 
+     * @param {string} code entered courseCode
+     * @param {int} index given index of class
+     */
+    setCourseCode(code, index) {
+        let classes = this.state.classesList;
+        let aClass = { ...classes[index] };
+        aClass = code;
+        classes[index] = aClass;
+        this.setState({ classesList: classes })
+    }//setCourseCode
 
     RemoveClass = index => {
         this.state.classesList.splice(index, 1);
@@ -51,9 +67,18 @@ class StudentProfile extends React.Component {
             classesList: this.state.classesList
         })
     }
-	
+
     render() {
         var items = this.props.items;
+        let filledInClasses = items['classesTaking'];
+        let classesList = [];
+        filledInClasses.forEach(aClass => {
+            classesList.push(<>
+                <div className='d-flex '>
+                    <p className='courseCodeStatic'> {aClass} </p>
+                </div>
+            </>)
+        })
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
@@ -69,11 +94,19 @@ class StudentProfile extends React.Component {
                         <div className="p-2">
                             <p id="header"> Classes </p>
                             <div id="classes">
-
+                                {classesList}
                                 {this.state.classesList.map((thisClass, index) => {
                                     return (
                                         <div className="input-group mb-3">
-                                            <input name="courseCode" id={index} className="courseCode" type="text" placeholder='HUMA 200 A' size="8"></input>
+                                            <input
+                                                name="courseCode"
+                                                id={index}
+                                                className="courseCode"
+                                                onChange={e => this.setCourseCode(e.target.value, index)}
+                                                type="text"
+                                                placeholder='HUMA 200 A'
+                                                size="8">
+                                            </input>
                                             <div className="input-group-append">
                                                 <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
                                                     <BsFillTrashFill />

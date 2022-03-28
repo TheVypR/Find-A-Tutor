@@ -4,13 +4,18 @@ from flask_wtf import FlaskForm
 from flask_wtf import Form
 from pymysql import NULL
 from wtforms import BooleanField
+#from MySQLdb import escape_string as thwart
+
+#error constants
+
+
+#Database stuff
 from flaskext.mysql import MySQL
 import json
 import login
 
 app = Flask(__name__)
 
-#DB Setup
 mysql = MySQL()
 
 locality = 1 # Have locality set to 1 if you want to test on your local machine
@@ -29,79 +34,59 @@ mysql.init_app(app)
 #End of DB Setup
 
 
-def retrieve_profile(email, isTutor):
-    """Retrieve details of the users profile
-
-    Gets the name and email of the tutor from the DB
-    and checks if the Tutor or Student profile should be loaded.
-    """
-
-    #Connect to DB
+#retrieve profile details
+def retrieve_profile(token):
     conn = mysql.connect()
     cursor = conn.cursor()
     
     #get the tutor information from the DB
-    cursor.execute("select stu_name, stu_email from Student where stu_email = (%s)", (email))
+    cursor.execute("select stu_name, stu_email from Student where token = \"" + token + "\"")
     data = cursor.fetchone()
+    if not data:
+        return 'Profile not Found', 404
     name = data[0]
     email = data[1]
 
-    conn.close()
+    #get classes
+    cursor.execute("select class_code from StudentClasses where stu_email=(%s)", (email))
+    classesTaking = cursor.fetchall()
+    #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
 
-    #if so retrieve tutor info
-    if isTutor:
-        return retrieve_tutor(name, email)
-    elif not isTutor:
-        return {'name': name, 'email': email, 'isTutor': False}
-    else:
-        print("Error - isTutor has invalid data")
-        return 'Error'
-
-def retrieve_tutor(name, tut_email):
-    """Retrieves details pertaining to the users Tutor Profile
-    
-    Gets their loginPref(0=student, 1=tutor),
-    whether they can be contact by students for appointments or not (0=no, 1=yes),
-    what payment type they accept (cash, venmo, or paypal),
-    what their username for the payment service they use is (if applicable),
-    the times they are available to tutor,
-    and the classes they tutor for.
-    This is then returned as a dictionary
-    """
-
-    #Connect to DB
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    
     #get the login preference
-    cursor.execute("select login_pref from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select login_pref from Tutor where tut_email = (%s)", (email))
     loginPref = cursor.fetchone()
     
     #get the contactability
-    cursor.execute("select contactable from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select contactable from Tutor where tut_email = (%s)", (email))
     contactable = cursor.fetchone()
     
     #get the payment
-    cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (tut_email))
+    cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (email))
     payment = cursor.fetchone()
     
     #split the payment details
-    payment_method = payment[0]  #payment_type
-    payment_details = payment[1] #payment_info
+    if payment == None:
+        payment_method = "Cash"
+        payment_details = ""
+    else:
+        payment_method = payment[0]  #payment_type
+        payment_details = payment[1] #payment_info
 
-    #Get the tutor's available times
-    times = retrieve_times(tut_email)
-    #Get the tutor's classes they tutor
-    classes = retrieve_classes(tut_email)
+    times = retrieve_times(email)
+    tutorsFor = retrieve_classes(email)
 
     #login prefs are an array, make it just a single int
-    loginPref = loginPref[0]
+    if loginPref == None:
+        loginPref = 1
+    else:
+        loginPref = loginPref[0]
   
     conn.close()
-    return {'name': name, 'email':tut_email, 'isTutor': True,
+
+    return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'classes': classes}
+        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
 
 def retrieve_times(tut_email):
     """Get the times the tutor is available from the DB
@@ -133,8 +118,7 @@ def retrieve_times(tut_email):
     else:
         availTimes = []
     
-    conn.close()
-    return availTimes
+    return availTimes, 200
 
 
 def retrieve_classes(tut_email):
@@ -179,7 +163,7 @@ def post_timeSlot(times, tut_email):
                         "\",false)")
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def remove_timeSlot(times, tut_email):
     """Remove a timeslot from the Tutor's available times
@@ -202,7 +186,7 @@ def remove_timeSlot(times, tut_email):
 
     conn.close()
     
-    return 'Done'
+    return 'SUCCESS', 200
 
 def contactMe_change(contactMe, tut_email):
     """ Send boolean value to DB for if the Tutor is able to be contacted to set up a Tutoring session.
@@ -219,7 +203,7 @@ def contactMe_change(contactMe, tut_email):
     cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
 
 def edit_profile(submission, tut_email):
     """Update DB from changes made by the Tutor
@@ -244,35 +228,51 @@ def edit_profile(submission, tut_email):
                     + "\' where tut_email=\'" + tut_email + "\';")
 
     #update the tutor classes
-    classes = submission['classes'] #submitted classes array [{'class_code', 'rate'}, ]
+    classes = submission['classes']
 
     #Loop through the Tutor's classes 
     #if the class has a class_code add it to the DB
     #There can be empty elements in the array so these are not added to the DB
     for aClass in classes:
         if 'class_code' in aClass.keys():
-            cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);",
-             (tut_email, aClass['class_code'], aClass['rate'], 0))
-
-
-#     update Tutor
-# set pay_type="PayPal", pay_info="user"
-# where tut_email="apelia18@gcc.edu";
-    #+ "\", log_in_as_tutor = \"" + submission['login_pref'] 
-    #+ "\", classes = \"" + submission['classes']
-
-                    
-    # #delete the classes and rates
-    # cursor.execute("delete from TutorRates where tutor_id = " + tutor_id) 
-    
-    # #add the new classes and rates
-    # for c in classes:
-        # cursor.execute("insert into TutorRates(tutor_id, class_code, rate) values(" 
-                    # + tutor_id + ", class_code = \"" 
-                    # + c['class_code'] + "\", rate = \"" 
-                    # + c[rate] + "\")")
-                    
-    # print(info['payInfo'])
+            cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 
     conn.close()
-    return 'Done'
+    return 'SUCCESS', 200
+
+def edit_student_classes(submission, tut_email) :
+    '''Updates classes the student is taking'''
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #update the classes the student is taking
+    classes = submission['classesTaking']
+
+    #loop through each class added and insert it into the db
+    for aClass in classes:
+        cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass))
+
+    conn.close()
+    return 'SUCCESS', 200
+
+def remove_tutor(tutor):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    cursor.execute("select tut_email from Appointment where tut_email = \"" + tutor + "\" ")
+
+    data = cursor.fetchone()
+
+    retStr = ""
+    if data != None:
+        retStr = 'Done'
+    else:
+        cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor +"\" ")
+        cursor.execute("delete from TutorTimes where tut_email = \""+ tutor + "\" ")
+        cursor.execute("delete from TutorClasses where tut_email = \""+ tutor + "\" ")
+        cursor.execute("delete from Tutor where tut_email = \""+ tutor + "\" ")
+        retStr = 'Done'
+    
+    conn.close()
+    return 'SUCCESS', 200

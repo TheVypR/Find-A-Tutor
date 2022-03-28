@@ -1,5 +1,5 @@
 #FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
-from flask import Flask, request, jsonify   #used for Flask API
+from flask import Flask, jsonify   #used for Flask API
 from flaskext.mysql import MySQL            #used to connect to DB
 
 #Flask setup
@@ -50,7 +50,7 @@ def ReportedTutors():
         LSize += 1
 
     #return array of reports
-    return jsonify(returnArray)
+    return jsonify(returnArray), 200
 
 #retrieve the students that have been reported
 def ReportedStudents():
@@ -79,7 +79,7 @@ def ReportedStudents():
         LSize += 1
 
     #return the array of reports
-    return jsonify(returnArray)
+    return jsonify(returnArray), 200
 
 #get all current Tutors in the DB
 def CurrentTutors():
@@ -95,10 +95,11 @@ def CurrentTutors():
     conn.close()
     
     #return all tutors in DB
-    return jsonify(allTutors)
+    return jsonify(allTutors), 200
 
 #retrieve all tutors who can be contacted for times not shown on calendar
-def Contactable(email):
+def Contactable(token):
+    print(token)
     #connect to DB
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -107,7 +108,8 @@ def Contactable(email):
     cursor.execute("select tut_email, tut_name from Tutor" +
                     " where contactable = 1 "
                     +"and tut_email in (select tut_email from TutorClasses where class_code in" 
-                    +" (select class_code from StudentClasses where stu_email = \"" + email + "\") and tut_email != \"" + email + "\")")
+                    +" (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
+                    + token + "\") and tut_email not in (select stu_email from Student where token = \"" + token + "\")))")
     contactTuts = cursor.fetchall()
     
     #close the connection
@@ -122,7 +124,7 @@ def Contactable(email):
         returnArray.append({'tut_email':tutor[0], 'tut_name':tutor[1]})
     
     #return contactable tutors
-    return jsonify(returnArray)
+    return jsonify(returnArray), 200
 
 #get all the users that have been banned
 def BannedStudents():
@@ -138,7 +140,7 @@ def BannedStudents():
     conn.close()
     
     #return banned students
-    return jsonify(allBanned)
+    return jsonify(allBanned), 200
 
 #mark a user as being banned
 #target -> user to be banned's info
@@ -180,7 +182,7 @@ def AddStudentToBan(target):
     DeleteUserFromList(target)
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 #delete a report from the reported list
 #target -> report info
@@ -204,10 +206,12 @@ def DeleteUserFromList(target):
     conn.close()
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 
-def BecomeATutor(student):
+#adds a user to the Tutor table
+#thereby making them a tutor
+def BecomeATutor(email):
     #set the default pay method
     pay = "Cash"
 
@@ -217,14 +221,14 @@ def BecomeATutor(student):
     cursor = conn.cursor()
     
     #add student to Tutor table
-    cursor.execute("insert into Tutor values(\""+ student['stu_email'] 
-                    + "\", (select stu_name from Student where stu_email = \"" + student['stu_email'] 
+    cursor.execute("insert into Tutor values(\""+ email 
+                    + "\", (select stu_name from Student where stu_email = \"" + email 
                     + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
     #close the connection
     conn.close()
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 #get a list of group tutoring from the backend
 def GroupTutoringList():
@@ -241,3 +245,94 @@ def GroupTutoringList():
     
     #return banned students
     return jsonify(allGroup)
+
+#submits the tutors request for verification
+def submitVerifyRequest(email, class_code):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #generate a new code
+    code = ""
+    for i in range(64):
+        code += random.choice(string.ascii_letters)
+        
+    #store the submission
+    cursor.execute("insert into VerificationRequest values(\"" 
+                    + email + "\", \""
+                    + class_code + "\", "
+                    +"(select prof_email from Classes where class_code = \"" + class_code + "\"), \""
+                    + code + "\"")
+    
+    #close the connection
+    conn.close()
+    
+    #return success
+    return 'SUCCESS', 200
+    
+#get the information for the email
+def verifyRequestRetrieval():
+    #request array
+    requestArray = []
+    
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #get the tutor name, tutor email, code, class code, and professor email
+    cursor.execute("select R.prof_email, R.tut_email, T.tut_name, R.class_code, R.approve_code from VerificationRequest R, Tutor T")
+    requests = cursor.fetchall()
+    
+    #put requests in an array of dictionaries
+    for request in requests:
+        requestArray.append({'prof_email':request[0], 'tut_email':request[1], 'tut_name':request[2], 'class_code':request[3], 'approve_code':request[4]})
+    
+    #return the array of requests
+    return {'requests':requestArray}, 200
+    
+#approve a student's request
+def approveVerification(approve_code):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #get the tutor and class to approve
+    cursor.execute("select tut_email, class_code from VerificationRequest where approve_code = \"" + approve_code + "\"")
+    request = cursor.fetchone()
+    
+    #mark the tutor as verified for that class
+    cursor.execute("update TutorClasses set verified = true where tut_email = \"" + request[0] + "\" and class_code = \"" + request[1] + "\"")
+    
+    #remove the request
+    removeVerificationRequest(request[0], request[1])
+    
+    #return success
+    return 'SUCCESS', 200
+    
+#deny a student's request
+def denyVerification(deny_code):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #get the tutor and class to deny
+    cursor.execute("select tut_email, class_code from VerificationRequest where approve_code = \"" + deny_code + "\"")
+    request = cursor.fetchone()
+    
+    #delete request from DB
+    removeVerificationRequest(request[0], request[1])
+    
+#remove request from table
+def removeVerificationRequest(tut_email, class_code):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    cursor.execute("delete from VerificationRequest where tut_email = \"" + tut_email + "\" and class_code = \"" + class_code + "\"")
+    
+    return 'SUCCESS', 200

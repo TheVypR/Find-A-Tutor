@@ -36,19 +36,6 @@ export default function Reports() {
 	const authContext = useContext(AuthContext);
 
     //get data from server
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const responseTutors = await fetch("/ReportedTutors/")
-    //         const responseStudents = await fetch("/ReportedStudents/")
-    //         const postTutors = await responseTutors.json();
-    //         const postStudents = await responseStudents.json();
-    //         setReportedTutors(postTutors);
-    //         setReportedStudents(postStudents);
-    //     }
-    //     fetchData();
-    // }, []);
-
-    //get data from server
     useEffect(() => {
         fetch("/ReportedTutors/")
             .then(res => res.json())

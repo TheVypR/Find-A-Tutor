@@ -23,7 +23,7 @@ class Week extends React.Component {
                     <div className="vr"></div>
                     <Weekday day="friday" times={times} />
                     <div className="vr"></div>
-                    <Weekday day="sunday" times={times} />
+                    <Weekday day="saturday" times={times} />
                     <div className="vr"></div>
                 </div>
             </>
