@@ -93,7 +93,7 @@ export default function AddGroupTutoring() {
             <CssBaseline />
             <AdminNavBar />
             <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
-            <Container maxWidth="xl" disableGutters component="main" sx={{pt: 6}}>
+            <Container maxWidth="xl" disableGutters component="main" sx={{p: 6}}>
                 <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                     <Typography component="h2" variant="h6" color="primary" gutterBottom>
                         Group Tutoring
