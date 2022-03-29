@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import Class from './Class'
 
+
 /**
  * Allows users to add classes that they tutor for
  */
@@ -31,7 +32,7 @@ class TutorsFor extends React.Component {
     }
 
     /**
-     * Creates a map of rendered classes
+     * Maps the filled in classes from the DB and any new classes added by the user
      * 
      * @returns : map of rendered classes
      */
@@ -41,7 +42,7 @@ class TutorsFor extends React.Component {
                 return (<>
                     <div className='d-flex '>
                         <p className='courseCode'> {item[0]} </p>
-                        <p className='hourlyRate'> Hourly Rate: ${item[1]} </p>
+                        <p className='hourlyRate'> Test Rate: ${item[1]} </p>
                     </div>
                 </>)
             } else {

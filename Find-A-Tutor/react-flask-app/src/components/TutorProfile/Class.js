@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-import { BsFillTrashFill, BsPatchCheckFill } from "react-icons/bs";
+import { BsFillTrashFill } from "react-icons/bs";
 
 /**
  * Renders the Inputs for a Class
@@ -26,7 +26,6 @@ class Class extends React.Component {
         return (
             <>
                 <div className="input-group mb-3">
-                    <BsPatchCheckFill name="verified" id={index} className="verified" size="22" />
                     <input name="courseCode"
                         id={index}
                         className="courseCode"
