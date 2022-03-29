@@ -85,24 +85,22 @@ def login():
   #else login pref is student
   if checkIfTutor:
       loginPref = checkIfTutor[0]
+      isTutor = True
   else:
       loginPref = 0
+      isTutor = False
 
   #close connection
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref}), 200
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
     tutor = request.get_json()
     tutor = authentication.getEmail(tutor)
     return profile.remove_tutor(tutor)
-
-@app.route('/verificationRequest/', methods=['POST'])
-def requestVerify():
-    
 
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
@@ -202,6 +200,8 @@ def myProfile():
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
+    elif 'classesTaking' in submission.keys():
+        return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)
@@ -236,7 +236,7 @@ def getProfile():
     
     #determine what profile is being populated
     isTutor = request.args.get('view')
-    return profile.retrieve_profile(token, isTutor=="tutor")
+    return profile.retrieve_profile(token)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
@@ -275,7 +275,11 @@ def getTimes():
     #if there are times returned
     if len(appointment.getTimes(token)) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        times = mergeTimes(appointment.getTimes(token)[0])
+        unmerged = appointment.getTimes(token)[0]
+        if type(unmerged) == type([]):
+            times = mergeTimes(unmerged)
+        else:
+            return "No times found", 401
     else:
         #return empty times array
         times = []
@@ -288,6 +292,7 @@ def getTimes():
 def deleteAppointment():
     data = request.get_json()   #get data from frontend
     token = data['token']       #get the token from data
+    view = data['view']         #get the view
     
     #parse moments into datetimes for storage
     newDate = {'start': data['start'], 'end': data['end']}
@@ -295,7 +300,7 @@ def deleteAppointment():
     #split the datetimes into 15 minute intervals
     slots = splitTimes({'start':data['start'], 'end':data['end']})
   
-    return appointment.removeAppointment(token, data, newDate, slots)
+    return appointment.removeAppointment(token, data, newDate, slots, view)
 
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])

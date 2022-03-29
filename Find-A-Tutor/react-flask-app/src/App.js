@@ -6,8 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Calendar from './components/calendar'
 import SignIn from "./components/SignIn"
 import SignUp from "./components/SignUp"
-import TutorProfile from "./components/TutorProfile/T_Profile"
-import StudentProfile from "./components/StudentProfile"
 import { createContext } from 'react';
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
@@ -26,13 +24,12 @@ export default function App() {
 	 if (localStorage.getItem("token") !== null) {
 		fetch("/authCheck/?token=" + localStorage.getItem("token"), {method: 'GET'})
 			.then(res => res.json())
-			.then(result => {console.log(result); setLoggedIn(result['loggedIn'])})
+			.then(result => {setLoggedIn(result['loggedIn'])})
+      
 	 } else {
 		setLoggedIn(false);
 	 }
   }, [])
-  
-  
 
   //set login and logout; this is where we will set the authentication from the backend
   const login = () => {
