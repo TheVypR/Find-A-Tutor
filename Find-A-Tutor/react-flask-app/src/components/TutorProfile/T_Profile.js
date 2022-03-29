@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-import './TutorProfile.css';
+import '../TutorProfile.css';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
@@ -100,8 +100,9 @@ class T_Profile extends React.Component {
      * @param {int} index index of class to be removed
      */
     removeClass(index) {
+        var classes = this.state.classes;
         //remove class from DOM
-        let filteredClasses = this.props.classes.filter(aClass => aClass !== this.props.classes[index]);
+        let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
         this.setState({ classes: filteredClasses });
     }//removeClass
 
@@ -167,6 +168,15 @@ class T_Profile extends React.Component {
         this.setState({ classes: classes });
     }//setRate
 
+    componentDidMount() {
+        let filledInClasses = this.props.items['tutorsFor'];
+        filledInClasses.forEach(aClass => {
+            var classesList = this.state.classes;
+            classesList.push(aClass);
+            this.setState({classes: classesList});
+        });
+    }
+
     render() {
         let items = this.props.items;
 
@@ -176,6 +186,7 @@ class T_Profile extends React.Component {
 
         return (
             <>
+                <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
                     <h1 id="name"> {items['name']} </h1>
@@ -192,19 +203,18 @@ class T_Profile extends React.Component {
                         pay_info={items['pay_info']}
                         login_pref={items['login_pref']}
                     />
+
+                    <AvailableTimes times={items['times']} />
+
                     <TutorsFor
                         classes={this.state.classes}
                         addClass={this.addClass}
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
                         setRate={this.setRate}
-                        filledInClasses={items['tutorsFor']}
                     />
                 </div>
 
-                <AvailableTimes times={items['times']} />
-
-                {/* Bottom Buttons */}
                 <div id="bottom">
                     {apply}
                     <Button type="submit" id="stopTutoring" variant="danger"> Stop Tutoring </Button>

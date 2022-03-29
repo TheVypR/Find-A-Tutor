@@ -9,8 +9,7 @@ class Week extends React.Component {
         let times = this.props.times;   // Available times from the DB
         return (
             <>
-                <div className="d-flex justify-content-center">
-                    <div className="vr"></div>
+                <div className="d-flex justify-content-center availableTimes">
                     <Weekday day="sunday" times={times} />
                     <div className="vr"></div>
                     <Weekday day="monday" times={times} />
@@ -24,7 +23,6 @@ class Week extends React.Component {
                     <Weekday day="friday" times={times} />
                     <div className="vr"></div>
                     <Weekday day="saturday" times={times} />
-                    <div className="vr"></div>
                 </div>
             </>
         );//return

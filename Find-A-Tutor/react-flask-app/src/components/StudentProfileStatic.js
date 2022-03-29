@@ -1,8 +1,7 @@
 import React from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
-
-import "./StudentProfile.css"
+import "./TutorProfile.css"
 
 class ClassesStudying extends React.Component {
     render() {
@@ -10,21 +9,17 @@ class ClassesStudying extends React.Component {
         let classesList = [];
         classes.forEach(aClass => {
             classesList.push(<>
-                <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass} </p>
-                </div>
+                <p style={{ margin: "10px" }} > {aClass} </p>
             </>)
         })
         return (
             <>
-                <fieldset>
-                    <div className="p-2">
-                        <p id="header"> Classes </p>
-                        <div id="classes">
-                            {classesList}
-                        </div>
+                <div className="p-2 studentClasses">
+                    <p style={{ fontWeight: "bold" }}> Current Classes </p>
+                    <div id="classes">
+                        {classesList}
                     </div>
-                </fieldset>
+                </div>
             </>
         );//return
     }//render

@@ -349,6 +349,17 @@ def report():
         #report a tutor
         return history.submitTutorReport(data, email)
 
+#called when tutor presses button to request to be verified for a class
+@app.route('/requestVerification/', methods=['POST'])
+def verifyRequest():
+    data = request.get_json()           #get the data
+    token = data["token"]               #get the token from the data
+    class_code = data["class_code"]     #get the class code from the data
+    email = authentication.getEmail(token)#use token to get email
+    
+    #return the success or failure
+    return adminRoutes.submitVerifyRequest(email, class_code)
+
 #take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
 #needed for storage and calendar display
 def dateParse(date):
@@ -418,7 +429,7 @@ def createDateFromTime(day, time):
 
     #return new datetime
     return newDate
-    
+
 #takes all the 15min times and makes them one block
 #input must be an array of datetimes formatted like this
 ##### YYYY-MM-DDThh:mm:ss #####
