@@ -19,6 +19,11 @@ import './adminView.css';
 import {AuthContext} from './AuthContext';
 import AdminNavBar from './AdminNavBar';
 
+//npm install @date-io/moment, npm install @date-io/date-fns
+import DateAdapter from '@mui/lab/AdapterMoment';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+
 //making styles and themes
 const theme = createTheme();
 
@@ -31,6 +36,7 @@ export default function AddGroupTutoring() {
 
     //single group tutoring session
     const [singleGroup, setSingleGroup] = useState([]);
+    const [time, setTime] = useState(new Date());
 
     //handling modal show and close
     const [enableGroup, setEnableGroup] = useState(false);
@@ -49,7 +55,7 @@ export default function AddGroupTutoring() {
 
     //post changed items on edit
     const handleEditSubmit = (event) => {
-        event.preventDefault()
+        event.preventDefault();
         const editedData = new FormData(event.currentTarget);
         console.log(editedData.currentTarget);
         fetch('/EditTutoring/', {
@@ -59,69 +65,90 @@ export default function AddGroupTutoring() {
         })
     };
 
+    //changing start and end times
+    const handleStartTimeChange = (newValue) => {
+        setTime(newValue);
+        setSingleGroup[4] = (time);
+        console.log(singleGroup);
+        console.log(time);
+    };
+    const handleEndTimeChange = (newValue) => {
+        setTime(newValue);
+        setSingleGroup[5] = (time);
+        console.log(singleGroup);
+        console.log(time);
+    };
+
+    //special input for DateTimePicker
+    const renderInput = (props) => (
+        <TextField {...props} label="Start Time" defaultValue={singleGroup[4]} sx={{ mx: 1 }} />
+    );
+
     return authContext.isLoggedIn && (
-        <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={DateAdapter}>
+            <ThemeProvider theme={theme}>
 
-            <Modal show={enableGroup} size="lg" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Grid container spacing={1}>
-                        <Grid item>
-                            <Typography component="h1" variant='h6' align="left" color="#1565c0">Edit Group Tutoring Session</Typography>
+                <Modal show={enableGroup} size="lg" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Grid container spacing={1}>
+                            <Grid item>
+                                <Typography component="h1" variant='h6' align="left" color="#1565c0">Edit Group Tutoring Session</Typography>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Modal.Header>
-                <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleEditSubmit}>
-                    <Modal.Body>
-                        <TextField margin="normal" required id="title" label="Title" name="title" autoComplete="title" autoFocus defaultValue={singleGroup[1]} sx={{ mx: 1}} />
-                        <TextField margin="normal" required id="location" label="Location" name="location" autoComplete="location" autoFocus defaultValue={singleGroup[2]} sx={{ mx: 1}} />
-                        <TextField margin="normal" required id="department" label="Department" name="department" autoComplete="department" autoFocus defaultValue={singleGroup[3]} sx={{ mx: 1}} /> <br/>
-                        <TextField margin="normal" required id="start" label="Start Time" name="start" autoComplete="start" autoFocus defaultValue={singleGroup[4]} sx={{ mx: 1}} />
-                        <TextField margin="normal" required id="end" label="End Time" name="end" autoComplete="end" autoFocus defaultValue={singleGroup[5]} sx={{ mx: 1}} /> <br/>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="contained" type='submit' style={{backgroundColor: "#228b22"}} >
-                            Submit
-                        </Button>
-                        <div></div>
-                        <Button variant="contained" onClick={handleClose}>
-                            Cancel
-                        </Button>
-                    </Modal.Footer>
-                </Box>
-            </Modal>
+                    </Modal.Header>
+                    <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleEditSubmit}>
+                        <Modal.Body>
+                            <TextField margin="normal" required id="title" label="Title" name="title" autoComplete="title" autoFocus defaultValue={singleGroup[1]} sx={{ mx: 1}} />
+                            <TextField margin="normal" required id="location" label="Location" name="location" autoComplete="location" autoFocus defaultValue={singleGroup[2]} sx={{ mx: 1}} />
+                            <TextField margin="normal" required id="department" label="Department" name="department" autoComplete="department" autoFocus defaultValue={singleGroup[3]} sx={{ mx: 1}} /> <br/>
+                            <DateTimePicker label="Start Time" value={time} onChange={handleStartTimeChange} renderInput={(params) => <TextField {...params} /> } />
+                            <DateTimePicker label="End Time" value={time} onChange={handleEndTimeChange} renderInput={(params) => <TextField {...params} /> } />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="contained" type='submit' style={{backgroundColor: "#228b22"}} >
+                                Submit
+                            </Button>
+                            <div></div>
+                            <Button variant="contained" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                        </Modal.Footer>
+                    </Box>
+                </Modal>
 
-            <CssBaseline />
-            <AdminNavBar />
-            <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
-            <Container maxWidth="xl" disableGutters component="main" sx={{p: 6}}>
-                <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                    <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                        Group Tutoring
-                    </Typography>
-                    <Table size="large">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell><strong>Title</strong></TableCell>
-                                <TableCell><strong>Location</strong></TableCell>
-                                <TableCell><strong>Department</strong></TableCell>
-                                <TableCell><strong>Start Time</strong></TableCell>
-                                <TableCell><strong>End Time</strong></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {allGroup.map((session) => (
-                                <TableRow key={session[0]} onClick={() => {setSingleGroup(session); setEnableGroup(true);}} hover>
-                                    <TableCell>{session[1]}</TableCell>
-                                    <TableCell>{session[2]}</TableCell>
-                                    <TableCell>{session[3]}</TableCell>
-                                    <TableCell>{session[4]}</TableCell>
-                                    <TableCell>{session[5]}</TableCell>
+                <CssBaseline />
+                <AdminNavBar />
+                <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
+                <Container maxWidth="xl" disableGutters component="main" sx={{p: 6}}>
+                    <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+                        <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                            Group Tutoring
+                        </Typography>
+                        <Table size="large">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell><strong>Title</strong></TableCell>
+                                    <TableCell><strong>Location</strong></TableCell>
+                                    <TableCell><strong>Department</strong></TableCell>
+                                    <TableCell><strong>Start Time</strong></TableCell>
+                                    <TableCell><strong>End Time</strong></TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Paper>
-            </Container>
-        </ThemeProvider>
+                            </TableHead>
+                            <TableBody>
+                                {allGroup.map((session) => (
+                                    <TableRow key={session[0]} onClick={() => {setSingleGroup(session); setEnableGroup(true);}} hover>
+                                        <TableCell>{session[1]}</TableCell>
+                                        <TableCell>{session[2]}</TableCell>
+                                        <TableCell>{session[3]}</TableCell>
+                                        <TableCell>{session[4]}</TableCell>
+                                        <TableCell>{session[5]}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                </Container>
+            </ThemeProvider>
+        </LocalizationProvider>
     );
 }

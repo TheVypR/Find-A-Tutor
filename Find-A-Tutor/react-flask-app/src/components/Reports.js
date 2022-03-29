@@ -121,7 +121,7 @@ export default function Reports() {
         handleBanConfirm();
     }
 
-    return authContext.isLoggedIn==="true" && (
+    return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
 
             <Modal show={banConfirm} size="md" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
