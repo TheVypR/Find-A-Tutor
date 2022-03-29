@@ -85,7 +85,7 @@ def retrieve_profile(token):
     return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
+        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}, 200
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -109,7 +109,7 @@ def retrieve_times(tut_email):
     else:
         availTimes = []
     
-    return availTimes, 200
+    return availTimes
 
 
 #retrieve the classes they tutor and their rates

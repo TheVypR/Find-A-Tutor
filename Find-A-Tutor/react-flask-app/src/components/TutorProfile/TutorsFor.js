@@ -42,7 +42,7 @@ class TutorsFor extends React.Component {
                 return (<>
                     <div className='d-flex '>
                         <p className='courseCode'> {item[0]} </p>
-                        <p className='hourlyRate'> Test Rate: ${item[1]} </p>
+                        <p className='hourlyRate'> Hourly Rate: ${item[1]} </p>
                     </div>
                 </>)
             } else {
