@@ -36,7 +36,8 @@ export default function AddGroupTutoring() {
 
     //single group tutoring session
     const [singleGroup, setSingleGroup] = useState([]);
-    const [time, setTime] = useState(new Date());
+    const [startTime, setStartTime] = useState(new Date());
+    const [endTime, setEndTime] = useState(new Date());
 
     //handling modal show and close
     const [enableGroup, setEnableGroup] = useState(false);
@@ -47,6 +48,8 @@ export default function AddGroupTutoring() {
         .then(res => res.json())
         .then(result => {
             setAllGroup(result);
+            setStartTime(result[4]);
+            setEndTime(result[5]);
         },
         (error) => {
             console.log(error);
@@ -67,22 +70,13 @@ export default function AddGroupTutoring() {
 
     //changing start and end times
     const handleStartTimeChange = (newValue) => {
-        setTime(newValue);
-        setSingleGroup[4] = (time);
-        console.log(singleGroup);
-        console.log(time);
+        setStartTime(newValue);
+        console.log(startTime);
     };
     const handleEndTimeChange = (newValue) => {
-        setTime(newValue);
-        setSingleGroup[5] = (time);
-        console.log(singleGroup);
-        console.log(time);
+        setEndTime(newValue);
+        console.log(endTime);
     };
-
-    //special input for DateTimePicker
-    const renderInput = (props) => (
-        <TextField {...props} label="Start Time" defaultValue={singleGroup[4]} sx={{ mx: 1 }} />
-    );
 
     return authContext.isLoggedIn && (
         <LocalizationProvider dateAdapter={DateAdapter}>
@@ -101,8 +95,8 @@ export default function AddGroupTutoring() {
                             <TextField margin="normal" required id="title" label="Title" name="title" autoComplete="title" autoFocus defaultValue={singleGroup[1]} sx={{ mx: 1}} />
                             <TextField margin="normal" required id="location" label="Location" name="location" autoComplete="location" autoFocus defaultValue={singleGroup[2]} sx={{ mx: 1}} />
                             <TextField margin="normal" required id="department" label="Department" name="department" autoComplete="department" autoFocus defaultValue={singleGroup[3]} sx={{ mx: 1}} /> <br/>
-                            <DateTimePicker label="Start Time" value={time} onChange={handleStartTimeChange} renderInput={(params) => <TextField {...params} /> } />
-                            <DateTimePicker label="End Time" value={time} onChange={handleEndTimeChange} renderInput={(params) => <TextField {...params} /> } />
+                            <DateTimePicker label="Start Time" value={startTime} onChange={handleStartTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
+                            <DateTimePicker label="End Time" value={endTime} onChange={handleEndTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="contained" type='submit' style={{backgroundColor: "#228b22"}} >

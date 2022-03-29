@@ -1,9 +1,13 @@
 #FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
+import random
+import string
 from flask import Flask, jsonify   #used for Flask API
 from flaskext.mysql import MySQL            #used to connect to DB
+from flask.ext.moment import Moment
 
 #Flask setup
 app = Flask(__name__)
+moment = Moment(app)
 
 #setup DB
 mysql = MySQL()
@@ -239,12 +243,18 @@ def GroupTutoringList():
     #get all group tutoring items
     cursor.execute("select * from GroupTutoring")
     allGroup = cursor.fetchall()
+
+    listOfGroup = list()
+    for element in allGroup:
+        toList = list(element)
+        toList[4] = moment().format("YYYY-MM-DD HH:mm:ss")
+        listOfGroup.append(toList)
     
     #close connection
     conn.close()
     
     #return banned students
-    return jsonify(allGroup)
+    return jsonify(listOfGroup)
 
 #submits the tutors request for verification
 def submitVerifyRequest(email, class_code):
