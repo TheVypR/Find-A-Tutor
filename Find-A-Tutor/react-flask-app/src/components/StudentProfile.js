@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 
-import "./StudentProfile.css"
+import "./TutorProfile.css"
 
 class StudentProfile extends React.Component {
 
@@ -74,9 +74,7 @@ class StudentProfile extends React.Component {
         let classesList = [];
         filledInClasses.forEach(aClass => {
             classesList.push(<>
-                <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass} </p>
-                </div>
+                    <p style={{ margin: "10px" }} > {aClass} </p>
             </>)
         })
         return (
@@ -90,36 +88,34 @@ class StudentProfile extends React.Component {
 
                 <div className="d-flex justify-content-center">
                     {/*Classes*/}
-                    <fieldset>
-                        <div className="p-2">
-                            <p id="header"> Classes </p>
-                            <div id="classes">
-                                {classesList}
-                                {this.state.classesList.map((thisClass, index) => {
-                                    return (
-                                        <div className="input-group mb-3">
-                                            <input
-                                                name="courseCode"
-                                                id={index}
-                                                className="courseCode"
-                                                onChange={e => this.setCourseCode(e.target.value, index)}
-                                                type="text"
-                                                placeholder='HUMA 200 A'
-                                                size="8">
-                                            </input>
-                                            <div className="input-group-append">
-                                                <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
-                                                    <BsFillTrashFill />
-                                                </Button>
-                                            </div>
+                    <div className="p-2 studentClasses">
+                        <p style={{ fontWeight: "bold" }}> Classes </p>
+                        <div id="classes">
+                            {classesList}
+                            {this.state.classesList.map((thisClass, index) => {
+                                return (
+                                    <div className="input-group mb-3">
+                                        <input
+                                            name="courseCode"
+                                            id={index}
+                                            className="courseCode"
+                                            onChange={e => this.setCourseCode(e.target.value, index)}
+                                            type="text"
+                                            placeholder='HUMA 200 A'
+                                            size="8">
+                                        </input>
+                                        <div className="input-group-append">
+                                            <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
+                                                <BsFillTrashFill />
+                                            </Button>
                                         </div>
-                                    );
-                                })}
+                                    </div>
+                                );
+                            })}
 
-                            </div>
-                            <Button type="button" id="AddClass" variant="primary" onClick={this.AddNewClass}> Add Class </Button>
                         </div>
-                    </fieldset>
+                        <Button type="button" id="AddClass" variant="primary" onClick={this.AddNewClass}> Add Class </Button>
+                    </div>
                 </div>
 
                 {/* Bottom Buttons */}

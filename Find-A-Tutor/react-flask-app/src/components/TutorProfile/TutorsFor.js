@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import Class from './Class'
 
+
 /**
  * Allows users to add classes that they tutor for
  */
@@ -31,19 +32,28 @@ class TutorsFor extends React.Component {
     }
 
     /**
-     * Creates a map of rendered classes
+     * Maps the filled in classes from the DB and any new classes added by the user
      * 
      * @returns : map of rendered classes
      */
     renderClass() {
         return this.props.classes.map(item => {
-            let index = this.props.classes.indexOf(item);
-            return <Class
-                index={index}
-                removeClass={() => { this.removeClass(index) }}
-                setCourseCode={this.setCourseCode}
-                setRate={this.setRate}
-            />
+            if (typeof (item[0]) === 'string') {
+                return (<>
+                    <div className='d-flex '>
+                        <p className='courseCode'> {item[0]} </p>
+                        <p className='hourlyRate'> Test Rate: ${item[1]} </p>
+                    </div>
+                </>)
+            } else {
+                let index = this.props.classes.indexOf(item);
+                return <Class
+                    index={index}
+                    removeClass={() => { this.removeClass(index) }}
+                    setCourseCode={this.setCourseCode}
+                    setRate={this.setRate}
+                />
+            }
         })//return
     }//renderClass
 
@@ -53,7 +63,7 @@ class TutorsFor extends React.Component {
      * @param {int} index current class index
      */
     removeClass(index) {
-         this.props.removeClass(index);
+        this.props.removeClass(index);
     }//removeClass
 
     /**
@@ -77,28 +87,16 @@ class TutorsFor extends React.Component {
     }//setRate
 
     render() {
-        let filledInClasses = this.props.filledInClasses;
-        let classesList = [];
-        filledInClasses.forEach(aClass => {
-            classesList.push(<>
-                <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass[0]} </p>
-                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
-                </div>
-            </>)
-        })
+        let classes = this.props.classes
         return (
             <>
-                <fieldset>
-                    <div className="p-2">
-                        <p id="header"> Tutoring For </p>
-                        <div id="classes">
-                            {classesList}
-                            {this.renderClass()}
-                        </div>
-                        <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>
+                <div className="p-2" id="fieldset">
+                    <p id="header"> Tutoring For </p>
+                    <div id="classes">
+                        {this.renderClass()}
                     </div>
-                </fieldset>
+                    <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>
+                </div>
             </>
         );//return
     }//render

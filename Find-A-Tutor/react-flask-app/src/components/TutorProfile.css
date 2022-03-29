@@ -35,8 +35,8 @@
     margin-bottom: 0px;
 }
 
-#contactMe {
-    margin-right: 5px;
+.contactMe {
+    margin-right: 10px;
 }
 
 #bottom {
@@ -73,20 +73,10 @@
     margin-right: 5px;
 }
 
-.courseCode {
-    margin-right: 5px;
-}
 
 .timeLabel {
     font-size: 10px;
     font-weight: bold;
-}
-
-fieldset {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;    
-    border-radius: 4px;
 }
 
 #startTimeLabel {
@@ -115,8 +105,19 @@ fieldset {
     border-left: thin solid black;
 }
 
+#fieldset {
+    border: thin solid black;
+    border-radius: 5px;
+}
+
 #stopTutoring {
     margin-left: 5px;
+}
+
+.availableTimes {
+    margin-top: 12px;
+    border: thin solid black;
+    border-radius: 5px;
 }
 
 .submitTime {
@@ -127,4 +128,21 @@ fieldset {
 
 .SubmittedTimeSlot {
     font-size: 12px;
+}
+
+.day {
+    margin: 15px
+}
+
+.paymentType {
+    margin-bottom: 5px;
+}
+
+.courseCode {
+    margin-right: 5px;
+}
+
+.studentClasses{
+    border: thin solid black;
+    border-radius: 5px; 
 }
