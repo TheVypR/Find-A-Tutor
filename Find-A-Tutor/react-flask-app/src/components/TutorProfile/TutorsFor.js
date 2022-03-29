@@ -35,15 +35,24 @@ class TutorsFor extends React.Component {
      * 
      * @returns : map of rendered classes
      */
-    renderClass(classesNum) {
+    renderClass() {
         return this.props.classes.map(item => {
-            let index = this.props.classes.indexOf(item)+classesNum;
-            return <Class
-                index={index}
-                removeClass={() => { this.removeClass(index) }}
-                setCourseCode={this.setCourseCode}
-                setRate={this.setRate}
-            />
+            if (typeof (item[0]) === 'string') {
+                return (<>
+                    <div className='d-flex '>
+                        <p className='courseCode'> {item[0]} </p>
+                        <p className='hourlyRate'> Hourly Rate: ${item[1]} </p>
+                    </div>
+                </>)
+            } else {
+                let index = this.props.classes.indexOf(item);
+                return <Class
+                    index={index}
+                    removeClass={() => { this.removeClass(index) }}
+                    setCourseCode={this.setCourseCode}
+                    setRate={this.setRate}
+                />
+            }
         })//return
     }//renderClass
 
@@ -77,24 +86,13 @@ class TutorsFor extends React.Component {
     }//setRate
 
     render() {
-        let filledInClasses = this.props.filledInClasses;
-        let classesList = [];
-        filledInClasses.forEach(aClass => {
-            classesList.push(<>
-                <div className='d-flex '>
-                    <p className='courseCode'> {aClass[0]} </p>
-                    <p className='hourlyRate'> Hourly Rate: ${aClass[1]} </p>
-                </div>
-            </>)
-        })
-        let classesNum = classesList.length;
+        let classes = this.props.classes
         return (
             <>
                 <div className="p-2" id="fieldset">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
-                        {classesList}
-                        {this.renderClass(classesNum)}
+                        {this.renderClass()}
                     </div>
                     <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>
                 </div>

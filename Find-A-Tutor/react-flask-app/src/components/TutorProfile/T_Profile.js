@@ -100,11 +100,7 @@ class T_Profile extends React.Component {
      * @param {int} index index of class to be removed
      */
     removeClass(index) {
-        var classes = this.props.items['tutorsFor'];
-        if (index > classes.length) {
-            //newly added class that hasn't been submitted
-            classes.append("newClassToRemove")
-        }
+        var classes = this.state.classes;
         //remove class from DOM
         let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
         this.setState({ classes: filteredClasses });
@@ -172,6 +168,15 @@ class T_Profile extends React.Component {
         this.setState({ classes: classes });
     }//setRate
 
+    componentDidMount() {
+        let filledInClasses = this.props.items['tutorsFor'];
+        filledInClasses.forEach(aClass => {
+            var classesList = this.state.classes;
+            classesList.push(aClass);
+            this.setState({classes: classesList});
+        });
+    }
+
     render() {
         let items = this.props.items;
 
@@ -206,7 +211,6 @@ class T_Profile extends React.Component {
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
                         setRate={this.setRate}
-                        filledInClasses={items['tutorsFor']}
                     />
                 </div>
 
