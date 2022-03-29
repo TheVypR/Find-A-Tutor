@@ -74,8 +74,7 @@ class StudentProfile extends React.Component {
         let classesList = [];
         filledInClasses.forEach(aClass => {
             classesList.push(<>
-                    <hr />
-                    <p style={{ margin: "5px" }} > {aClass} </p>
+                    <p style={{ margin: "10px" }} > {aClass} </p>
             </>)
         })
         return (
@@ -89,7 +88,7 @@ class StudentProfile extends React.Component {
 
                 <div className="d-flex justify-content-center">
                     {/*Classes*/}
-                    <div className="studentClasses">
+                    <div className="p-2 studentClasses">
                         <p style={{ fontWeight: "bold" }}> Classes </p>
                         <div id="classes">
                             {classesList}

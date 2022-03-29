@@ -9,14 +9,13 @@ class ClassesStudying extends React.Component {
         let classesList = [];
         classes.forEach(aClass => {
             classesList.push(<>
-                <hr />
-                <p style={{ margin: "5px" }} > {aClass} </p>
+                <p style={{ margin: "10px" }} > {aClass} </p>
             </>)
         })
         return (
             <>
-                <div className="studentClasses">
-                    <p style={{ fontWeight: "bold" }}> Classes </p>
+                <div className="p-2 studentClasses">
+                    <p style={{ fontWeight: "bold" }}> Current Classes </p>
                     <div id="classes">
                         {classesList}
                     </div>
