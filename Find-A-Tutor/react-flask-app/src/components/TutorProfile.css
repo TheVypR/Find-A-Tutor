@@ -79,13 +79,6 @@
     font-weight: bold;
 }
 
-fieldset {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;    
-    border-radius: 4px;
-}
-
 #startTimeLabel {
     margin-right: 20px;
 }
@@ -147,4 +140,9 @@ fieldset {
 
 .courseCode {
     margin-right: 5px;
+}
+
+.studentClasses{
+    border: thin solid black;
+    border-radius: 5px; 
 }
