@@ -117,7 +117,7 @@ def getTimes(token):
                     " from TutorTimes T, Tutor P" + 
                     " where T.tut_email in (select tut_email from TutorClasses where class_code in" + 
                     " (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
-                    + token + "\"))) and T.tut_email = P.tut_email;")
+                    + token + "\"))) and T.tut_email = P.tut_email")
     times = cursor.fetchall()
     if times:
         #put times into array of dictionaries
@@ -134,8 +134,8 @@ def getTimes(token):
                                    'tut_name':time[4],
                                    'rating':time[5],
                                    'type':"time",
-                                   'backgroundColor':'#00ff00',                     #changes the event's color on the calendar
-                                   'borderColor':'#00ff00'})                        #changes the event's color on the calendar
+                                   'backgroundColor':'green',                     #changes the event's color on the calendar
+                                   })                        #changes the event's color on the calendar
 
         #close the connection
         conn.close()
@@ -190,8 +190,8 @@ def getAppointments(token, isTutor):
                 'block_s':appt[7],
                 'block_e':appt[8],
                 'type':"appt",
-                'backgroundColor':'##0000ff',   #changes the event's color on the calendar
-                'borderColor':'#0000ff'})       #changes the event's color on the calendar  
+                'backgroundColor':'blue',   #changes the event's color on the calendar
+                })  
     else:
         #get the appointments for a given tutor
         cursor.execute("select " 
@@ -225,8 +225,8 @@ def getAppointments(token, isTutor):
                 'block_s':appt[7],
                 'block_e':appt[8],
                 'type':"appt",
-                'backgroundColor':'##0000ff',   #changes the event's color on the calendar
-                'borderColor':'#0000ff'})       #changes the event's color on the calendar    
+                'backgroundColor':'blue',   #changes the event's color on the calendar
+                })
     
     #close the connection
     conn.close()
@@ -234,6 +234,28 @@ def getAppointments(token, isTutor):
     #return the appointments
     return {'appts':availAppts}, 200
 
+#get the group tutoring sessions
+def getGroupTutoring(email):
+    tutoringAry = []
+    groupTutSes= []
+    #connect to the DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #get class code
+    cursor.execute("select class_code from StudentClasses where stu_email = \"" + email + "\"")
+    classes = cursor.fetchall()
+    for cls in classes:
+        cursor.execute("select title, location, department, start_time, end_time from GroupTutoring where department like CONCAT('%', SUBSTRING('" + cls[0] + "', 1, 4) , '%')")
+        groupTutSes.append(cursor.fetchall())
+    
+    for session in groupTutSes:
+        for ses in session:
+            tutoringAry.append({'title':ses[0], 'location':ses[1], 'department':ses[2], 'start':ses[3], 'end':ses[4], 'backgroundColor':'purple'})
+    print(tutoringAry)
+    return {'groupTut':tutoringAry}, 200
+    
 #cancel an appointment with a tutor
 #data -> appointment info
 #dates -> the formated start and end of the appointment

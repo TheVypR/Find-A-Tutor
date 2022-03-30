@@ -114,6 +114,12 @@ def getAppointments():
     tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
     return appointment.getAppointments(token, tutView=="tutor")
     
+@app.route('/getGroupTutoring/', methods=['GET'])
+def getGroupTutoring():
+    token = request.args.get("token")
+    email = authentication.getEmail(token)[0]
+    return appointment.getGroupTutoring(email)
+    
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -284,8 +290,6 @@ def getTimes():
         #return empty times array
         times = []
     return {'times':times}, 200
-
-
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
