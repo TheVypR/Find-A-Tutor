@@ -242,23 +242,28 @@ def GroupTutoringList():
     cursor.execute("select * from GroupTutoring")
     allGroup = cursor.fetchall()
     
-    # listOfGroup = list()
-    # for element in allGroup:
-        # toList = list(element)
-        # tempStartTime: string = toList[4]
-        # tempEndtime: string = toList[5]
-        # startMoment = moment.date(tempStartTime).datetime
-        # endMoment = moment.date(tempEndtime).datetime
-        # toList[4] = startMoment
-        # toList[5] = endMoment
-        # print(toList)
-        # listOfGroup.append(toList)
-
     #close connection
     conn.close()
     
     #return banned students
     return jsonify(allGroup)
+
+def EditTutoring(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #add student to Tutor table
+    cursor.execute("update GroupTutoring set title = \""+ data[1] 
+        + "\", location = \""+ data[2] + "\", department = \""+ data[3] 
+        + "\", start_time = \""+ data[4] + "\", end_time = \""+ data[5] 
+        + "\" where session_id = %s;", data[0])
+    #close the connection
+    conn.close()
+    
+    #return success
+    return 'SUCCESS', 200
 
 #submits the tutors request for verification
 def submitVerifyRequest(email, class_code):

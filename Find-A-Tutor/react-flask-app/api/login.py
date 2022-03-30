@@ -164,8 +164,7 @@ def groupTutoring():
 @app.route('/EditTutoring/', methods=['POST'])
 def editTutoring():
     groupSession = request.get_json()
-    print(groupSession)
-    return 'Done'
+    return adminRoutes.EditTutoring(groupSession)
 
 #ban a student or tutor
 #removes user from all Tutor and Student tables

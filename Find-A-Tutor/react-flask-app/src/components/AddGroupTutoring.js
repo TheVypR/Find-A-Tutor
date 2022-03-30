@@ -37,8 +37,6 @@ export default function AddGroupTutoring() {
 
     //single group tutoring session
     const [singleGroup, setSingleGroup] = useState([]);
-    const [startTime, setStartTime] = useState([new Date()]);
-    const [endTime, setEndTime] = useState([new Date()]);
 
     //handling modal show and close
     const [enableGroup, setEnableGroup] = useState(false);
@@ -59,12 +57,13 @@ export default function AddGroupTutoring() {
     const handleEditSubmit = (event) => {
         event.preventDefault();
         const editedData = new FormData(event.currentTarget);
-        console.log(editedData.currentTarget);
+        const data = [singleGroup[0], editedData.get('title'), editedData.get('location'), editedData.get('department'), singleGroup[4], singleGroup[5]]
         fetch('/EditTutoring/', {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
-            body:JSON.stringify(editedData)
+            body:JSON.stringify(data)
         })
+        .then(window.location.reload())
     };
 
     //changing start and end times
@@ -78,7 +77,6 @@ export default function AddGroupTutoring() {
         theItem.push(changedVal);
         theItem.push(endTime);
         setSingleGroup(theItem);
-        console.log(singleGroup);
     };
     const handleEndTimeChange = (newValue) => {
         const theItem = singleGroup.slice(0, 5);
@@ -86,7 +84,6 @@ export default function AddGroupTutoring() {
 
         theItem.push(changedVal);
         setSingleGroup(theItem);
-        console.log(singleGroup);
     };
 
     return authContext.isLoggedIn && (
