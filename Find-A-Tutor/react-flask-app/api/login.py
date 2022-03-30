@@ -277,22 +277,21 @@ def getStuClasses():
 def getTimes():
     #get student email to compare tutor classes to
     token = request.args.get("token")
-    
+    email = authentication.getEmail(token)[0]
+    unmerged = appointment.getTimes(email)
     #if there are times returned
-    if len(appointment.getTimes(token)) != 0:
+    if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        unmerged = appointment.getTimes(token)[0]
         if type(unmerged) == type([]):
             times = mergeTimes(unmerged)
         else:
+            print(unmerged)
             return "No times found", 401
     else:
         #return empty times array
-        times = []
-    
-    
-    
-    return {'times':times}, 200
+        []
+        
+    return {'times':times}
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])

@@ -104,7 +104,7 @@ def getStuClasses(token):
 
 #get the available times available with tutors
 #only returns tutor's who teach classes that overlap with the students taken classes
-def getTimes(token):
+def getTimes(email):
     #init the times array
     availTimes = []
         
@@ -117,8 +117,7 @@ def getTimes(token):
     cursor.execute("select T.tut_email, start_date, end_date, taken, P.tut_name, P.rating" + 
                     " from TutorTimes T, Tutor P" + 
                     " where T.tut_email in (select tut_email from TutorClasses where class_code in" + 
-                    " (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
-                    + token + "\"))) and T.tut_email = P.tut_email")
+                    " (select class_code from StudentClasses where stu_email = \"" + email + "\")) and T.tut_email = P.tut_email")
     times = cursor.fetchall()
     if times:
         #put times into array of dictionaries
@@ -137,9 +136,7 @@ def getTimes(token):
                                    'type':"time",
                                    'backgroundColor':'green',                     #changes the event's color on the calendar
                                    })
-        
-        
-        
+  
         #close the connection
         conn.close()
                 
