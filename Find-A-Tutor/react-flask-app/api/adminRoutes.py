@@ -1,13 +1,13 @@
 #FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
 import random
 import string
+from tokenize import String
 from flask import Flask, jsonify   #used for Flask API
 from flaskext.mysql import MySQL            #used to connect to DB
-from flask.ext.moment import Moment
+import moment
 
 #Flask setup
 app = Flask(__name__)
-moment = Moment(app)
 
 #setup DB
 mysql = MySQL()
@@ -243,13 +243,19 @@ def GroupTutoringList():
     #get all group tutoring items
     cursor.execute("select * from GroupTutoring")
     allGroup = cursor.fetchall()
-
+    
     listOfGroup = list()
     for element in allGroup:
         toList = list(element)
-        toList[4] = moment().format("YYYY-MM-DD HH:mm:ss")
+        tempStartTime: string = toList[4]
+        tempEndtime: string = toList[5]
+        startMoment = moment.date(tempStartTime).datetime
+        endMoment = moment.date(tempEndtime).datetime
+        toList[4] = startMoment
+        toList[5] = endMoment
+        print(toList)
         listOfGroup.append(toList)
-    
+
     #close connection
     conn.close()
     

@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import moment from 'moment'
 import { Modal } from 'react-bootstrap';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
@@ -36,8 +37,8 @@ export default function AddGroupTutoring() {
 
     //single group tutoring session
     const [singleGroup, setSingleGroup] = useState([]);
-    const [startTime, setStartTime] = useState(new Date());
-    const [endTime, setEndTime] = useState(new Date());
+    const [startTime, setStartTime] = useState([new Date()]);
+    const [endTime, setEndTime] = useState([new Date()]);
 
     //handling modal show and close
     const [enableGroup, setEnableGroup] = useState(false);
@@ -48,8 +49,6 @@ export default function AddGroupTutoring() {
         .then(res => res.json())
         .then(result => {
             setAllGroup(result);
-            setStartTime(result[4]);
-            setEndTime(result[5]);
         },
         (error) => {
             console.log(error);
@@ -70,12 +69,21 @@ export default function AddGroupTutoring() {
 
     //changing start and end times
     const handleStartTimeChange = (newValue) => {
-        setStartTime(newValue);
-        console.log(startTime);
+        const theItem = singleGroup.slice(0, 4);
+        const endTime = singleGroup.slice(5);
+
+        theItem.push(newValue);
+        theItem.push(endTime);
+        setSingleGroup(theItem);
+        console.log(singleGroup);
     };
     const handleEndTimeChange = (newValue) => {
-        setEndTime(newValue);
-        console.log(endTime);
+        const theItem = singleGroup.slice(0, 5);
+
+        theItem.push(newValue);
+        theItem.push(endTime);
+        setSingleGroup(theItem);
+        console.log(singleGroup);
     };
 
     return authContext.isLoggedIn && (
@@ -95,8 +103,8 @@ export default function AddGroupTutoring() {
                             <TextField margin="normal" required id="title" label="Title" name="title" autoComplete="title" autoFocus defaultValue={singleGroup[1]} sx={{ mx: 1}} />
                             <TextField margin="normal" required id="location" label="Location" name="location" autoComplete="location" autoFocus defaultValue={singleGroup[2]} sx={{ mx: 1}} />
                             <TextField margin="normal" required id="department" label="Department" name="department" autoComplete="department" autoFocus defaultValue={singleGroup[3]} sx={{ mx: 1}} /> <br/>
-                            <DateTimePicker label="Start Time" value={startTime} onChange={handleStartTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
-                            <DateTimePicker label="End Time" value={endTime} onChange={handleEndTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
+                            <DateTimePicker label="Start Time" value={singleGroup[4]} onChange={handleStartTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
+                            <DateTimePicker label="End Time" value={singleGroup[5]} onChange={handleEndTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="contained" type='submit' style={{backgroundColor: "#228b22"}} >
