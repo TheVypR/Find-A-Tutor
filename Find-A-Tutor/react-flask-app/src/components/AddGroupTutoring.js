@@ -71,17 +71,20 @@ export default function AddGroupTutoring() {
     const handleStartTimeChange = (newValue) => {
         const theItem = singleGroup.slice(0, 4);
         const endTime = singleGroup.slice(5);
-
-        theItem.push(newValue);
+		
+		//change time format
+		var changedVal = moment(newValue).format('YYYY-MM-DDTHH:mm:ss')
+		
+        theItem.push(changedVal);
         theItem.push(endTime);
         setSingleGroup(theItem);
         console.log(singleGroup);
     };
     const handleEndTimeChange = (newValue) => {
         const theItem = singleGroup.slice(0, 5);
+		var changedVal = moment(newValue).format('YYYY-MM-DDTHH:mm:ss')
 
-        theItem.push(newValue);
-        theItem.push(endTime);
+        theItem.push(changedVal);
         setSingleGroup(theItem);
         console.log(singleGroup);
     };
@@ -142,8 +145,8 @@ export default function AddGroupTutoring() {
                                         <TableCell>{session[1]}</TableCell>
                                         <TableCell>{session[2]}</TableCell>
                                         <TableCell>{session[3]}</TableCell>
-                                        <TableCell>{session[4]}</TableCell>
-                                        <TableCell>{session[5]}</TableCell>
+                                        <TableCell>{moment(session[4]).format('MM/DD/YYYY h:mm a')}</TableCell>
+                                        <TableCell>{moment(session[5]).format('MM/DD/YYYY h:mm a')}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
