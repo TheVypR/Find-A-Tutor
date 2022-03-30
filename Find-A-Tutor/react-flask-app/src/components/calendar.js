@@ -435,8 +435,8 @@ function FullCalendarApp() {
         <Modal.Body>
 			Meeting with: {tutName}<br/>
 			For: {classCode}<br/>
-			From: {startTime}<br/>
-			To: {endTime}
+			From: {moment(startTime).format('MM/DD/YYYY h:mm a')}<br/>
+			To: {moment(endTime).format('MM/DD/YYYY h:mm a')}
 		</Modal.Body>
 		
         <Modal.Footer>
