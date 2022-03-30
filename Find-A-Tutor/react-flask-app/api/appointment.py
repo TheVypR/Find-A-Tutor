@@ -135,8 +135,10 @@ def getTimes(token):
                                    'rating':time[5],
                                    'type':"time",
                                    'backgroundColor':'green',                     #changes the event's color on the calendar
-                                   })                        #changes the event's color on the calendar
-
+                                   })
+        
+        
+        
         #close the connection
         conn.close()
                 
