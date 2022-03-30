@@ -289,6 +289,9 @@ def getTimes():
     else:
         #return empty times array
         times = []
+    
+    
+    
     return {'times':times}, 200
 
 #remove an appointment from a students calendar

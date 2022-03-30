@@ -1,6 +1,7 @@
 #FIND-A-TUTOR ~ Appointment Management Backend ~ Author: Isaac A.
 from flask import Flask         #used for Flask API
 from flaskext.mysql import MySQL#used to connect to DB
+from datetime import datetime
 
 #setup Flask
 app = Flask(__name__)
@@ -124,7 +125,7 @@ def getTimes(token):
         for time in times:
             classes = []            
             #if the time isn't already taken by an appointment
-            if time[3] == 0:
+            if time[3] == 0 and datetime.strptime(time[2], "%Y-%m-%dT%H:%M:%S") > datetime.now():
                 #add a dictionary to the array
                 availTimes.append({'tut_email':time[0],
                                    'start':time[1],
