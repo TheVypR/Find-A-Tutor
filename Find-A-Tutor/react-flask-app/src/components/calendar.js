@@ -265,10 +265,10 @@ function FullCalendarApp() {
 		setTitle(e.title);
 		
 		//set dates and times (uses e.start and e.end because they are guaranteed to be set)
-		setOrigStartDate(e.start);
-		setOrigEndDate(e.end);
-		setStartTime(e.start.toLocaleString('en-US', options));
-		setEndTime(e.end.toLocaleString('en-US', options));
+		setOrigStartDate(moment(e.start).format('MM/DD/YYYY h:mm a'));
+		setOrigEndDate(moment(e.end).format('MM/DD/YYYY h:mm a'));
+		setStartTime(moment(e.start).format('HH:mm'));
+		setEndTime(moment(e.end).format('HH:mm'));
 		
 		//find which modal to load
 		if(editting) {
@@ -325,7 +325,8 @@ function FullCalendarApp() {
 			},
 			body:JSON.stringify({
 				token: localStorage.getItem("token"),
-				tut_email: tutEmail,
+				view: localStorage.getItem("view"),
+				email: (localStorage.getItem("view") == "tutor" ? stuEmail : tutEmail),
 				class_code: classCode,
 				start: moment(origStartDate).format('YYYY-MM-DDTHH:mm:ss'),
 				end: moment(origEndDate).format('YYYY-MM-DDTHH:mm:ss')
@@ -435,8 +436,8 @@ function FullCalendarApp() {
         <Modal.Body>
 			Meeting with: {tutName}<br/>
 			For: {classCode}<br/>
-			From: {moment(startTime).format('MM/DD/YYYY h:mm a')}<br/>
-			To: {moment(endTime).format('MM/DD/YYYY h:mm a')}
+			From: {origStartDate}<br/>
+			To: {origEndDate}
 		</Modal.Body>
 		
         <Modal.Footer>

@@ -260,7 +260,7 @@ def getGroupTutoring(email):
 #data -> appointment info
 #dates -> the formated start and end of the appointment
 #slots -> the tutor time slots to make available again
-def removeAppointment(token, data, dates, slots, view):
+def removeAppointment(email, data, dates, slots, view):
     #connect to the DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -268,21 +268,22 @@ def removeAppointment(token, data, dates, slots, view):
     
     if view == "tutor":
         #remove the appointments for the given student, with the given tutor, at the given time
-        cursor.execute("delete from Appointment where tut_email= (select stu_email from Student where token = \"" 
-                    + token + "\") and stu_email=\"" 
+        cursor.execute("delete from Appointment where tut_email= \"" 
+                    + email + "\" and stu_email=\"" 
                     + data['email'] + "\" and start_date=\"" 
                     + dates['start'] + "\"")
+
         #go through the slots
         for slot in slots:
             #mark each slot as available again
-            cursor.execute("update TutorTimes set taken = false where tut_email = (select stu_email from Student where token = \"" 
-                            + token + "\") and start_date = \"" + slot['start'] + "\"")
+            cursor.execute("update TutorTimes set taken = false where tut_email = \"" 
+                            + email + "\" and start_date = \"" + slot['start'] + "\"")
 
     else:
         #remove the appointments for the given student, with the given tutor, at the given time
         cursor.execute("delete from Appointment where tut_email= \"" 
-                    + data['email'] + "\" and stu_email=(select stu_email from Student where token = \"" 
-                    + token + "\")"
+                    + data['email'] + "\" and stu_email=\"" 
+                    + email + "\""
                     + " and start_date=\"" 
                     + dates['start'] + "\"")
                     

@@ -298,13 +298,15 @@ def deleteAppointment():
     token = data['token']       #get the token from data
     view = data['view']         #get the view
     
+    email = authentication.getEmail(token)[0]
+    
     #parse moments into datetimes for storage
     newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
     slots = splitTimes({'start':data['start'], 'end':data['end']})
   
-    return appointment.removeAppointment(token, data, newDate, slots, view)
+    return appointment.removeAppointment(email, data, newDate, slots, view)
 
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])
