@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import moment from 'moment'
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Modal } from 'react-bootstrap';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
@@ -42,6 +43,9 @@ export default function AddGroupTutoring() {
     const [enableGroup, setEnableGroup] = useState(false);
     const handleClose = function(){setEnableGroup(false);};
 
+    //boolean for isNew
+    const [isNew, setIsNew] = useState(false);
+
     //Get list of group tutoring sessions
     useEffect(() => { fetch("/GroupTutoring/")
         .then(res => res.json())
@@ -57,7 +61,7 @@ export default function AddGroupTutoring() {
     const handleEditSubmit = (event) => {
         event.preventDefault();
         const editedData = new FormData(event.currentTarget);
-        const data = [singleGroup[0], editedData.get('title'), editedData.get('location'), editedData.get('department'), singleGroup[4], singleGroup[5]]
+        const data = [singleGroup[0], editedData.get('title'), editedData.get('location'), editedData.get('department'), singleGroup[4], singleGroup[5], isNew]
         fetch('/EditTutoring/', {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
@@ -72,7 +76,7 @@ export default function AddGroupTutoring() {
         const endTime = singleGroup.slice(5);
 		
 		//change time format
-		var changedVal = moment(newValue).format('YYYY-MM-DDTHH:mm:ss')
+		var changedVal = moment(newValue).format('YYYY-MM-DDTHH:mm:ss');
 		
         theItem.push(changedVal);
         theItem.push(endTime);
@@ -80,11 +84,14 @@ export default function AddGroupTutoring() {
     };
     const handleEndTimeChange = (newValue) => {
         const theItem = singleGroup.slice(0, 5);
-		var changedVal = moment(newValue).format('YYYY-MM-DDTHH:mm:ss')
+		var changedVal = moment(newValue).format('YYYY-MM-DDTHH:mm:ss');
 
         theItem.push(changedVal);
         setSingleGroup(theItem);
     };
+
+    //new button clicked
+    
 
     return authContext.isLoggedIn && (
         <LocalizationProvider dateAdapter={DateAdapter}>
@@ -94,7 +101,7 @@ export default function AddGroupTutoring() {
                     <Modal.Header closeButton>
                         <Grid container spacing={1}>
                             <Grid item>
-                                <Typography component="h1" variant='h6' align="left" color="#1565c0">Edit Group Tutoring Session</Typography>
+                                <Typography component="h1" variant='h6' align="left" color="#1565c0">{(isNew ? "New " : "Edit ")}Group Tutoring Session</Typography>
                             </Grid>
                         </Grid>
                     </Modal.Header>
@@ -107,7 +114,7 @@ export default function AddGroupTutoring() {
                             <DateTimePicker label="End Time" value={singleGroup[5]} onChange={handleEndTimeChange} renderInput={(params) => <TextField {...params} sx={{mx:1}} /> } />
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="contained" type='submit' style={{backgroundColor: "#228b22"}} >
+                            <Button variant="contained" type='submit' style={{backgroundColor: "#3d8c40"}} >
                                 Submit
                             </Button>
                             <div></div>
@@ -120,8 +127,10 @@ export default function AddGroupTutoring() {
 
                 <CssBaseline />
                 <AdminNavBar />
-                <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
-                <Container maxWidth="xl" disableGutters component="main" sx={{p: 6}}>
+                <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3}}>
+                    <Button variant="contained" onClick={() => {setIsNew(true); setEnableGroup(true);}} style={{backgroundColor: "#1565c0"}}>Create New</Button>
+                </Grid>
+                <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                         <Typography component="h2" variant="h6" color="primary" gutterBottom>
                             Group Tutoring
@@ -134,16 +143,18 @@ export default function AddGroupTutoring() {
                                     <TableCell><strong>Department</strong></TableCell>
                                     <TableCell><strong>Start Time</strong></TableCell>
                                     <TableCell><strong>End Time</strong></TableCell>
+                                    <TableCell><strong>Delete Entry</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {allGroup.map((session) => (
-                                    <TableRow key={session[0]} onClick={() => {setSingleGroup(session); setEnableGroup(true);}} hover>
+                                    <TableRow key={session[0]} onClick={() => {setSingleGroup(session); setIsNew(false); setEnableGroup(true);}} hover>
                                         <TableCell>{session[1]}</TableCell>
                                         <TableCell>{session[2]}</TableCell>
                                         <TableCell>{session[3]}</TableCell>
                                         <TableCell>{moment(session[4]).format('MM/DD/YYYY h:mm a')}</TableCell>
                                         <TableCell>{moment(session[5]).format('MM/DD/YYYY h:mm a')}</TableCell>
+                                        <TableCell><Button><DeleteIcon onClick={() => {console.log("thing");}} sx={{color: '#ca2029'}} /></Button></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

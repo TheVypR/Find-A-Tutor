@@ -253,13 +253,16 @@ def EditTutoring(data):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    
-    #add student to Tutor table
-    cursor.execute("update GroupTutoring set title = \""+ data[1] 
-        + "\", location = \""+ data[2] + "\", department = \""+ data[3] 
-        + "\", start_time = \""+ data[4] + "\", end_time = \""+ data[5] 
-        + "\" where session_id = %s;", data[0])
-    #close the connection
+
+    if data[6]:
+        cursor.execute("insert into GroupTutoring values(0, \""+data[1]+ "\", \""+data[2]+ "\", \""+data[3]+ "\", \""+data[4]+ "\", \""+data[5]+ "\")")
+    else:
+        #add student to Tutor table
+        cursor.execute("update GroupTutoring set title = \""+ data[1] 
+            + "\", location = \""+ data[2] + "\", department = \""+ data[3] 
+            + "\", start_time = \""+ data[4] + "\", end_time = \""+ data[5] 
+            + "\" where session_id = %s;", data[0])
+        #close the connection
     conn.close()
     
     #return success
