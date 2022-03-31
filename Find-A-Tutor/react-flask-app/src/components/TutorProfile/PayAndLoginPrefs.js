@@ -6,16 +6,16 @@ class PayAndLoginPrefs extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            paymentType: this.props.pay_type,
-            pay_info: this.props.pay_info
-        }
+            paymentType: this.props.pay_type,   //type of payment (venmo, paypal, cash)
+            pay_info: this.props.pay_info       //username if applicable
+        }//state
 
         this.handleSelect = this.handleSelect.bind(this);
         this.setPaymentType = this.setPaymentType.bind(this);
         this.setLoginPrefs = this.setLoginPrefs.bind(this);
         this.getPayType = this.getPayType.bind(this);
         this.getPayInfo = this.getPayInfo.bind(this);
-    }
+    }//constructor
 
     /**
      * Set prop to set state of parent for payment type
@@ -24,11 +24,16 @@ class PayAndLoginPrefs extends React.Component {
      */
     setPaymentType(type) {
         this.props.setPaymentType(type);
-    }
+    }//setPaymentType
 
+    /**
+     * Calls parent function
+     * 
+     * @param {int} pref 0=student 1=tutor
+     */
     setLoginPrefs(pref) {
         this.props.setLoginPrefs(pref);
-    }
+    }//setLoginPref
 
     /**
      * Updates payment username to selected item
@@ -50,16 +55,30 @@ class PayAndLoginPrefs extends React.Component {
         this.setPaymentType(type);
     }//handleSelect
 
+    /**
+     * Returns payment type from state or
+     * if pay_type isn't known yet returns "Payment Type"
+     * 
+     * @param {string} pay_type Tutors payment method (venmo, paypal, or cash)
+     * @returns either the Tutors payment type or a label for the drop down button
+     */
     getPayType(pay_type) {
-        console.log(pay_type);
         //Set pay_type state to props
         if (pay_type != "") {
             return this.state.paymentType;
         } else {
             return "Payment Type";
         }//set paymentType
-    }
+    }//getPayType
 
+    /**
+     * returns the payment type username if set or
+     * an placeholder for the text box
+     * 
+     * @param {string} pay_type Tutor's payment method (venmo, paypal, cash)
+     * @param {string} pay_info Tutor's username for payment method if applicable
+     * @returns either the entered username for the payment method or a placeholder for the textbox
+     */
     getPayInfo(pay_type, pay_info) {
         //Set Pay info state to props
         if (pay_info != "") {
@@ -68,7 +87,7 @@ class PayAndLoginPrefs extends React.Component {
             pay_type = this.getPayType(pay_type);
             return pay_type + " Username";
         }//set pay_info
-    }
+    }//getPayInfo
 
     render() {
         return (

@@ -161,6 +161,22 @@ def dismissReport():
     adminRoutes.DeleteUserFromList(target)
     return 'Done', 200
 
+#list of all group tutoring sessions
+@app.route('/GroupTutoring/', methods=['GET'])
+def groupTutoring():
+    return adminRoutes.GroupTutoringList()
+
+#post call on editing form data
+@app.route('/EditTutoring/', methods=['POST'])
+def editTutoring():
+    groupSession = request.get_json()
+    return adminRoutes.EditTutoring(groupSession)
+
+@app.route('/DeleteGroup/', methods=['POST'])
+def deleteGroup():
+    groupSession = request.get_json()
+    return adminRoutes.DeleteGroup(groupSession)
+
 #ban a student or tutor
 #removes user from all Tutor and Student tables
 #replaces user in Appointments with the "banned" id

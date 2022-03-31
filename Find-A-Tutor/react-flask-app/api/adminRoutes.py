@@ -1,5 +1,7 @@
-from flask import Flask, jsonify            #used for Flask API
-import getFunctions                         #used to get names
+#FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
+import random
+import string
+from flask import Flask, jsonify   #used for Flask API
 from flaskext.mysql import MySQL            #used to connect to DB
 
 #Flask setup
@@ -224,6 +226,57 @@ def BecomeATutor(email):
     cursor.execute("insert into Tutor values(\""+ email 
                     + "\", (select stu_name from Student where stu_email = \"" + email 
                     + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
+    #close the connection
+    conn.close()
+    
+    #return success
+    return 'SUCCESS', 200
+
+#get a list of group tutoring from the backend
+def GroupTutoringList():
+    #connect to DB
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    
+    #get all group tutoring items
+    cursor.execute("select * from GroupTutoring")
+    allGroup = cursor.fetchall()
+    
+    #close connection
+    conn.close()
+    
+    #return banned students
+    return jsonify(allGroup)
+
+def EditTutoring(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    if data[6]:
+        cursor.execute("insert into GroupTutoring values(0, \""+data[1]+ "\", \""+data[2]+ "\", \""+data[3]+ "\", \""+data[4]+ "\", \""+data[5]+ "\")")
+    else:
+        #add student to Tutor table
+        cursor.execute("update GroupTutoring set title = \""+ data[1] 
+            + "\", location = \""+ data[2] + "\", department = \""+ data[3] 
+            + "\", start_time = \""+ data[4] + "\", end_time = \""+ data[5] 
+            + "\" where session_id = %s;", data[0])
+        #close the connection
+    conn.close()
+    
+    #return success
+    return 'SUCCESS', 200
+
+def DeleteGroup(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #add student to Tutor table
+    cursor.execute("delete from GroupTutoring where session_id = %s", data[0])
+
     #close the connection
     conn.close()
     

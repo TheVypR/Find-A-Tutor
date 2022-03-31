@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import MenuItem from '@mui/material/MenuItem';
-import Container from '@mui/material/Container';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
 const theme = createTheme({
@@ -45,6 +44,9 @@ export default function NavBar() {
                     <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>
+                        </MenuItem>
+                        <MenuItem component='a' href='./GroupTutoring'>
+                            <Typography textAlign='center'>Group Tutoring</Typography>
                         </MenuItem>
                         <MenuItem component='a' href='./TutoringHistory'>
                             <Typography textAlign='center'>Tutoring History</Typography>
