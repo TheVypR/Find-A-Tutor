@@ -114,6 +114,12 @@ def getAppointments():
     tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
     return appointment.getAppointments(token, tutView=="tutor")
     
+@app.route('/getGroupTutoring/', methods=['GET'])
+def getGroupTutoring():
+    token = request.args.get("token")
+    email = authentication.getEmail(token)[0]
+    return appointment.getGroupTutoring(email)
+    
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
 def currentTutors():
@@ -271,21 +277,21 @@ def getStuClasses():
 def getTimes():
     #get student email to compare tutor classes to
     token = request.args.get("token")
-    
+    email = authentication.getEmail(token)[0]
+    unmerged = appointment.getTimes(email)
     #if there are times returned
-    if len(appointment.getTimes(token)) != 0:
+    if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        unmerged = appointment.getTimes(token)[0]
         if type(unmerged) == type([]):
             times = mergeTimes(unmerged)
         else:
+            print(unmerged)
             return "No times found", 401
     else:
         #return empty times array
-        times = []
-    return {'times':times}, 200
-
-
+        []
+        
+    return {'times':times}
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
@@ -294,13 +300,15 @@ def deleteAppointment():
     token = data['token']       #get the token from data
     view = data['view']         #get the view
     
+    email = authentication.getEmail(token)[0]
+    
     #parse moments into datetimes for storage
     newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
     slots = splitTimes({'start':data['start'], 'end':data['end']})
   
-    return appointment.removeAppointment(token, data, newDate, slots, view)
+    return appointment.removeAppointment(email, data, newDate, slots, view)
 
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])

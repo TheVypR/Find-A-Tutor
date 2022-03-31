@@ -39,6 +39,7 @@ function FullCalendarApp() {
   //calendar filling
   const [times, setTimes] = useState([]);
   const [appts, setAppts] = useState([]);
+  const [groupTut, setGroupTut] = useState([]);
   const [view, setView] = useState(false);
   
   //handle modals
@@ -137,6 +138,21 @@ function FullCalendarApp() {
 					}
 				)
 
+	fetch("/getGroupTutoring/?token=" + localStorage.getItem("token"))
+				.then(res => res.json())
+				.then(
+					result => {
+						setGroupTut(result['groupTut']);
+						console.log(result['groupTut']);
+					},
+					// Note: it's important to handle errors here
+					// instead of a catch() block so that we don't swallow
+					// exceptions from actual bugs in components.
+					(error) => {
+						console.log(error);
+					}
+				)
+
 	fetch("/getStuClasses/?token=" + localStorage.getItem("token"))
 				.then(res => res.json())
 				.then(
@@ -157,6 +173,7 @@ function FullCalendarApp() {
 				.then(
 					result => {
 						setAppts(result['appts']);
+						console.log(result['appts']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -177,6 +194,7 @@ function FullCalendarApp() {
 			if (filterTimes) {
 				localEvents = localEvents.concat(times);
 			}
+			localEvents = localEvents.concat(groupTut);
 		} else {		
 			if (filterAppts) {
 				localEvents = localEvents.concat(appts.filter(appt => appt['class_code'] === filterClass));
@@ -184,14 +202,14 @@ function FullCalendarApp() {
 			if (filterTimes) {
 				localEvents = localEvents.concat(times.filter(time => time['classes'].includes(filterClass, 0)));
 			}
+			localEvents = localEvents.concat(groupTut);
 		}
-		
 		setEvnts(localEvents);
   }
 
 	
 
-	//create appointment
+	//create appointment	
 	function addEvent() {
 		setStartDate(origStartDate);
 		setEndDate(origEndDate);
@@ -222,7 +240,7 @@ function FullCalendarApp() {
 		//reset error msgs
 		setWrongClass(false);
 		setWrongTimes(false);
-		
+		console.log(e);
 		//get the tutor's rates
 		fetch('/getRates/', {
 			method: 'POST',
@@ -247,17 +265,16 @@ function FullCalendarApp() {
 		setTitle(e.title);
 		
 		//set dates and times (uses e.start and e.end because they are guaranteed to be set)
-		setOrigStartDate(e.start);
-		setOrigEndDate(e.end);
-		setStartTime(e.start.toLocaleString('en-US', options));
-		setEndTime(e.end.toLocaleString('en-US', options));
+		setOrigStartDate(moment(e.start).format('MM/DD/YYYY h:mm a'));
+		setOrigEndDate(moment(e.end).format('MM/DD/YYYY h:mm a'));
+		setStartTime(moment(e.start).format('HH:mm'));
+		setEndTime(moment(e.end).format('HH:mm'));
 		
 		//find which modal to load
 		if(editting) {
 			handleShowEdit();
 		} else {
 			if(e.extendedProps['type'] == "appt") {
-				console.log("1");
 				setBlockStart(e.extendedProps.block_s);
 				setBlockEnd(e.extendedProps.block_e);
 				handleShowAppt();
@@ -308,7 +325,8 @@ function FullCalendarApp() {
 			},
 			body:JSON.stringify({
 				token: localStorage.getItem("token"),
-				tut_email: tutEmail,
+				view: localStorage.getItem("view"),
+				email: (localStorage.getItem("view") == "tutor" ? stuEmail : tutEmail),
 				class_code: classCode,
 				start: moment(origStartDate).format('YYYY-MM-DDTHH:mm:ss'),
 				end: moment(origEndDate).format('YYYY-MM-DDTHH:mm:ss')
@@ -418,8 +436,8 @@ function FullCalendarApp() {
         <Modal.Body>
 			Meeting with: {tutName}<br/>
 			For: {classCode}<br/>
-			From: {startTime}<br/>
-			To: {endTime}
+			From: {origStartDate}<br/>
+			To: {origEndDate}
 		</Modal.Body>
 		
         <Modal.Footer>
