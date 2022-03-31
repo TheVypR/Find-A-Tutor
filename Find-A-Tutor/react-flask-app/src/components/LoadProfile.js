@@ -92,7 +92,6 @@ class LoadProfile extends React.Component {
             'Sunday': []
         }
         times.forEach(slot => {
-            console.log(slot);
             let startTime = slot['startTime'];
             let day = moment(slot['startTime']).format('dddd');
             let endTime = slot['endTime'];

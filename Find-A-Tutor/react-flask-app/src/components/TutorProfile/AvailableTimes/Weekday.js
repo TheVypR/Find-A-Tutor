@@ -55,6 +55,7 @@ class Weekday extends React.Component {
         this.getISO = this.getISO.bind(this);
 
         this.getFilledOutTimes = this.getFilledOutTimes.bind(this);
+        this.removeFilledOutTimes = this.removeFilledOutTimes.bind(this);
     }
 
     /**
@@ -122,6 +123,10 @@ class Weekday extends React.Component {
 
         //remove timeslot from db
         this.fetchRemoveTimeSlot(index);
+    }
+
+    removeFilledOutTimes() {
+
     }
 
     /**
@@ -289,20 +294,21 @@ class Weekday extends React.Component {
     getFilledOutTimes(times, day) {
         day = day[0].toUpperCase() + day.slice(1)
         let toReturn = []
+        times[day].forEach(slot => toReturn.push(""));
         //Go through given times
         for (let slot in times[day]) {
             //if there is a time filled out for that day display it
-            if (times[day].length > 0) {
+            if (slot.length > 0) {
                 let startTime = times[day][slot]['startTime'];
                 let endTime = times[day][slot]['endTime'];
-                toReturn.push(
+                toReturn[slot] = 
                     <>
                         <p> {startTime} to {endTime} </p>
-                        <Button className="removeTime" variant="danger" onClick={() => { this.removeTimeSlot(index, this.props.day) }}>
+                        <Button className="removeTime" variant="danger" >
                             <BsFillTrashFill size="14" />
                         </Button> <br />
                         <hr />
-                    </>);
+                    </>;
             }
         }
         return toReturn;

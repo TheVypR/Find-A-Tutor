@@ -185,7 +185,6 @@ def myProfile():
     email = authentication.getEmail(token)[0]
     #Check to see if this is a removal
     if 'remove' in submission.keys():
-        print(submission['remove'])
         #remove timeslot from TutorTimes
         submittedTime = submission['remove']
         startTime = dateParse(submittedTime['startTime'])
