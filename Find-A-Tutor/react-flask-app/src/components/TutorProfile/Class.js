@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill } from "react-icons/bs";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 /**
  * Renders the Inputs for a Class
@@ -21,36 +27,46 @@ class Class extends React.Component {
 
     }
 
+	requestVerify() {
+		
+	}
+
     render() {
         let index = this.props.index;
         return (
-            <>
-                <div className="input-group mb-3">
-                    <input name="courseCode"
-                        id={index}
-                        className="courseCode"
-                        type="text"
-                        placeholder='HUMA 200 A'
-                        size="8"
-                        onChange={e => this.props.setCourseCode(e.target.value, index)}
-                    ></input>
-                    <label id={index} className="rateLabel" htmlFor="rate"> Hourly Rate: $</label>
-                    <input name="rate"
-                        type="number"
-                        id={index}
-                        className='hourlyRate'
-                        min="0"
-                        size="2"
-                        onKeyPress={e => this.onlyNumbers(e)}
-                        onChange={e => this.props.setRate(e.target.value, index)}
-                    />
-                    <div className="input-group-append">
+            <TableRow key={index} hover>				
+					<TableCell>
+						<Button id={index} className="verify" onClick={() => {this.requestVerify()}}>
+							Request
+						</Button>
+					</TableCell>
+                    <TableCell>
+						<input name="courseCode"
+							id={index}
+							className="courseCode"
+							type="text"
+							placeholder='HUMA 200 A'
+							size="8"
+							onChange={e => this.props.setCourseCode(e.target.value, index)}>
+						</input>
+					</TableCell>
+                    <TableCell>
+						<input name="rate"
+							type="number"
+							id={index}
+							className='hourlyRate'
+							min="0"
+							size="2"
+							onKeyPress={e => this.onlyNumbers(e)}
+							onChange={e => this.props.setRate(e.target.value, index)}
+						/>
+					</TableCell>
+                    <TableCell>
                         <Button id={index} className="removeClass" variant="danger" onClick={() => this.props.removeClass(index)}>
                             <BsFillTrashFill />
                         </Button>
-                    </div>
-                </div>
-            </>
+                    </TableCell>
+                </TableRow>
         );//return
     }//render
 }//Class

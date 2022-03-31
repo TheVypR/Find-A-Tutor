@@ -85,7 +85,7 @@ def retrieve_profile(token):
     return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
+        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}, 200
 
 #retrieve the times the tutor is available
 def retrieve_times(tut_email):
@@ -118,7 +118,7 @@ def retrieve_classes(tut_email):
     cursor = conn.cursor()
     classes = []
     #get the classes and rates
-    cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
+    cursor.execute("select class_code, rate, verified from TutorClasses where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
     
     #put the classes in a dict 
