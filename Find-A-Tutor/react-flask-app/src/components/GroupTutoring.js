@@ -14,7 +14,7 @@ import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import './adminView.css';
 import {AuthContext} from './AuthContext';
-import AdminNavBar from './AdminNavBar';
+import NavBar from './NavBar';
 
 //npm install @date-io/moment, npm install @date-io/date-fns
 import DateAdapter from '@mui/lab/AdapterMoment';
@@ -45,7 +45,7 @@ export default function GroupTutoring() {
         <LocalizationProvider dateAdapter={DateAdapter}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <AdminNavBar />
+                <NavBar />
                 <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3}} />
                 <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>

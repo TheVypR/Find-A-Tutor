@@ -55,12 +55,12 @@ export default function App() {
             <Route path='/signup' element={<SignUp />}></Route>
             <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
+            <Route path='/GroupTutoring' element={<GroupTutoring />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
             <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
-            <Route path='/GroupTutoring' element={<GroupTutoring />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>
