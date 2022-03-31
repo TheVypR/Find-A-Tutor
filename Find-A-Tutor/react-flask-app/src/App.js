@@ -13,6 +13,7 @@ import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
 import LoadProfile from './components/LoadProfile';
 import AddGroupTutoring from './components/AddGroupTutoring';
+import GroupTutoring from './components/GroupTutoring';
 
 import { AuthContext } from './components/AuthContext'
 
@@ -59,6 +60,7 @@ export default function App() {
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
             <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
+            <Route path='/GroupTutoring' element={<GroupTutoring />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

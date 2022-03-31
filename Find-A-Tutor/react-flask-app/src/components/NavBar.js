@@ -43,6 +43,9 @@ export default function NavBar() {
                     
                     <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
                     <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
+                        <MenuItem component='a' href='./GroupTutoring'>
+                            <Typography textAlign='center'>Group Tutoring</Typography>
+                        </MenuItem>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>
                         </MenuItem>
