@@ -6,7 +6,6 @@ import { BsFillTrashFill } from "react-icons/bs";
 import TimePickers from './TimePickers'
 
 const format = 'h:mm a';    //Format for TimePicker
-//const dateTimeFormat = 'YYYY-MM-DD HH:mm:SS';
 
 /** SubmitRemoveTime Component
  * 
@@ -22,18 +21,28 @@ class SubmitRemoveTime extends React.Component {
 
         this.onSubmitClick = this.onSubmitClick.bind(this);
         this.removeTimeSlot = this.removeTimeSlot.bind(this);
-    }
+    }//constructor
 
+    /**
+     * call parent function
+     */
     onSubmitClick() {
         this.props.submitTimes();
-    }
+    }//onSubmitClick
 
+    /**
+     * calls aparent function
+     * 
+     * @param {int} index 
+     * @param {string} day 
+     */
     removeTimeSlot(index, day) {
         this.props.removeTimeSlot(index, day);
-    }
+    }//removeTImeSlot
 
     render() {
-        let index = this.props.index;
+        let index = this.props.index;   //given index of the TimeSlot
+
         return (
             <>
                 <Button className="submitTime btn-success" onClick={this.onSubmitClick}>
@@ -59,15 +68,22 @@ class Times extends React.Component {
         super(props);
 
         this.onChangeTimes = this.onChangeTimes.bind(this);
-    }
+    }//constructor
 
+    /**
+     * Call parent function
+     * 
+     * @param {int} time 
+     * @param {string} timepicker 
+     */
     onChangeTimes(time, timepicker) {
         this.props.timeSlotChange(time, timepicker);
-    }
+    }//onChangeTimes
 
     render() {
-        const index = this.props.index;
-        const showTimePickers = this.props.showTimePickers[index];
+        const index = this.props.index;                             //index of Timeslot
+        const showTimePickers = this.props.showTimePickers[index];  //boolean that determines if Timepickers are shown
+
         //Display either Timepickers or user selected times 
         if (showTimePickers) {
             return <TimePickers timeSlotChange={(time, timepicker) => { this.onChangeTimes(time, timepicker) }} />
@@ -75,7 +91,7 @@ class Times extends React.Component {
             const startTime = this.props.startTime[index].format(format).toString();
             const endTime = this.props.endTime[index].format(format).toString();
             return <p> {startTime} to {endTime} </p>
-        }
+        }//if
 
     }//render
 }//Times
@@ -89,10 +105,10 @@ class Times extends React.Component {
  */
 class TimeSlot extends React.Component {
     render() {
-        const day = this.props.day;
-        const index = this.props.index;
-        const startTime = this.props.startTime;
-        const endTime = this.props.endTime;
+        const day = this.props.day;             //given day the timeslot is in
+        const index = this.props.index;         //given index of the timeslot
+        const startTime = this.props.startTime; //startTime of timeslot if already submitted
+        const endTime = this.props.endTime;     //endtime of timeslot if already submitted
 
         return (
             <>

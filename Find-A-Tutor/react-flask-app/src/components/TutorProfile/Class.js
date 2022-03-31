@@ -34,6 +34,8 @@ class Class extends React.Component {
                         size="8"
                         onChange={e => this.props.setCourseCode(e.target.value, index)}
                     ></input>
+
+                    {/* hourly rate input */}
                     <label id={index} className="rateLabel" htmlFor="rate"> Hourly Rate: $</label>
                     <input name="rate"
                         type="number"
@@ -44,6 +46,8 @@ class Class extends React.Component {
                         onKeyPress={e => this.onlyNumbers(e)}
                         onChange={e => this.props.setRate(e.target.value, index)}
                     />
+
+                    {/* remove class button */}
                     <div className="input-group-append">
                         <Button id={index} className="removeClass" variant="danger" onClick={() => this.props.removeClass(index)}>
                             <BsFillTrashFill />

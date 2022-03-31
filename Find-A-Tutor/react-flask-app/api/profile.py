@@ -1,5 +1,5 @@
+#FIND-A-TUTOR ~ Profile Backend ~ Authors: Tim W., Isaac A.
 from flask import Flask, request
-
 from flask_wtf import FlaskForm
 from flask_wtf import Form
 from pymysql import NULL
@@ -31,7 +31,8 @@ else:
    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
 
 mysql.init_app(app)
-#end database stuff
+#End of DB Setup
+
 
 #retrieve profile details
 def retrieve_profile(token):
@@ -87,18 +88,26 @@ def retrieve_profile(token):
         'pay_type':payment_method, 'pay_info':payment_details,
         'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
 
-#retrieve the times the tutor is available
 def retrieve_times(tut_email):
+    """Get the times the tutor is available from the DB
+
+    Format the times into a dictionary {'start', 'end'}
+    Send that dictionary to login.mergeTimes
+    return the result of mergeTimes
+    If the Tutor does not have any available times return an empty array
+    """
+
+    #Connect to Db
     conn = mysql.connect()
     cursor = conn.cursor()
-    availTimes = []
+
+    availTimes = [] #array of times the tutor is available tutor
     
     #get the times
     cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
-
     
-    #put times in dict {start_time:end_time}
+    #put times in dict {'start', 'end'}
     if len(times) != 0:
         for time in times:
             startAndEnd = {'start': time[0], 'end': time[1]}
@@ -112,24 +121,36 @@ def retrieve_times(tut_email):
     return availTimes, 200
 
 
-#retrieve the classes they tutor and their rates
 def retrieve_classes(tut_email):
+    """Gets the classes the Tutor tutors and the rates for each class from the DB
+
+    Get the classes from the db
+    then put them into an array of dictionaries [{'class_code', 'rate'}, ]
+    """
+
+    #connect to DB
     conn = mysql.connect()
     cursor = conn.cursor()
-    classes = []
+
+    classes = [] # array which each class will be added to aClass = {'class_code', 'rate'}
+
     #get the classes and rates
     cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
     
-    #put the classes in a dict 
-    #classes[["code", rate:15], ["code2", 10]]
+    #put the classes in an array of dicts [{'class_code', 'rate'}, ]
     for pair in classes_rates:
         classes.append(pair)
     
+    conn.close()
     return classes
 
 # Submit time slots to db for given weekday
 def post_timeSlot(times, tut_email):
+    """ Send the tutor's available times to the db for a given weekday
+    """
+
+    #Connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -145,33 +166,56 @@ def post_timeSlot(times, tut_email):
     return 'SUCCESS', 200
 
 def remove_timeSlot(times, tut_email):
+    """Remove a timeslot from the Tutor's available times
+
+    Timeslots are either added during the current session by the user or
+    are retrieved from the DB.
+    """
+
+    #Connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
     
     #Check type of remove
-    if ('removePrefilledTime' not in times.keys()):
+    if ('removePrefilledTime' not in times.keys()): #remove TimesSlots added during current session
         #loop through times and run this query for each 15 minute slot
         for time in times:
             cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+    #TODO: Implement removal of db populated times
 
     conn.close()
     
     return 'SUCCESS', 200
 
 def contactMe_change(contactMe, tut_email):
+    """ Send boolean value to DB for if the Tutor is able to be contacted to set up a Tutoring session.
+    """
+
+    #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
 
-    c = 1
+    c = contactMe # 0=cannot be contacted by students 1=can be contacted
 
+    #query db
     cursor.execute("update Tutor set contactable=\'%s\' where tut_email=%s;", (c, tut_email,))
 
     conn.close()
     return 'SUCCESS', 200
 
 def edit_profile(submission, tut_email):
+    """Update DB from changes made by the Tutor
+
+    When the Tutor hits apply update the DB with changed info for
+    type of payment (cash, vemo, paypal),
+    username for payment serivice (if applicable),
+    and whether the default to loggin in as a Tutor or Student (0=student, 1=tutor).
+    Also, update the classes they tutor.
+    """
+
+    #Connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
@@ -186,6 +230,9 @@ def edit_profile(submission, tut_email):
     #update the tutor classes
     classes = submission['classes']
 
+    #Loop through the Tutor's classes 
+    #if the class has a class_code add it to the DB
+    #There can be empty elements in the array so these are not added to the DB
     for aClass in classes:
         if 'class_code' in aClass.keys():
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))

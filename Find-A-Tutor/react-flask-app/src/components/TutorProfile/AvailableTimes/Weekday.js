@@ -14,7 +14,7 @@ const format = 'h:mm a';    //Format for TimePicker
  */
 class AddTimeSlot extends React.Component {
     render() {
-        const day = this.props.day;
+        const day = this.props.day;     //given day
         return (
             <>
                 <Button className="AddTimeSlot" onClick={this.props.handleAddTimeSlot}>
@@ -34,29 +34,26 @@ class Weekday extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            children: [],
+            children: [],           //list that tracks how many timeslots to add
             startTime: [],          //startTime moment of a given timeslot
             endTime: [],            //endTime moment of a given timeslot
             showTimePickers: [],    //boolean show if the TimePickers of a given timeslot should be rendered
-        }
+        }//state
 
         this.renderTimeSlot = this.renderTimeSlot.bind(this);
         this.handleAddTimeSlot = this.handleAddTimeSlot.bind(this);
         this.removeTimeSlot = this.removeTimeSlot.bind(this);
         this.fetchRemoveTimeSlot = this.fetchRemoveTimeSlot.bind(this);
-
         this.timeSlotChange = this.timeSlotChange.bind(this);
         this.submitTimes = this.submitTimes.bind(this);
         this.submitFetch = this.submitFetch.bind(this);
-
         this.setStartTime = this.setStartTime.bind(this);
         this.setEndTime = this.setEndTime.bind(this);
         this.setShowTimePickers = this.setShowTimePickers.bind(this);
         this.getISO = this.getISO.bind(this);
-
         this.getFilledOutTimes = this.getFilledOutTimes.bind(this);
         this.removePreFilledTime = this.removePreFilledTime.bind(this);
-    }
+    }//constructor
 
     /**
      * Updates array of timeslots for the weekday
@@ -72,13 +69,13 @@ class Weekday extends React.Component {
         this.state.startTime.push(null);
         this.state.endTime.push(null);
         this.state.showTimePickers.push(true);
-    }
+    }//handleAddTimeSlot
 
     /**
      * Creates a map of rendered timeslots from children array
      * 
-     * @param {*} day: given weekday
-     * @returns : map of rendered timeslots
+     * @param {string} day: given weekday
+     * @returns map of rendered timeslots
      */
     renderTimeSlot(day) {
         return this.state.children.map(item => {
@@ -101,8 +98,8 @@ class Weekday extends React.Component {
     /**
      * removes timeslot of given index
      * 
-     * @param {*} index: index from children to remove from
-     * @param {*} day: given week day, only used for debugging
+     * @param {int} index: index from children to remove from
+     * @param {string} day: given week day, only used for debugging
      */
     removeTimeSlot(index, day) {
         //remove timeslot from DOM
@@ -123,14 +120,15 @@ class Weekday extends React.Component {
 
         //remove timeslot from db
         this.fetchRemoveTimeSlot(index);
-    }
+    }//renoveTimeSlot
 
     /**
      * Fetch call to db to remove timeslot
      * 
-     * @param {*} index: the index of the given time slot to remove
+     * @param {int} index: the index of the given time slot to remove
      */
     fetchRemoveTimeSlot(index) {
+        //time to remove
         let times = {
             'token': localStorage.getItem("token"),
             "remove": {
@@ -139,8 +137,6 @@ class Weekday extends React.Component {
             }
         };
 
-        console.log("Post times: " + times['startTime']);
-
         const response = fetch("/myProfile/", {
             method: "POST",
             headers: {
@@ -148,13 +144,13 @@ class Weekday extends React.Component {
             },
             body: JSON.stringify(times)
         })//fetch
-    }
+    }//fetchRemoveTimeSlot
 
     /**
      * Updates start and end time states according to the given timepicker
      * 
-     * @param {*} time Moment object of the given timepicker
-     * @param {*} timepicker String identifying which timepicker was changed
+     * @param {moment} time Moment object of the given timepicker
+     * @param {string} timepicker String identifying which timepicker was changed
      */
     timeSlotChange(time, timepicker, index) {
         //Update TimeSlot according to the changed timepicker
@@ -163,14 +159,16 @@ class Weekday extends React.Component {
         } else {
             this.setEndTime(time, index);
         }//if
-
     }//timeSlotChange()
 
     /**
-     *  onClick of submit check that both start and end Times have been selected
+     * 
+     * onClick of submit check that both start and end Times have been selected
      *  then set showTimePickers to false
      *  and call the fetch function
      * 
+     * @param {int} index   index of the timeslot
+     * @param {string} day  given week day being added to
      */
     submitTimes(index, day) {
         if (this.state.startTime[index] == null || this.state.endTime[index] == null) {
@@ -187,7 +185,7 @@ class Weekday extends React.Component {
      * returns numeric value of a weekday
      * 1-monday 7-sunday
      * 
-     * @param {} day: string weekday
+     * @param {string} day: weekday
      * @returns int 1-7, 1 being monday and 7 being sunday
      */
     getISO(day) {
@@ -205,17 +203,20 @@ class Weekday extends React.Component {
             return 6
         } else {
             return 7
-        }
-    }
+        }//if
+    }//getISO
 
 
     /**
-     * Posts timeslot to backend
+     * post time slot to the backend
      * 
-     * @param - prop of the given day of the timeslot
+     * @param {int} index   index of the timeslot being added
+     * @param {string} day  weekday being added to
      */
     submitFetch(index, day) {
+        //convert string day to in 1=monday 7=sunday
         let date = this.getISO(day)
+        //setup timeslot dict
         let timeSlot = {
             'submitTimes': true,
             "token": localStorage.getItem("token"),
@@ -230,67 +231,89 @@ class Weekday extends React.Component {
             },
             body: JSON.stringify(timeSlot)
         })//fetch
-    }
+    }//submitFetch
 
 
 
     /**
      * sets starttime state
      * 
-     * @param {*} time: given string from user input
-     * @param {*} index: instance of TimeSlot we are at
+     * @param {string} time: given string from user input
+     * @param {int} index: instance of TimeSlot we are at
      */
     setStartTime(time, index) {
         if (this.state.startTime.size - 1 < index) {
             for (let i = 0; i < index; i++) {
                 this.state.startTime.push(null);
-            }
-        }
+            }//for
+        }//if
+
+        //make a copy of state
         let startTimeCopy = this.state.startTime;
+        //update copy
         startTimeCopy.splice(index, 1, time);
 
+        //set state to copy 
         this.setState({ startTime: startTimeCopy })
-    }
+    }//setStartTime
 
     /**
      * sets endtime state
      * 
-     * @param {*} time: given string from user input
-     * @param {*} index: instance of TimeSlot we are at
+     * @param {string} time: given string from user input
+     * @param {int} index: instance of TimeSlot we are at
      */
     setEndTime(time, index) {
         if (this.state.endTime.size - 1 < index) {
             for (let i = 0; i < index; i++) {
                 this.state.endTime.push(null);
-            }
-        }
+            }//for
+        }//if
+
+        //make a copy of state
         let endTimeCopy = this.state.endTime;
+        //update copy
         endTimeCopy.splice(index, 1, time);
 
+        //set state to copy
         this.setState({ endTime: endTimeCopy })
-    }
+    }//setEndTime
 
     /**
      * sets showTimePickers state
      * 
-     * @param {*} bool: whether the timepickers are shown or not
-     * @param {*} index: instance of TimeSlot we are at
+     * @param {boolean} bool: whether the timepickers are shown or not
+     * @param {int} index: instance of TimeSlot we are at
      */
     setShowTimePickers(bool, index) {
         if (this.state.showTimePickers.size - 1 < index) {
             for (let i = 0; i < index; i++) {
                 this.state.showTimePickers.push(true);
-            }
-        }
+            }//for
+        }//if
+
+        //make a copy of state
         let showTimePickersCopy = this.state.showTimePickers;
+        //update copy
         showTimePickersCopy[index] = bool
 
+        //set state to copy
         this.setState({ showTimePickers: showTimePickersCopy })
     }//setShowTimePickers
 
+    /**
+     * 
+     * get available times stored in db
+     * 
+     * @param {array} times array of timeslots
+     * @param {string} day given day
+     * @returns array of timeslots to be rendered
+     */
     getFilledOutTimes(times, day) {
+        let toReturn = []   //array of timeslots to be rendered
+
+        //format day
         day = day[0].toUpperCase() + day.slice(1)
-        let toReturn = []
         //Go through given times
         for (let slot in times[day]) {
             //if there is a time filled out for that day display it
@@ -302,11 +325,19 @@ class Weekday extends React.Component {
                         <p> {startTime} to {endTime} </p>
                         <hr />
                     </>);
-            }
-        }
+            }//if
+        }//for
         return toReturn;
-    }
+    }//getFilledOutTimes
 
+    /**TODO: Finish implementation of feature
+     * 
+     * Post to remove a timeslot populated by the DB
+     * 
+     * @param {string} startTime 
+     * @param {string} endTime 
+     * @param {string} day 
+     */
     removePreFilledTime(startTime, endTime, day) {
         let times = {
             'token': localStorage.getItem("token"),
@@ -324,13 +355,12 @@ class Weekday extends React.Component {
             },
             body: JSON.stringify(times)
         })//fetch
-    }
+    }//removePreFilledTime
 
     render() {
-        const day = this.props.day;
-        let times = this.props.times;
-
-        let filledOutTimes = this.getFilledOutTimes(times, day);
+        const day = this.props.day;     //Given day of the week
+        let times = this.props.times;   //give list of timeslots
+        let filledOutTimes = this.getFilledOutTimes(times, day);    //DB populatd times to be rendered
 
         return (
             <>

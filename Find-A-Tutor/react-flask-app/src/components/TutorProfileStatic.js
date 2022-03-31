@@ -8,8 +8,8 @@ import TutorProfile from './TutorProfile/T_Profile'
  */
 class TimeSlot extends React.Component {
     render() {
-        let startTime = this.props.startTime
-        let endTime = this.props.endTime
+        let startTime = this.props.startTime;   //given startTime for the timeslot
+        let endTime = this.props.endTime;       //given endTIme for the timeslot
         return (
             <>
                 {/* TimeSlot Labels */}
@@ -32,14 +32,16 @@ class TimeSlot extends React.Component {
  */
 class Weekday extends React.Component {
     render() {
-        let day = this.props.day;
-        let times = this.props.times;
+        let day = this.props.day;       //given day of the week
+        let times = this.props.times;   //given list of timeslots for the day
+        let timeSlotList = [];          //list of timeSlots to be rendered
 
-        let timeSlotList = [];
+        //put timeslots in list
         times.forEach((slot) => {
             timeSlotList.push(<TimeSlot startTime={slot['startTime']}
                 endTime={slot['endTime']} />);
         });
+
         return (
             <>
                 <div>
@@ -57,7 +59,7 @@ class Weekday extends React.Component {
  */
 class Week extends React.Component {
     render() {
-        let times = this.props.times;
+        let times = this.props.times;   //given list of available times
         return (
             <>
                 <div className="d-flex justify-content-center availableTimes">
@@ -88,8 +90,14 @@ class PayAndLoginPrefs extends React.Component {
         super(props);
 
         this.getLoginPref = this.getLoginPref.bind(this);
-    }
+    }//constructor
 
+    /**
+     * convert login pref to string to be rendered
+     * 
+     * @param {int} loginPref 0 = student view, 1 = tutor view
+     * @returns string to be rendered
+     */
     getLoginPref(loginPref) {
         if (loginPref == 0) {//Student
             return <p> Studnet View </p>;
