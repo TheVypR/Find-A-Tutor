@@ -91,7 +91,14 @@ export default function AddGroupTutoring() {
     };
 
     //new button clicked
-    
+    const handleDelete = (event) => {
+        fetch('/DeleteGroup/', {
+            method: 'POST',
+            headers: {'Content-Type' : 'application/json'},
+            body:JSON.stringify(event)
+        })
+        .then(window.location.reload())
+    };
 
     return authContext.isLoggedIn && (
         <LocalizationProvider dateAdapter={DateAdapter}>
@@ -154,7 +161,7 @@ export default function AddGroupTutoring() {
                                         <TableCell>{session[3]}</TableCell>
                                         <TableCell>{moment(session[4]).format('MM/DD/YYYY h:mm a')}</TableCell>
                                         <TableCell>{moment(session[5]).format('MM/DD/YYYY h:mm a')}</TableCell>
-                                        <TableCell><Button onClick={(e) => { e.stopPropagation(); console.log(session);}}><DeleteIcon sx={{color: '#ca2029'}} /></Button></TableCell>
+                                        <TableCell><Button onClick={(e) => { e.stopPropagation(); handleDelete(session);}}><DeleteIcon sx={{color: '#ca2029'}} /></Button></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

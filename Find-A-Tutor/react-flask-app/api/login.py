@@ -166,6 +166,11 @@ def editTutoring():
     groupSession = request.get_json()
     return adminRoutes.EditTutoring(groupSession)
 
+@app.route('/DeleteGroup/', methods=['POST'])
+def deleteGroup():
+    groupSession = request.get_json()
+    return adminRoutes.DeleteGroup(groupSession)
+
 #ban a student or tutor
 #removes user from all Tutor and Student tables
 #replaces user in Appointments with the "banned" id

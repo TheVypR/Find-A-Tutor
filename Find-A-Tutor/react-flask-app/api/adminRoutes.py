@@ -268,6 +268,21 @@ def EditTutoring(data):
     #return success
     return 'SUCCESS', 200
 
+def DeleteGroup(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #add student to Tutor table
+    cursor.execute("delete from GroupTutoring where session_id = %s", data[0])
+
+    #close the connection
+    conn.close()
+    
+    #return success
+    return 'SUCCESS', 200
+
 #submits the tutors request for verification
 def submitVerifyRequest(email, class_code):
     #connect to DB
