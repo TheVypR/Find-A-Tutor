@@ -150,10 +150,9 @@ def remove_timeSlot(times, tut_email):
     cursor = conn.cursor()
     
     #Check type of remove
-    if ('removePrefilledTime' not in times.keys()):
-        #loop through times and run this query for each 15 minute slot
-        for time in times:
-            cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+    #loop through times and run this query for each 15 minute slot
+    for time in times:
+        cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
 
     conn.close()
     
@@ -187,6 +186,7 @@ def edit_profile(submission, tut_email):
     classes = submission['classes']
 
     for aClass in classes:
+        print(aClass)
         if 'class_code' in aClass.keys():
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 

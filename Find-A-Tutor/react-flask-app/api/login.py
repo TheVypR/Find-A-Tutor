@@ -185,6 +185,7 @@ def myProfile():
     email = authentication.getEmail(token)[0]
     #Check to see if this is a removal
     if 'remove' in submission.keys():
+        print(submission['remove'])
         #remove timeslot from TutorTimes
         submittedTime = submission['remove']
         startTime = dateParse(submittedTime['startTime'])
@@ -203,9 +204,6 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         times = splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
-    #check is this is removing a time populated by the db
-    elif 'removePrefilledTime' in submission.keys():
-        return profile.remove_timeSlot(submission['removePrefilledTime'], email)
     elif 'classesTaking' in submission.keys():
         return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes

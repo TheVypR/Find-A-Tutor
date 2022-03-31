@@ -55,7 +55,6 @@ class Weekday extends React.Component {
         this.getISO = this.getISO.bind(this);
 
         this.getFilledOutTimes = this.getFilledOutTimes.bind(this);
-        this.removePreFilledTime = this.removePreFilledTime.bind(this);
     }
 
     /**
@@ -136,10 +135,9 @@ class Weekday extends React.Component {
             "remove": {
                 "startTime": this.state.startTime[index].toString(),
                 "endTime": this.state.endTime[index].toString(),
+                "day": this.getISO(this.props.day)
             }
         };
-
-        console.log("Post times: " + times['startTime']);
 
         const response = fetch("/myProfile/", {
             method: "POST",
@@ -300,6 +298,9 @@ class Weekday extends React.Component {
                 toReturn.push(
                     <>
                         <p> {startTime} to {endTime} </p>
+                        <Button className="removeTime" variant="danger" onClick={() => { this.removeTimeSlot(index, this.props.day) }}>
+                            <BsFillTrashFill size="14" />
+                        </Button> <br />
                         <hr />
                     </>);
             }
@@ -307,24 +308,24 @@ class Weekday extends React.Component {
         return toReturn;
     }
 
-    removePreFilledTime(startTime, endTime, day) {
-        let times = {
-            'token': localStorage.getItem("token"),
-            "removePrefilledTime": {
-                "startTime": startTime,
-                "endTime": endTime,
-                "day": this.getISO(day)
-            }
-        };
+    // removePreFilledTime(startTime, endTime, day) {
+    //     let times = {
+    //         'token': localStorage.getItem("token"),
+    //         "removePrefilledTime": {
+    //             "startTime": startTime,
+    //             "endTime": endTime,
+    //             "day": this.getISO(day)
+    //         }
+    //     };
 
-        const response = fetch("/myProfile/", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(times)
-        })//fetch
-    }
+    //     const response = fetch("/myProfile/", {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(times)
+    //     })//fetch
+    // }
 
     render() {
         const day = this.props.day;
