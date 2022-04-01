@@ -5,7 +5,8 @@ from datetime import datetime, timedelta                    #used to compare dat
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
-from flask_cors import CORS
+from flask_cors import CORS                                 #used to ignore CORS
+from io import BytesIO                                      #used for file upload
 
 #setup flask
 app = Flask(__name__)
@@ -371,6 +372,24 @@ def verifyRequest():
     
     #return the success or failure
     return adminRoutes.submitVerifyRequest(email, class_code)
+
+@app.route('/fileUpload/', methods=['POST'])
+def fileUpload():
+    d = {}
+    try:
+        file = request.files['file_from_react']
+        filename = file.filename
+        print(f"Uploading file {filename}")
+        file_bytes = file.read()
+        file_content = BytesIO(file_bytes).readlines()
+        print(file_content)
+        d['status'] = 1
+
+    except Exception as e:
+        print(f"Couldn't upload file {e}")
+        d['status'] = 0
+
+    return jsonify(d), 200
 
 #take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
 #needed for storage and calendar display
