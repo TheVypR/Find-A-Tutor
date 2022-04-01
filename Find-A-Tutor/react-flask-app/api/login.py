@@ -367,7 +367,7 @@ def verifyRequest():
     data = request.get_json()           #get the data
     token = data["token"]               #get the token from the data
     class_code = data["class_code"]     #get the class code from the data
-    email = authentication.getEmail(token)#use token to get email
+    email = authentication.getEmail(token)[0]#use token to get email
     
     #return the success or failure
     return adminRoutes.submitVerifyRequest(email, class_code)

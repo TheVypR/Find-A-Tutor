@@ -300,7 +300,7 @@ def submitVerifyRequest(email, class_code):
                     + email + "\", \""
                     + class_code + "\", "
                     +"(select prof_email from Classes where class_code = \"" + class_code + "\"), \""
-                    + code + "\"")
+                    + code + "\")")
     
     #close the connection
     conn.close()

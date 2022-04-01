@@ -24,11 +24,20 @@ class Class extends React.Component {
             e.preventDefault();
             console.log("Not a number")
         }
-
     }
 
-	requestVerify() {
-		
+	requestVerify(e) {
+		console.log(this.props.courseCode);
+		fetch("/requestVerification/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify({
+				token: localStorage.getItem("token"),
+				class_code: this.props.courseCode
+			})
+		})
 	}
 
     render() {
@@ -36,7 +45,7 @@ class Class extends React.Component {
         return (
             <TableRow key={index} hover>				
 					<TableCell>
-						<Button id={index} className="verify" onClick={() => {this.requestVerify()}}>
+						<Button id={index} className="verify" onClick={(e) => {this.requestVerify(e)}}>
 							Request
 						</Button>
 					</TableCell>
