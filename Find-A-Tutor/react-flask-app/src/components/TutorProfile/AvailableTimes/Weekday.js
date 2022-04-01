@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillPlusCircleFill, BsFillTrashFill } from "react-icons/bs";
 import TimeSlot from './TimeSlot'
+import moment from 'moment';
 
 
 const format = 'h:mm a';    //Format for TimePicker
@@ -34,6 +35,7 @@ class Weekday extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            filledOutTimes: [],
             children: [],
             startTime: [],          //startTime moment of a given timeslot
             endTime: [],            //endTime moment of a given timeslot
@@ -108,7 +110,6 @@ class Weekday extends React.Component {
         //remove timeslot from DOM
         let filteredChildren = this.state.children.filter(child => child !== this.state.children[index]);
         this.setState({ children: filteredChildren });
-        console.log("index: " + index + "day: " + day);
 
         //remove related state variables
         //startTime
@@ -125,16 +126,13 @@ class Weekday extends React.Component {
         this.fetchRemoveTimeSlot(index);
     }
 
-    removeFilledOutTimes() {
-
-    }
-
     /**
      * Fetch call to db to remove timeslot
      * 
      * @param {*} index: the index of the given time slot to remove
      */
     fetchRemoveTimeSlot(index) {
+        console.log(this.state.startTime[index]);
         let times = {
             'token': localStorage.getItem("token"),
             "remove": {
@@ -293,58 +291,66 @@ class Weekday extends React.Component {
 
     getFilledOutTimes(times, day) {
         day = day[0].toUpperCase() + day.slice(1)
-        let toReturn = []
-        times[day].forEach(slot => toReturn.push(""));
+        let toReturn = [{}]
+        times[day].forEach(slot => toReturn.push({"render": null, "shouldRender": true}));
         //Go through given times
         for (let slot in times[day]) {
             //if there is a time filled out for that day display it
             if (slot.length > 0) {
                 let startTime = times[day][slot]['startTime'];
                 let endTime = times[day][slot]['endTime'];
-                toReturn[slot] = 
+                toReturn[slot]['render'] =  toReturn[slot]['shouldReturn'] ? 
                     <>
                         <p> {startTime} to {endTime} </p>
-                        <Button className="removeTime" variant="danger" >
+                        <Button className="removeTime" variant="danger" onClick={() => this.removeFilledOutTimes(slot, startTime, endTime, day)}>
                             <BsFillTrashFill size="14" />
                         </Button> <br />
                         <hr />
-                    </>;
+                    </>:
+                    <></>
             }
         }
-        return toReturn;
+        console.log(toReturn)
+        this.setState({filledOutTimes: [...this.state.filledOutTimes, toReturn]})
     }
 
-    // removePreFilledTime(startTime, endTime, day) {
-    //     let times = {
-    //         'token': localStorage.getItem("token"),
-    //         "removePrefilledTime": {
-    //             "startTime": startTime,
-    //             "endTime": endTime,
-    //             "day": this.getISO(day)
-    //         }
-    //     };
+    removeFilledOutTimes(slot, startTime, endTime, day) {
+        let filledOutTimes = this.state.filledOutTimes;
+        filledOutTimes[slot] = false;
+        this.setState({filledOutTimes: filledOutTimes})
+        let times = {
+            'token': localStorage.getItem("token"),
+            "remove": {
+                "startTime": moment(startTime, 'hh:mm :a').toString(),
+                "endTime": moment(endTime, 'hh:mm :a').toString(),
+                "day": this.getISO(day)
+            }
+        };
 
-    //     const response = fetch("/myProfile/", {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(times)
-    //     })//fetch
-    // }
+        const response = fetch("/myProfile/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(times)
+        })//fetch
+    }
+
+    componentDidMount() {
+       // this.getFilledOutTimes(this.props.times, this.props.day)
+    }
 
     render() {
         const day = this.props.day;
-        let times = this.props.times;
 
-        let filledOutTimes = this.getFilledOutTimes(times, day);
+        let filledOutTimes = this.state.filledOutTimes;
 
         return (
             <>
                 <div className="day">
                     <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
                     <hr classname="hr" />
-                    {filledOutTimes}
+                    {filledOutTimes.map(time => time['render'])}
                     {this.renderTimeSlot(day)}
                     <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />
                 </div>

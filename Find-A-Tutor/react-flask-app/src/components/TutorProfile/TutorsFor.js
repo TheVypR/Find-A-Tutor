@@ -38,11 +38,11 @@ class TutorsFor extends React.Component {
      */
     renderClass() {
         return this.props.classes.map(item => {
-            if (typeof (item[0]) === 'string') {
+            if (Object.keys(item).includes("class_code")) {
                 return (<>
                     <div className='d-flex '>
-                        <p className='courseCode'> {item[0]} </p>
-                        <p className='hourlyRate'> Hourly Rate: ${item[1]} </p>
+                        <p className='courseCode'> {item['class_code']} </p>
+                        <p className='hourlyRate'> Hourly Rate: ${item['rate']} </p>
                     </div>
                 </>)
             } else {

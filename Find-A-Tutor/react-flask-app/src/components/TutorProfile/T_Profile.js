@@ -170,11 +170,11 @@ class T_Profile extends React.Component {
 
     componentDidMount() {
         let filledInClasses = this.props.items['tutorsFor'];
-        filledInClasses.forEach(aClass => {
+        for (let aClass in filledInClasses) {
             var classesList = this.state.classes;
-            classesList.push(aClass);
+            classesList.push({'class_code': filledInClasses[aClass]['class_code'], 'rate': filledInClasses[aClass]['rate']});
             this.setState({classes: classesList});
-        });
+        ;}
     }
 
     render() {

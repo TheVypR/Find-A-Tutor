@@ -124,7 +124,7 @@ def retrieve_classes(tut_email):
     #put the classes in a dict 
     #classes[["code", rate:15], ["code2", 10]]
     for pair in classes_rates:
-        classes.append(pair)
+        classes.append({"class_code": pair[0], "rate": pair[1]})
     
     return classes
 
@@ -148,12 +148,12 @@ def remove_timeSlot(times, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
+    print(times)
     
     #Check type of remove
     #loop through times and run this query for each 15 minute slot
     for time in times:
         cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
-
     conn.close()
     
     return 'SUCCESS', 200
