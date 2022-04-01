@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
-import './TutorProfile.css';
+import '../TutorProfile.css';
 
 import AvailableTimes from './AvailableTimes/AvailableTimes'
 import PayAndLoginPrefs from './PayAndLoginPrefs'
 import TutorsFor from "./TutorsFor";
+
 
 
 /** Tutor Profile Component
@@ -19,7 +20,8 @@ class T_Profile extends React.Component {
             paymentType: "",    //Venmo, Paypal, or Cash
             paymentUser: "",    //Username for choosen payment type (unless cash)
             loginPrefs: -1,     //Default profile that loads on login (student or tutor)
-            classes: []       //Classes the tutor tutors for
+            classes: [],       //Classes the tutor tutors for
+            applyState: true
         }//state
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,7 +41,7 @@ class T_Profile extends React.Component {
     handleSubmit() {
         //Collect state values
         let post = {
-			'token': localStorage.getItem("token"),
+            'token': localStorage.getItem("token"),
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
@@ -47,6 +49,11 @@ class T_Profile extends React.Component {
         }//post
 
         this.checkForEmptyState(post);
+
+        //check if cash and set username accordingly
+        if (this.state.paymentType === "Cash") {
+            post['pay_info'] = "";
+        }
 
         //Fetch
         const response = fetch("/myProfile/", {
@@ -67,14 +74,14 @@ class T_Profile extends React.Component {
     checkForEmptyState(post) {
         //Check for empty values
         for (let postKey in post) {
-                if ((post[postKey] === "" || post[postKey] == -1) && postKey != 'classes') {
-                    //replace with db data
-                    for (let getKey in this.props.items) {
-                        if (postKey == getKey) {
-                            post[postKey] = this.props.items[getKey];
-                        }//if
-                    }//for
-                }//if
+            if ((post[postKey] === "" || post[postKey] == -1) && postKey != 'classes') {
+                //replace with db data
+                for (let getKey in this.props.items) {
+                    if (postKey == getKey) {
+                        post[postKey] = this.props.items[getKey];
+                    }//if
+                }//for
+            }//if
         }//for
     }//checkForEmptyState
 
@@ -93,8 +100,9 @@ class T_Profile extends React.Component {
      * @param {int} index index of class to be removed
      */
     removeClass(index) {
+        var classes = this.state.classes;
         //remove class from DOM
-        let filteredClasses = this.props.classes.filter(aClass => aClass !== this.props.classes[index]);
+        let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
         this.setState({ classes: filteredClasses });
     }//removeClass
 
@@ -152,6 +160,7 @@ class T_Profile extends React.Component {
      * @param {int} index given index
      */
     setRate(rate, index) {
+        this.setState({ applyState: true })
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
         aClass['rate'] = rate;
@@ -159,10 +168,25 @@ class T_Profile extends React.Component {
         this.setState({ classes: classes });
     }//setRate
 
+    componentDidMount() {
+        let filledInClasses = this.props.items['tutorsFor'];
+        filledInClasses.forEach(aClass => {
+            var classesList = this.state.classes;
+            classesList.push(aClass);
+            this.setState({classes: classesList});
+        });
+    }
+
     render() {
         let items = this.props.items;
+
+        let apply = this.state.applyState ?
+            <Button type="submit" id="save" onClick={this.handleSubmit}> Apply </Button> :
+            <Button type="submit" id="save" disabled> Apply </Button>
+
         return (
             <>
+                <p className="text-end pe-2"><i> Logged in as a Tutor </i></p>
                 <div className="container-fluid text-center">
                     {/* User Info */}
                     <h1 id="name"> {items['name']} </h1>
@@ -179,23 +203,20 @@ class T_Profile extends React.Component {
                         pay_info={items['pay_info']}
                         login_pref={items['login_pref']}
                     />
+
+                    <AvailableTimes times={items['times']} />
+
                     <TutorsFor
                         classes={this.state.classes}
                         addClass={this.addClass}
                         removeClass={this.removeClass}
                         setCourseCode={this.setCourseCode}
                         setRate={this.setRate}
-                        filledInClasses={items['classes']}
                     />
                 </div>
 
-                <AvailableTimes times={items['times']} />
-
-                {/* Bottom Buttons */}
                 <div id="bottom">
-                    <Button type="submit" id="save"
-                        onClick={this.handleSubmit}
-                    > Apply </Button>
+                    {apply}
                     <Button type="submit" id="stopTutoring" variant="danger"> Stop Tutoring </Button>
                 </div>
             </>

@@ -4,9 +4,6 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Toolbar from '@mui/material/Toolbar';
-import AppBar from '@mui/material/AppBar';
-import MenuItem from '@mui/material/MenuItem'
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -18,6 +15,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Modal } from 'react-bootstrap';
 import './adminView.css';
 import {AuthContext} from './AuthContext';
+import AdminNavBar from './AdminNavBar';
 
 const theme = createTheme();
 export default function Reports() {
@@ -36,19 +34,6 @@ export default function Reports() {
 
 	//authentication
 	const authContext = useContext(AuthContext);
-
-    //get data from server
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const responseTutors = await fetch("/ReportedTutors/")
-    //         const responseStudents = await fetch("/ReportedStudents/")
-    //         const postTutors = await responseTutors.json();
-    //         const postStudents = await responseStudents.json();
-    //         setReportedTutors(postTutors);
-    //         setReportedStudents(postStudents);
-    //     }
-    //     fetchData();
-    // }, []);
 
     //get data from server
     useEffect(() => {
@@ -136,7 +121,7 @@ export default function Reports() {
         handleBanConfirm();
     }
 
-    return authContext.isLoggedIn==="true" && (
+    return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
 
             <Modal show={banConfirm} size="md" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
@@ -188,20 +173,7 @@ export default function Reports() {
             </Modal>
 
             <CssBaseline />
-            <AppBar postion="static" color="primary" elevation={0} sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
-                <Toolbar sx={{flexwrap: 'wrap'}}>
-                    <Typography component="h1" variant="h4" color="inherit" sx={{px: 5, flexGrow: 1, display: 'flex'}}>
-                        Admin View
-                    </Typography>
-                    <MenuItem component='a' href='./Reports'>
-                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Reports</Typography>
-                    </MenuItem>
-                    <MenuItem component='a' href='./CurrentAndBan'>
-                        <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Tutors and Banned List</Typography>
-                    </MenuItem>
-                    <Button onClick={authContext.logout} href="./" color="inherit" variant="outlined" sx={{my: 1, mx: 5}}>Logout</Button>
-                </Toolbar>
-            </AppBar>
+            <AdminNavBar />
             <Container maxWidth="sm" disableGutters component="main" sx={{pt: 6}}></Container>
             <Container maxWidth="xl" sx={{mt: 8, mb: 8}}>
                 <Grid container spacing={5}>

@@ -19,10 +19,10 @@ class AvailableTimes extends React.Component {
      * Post for contact me check box change
      */
     contactMe() {
-        this.setState({checked: !this.state.checked});
-        let value = this.state.checked ? 1:0
+        this.setState({ checked: !this.state.checked });
+        let value = this.state.checked ? 1 : 0
         let submission = {
-			'email': localStorage.getItem("email"),
+            'email': localStorage.getItem("email"),
             'contactMe': value
         };
 
@@ -39,14 +39,13 @@ class AvailableTimes extends React.Component {
         let times = this.props.times;   // Tutors available times from the db
         return (
             <>
-                <div className="row justify-content-start">
-                    <div className="col-4">
-                        <input type="checkbox" id="contactMe" onChange={this.contactMe}/>
+                <div className="d-flex flex-column">
+                    <div className="d-flex justify-content-end contactMe">
+                        <input type="checkbox" id="contactMe" onChange={this.contactMe} />
                         <label htmlFor="contactMe"> Contact Me For Availability </label>
                     </div>
-                    <h6 id="header" className="col-4 text-center"> Available Times</h6>
+                    <Week times={times} />
                 </div>
-                <Week times={times}/>
             </>
         );//Return
     }//render

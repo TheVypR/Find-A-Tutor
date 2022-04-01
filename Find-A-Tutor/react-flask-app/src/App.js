@@ -1,19 +1,21 @@
-//FIND-A-TUTOR ~ Core Frontend ~
-import React, { useState, useEffect, useContext } from 'react';					//used for authentication
-import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';	//used for authentication
-import './components/App.css';													//used for styling
-import 'bootstrap/dist/css/bootstrap.min.css';									//used for styling
-import Calendar from './components/calendar'									//calendar screen
-import SignIn from "./components/SignIn"										//SignIn screen
-import SignUp from "./components/SignUp"										//SignUp screen
-import TutorProfile from "./components/TutorProfile/T_Profile"					//TutorProfile screen
-import StudentProfile from "./components/StudentProfile"						//StudentProfile screen
-import TutoringHistory from './components/TutoringHistory';						//TutorHistory screen
-import StudentHistory from './components/StudentHistory';						//StudentHistory screen
-import Reports from './components/Reports';										//Admin reports screen
-import CurrentAndBan from './components/CurrentAndBan';							//Admin banning screen
-import LoadProfile from './components/LoadProfile';								//LoadProfile route
-import { AuthContext } from './components/AuthContext'							//used for authentication
+import React, { useState, useEffect, useContext } from 'react';
+import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';
+import './components/App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import Calendar from './components/calendar'
+import SignIn from "./components/SignIn"
+import SignUp from "./components/SignUp"
+import { createContext } from 'react';
+import TutoringHistory from './components/TutoringHistory';
+import StudentHistory from './components/StudentHistory';
+import Reports from './components/Reports';
+import CurrentAndBan from './components/CurrentAndBan';
+import LoadProfile from './components/LoadProfile';
+import AddGroupTutoring from './components/AddGroupTutoring';
+import GroupTutoring from './components/GroupTutoring';
+
+import { AuthContext } from './components/AuthContext'
 
 //the core function
 //calls all other pages and manages authentication
@@ -26,13 +28,12 @@ export default function App() {
 	 if (localStorage.getItem("token") !== null) {
 		fetch("/authCheck/?token=" + localStorage.getItem("token"), {method: 'GET'})
 			.then(res => res.json())
-			.then(result => {console.log(result); setLoggedIn(result['loggedIn'])})
+			.then(result => {setLoggedIn(result['loggedIn'])})
+      
 	 } else {
 		setLoggedIn(false);
 	 }
   }, [])
-  
-  
 
   //set login and logout; this is where we will set the authentication from the backend
   //changes the user to be logged in
@@ -56,10 +57,12 @@ export default function App() {
             <Route path='/signup' element={<SignUp />}></Route>
             <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
+            <Route path='/GroupTutoring' element={<GroupTutoring />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
+            <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

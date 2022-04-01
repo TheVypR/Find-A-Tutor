@@ -18,6 +18,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import NavBar from './NavBar';
+import moment from 'moment';
 
 const theme = createTheme();
 export default function StudentHistory() {
@@ -133,7 +134,7 @@ export default function StudentHistory() {
 										<TableRow onClick={onRowClick}>
 											<TableCell>{row['with']}</TableCell>
 											<TableCell>{row['class']}</TableCell>
-											<TableCell>{row['time']}</TableCell>
+											<TableCell>{moment(row['time']).format('MM/DD/YYYY h:mm a')}</TableCell>
 											<TableCell>
 												<Rating name="simple controlled" value={rating} onChange={onRatingChange}/>
 											</TableCell>

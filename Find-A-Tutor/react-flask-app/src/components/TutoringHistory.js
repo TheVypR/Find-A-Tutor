@@ -18,6 +18,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 import { AuthContext } from './AuthContext'
+import moment from 'moment';
 
 
 const theme = createTheme();
@@ -141,7 +142,7 @@ export default function TutoringHistory() {
 										<TableRow key={row['id']} onClick={() => (onRowClick(row))}>
 											<TableCell>{row['with']}</TableCell>
 											<TableCell>{row['class']}</TableCell>
-											<TableCell>{row['time']}</TableCell>
+											<TableCell>{moment(row['time']).format('MM/DD/YYYY h:mm a')}</TableCell>
 											<TableCell>
 												<Rating
 												name="simple-controlled"

@@ -68,4 +68,4 @@ def signup(info):
     conn.close()
     
     #confirm completion
-    return 'Done'
+    return 'DONE', 200

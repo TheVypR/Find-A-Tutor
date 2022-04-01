@@ -1,5 +1,6 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
+import random                                               #used for random string generation
 from datetime import datetime, timedelta                    #used to compare dates
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
@@ -48,7 +49,7 @@ def login():
 
   #check that email existed in users (Student table)
   if result is None:
-    return jsonify({'error': 'Not Authenticated'})
+    return 'Invalid Email', 401
   
   #on user existing
   #hash their login attempt password
@@ -60,7 +61,7 @@ def login():
           'sha256', # The hash digest algorithm for HMAC
           pw.encode('utf-8'), # Convert the password to bytes
           salt, # Provide the salt
-          100000 #100,000 iterations of SHA-256 
+          100000 #100,000 iterations of SHA-256
       )
       
       #combine password and salt
@@ -73,7 +74,7 @@ def login():
       
       #if password not found -> ERROR
       if user is None:
-        return jsonify({'error': 'Not Authenticated'})
+        return 'Incorrect Password', 401
     
   #if user is a tutor, check login preference
   cursor.execute("select login_pref from Tutor where tut_email = \"" + email + "\"")
@@ -84,14 +85,16 @@ def login():
   #else login pref is student
   if checkIfTutor:
       loginPref = checkIfTutor[0]
+      isTutor = True
   else:
       loginPref = 0
+      isTutor = False
 
   #close connection
   conn.close()
 
   #return email, permissions, and login preference
-  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'loginPref':loginPref})
+  return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
@@ -102,7 +105,6 @@ def removeTutor():
 @app.route('/authCheck/', methods=['GET'])
 def checkLogIn():
     token = request.args.get("token")
-    print(authentication.checkLogIn(token))
     return authentication.checkLogIn(token)
     
 #retrieve all the appointments for a student or tutor
@@ -111,6 +113,12 @@ def getAppointments():
     token = request.args.get("token")   #token to get appointments for
     tutView = request.args.get("view")  #whether to retrieve tutor appointments or student
     return appointment.getAppointments(token, tutView=="tutor")
+    
+@app.route('/getGroupTutoring/', methods=['GET'])
+def getGroupTutoring():
+    token = request.args.get("token")
+    email = authentication.getEmail(token)[0]
+    return appointment.getGroupTutoring(email)
     
 #return a list of all current tutors
 @app.route('/CurrentTutors/', methods=['GET'])
@@ -121,7 +129,7 @@ def currentTutors():
 @app.route('/AddTutor/', methods=['POST'])
 def addTutor():
     token = request.get_json()
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -151,7 +159,23 @@ def bannedStudents():
 def dismissReport():
     target = request.get_json()             #get report to dismiss
     adminRoutes.DeleteUserFromList(target)
-    return 'Done'
+    return 'Done', 200
+
+#list of all group tutoring sessions
+@app.route('/GroupTutoring/', methods=['GET'])
+def groupTutoring():
+    return adminRoutes.GroupTutoringList()
+
+#post call on editing form data
+@app.route('/EditTutoring/', methods=['POST'])
+def editTutoring():
+    groupSession = request.get_json()
+    return adminRoutes.EditTutoring(groupSession)
+
+@app.route('/DeleteGroup/', methods=['POST'])
+def deleteGroup():
+    groupSession = request.get_json()
+    return adminRoutes.DeleteGroup(groupSession)
 
 #ban a student or tutor
 #removes user from all Tutor and Student tables
@@ -160,7 +184,7 @@ def dismissReport():
 def addStudentToBan():
     target = request.get_json()          #get target info
     adminRoutes.AddStudentToBan(target)
-    return 'Done'
+    return 'Done', 200
 
 #submit data to sign up for site
 @app.route('/signup/', methods=['POST'])
@@ -174,7 +198,7 @@ def myProfile():
     #get information to change
     submission = request.get_json()
     token = submission['token']
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
@@ -198,6 +222,8 @@ def myProfile():
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
         return profile.remove_timeSlot(submission['removePrefilledTime'], email)
+    elif 'classesTaking' in submission.keys():
+        return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)
@@ -232,7 +258,7 @@ def getProfile():
     
     #determine what profile is being populated
     isTutor = request.args.get('view')
-    return profile.retrieve_profile(token, isTutor=="tutor")
+    return profile.retrieve_profile(token)
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
@@ -246,7 +272,6 @@ def addAppointment():
   
   #split the datetimes into 15 minute intervals for storage
   slots = splitTimes({'start':newStart, 'end':newEnd})
-  
   #add the appointment and mark tutor time as taken
   return appointment.addAppointment(data, token, newStart, newEnd, slots)
 
@@ -268,32 +293,38 @@ def getStuClasses():
 def getTimes():
     #get student email to compare tutor classes to
     token = request.args.get("token")
-    
+    email = authentication.getEmail(token)[0]
+    unmerged = appointment.getTimes(email)
     #if there are times returned
-    if len(appointment.getTimes(token)) != 0:
+    if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        times = mergeTimes(appointment.getTimes(token))
+        if type(unmerged) == type([]):
+            times = mergeTimes(unmerged)
+        else:
+            print(unmerged)
+            return "No times found", 401
     else:
         #return empty times array
-        times = []
-    print(times)
+        []
+        
     return {'times':times}
-
-
 
 #remove an appointment from a students calendar
 @app.route('/deleteAppointment/', methods=['POST'])
 def deleteAppointment():
     data = request.get_json()   #get data from frontend
     token = data['token']       #get the token from data
+    view = data['view']         #get the view
+    
+    email = authentication.getEmail(token)[0]
     
     #parse moments into datetimes for storage
-    newDate = {'start': dateParse(data['start']), 'end': dateParse(data['end'])}
+    newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
-    slots = splitTimes({'start':newDate['start'], 'end':newDate['end']})
+    slots = splitTimes({'start':data['start'], 'end':data['end']})
   
-    return appointment.removeAppointment(token, data, newDate, slots)
+    return appointment.removeAppointment(email, data, newDate, slots, view)
 
 #load past appointments for a student or tutor
 @app.route('/loadAppointment/', methods=['GET'])
@@ -329,6 +360,17 @@ def report():
     else:
         #report a tutor
         return history.submitTutorReport(data, email)
+
+#called when tutor presses button to request to be verified for a class
+@app.route('/requestVerification/', methods=['POST'])
+def verifyRequest():
+    data = request.get_json()           #get the data
+    token = data["token"]               #get the token from the data
+    class_code = data["class_code"]     #get the class code from the data
+    email = authentication.getEmail(token)#use token to get email
+    
+    #return the success or failure
+    return adminRoutes.submitVerifyRequest(email, class_code)
 
 #take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
 #needed for storage and calendar display
@@ -394,13 +436,12 @@ def createDateFromTime(day, time):
         
     #split on "T" and store the first part (YYYY-MM-DD) in new datetime
     newDay = date.split("T")[0]
-    
     #add the separator, time, and seconds
     newDate = newDay + "T" + time + ":00"
-    
+
     #return new datetime
     return newDate
-    
+
 #takes all the 15min times and makes them one block
 #input must be an array of datetimes formatted like this
 ##### YYYY-MM-DDThh:mm:ss #####
@@ -408,7 +449,6 @@ def mergeTimes(timeArray):
     #make sure to exclude the first and include the last block
     first = True
     left = len(timeArray)
-    print(timeArray)
     #set the expected difference between timeblocks
     minDif = timedelta(minutes=15)
     
@@ -428,7 +468,7 @@ def mergeTimes(timeArray):
         #check if this is for an appointment or not
         if 'tut_email' in time:
             #if the difference between the last entry and this one is not 15 minutes, start the new merged block
-            if (endTime - curTime) != minDif:
+            if ((endTime - curTime) != minDif) or lastTutorInfo['tut_email'] != time['tut_email']:
                 #if this is the first don't add last entry's info
                 if not first:
                     timeBlockArray.append({

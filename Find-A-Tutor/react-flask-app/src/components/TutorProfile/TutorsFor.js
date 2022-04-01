@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import Class from './Class'
+import VerifiedIcon from '@mui/icons-material/Verified';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { BsFillTrashFill } from "react-icons/bs";
 
 /**
  * Allows users to add classes that they tutor for
@@ -29,22 +36,54 @@ class TutorsFor extends React.Component {
         }
         this.props.addClass(aClass);
     }
-
+	
+	requestVerify() {
+		
+	}
+	
     /**
-     * Creates a map of rendered classes
+     * Maps the filled in classes from the DB and any new classes added by the user
      * 
      * @returns : map of rendered classes
      */
-    renderClass() {
-        return this.props.classes.map(item => {
-            let index = this.props.classes.indexOf(item);
-            return <Class
-                index={index}
-                removeClass={() => { this.removeClass(index) }}
-                setCourseCode={this.setCourseCode}
-                setRate={this.setRate}
-            />
-        })//return
+    renderClass() {    
+		return (<>
+			<div className='d-flex '>
+				<Table size="small">
+					<TableHead>
+						<TableRow>
+							<TableCell><strong>Verified</strong></TableCell>
+							<TableCell><strong>Class Code</strong></TableCell>
+							<TableCell><strong>Rate</strong></TableCell>
+							<TableCell><strong>Delete</strong></TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{this.props.classes.map((item) => (
+							((typeof(item[0]) === 'string') ?
+								<TableRow key={item[0]} hover>
+									<TableCell>{(item[2] ? <VerifiedIcon sx={{color: 'green'}}/> : <Button onClick={() => {this.requestVerify()}}>Request</Button>)}</TableCell>
+									<TableCell>{item[0]} </TableCell>
+									<TableCell>${item[1]} </TableCell>
+									<TableCell><Button id={this.props.classes.indexOf(item)} className="removeClass" variant="danger" onClick={() => this.props.removeClass(this.props.classes.indexOf(item))}>
+											<BsFillTrashFill />
+										</Button>
+									</TableCell>
+								</TableRow>
+							: 
+								<Class
+									index={this.props.classes.indexOf(item)}
+									removeClass={() => { this.removeClass(this.props.classes.indexOf(item)) }}
+									setCourseCode={this.setCourseCode}
+									setRate={this.setRate}
+								/>
+							)
+						))}
+					</TableBody>
+				</Table>
+			</div>
+		</>)
+        //return
     }//renderClass
 
     /**
@@ -53,7 +92,7 @@ class TutorsFor extends React.Component {
      * @param {int} index current class index
      */
     removeClass(index) {
-         this.props.removeClass(index);
+        this.props.removeClass(index);
     }//removeClass
 
     /**
@@ -77,28 +116,16 @@ class TutorsFor extends React.Component {
     }//setRate
 
     render() {
-        let filledInClasses = this.props.filledInClasses;
-        let classesList = [];
-        filledInClasses.forEach(aClass => {
-            classesList.push(<>
-                <div className='d-flex '>
-                    <p className='courseCodeStatic'> {aClass[0]} </p>
-                    <p className='hourlyRateStatic'> Hourly Rate: ${aClass[1]} </p>
-                </div>
-            </>)
-        })
+        let classes = this.props.classes
         return (
             <>
-                <fieldset>
-                    <div className="p-2">
-                        <p id="header"> Tutoring For </p>
-                        <div id="classes">
-                            {classesList}
-                            {this.renderClass()}
-                        </div>
-                        <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>
+                <div className="p-2" id="fieldset">
+                    <p id="header"> Tutoring For </p>
+                    <div id="classes">
+                        {this.renderClass()}
                     </div>
-                </fieldset>
+                    <Button type="button" id="AddClass" variant="primary" onClick={this.handleAddClass}> Add Class </Button>
+                </div>
             </>
         );//return
     }//render

@@ -1,6 +1,7 @@
 #FIND-A-TUTOR ~ Appointment Management Backend ~ Author: Isaac A.
 from flask import Flask         #used for Flask API
 from flaskext.mysql import MySQL#used to connect to DB
+from datetime import datetime
 
 #setup Flask
 app = Flask(__name__)
@@ -56,7 +57,7 @@ def addAppointment(data, token, start, end, timeslots):
     conn.close()
     
     #return success
-    return 'Done'
+    return 'SUCCESS', 200
 
 #get the rates for a tutor
 #data -> tutor email
@@ -78,7 +79,7 @@ def getRates(data):
         tutorRates[clss[0]] = clss[1]
     
     #return the class_code -> rate dictionary
-    return tutorRates
+    return tutorRates, 200
 
 #get the classes a student is taking
 def getStuClasses(token):
@@ -99,14 +100,14 @@ def getStuClasses(token):
         classes.append(clss[0])
     
     #return dictionary with array of classes (fetch calls want a dictionary)
-    return {'stu_classes':classes}
+    return {'stu_classes':classes}, 200
 
 #get the available times available with tutors
 #only returns tutor's who teach classes that overlap with the students taken classes
-def getTimes(token):
+def getTimes(email):
     #init the times array
     availTimes = []
-    
+        
     #connect to the DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -116,32 +117,33 @@ def getTimes(token):
     cursor.execute("select T.tut_email, start_date, end_date, taken, P.tut_name, P.rating" + 
                     " from TutorTimes T, Tutor P" + 
                     " where T.tut_email in (select tut_email from TutorClasses where class_code in" + 
-                    " (select class_code from StudentClasses where stu_email in (select stu_email from Student where token = \"" 
-                    + token + "\"))) and T.tut_email = P.tut_email;")
+                    " (select class_code from StudentClasses where stu_email = \"" + email + "\")) and T.tut_email = P.tut_email")
     times = cursor.fetchall()
-    
-    #put times into array of dictionaries
-    for time in times:
-        classes = []            
-        #if the time isn't already taken by an appointment
-        if time[3] == 0:
-            #add a dictionary to the array
-            availTimes.append({'tut_email':time[0],
-                               'start':time[1],
-                               'end':time[2],
-                               'classes':list(getRates(time[0]).keys()),
-                               'title': "Available Session with " + time[4],
-                               'tut_name':time[4],
-                               'rating':time[5],
-                               'type':"time",
-                               'backgroundColor':'#00ff00',                     #changes the event's color on the calendar
-                               'borderColor':'#00ff00'})                        #changes the event's color on the calendar
-
-    #close the connection
-    conn.close()
-        
-    #return the times
-    return availTimes
+    if times:
+        #put times into array of dictionaries
+        for time in times:
+            classes = []            
+            #if the time isn't already taken by an appointment
+            if time[3] == 0 and datetime.strptime(time[2], "%Y-%m-%dT%H:%M:%S") > datetime.now():
+                #add a dictionary to the array
+                availTimes.append({'tut_email':time[0],
+                                   'start':time[1],
+                                   'end':time[2],
+                                   'classes':list(getRates(time[0])[0].keys()),
+                                   'title': "Available Session with " + time[4],
+                                   'tut_name':time[4],
+                                   'rating':time[5],
+                                   'type':"time",
+                                   'backgroundColor':'green',                     #changes the event's color on the calendar
+                                   })
+  
+        #close the connection
+        conn.close()
+                
+        #return the times
+        return availTimes, 200
+    else:
+        return "No times found", 401
 
 #get the appointments for a student or tutor
 #isTutor -> whether the person is a student or tutor
@@ -171,6 +173,25 @@ def getAppointments(token, isTutor):
                         +"T.tut_name from Appointment A, Student S, Tutor T where A.stu_email = (select stu_email from Student where token = \"" + token + "\")" 
                         +"and S.token = \"" + token + "\""
                         +"and T.tut_email = A.tut_email")
+                        
+        appts = cursor.fetchall()
+
+        #put appointments in a dictionary and add to array
+        for appt in appts:
+            availAppts.append({
+                'stu_email':appt[1],
+                'stu_name':appt[9],
+                'tut_email':appt[2],
+                'tut_name':appt[10],
+                'class_code':appt[3], 
+                'start':appt[4],
+                'end':appt[5],
+                'title':appt[6],
+                'block_s':appt[7],
+                'block_e':appt[8],
+                'type':"appt",
+                'backgroundColor':'blue',   #changes the event's color on the calendar
+                })  
     else:
         #get the appointments for a given tutor
         cursor.execute("select " 
@@ -180,62 +201,100 @@ def getAppointments(token, isTutor):
                         +"class_code, "
                         +"start_date, "
                         +"end_date, "
-                        +"title, "
+                        +"'Meeting with ', "
                         +"block_start, "
                         +"block_end, "
                         +"S.stu_name, "
                         +"T.tut_name from Appointment A, Student S, Tutor T where A.tut_email = (select stu_email from Student where token = \"" + token + "\")" 
                         +"and T.tut_email = (select stu_email from Student where token = \"" + token + "\")"
                         +"and S.stu_email = A.stu_email")    
-    appts = cursor.fetchall()
+                        
+        appts = cursor.fetchall()
+                        
+        #put appointments in a dictionary and add to array
+        for appt in appts:
+            availAppts.append({
+                'stu_email':appt[1],
+                'stu_name':appt[9],
+                'tut_email':appt[2],
+                'tut_name':appt[10],
+                'class_code':appt[3], 
+                'start':appt[4],
+                'end':appt[5],
+                'title':appt[6] + appt[9],
+                'block_s':appt[7],
+                'block_e':appt[8],
+                'type':"appt",
+                'backgroundColor':'blue',   #changes the event's color on the calendar
+                })
     
-    #put appointments in a dictionary and add to array
-    for appt in appts:
-        availAppts.append({
-            'stu_email':appt[1],
-            'stu_name':appt[9],
-            'tut_email':appt[2],
-            'tut_name':appt[10],
-            'class_code':appt[3], 
-            'start':appt[4],
-            'end':appt[5],
-            'title':appt[6],
-            'block_s':appt[7],
-            'block_e':appt[8],
-            'type':"appt",
-            'backgroundColor':'##0000ff',   #changes the event's color on the calendar
-            'borderColor':'#0000ff'})       #changes the event's color on the calendar
-            
     #close the connection
     conn.close()
     
     #return the appointments
-    return {'appts':availAppts}
+    return {'appts':availAppts}, 200
 
+#get the group tutoring sessions
+def getGroupTutoring(email):
+    tutoringAry = []
+    groupTutSes= []
+    #connect to the DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #get class code
+    cursor.execute("select class_code from StudentClasses where stu_email = \"" + email + "\"")
+    classes = cursor.fetchall()
+    for cls in classes:
+        cursor.execute("select title, location, department, start_time, end_time from GroupTutoring where department like CONCAT('%', SUBSTRING('" + cls[0] + "', 1, 4) , '%')")
+        groupTutSes.append(cursor.fetchall())
+    
+    for session in groupTutSes:
+        for ses in session:
+            tutoringAry.append({'title':ses[0], 'location':ses[1], 'department':ses[2], 'start':ses[3], 'end':ses[4], 'backgroundColor':'purple'})
+    print(tutoringAry)
+    return {'groupTut':tutoringAry}, 200
+    
 #cancel an appointment with a tutor
 #data -> appointment info
 #dates -> the formated start and end of the appointment
 #slots -> the tutor time slots to make available again
-def removeAppointment(token, data, dates, slots):
+def removeAppointment(email, data, dates, slots, view):
     #connect to the DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
-    #remove the appointments for the given student, with the given tutor, at the given time
-    cursor.execute("delete from Appointment where stu_email= (select stu_email from Student where token = \"" 
-                    + token + "\") and tut_email=\"" 
-                    + data['tut_email'] + "\" and start_date=\"" 
+    if view == "tutor":
+        #remove the appointments for the given student, with the given tutor, at the given time
+        cursor.execute("delete from Appointment where tut_email= \"" 
+                    + email + "\" and stu_email=\"" 
+                    + data['email'] + "\" and start_date=\"" 
                     + dates['start'] + "\"")
-    
-    #go through the slots
-    for slot in slots:
-        #mark each slot as available again
-        cursor.execute("update TutorTimes set taken = false where tut_email = \"" 
-                        + data['tut_email'] + "\" and start_date = \"" + slot['start'] + "\"")
+
+        #go through the slots
+        for slot in slots:
+            #mark each slot as available again
+            cursor.execute("update TutorTimes set taken = false where tut_email = \"" 
+                            + email + "\" and start_date = \"" + slot['start'] + "\"")
+
+    else:
+        #remove the appointments for the given student, with the given tutor, at the given time
+        cursor.execute("delete from Appointment where tut_email= \"" 
+                    + data['email'] + "\" and stu_email=\"" 
+                    + email + "\""
+                    + " and start_date=\"" 
+                    + dates['start'] + "\"")
+                    
+        #go through the slots
+        for slot in slots:
+            #mark each slot as available again
+            cursor.execute("update TutorTimes set taken = false where tut_email = \"" 
+                            + data['email'] + "\" and start_date = \"" + slot['start'] + "\"")
     
     #close the connection
     conn.close()
     
     #return success
-    return "Done"
+    return 'SUCCESS', 200

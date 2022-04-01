@@ -49,7 +49,7 @@ def loadPreviousAppointmentsStudent(token):
     conn.close()
     
     #return appointment history for student
-    return {'appts': apptHistory}
+    return {'appts': apptHistory}, 200
 
 #retrieve all the appointments a tutor has attended previously
 def loadPreviousAppointmentsTutor(token):
@@ -76,7 +76,7 @@ def loadPreviousAppointmentsTutor(token):
     conn.close()
     
     #return appointment history for tutor
-    return {'appts': apptHistory}
+    return {'appts': apptHistory}, 200
 
 #give a rating to a tutor
 def submitRating(data):
@@ -98,7 +98,7 @@ def submitRating(data):
     cursor.execute("update Tutor set rating = " + str(newRate) + " where tut_email = \"" + data['target'] + "\"")
     
     #return success
-    return "Done"
+    return "SUCCESS", 200
 
 #report a student for misconduct
 def submitStudentReport(data, email):
@@ -115,7 +115,7 @@ def submitStudentReport(data, email):
                         + data['report'] + "\")")
     
     #return success
-    return "DONE"
+    return "SUCCESS", 200
 
 #report a tutor for misconduct
 def submitTutorReport(data, email):
@@ -132,4 +132,4 @@ def submitTutorReport(data, email):
                         + data['report'] + "\")")
     
     #return success
-    return "DONE"
+    return "SUCCESS", 200

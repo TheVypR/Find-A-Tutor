@@ -49,7 +49,7 @@ class SubmitRemoveTime extends React.Component {
                     Submit
                 </Button>
 
-                <Button className="removeTime" variant="danger" onClick={() => {this.removeTimeSlot(index, this.props.day)}}>
+                <Button className="removeTime" variant="danger" onClick={() => { this.removeTimeSlot(index, this.props.day) }}>
                     <BsFillTrashFill size="14" />
                 </Button> <br />
             </>
@@ -86,7 +86,7 @@ class Times extends React.Component {
 
         //Display either Timepickers or user selected times 
         if (showTimePickers) {
-            return <TimePickers timeSlotChange={(time, timepicker) => {this.onChangeTimes(time, timepicker)}} />
+            return <TimePickers timeSlotChange={(time, timepicker) => { this.onChangeTimes(time, timepicker) }} />
         } else {
             const startTime = this.props.startTime[index].format(format).toString();
             const endTime = this.props.endTime[index].format(format).toString();
@@ -115,14 +115,14 @@ class TimeSlot extends React.Component {
                 <Times
                     index={index}
                     showTimePickers={this.props.showTimePickers}
-                    timeSlotChange={(time, timepicker) => {this.props.timeSlotChange(time, timepicker, index)}}
+                    timeSlotChange={(time, timepicker) => { this.props.timeSlotChange(time, timepicker, index) }}
                     startTime={startTime}
                     endTime={endTime}
                 />
-                <SubmitRemoveTime submitTimes={() => {this.props.submitTimes(index, day)}}
-                                 removeTimeSlot={this.props.removeTimeSlot}
-                                 index={index}
-                                 day={day}
+                <SubmitRemoveTime submitTimes={() => { this.props.submitTimes(index, day) }}
+                    removeTimeSlot={this.props.removeTimeSlot}
+                    index={index}
+                    day={day}
                 />
                 <hr />
             </>
