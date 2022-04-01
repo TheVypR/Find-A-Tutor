@@ -45,11 +45,6 @@ class Class extends React.Component {
         return (
             <TableRow key={index} hover>				
 					<TableCell>
-						<Button id={index} className="verify" onClick={(e) => {this.requestVerify(e)}}>
-							Request
-						</Button>
-					</TableCell>
-                    <TableCell>
 						<input name="courseCode"
 							id={index}
 							className="courseCode"
