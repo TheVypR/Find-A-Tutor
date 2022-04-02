@@ -377,7 +377,7 @@ def verifyRequest():
 def fileUpload():
     d = {}
     try:
-        file = request.files['file_from_react']
+        file = request.files['files']
         filename = file.filename
         print(f"Uploading file {filename}")
         file_bytes = file.read()
@@ -390,6 +390,35 @@ def fileUpload():
         d['status'] = 0
 
     return jsonify(d), 200
+
+@app.route('/professorCSV/', methods=['POST'])
+def professorUpload():    
+    #get the data from the given file
+    try:
+        file = request.files['files']
+        filename = file.filename
+        file_bytes = file.read()
+        file_content = BytesIO(file_bytes).readlines()
+    except:
+        return "ERROR: Problem Reading File", 400
+    
+    #parse the csv data
+    parseCSVData(file_content)
+    
+    #send to the database
+    adminRoutes.
+    
+#parse the data from a CSV file
+def parseCSVData(data):
+    parsedData = []
+    print(data)
+    lines = data.split('\n')
+    print(lines)
+    for i in range(lines.length):
+        columns = line.split(',')
+        parsedData[i] = columns
+    return parsedData
+        
 
 #take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
 #needed for storage and calendar display
