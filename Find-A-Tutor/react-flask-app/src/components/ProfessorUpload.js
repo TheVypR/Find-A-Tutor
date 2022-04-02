@@ -23,9 +23,9 @@ export default function ProfessorUpload() {
         const file = e.target.files[0];
         if (file != null) {
           const data = new FormData();
-          data.append('file_from_react', file);
+          data.append('files', file);
   
-          let response = await fetch('/fileUpload/',
+          let response = await fetch('/professorCSV/',
             {
               method: 'post',
               body: data,
@@ -48,26 +48,18 @@ export default function ProfessorUpload() {
                     <Typography component="h2" variant="h6" color="primary" gutterBottom>
                         Professor CSV Upload
                     </Typography>
-                    <Input margin="normal" 
-                            id="instructions" 
+                    <Input  id="instructions" 
                             label="Instructions" 
                             readOnly 
                             variant='outlined' 
                             style={{width: 600}} 
                             multiline 
-                            value={"Instructions:\nUpload a CSV file containing name, email, and office location of all professors. Any new data entered will overwrite the old data."}
+                            value={"Instructions:\nUpload a CSV file containing name, office location, and email of all professors in that order. Any new data entered will overwrite the old data."}
                     />
-                    <Grid container justifyContent="center" spacing={1} sx={{py: 4}}>
-                        <Grid item>
-                            <form>
-                                <input type="file" onChange={() => uploadFile} accept=".csv" />
-                            </form>
-                        </Grid>
-                        <Grid item>
-                            <Button variant="contained" type='submit' style={{backgroundColor: "#3d8c40"}} >
-                                Insert CSV
-                            </Button>
-                        </Grid>
+                    <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
+                        <form>
+                            <input type="file" onChange={(e) => uploadFile(e)} accept=".csv"  style={{color: 'black', textAlign: 'center'}} />
+                        </form>
                     </Grid>
                 </Paper>
             </Container>

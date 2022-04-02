@@ -381,12 +381,14 @@ def professorUploading(data):
     cursor = conn.cursor()
     
     #delete the entire Professor table
-    cursor.execute("delete from Professor")
+    #cursor.execute("delete from Professor")
     
     for row in data:
         try:
             cursor.execute("insert into Professor(prof_name, office_location, prof_email) values((%s), (%s), (%s))", (row[0], row[1], row[2]))
         except:
             return "SQL Error", 400
+
+    conn.close()
             
     return "SUCCESS", 200

@@ -398,25 +398,24 @@ def professorUpload():
         file = request.files['files']
         filename = file.filename
         file_bytes = file.read()
-        file_content = BytesIO(file_bytes).readlines()
+        file_content = file_bytes.decode("utf-8") #str(BytesIO(file_bytes).readlines())
     except:
         return "ERROR: Problem Reading File", 400
     
-    #parse the csv data
-    parseCSVData(file_content)
-    
     #send to the database
-    adminRoutes.
+    return adminRoutes.professorUploading(parseCSVData(file_content))
     
 #parse the data from a CSV file
 def parseCSVData(data):
     parsedData = []
-    print(data)
-    lines = data.split('\n')
-    print(lines)
-    for i in range(lines.length):
-        columns = line.split(',')
-        parsedData[i] = columns
+    rowAry = []
+    rows = data.split('\n')
+    print(rows)
+    for row in rows:
+        columns = row.split(",")
+        print(row)
+        parsedData.append(columns)
+    print(parsedData)
     return parsedData
         
 
