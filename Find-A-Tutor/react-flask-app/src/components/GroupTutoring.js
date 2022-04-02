@@ -15,10 +15,9 @@ import { useState, useEffect, useContext } from 'react';
 import './adminView.css';
 import {AuthContext} from './AuthContext';
 import NavBar from './NavBar';
-
-//npm install @date-io/moment, npm install @date-io/date-fns
 import DateAdapter from '@mui/lab/AdapterMoment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import TextField from '@mui/material/TextField';
 
 //making styles and themes
 const theme = createTheme();
@@ -29,6 +28,18 @@ export default function GroupTutoring() {
 
     //list of group tutoring
     const [allGroup, setAllGroup] = useState([]);
+	
+	//filter
+	const [filter, setFilter] = useState("");
+
+    const filtering = (value) => {
+        if (value.nativeEvent.data === null) {
+            setFilter(filter.slice(0, filter.length-1));
+        }
+        else {
+            setFilter(filter + value.nativeEvent.data);
+        }
+    };
 
     //Get list of group tutoring sessions
     useEffect(() => { fetch("/GroupTutoring/")
@@ -46,7 +57,9 @@ export default function GroupTutoring() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <NavBar />
-                <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3}} />
+                <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3, pl: 6}}>
+                    <TextField margin="normal" id="search" label="Search Department" variant='outlined' style={{width: 400}} value={filter} onChange={(newValue) => filtering(newValue)}/>
+                </Grid>
                 <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                         <Typography component="h2" variant="h6" color="primary" gutterBottom>
@@ -64,6 +77,7 @@ export default function GroupTutoring() {
                             </TableHead>
                             <TableBody>
                                 {allGroup.map((session) => (
+									(session[3].includes(filter.toUpperCase()) ?
                                     <TableRow key={session[0]}>
                                         <TableCell>{session[1]}</TableCell>
                                         <TableCell>{session[2]}</TableCell>
@@ -71,6 +85,7 @@ export default function GroupTutoring() {
                                         <TableCell>{moment(session[4]).format('MM/DD/YYYY h:mm a')}</TableCell>
                                         <TableCell>{moment(session[5]).format('MM/DD/YYYY h:mm a')}</TableCell>
                                     </TableRow>
+									: null )
                                 ))}
                             </TableBody>
                         </Table>
