@@ -3,13 +3,14 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import Input from '@mui/material/Input';
+import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import './adminView.css';
 import {AuthContext} from './AuthContext';
-import AdminNavBar from './NavBar';
+import AdminNavBar from './AdminNavBar';
 
 //making styles and themes
 const theme = createTheme();
@@ -18,16 +19,24 @@ export default function ProfessorUpload() {
     //authentication
 	const authContext = useContext(AuthContext);
 
-    //Get list of group tutoring sessions
-    // useEffect(() => { fetch("/GroupTutoring/")
-    //     .then(res => res.json())
-    //     .then(result => {
-    //         setAllGroup(result);
-    //     },
-    //     (error) => {
-    //         console.log(error);
-    //     })
-    // }, []);
+    const uploadFile = async (e) => {
+        const file = e.target.files[0];
+        if (file != null) {
+          const data = new FormData();
+          data.append('file_from_react', file);
+  
+          let response = await fetch('/fileUpload/',
+            {
+              method: 'post',
+              body: data,
+            }
+          );
+          let res = await response.json();
+          if (res.status !== 1){
+            alert('Error uploading file');
+          }
+        }
+    };
 
     return authContext.isLoggedIn && (
         <ThemeProvider theme={theme}>
@@ -39,9 +48,27 @@ export default function ProfessorUpload() {
                     <Typography component="h2" variant="h6" color="primary" gutterBottom>
                         Professor CSV Upload
                     </Typography>
-                    <TextField>
-
-                    </TextField>
+                    <Input margin="normal" 
+                            id="instructions" 
+                            label="Instructions" 
+                            readOnly 
+                            variant='outlined' 
+                            style={{width: 600}} 
+                            multiline 
+                            value={"Instructions:\nUpload a CSV file containing name, email, and office location of all professors. Any new data entered will overwrite the old data."}
+                    />
+                    <Grid container justifyContent="center" spacing={1} sx={{py: 4}}>
+                        <Grid item>
+                            <form>
+                                <input type="file" onChange={() => uploadFile} accept=".csv" />
+                            </form>
+                        </Grid>
+                        <Grid item>
+                            <Button variant="contained" type='submit' style={{backgroundColor: "#3d8c40"}} >
+                                Insert CSV
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Paper>
             </Container>
         </ThemeProvider>
