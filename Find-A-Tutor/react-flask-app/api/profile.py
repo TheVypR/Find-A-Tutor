@@ -86,7 +86,7 @@ def retrieve_profile(token):
     return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}
+        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}, 200
 
 def retrieve_times(tut_email):
     """Get the times the tutor is available from the DB
@@ -135,12 +135,18 @@ def retrieve_classes(tut_email):
     classes = [] # array which each class will be added to aClass = {'class_code', 'rate'}
 
     #get the classes and rates
-    cursor.execute("select class_code, rate from TutorClasses where tut_email = (%s)", (tut_email))
+    cursor.execute("select class_code, rate, verified from TutorClasses where tut_email = (%s)", (tut_email))
     classes_rates = cursor.fetchall()
     
     #put the classes in an array of dicts [{'class_code', 'rate'}, ]
-    for pair in classes_rates:
-        classes.append(pair)
+    for cls in classes_rates:
+        cursor.execute("select tut_email from VerificationRequest where tut_email = (%s) and class_code = (%s)", (tut_email, cls[0]))
+        hasRequested = cursor.fetchone()
+        newTuple = cls
+        if hasRequested:
+            newTuple = (cls[0], cls[1], 5)
+
+        classes.append(newTuple)
     
     conn.close()
     return classes

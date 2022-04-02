@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal } from 'react-bootstrap';
 import './TutorProfile.css';
 import TutorProfile from './TutorProfile/T_Profile'
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 /**
  * Render a timeslot with given times
@@ -100,7 +101,7 @@ class PayAndLoginPrefs extends React.Component {
      */
     getLoginPref(loginPref) {
         if (loginPref == 0) {//Student
-            return <p> Studnet View </p>;
+            return <p> Student View </p>;
         } else {
             return <p> Tutor View </p>;
         }
@@ -140,6 +141,7 @@ class TutorsFor extends React.Component {
         classes.map(aClass => {
             classesList.push(<>
                 <div className='d-flex '>
+					<p> {(aClass[2] ? <VerifiedIcon /> : null)} </p>
                     <p> {aClass[0]} </p>
                     <p className='hourlyRate'> Hourly Rate: ${aClass[1]} </p>
                 </div>
