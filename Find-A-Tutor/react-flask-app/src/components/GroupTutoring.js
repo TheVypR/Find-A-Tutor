@@ -32,6 +32,15 @@ export default function GroupTutoring() {
 	//filter
 	const [filter, setFilter] = useState("");
 
+    const filtering = (value) => {
+        if (value.nativeEvent.data === null) {
+            setFilter(filter.slice(0, filter.length-1));
+        }
+        else {
+            setFilter(filter + value.nativeEvent.data);
+        }
+    };
+
     //Get list of group tutoring sessions
     useEffect(() => { fetch("/GroupTutoring/")
         .then(res => res.json())
@@ -48,13 +57,14 @@ export default function GroupTutoring() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <NavBar />
-                <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3}} />
+                <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3, pl: 6}}>
+                    <TextField margin="normal" id="search" label="Search Department" variant='outlined' style={{width: 400}} value={filter} onChange={(newValue) => filtering(newValue)}/>
+                </Grid>
                 <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                         <Typography component="h2" variant="h6" color="primary" gutterBottom>
                             Group Tutoring
                         </Typography>
-						<TextField id="standard-basic" label="Search Department" value={filter} variant="standard" onChange={(newValue) => {setFilter(newValue.nativeEvent.data)}}/>
                         <Table size="large">
                             <TableHead>
                                 <TableRow>
@@ -67,7 +77,7 @@ export default function GroupTutoring() {
                             </TableHead>
                             <TableBody>
                                 {allGroup.map((session) => (
-									(session[3].includes(filter) ?
+									(session[3].includes(filter.toUpperCase()) ?
                                     <TableRow key={session[0]}>
                                         <TableCell>{session[1]}</TableCell>
                                         <TableCell>{session[2]}</TableCell>
