@@ -373,3 +373,20 @@ def removeVerificationRequest(tut_email, class_code):
     cursor.execute("delete from VerificationRequest where tut_email = \"" + tut_email + "\" and class_code = \"" + class_code + "\"")
     
     return 'SUCCESS', 200
+
+def professorUploading(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #delete the entire Professor table
+    cursor.execute("delete from Professor")
+    
+    for row in data:
+        try:
+            cursor.execute("insert into Professor(prof_name, office_location, prof_email) values((%s), (%s), (%s))", (row[0], row[1], row[2]))
+        except:
+            return "SQL Error", 400
+            
+    return "SUCCESS", 200
