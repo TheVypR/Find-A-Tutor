@@ -34,7 +34,19 @@ class T_Profile extends React.Component {
         this.setCourseCode = this.setCourseCode.bind(this);
         this.setRate = this.setRate.bind(this);
         this.checkForEmptyState = this.checkForEmptyState.bind(this);
+        this.updateClasses = this.updateClasses.bind(this);
     }//constructor
+
+    updateClasses(code, rate, index) {
+        let classes = this.state.classes;
+        let aClass = { ...classes[index] };
+        aClass['rate'] = rate;
+        aClass['class_code'] = code;
+        aClass['new'] = true;
+        classes[index] = aClass;
+        console.log(this.state.classes[index]);
+        this.setState({classes: classes})
+    }
 
     /**
      * Collects state values and sends them to the backend
@@ -118,10 +130,11 @@ class T_Profile extends React.Component {
         var classes = this.state.classes;
         //remove class from DOM
         let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
-        this.setState({ classes: filteredClasses });
-
         let removeClasses = classes.filter(aClass => aClass == classes[index]);
-        this.setState({ removeClasses: removeClasses }, () => console.log(this.state.removeClasses))
+        console.log(filteredClasses)
+
+        this.setState({ classes: filteredClasses });
+        this.setState({ removeClasses: removeClasses })
     }//removeClass
 
     /**
@@ -169,6 +182,10 @@ class T_Profile extends React.Component {
         aClass['class_code'] = code;
         aClass['new'] = true;
         classes[index] = aClass;
+        console.log(this.state.classes[index]);
+        if (this.state.classes[index]['rate'] >= 0) {
+            this.setState({classes: classes})
+        }
     }//setCourseCode
 
     /**
@@ -182,6 +199,7 @@ class T_Profile extends React.Component {
         let aClass = { ...classes[index] };
         aClass['rate'] = rate;
         classes[index] = aClass;
+        console.log(this.state.classes[index]);
     }//setRate
 
     componentDidMount() {
@@ -235,6 +253,7 @@ class T_Profile extends React.Component {
                             setCourseCode={this.setCourseCode}
                             setRate={this.setRate}
                             allClasses={this.props.items['allClasses']}
+                            updateClasses={this.updateClasses}
                         />
                     </div>
 
