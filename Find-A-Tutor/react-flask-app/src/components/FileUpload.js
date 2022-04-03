@@ -2,11 +2,13 @@ import React, { Component } from "react";
 
 class FileUpload extends React.Component {
 	uploadFile = async (e) => {
-	  const file = e.target.files[0];
+	  const files = e.target.files;
 	  if (file != null) {
 		const data = new FormData();
-		data.append('file_from_react', file);
-
+		for file in files {
+			data.append('file', file);
+		}
+		console.log(data);
 		let response = await fetch('/fileUpload/',
 		  {
 			method: 'post',
@@ -14,7 +16,7 @@ class FileUpload extends React.Component {
 		  }
 		);
 		let res = await response.json();
-		if (res.status !== 1){
+		if (res.status !== 1) {
 		  alert('Error uploading file');
 		}
 	  }

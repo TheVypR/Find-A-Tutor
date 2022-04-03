@@ -377,11 +377,12 @@ def verifyRequest():
 def fileUpload():
     d = {}
     try:
-        file = request.files['files']
+        file = request.files['file']
+        print(file)
         filename = file.filename
         print(f"Uploading file {filename}")
         file_bytes = file.read()
-        file_content = BytesIO(file_bytes).readlines()
+        file_content = file_bytes.decode('utf-8')
         print(file_content)
         d['status'] = 1
 
