@@ -169,12 +169,10 @@ class T_Profile extends React.Component {
      * @param {int} index given index
      */
     setRate(rate, index) {
-        this.setState({ applyState: true })
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
         aClass['rate'] = rate;
         classes[index] = aClass;
-        this.setState({ classes: classes });
     }//setRate
 
     componentDidMount() {
