@@ -265,6 +265,11 @@ def edit_profile(submission, tut_email):
     #update the tutor classes
     classes = submission['classes']
 
+    #check if any classes were removed
+    print(len(submission['removeClasses']))
+    if len(submission['removeClasses']) > 0:
+        remove_classes(submission['removeClasses'], tut_email)
+
     #Loop through the Tutor's classes 
     #if the class has a class_code add it to the DB
     #There can be empty elements in the array so these are not added to the DB

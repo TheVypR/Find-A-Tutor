@@ -52,6 +52,8 @@ class T_Profile extends React.Component {
             'removeClasses': this.state.removeClasses
         }//post
 
+        console.log(post['classes']);
+
         this.checkForEmptyState(post);
 
         //check if cash and set username accordingly
