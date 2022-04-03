@@ -3,22 +3,23 @@ import React, { Component } from "react";
 class FileUpload extends React.Component {
 	uploadFile = async (e) => {
 	  const files = e.target.files;
-	  if (file != null) {
-		const data = new FormData();
-		for file in files {
-			data.append('file', file);
-		}
-		console.log(data);
-		let response = await fetch('/fileUpload/',
-		  {
-			method: 'post',
-			body: data,
+	  console.log(files)
+	  for (var i = 0; i < files.length; i++) {
+		  console.log(files[i])
+		  if (files[i] != null) {
+			const data = new FormData();
+			data.append('file', files[i]);
+			let response = await fetch('/fileUpload/',
+			  {
+				method: 'post',
+				body: data,
+			  }
+			);
+			let res = await response.json();
+			if (res.status !== 1) {
+			  alert('Error uploading file');
+			}
 		  }
-		);
-		let res = await response.json();
-		if (res.status !== 1) {
-		  alert('Error uploading file');
-		}
 	  }
 	};
 	  
@@ -28,7 +29,7 @@ class FileUpload extends React.Component {
 		<form>
 		  <input
 			type="file"
-			onChange={this.uploadFile}>
+			onChange={this.uploadFile} multiple>
 		  </input>
 		</form>
 		)
