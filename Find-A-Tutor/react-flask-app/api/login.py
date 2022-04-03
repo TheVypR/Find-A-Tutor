@@ -5,7 +5,8 @@ from datetime import datetime, timedelta                    #used to compare dat
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
-from flask_cors import CORS
+from flask_cors import CORS                                 #used to ignore CORS
+from io import BytesIO                                      #used for file upload
 
 #setup flask
 app = Flask(__name__)
@@ -160,6 +161,22 @@ def dismissReport():
     target = request.get_json()             #get report to dismiss
     adminRoutes.DeleteUserFromList(target)
     return 'Done', 200
+
+#list of all group tutoring sessions
+@app.route('/GroupTutoring/', methods=['GET'])
+def groupTutoring():
+    return adminRoutes.GroupTutoringList()
+
+#post call on editing form data
+@app.route('/EditTutoring/', methods=['POST'])
+def editTutoring():
+    groupSession = request.get_json()
+    return adminRoutes.EditTutoring(groupSession)
+
+@app.route('/DeleteGroup/', methods=['POST'])
+def deleteGroup():
+    groupSession = request.get_json()
+    return adminRoutes.DeleteGroup(groupSession)
 
 #ban a student or tutor
 #removes user from all Tutor and Student tables
@@ -348,10 +365,28 @@ def verifyRequest():
     data = request.get_json()           #get the data
     token = data["token"]               #get the token from the data
     class_code = data["class_code"]     #get the class code from the data
-    email = authentication.getEmail(token)#use token to get email
+    email = authentication.getEmail(token)[0]#use token to get email
     
     #return the success or failure
     return adminRoutes.submitVerifyRequest(email, class_code)
+
+@app.route('/fileUpload/', methods=['POST'])
+def fileUpload():
+    d = {}
+    try:
+        file = request.files['file_from_react']
+        filename = file.filename
+        print(f"Uploading file {filename}")
+        file_bytes = file.read()
+        file_content = BytesIO(file_bytes).readlines()
+        print(file_content)
+        d['status'] = 1
+
+    except Exception as e:
+        print(f"Couldn't upload file {e}")
+        d['status'] = 0
+
+    return jsonify(d), 200
 
 #take a Moment format from React and format it to YYYY-MM-DDThh:mm:ss
 #needed for storage and calendar display

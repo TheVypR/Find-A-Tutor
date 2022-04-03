@@ -193,6 +193,7 @@ class T_Profile extends React.Component {
                     <p id="email"> {items['email']} </p>
                 </div>
 
+                {/* Render top two sections */}
                 <div id="center" className="d-flex justify-content-around">
                     <PayAndLoginPrefs
                         setPaymentType={this.setPaymentType}

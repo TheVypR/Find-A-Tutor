@@ -12,8 +12,10 @@ import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
 import CurrentAndBan from './components/CurrentAndBan';
 import LoadProfile from './components/LoadProfile';
-
-import { AuthContext } from './components/AuthContext'
+import AddGroupTutoring from './components/AddGroupTutoring';
+import GroupTutoring from './components/GroupTutoring';
+import FileUpload from './components/FileUpload';
+import { AuthContext } from './components/AuthContext';
 
 export default function App() {
 	
@@ -32,15 +34,18 @@ export default function App() {
   }, [])
 
   //set login and logout; this is where we will set the authentication from the backend
+  //changes the user to be logged in
   const login = () => {
 	setLoggedIn(true);
   };
-
+  
+  //changes the user to be logged out
   const logout = () => {
 	setLoggedIn(false);
 	localStorage.setItem("token", "");
   };
 
+  //renders the correct screen based on navs in other .js files
   return (
     <div className="App">
       <AuthContext.Provider value={{isLoggedIn: loggedIn, login: login, logout: logout}}>
@@ -50,10 +55,13 @@ export default function App() {
             <Route path='/signup' element={<SignUp />}></Route>
             <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
+            <Route path='/GroupTutoring' element={<GroupTutoring />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
+            <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
+			<Route path='/FileUpload' element={<FileUpload />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

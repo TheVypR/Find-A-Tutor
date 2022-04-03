@@ -16,6 +16,7 @@ class LoadProfile extends React.Component {
             isEditStudent: false,
             isLoaded: false
         }
+
         this.edit = this.edit.bind(this);
         this.editStudent = this.editStudent.bind(this);
         this.doFetch = this.doFetch.bind(this);
@@ -82,7 +83,7 @@ class LoadProfile extends React.Component {
      * @returns [{'Monday': {'startTime': moment, 'endTime': moment}, ...]
      */
     convertToMoment(times) {
-        var timeSlots = {
+        var timeSlots = {   //Stores timeslots for each weekday
             'Monday': [],
             'Tuesday': [],
             'Wednesday': [],
@@ -91,6 +92,7 @@ class LoadProfile extends React.Component {
             'Saturday': [],
             'Sunday': []
         }
+
         times.forEach(slot => {
             let startTime = slot['startTime'];
             let day = moment(slot['startTime']).format('dddd');
