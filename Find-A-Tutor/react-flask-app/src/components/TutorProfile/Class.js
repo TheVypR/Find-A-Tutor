@@ -9,6 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Popper from '@mui/material/Popper';
 
 /**
  * Renders the Inputs for a Class
@@ -48,40 +49,42 @@ class Class extends React.Component {
 
 	// componentDidMount() {
 	// 	fetch("/allClasses/?token=" + localStorage.getItem("token") + "&view=" + localStorage.getItem("view"))
-    //         .then(res => res.json())
-    //         .then(
-    //             (result) => {
-    //                 this.setState({
-    //                     allClasses: result
-    //                 });
-    //             },
-    //             (error) => {
-    //                 this.setState({
-    //                     error: error
-    //                 });
-    //             }
-    //         )
+	//         .then(res => res.json())
+	//         .then(
+	//             (result) => {
+	//                 this.setState({
+	//                     allClasses: result
+	//                 });
+	//             },
+	//             (error) => {
+	//                 this.setState({
+	//                     error: error
+	//                 });
+	//             }
+	//         )
 	// }
 
 	render() {
 		let index = this.props.index;
-		let allClasses = this.props.allClasses;
+		let allClasses = this.props.allClasses.map(cls => cls.toString());
+
+		const PopperMy = function (props) {
+			return <Popper {...props} style={{width: 'fit-content'}} placement="bottom-start" />;
+		};
+
 		return (
 			<TableRow key={index} hover>
 				<TableCell>
 				</TableCell>
 				<TableCell>
 					<Autocomplete
+						PopperComponent={PopperMy}
 						sx={{
 							display: 'inline-block',
 							'& input': {
 								width: 100,
-								bgcolor: 'background.paper',
-								color: (theme) =>
-									theme.palette.getContrastText(theme.palette.background.paper),
 							},
 						}}
-						id={index}
 						options={allClasses}
 						renderInput={(params) => (
 							<div ref={params.InputProps.ref}>

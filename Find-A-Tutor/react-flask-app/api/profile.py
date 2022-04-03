@@ -198,7 +198,6 @@ def remove_timeSlot(times, tut_email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    print(times)
     
     #Check type of remove
     #loop through times and run this query for each 15 minute slot
@@ -254,7 +253,6 @@ def edit_profile(submission, tut_email):
     #if the class has a class_code add it to the DB
     #There can be empty elements in the array so these are not added to the DB
     for aClass in classes:
-        print(aClass)
         if 'class_code' in aClass.keys():
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 
