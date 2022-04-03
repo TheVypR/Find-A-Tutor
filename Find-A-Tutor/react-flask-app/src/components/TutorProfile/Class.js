@@ -85,7 +85,7 @@ class Class extends React.Component {
 						options={allClasses}
 						renderInput={(params) => (
 							<div ref={params.InputProps.ref}>
-								<input type="text" placeholder="Class Code"{...params.inputProps} />
+								<input type="text" placeholder="Class Code"{...params.inputProps} required />
 							</div>
 						)}
 						onChange={e => {this.props.setCourseCode(e.target.textContent, index)}}
@@ -100,6 +100,7 @@ class Class extends React.Component {
 						size="2"
 						onKeyPress={e => this.onlyNumbers(e)}
 						onChange={e => this.props.setRate(e.target.value, index)}
+						required
 					/>
 				</TableCell>
 				<TableCell>

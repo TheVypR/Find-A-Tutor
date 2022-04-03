@@ -41,11 +41,16 @@ class T_Profile extends React.Component {
      */
     handleSubmit() {
         //get only new classes
-        let newClasses = this.state.classes.filter(cls => 
-            Object.keys(cls).includes("new") && 
+        let newClasses = this.state.classes.filter(cls =>
+        (Object.keys(cls).includes("new") &&
             Object.keys(cls).includes("class_code") &&
             Object.keys(cls).includes("rate"))
-            
+        )
+
+        let removeClasses = this.state.removeClasses.filter(cls =>
+            Object.keys(cls).includes("class_code") &&
+            Object.keys(cls).includes("rate"));
+
         //Collect state values
         let post = {
             'token': localStorage.getItem("token"),
@@ -53,7 +58,7 @@ class T_Profile extends React.Component {
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
             'classes': newClasses,
-            'removeClasses': this.state.removeClasses
+            'removeClasses': removeClasses
         }//post
 
         console.log(post['classes']);
@@ -116,7 +121,7 @@ class T_Profile extends React.Component {
         this.setState({ classes: filteredClasses });
 
         let removeClasses = classes.filter(aClass => aClass == classes[index]);
-        this.setState({removeClasses: removeClasses}, () => console.log(this.state.removeClasses))
+        this.setState({ removeClasses: removeClasses }, () => console.log(this.state.removeClasses))
     }//removeClass
 
     /**
@@ -197,7 +202,7 @@ class T_Profile extends React.Component {
         let items = this.props.items;
 
         let apply = this.state.applyState ?
-            <Button type="submit" id="save" onClick={this.handleSubmit}> Apply </Button> :
+            <Button type="submit" id="save" > Apply </Button> :
             <Button type="submit" id="save" disabled> Apply </Button>
 
         return (
@@ -209,33 +214,35 @@ class T_Profile extends React.Component {
                     <p id="email"> {items['email']} </p>
                 </div>
 
-                {/* Render top two sections */}
-                <div id="center" className="d-flex justify-content-around">
-                    <PayAndLoginPrefs
-                        setPaymentType={this.setPaymentType}
-                        setLoginPrefs={this.setLoginPrefs}
-                        setPaymentUser={this.setPaymentUser}
-                        pay_type={items['pay_type']}
-                        pay_info={items['pay_info']}
-                        login_pref={items['login_pref']}
-                    />
+                <form onSubmit={this.handleSubmit}>
+                    {/* Render top two sections */}
+                    <div id="center" className="d-flex justify-content-around">
+                        <PayAndLoginPrefs
+                            setPaymentType={this.setPaymentType}
+                            setLoginPrefs={this.setLoginPrefs}
+                            setPaymentUser={this.setPaymentUser}
+                            pay_type={items['pay_type']}
+                            pay_info={items['pay_info']}
+                            login_pref={items['login_pref']}
+                        />
 
-                    <AvailableTimes times={items['times']} />
+                        <AvailableTimes times={items['times']} />
 
-                    <TutorsFor
-                        classes={this.state.classes}
-                        addClass={this.addClass}
-                        removeClass={this.removeClass}
-                        setCourseCode={this.setCourseCode}
-                        setRate={this.setRate}
-                        allClasses={this.props.items['allClasses']}
-                    />
-                </div>
+                        <TutorsFor
+                            classes={this.state.classes}
+                            addClass={this.addClass}
+                            removeClass={this.removeClass}
+                            setCourseCode={this.setCourseCode}
+                            setRate={this.setRate}
+                            allClasses={this.props.items['allClasses']}
+                        />
+                    </div>
 
-                <div id="bottom">
-                    {apply}
-                    <Button type="submit" id="stopTutoring" variant="danger"> Stop Tutoring </Button>
-                </div>
+                    <div id="bottom">
+                        {apply}
+                        <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                    </div>
+                </form>
             </>
         );//return
     }//render

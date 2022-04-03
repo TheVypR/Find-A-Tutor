@@ -17,6 +17,9 @@ class TutorsFor extends React.Component {
         super(props);
 
         this.handleAddClass = this.handleAddClass.bind(this);
+        this.setCourseCode = this.setCourseCode.bind(this)
+        this.setRate = this.setRate.bind(this);
+        this.removeClass = this.removeClass.bind(this);
     }
 
     /**
