@@ -74,6 +74,7 @@ def retrieve_profile(token):
 
     times = retrieve_times(email)
     tutorsFor = retrieve_classes(email)
+    allClasses = retrieve_allClasses()
 
     #login prefs are an array, make it just a single int
     if loginPref == None:
@@ -86,7 +87,7 @@ def retrieve_profile(token):
     return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}, 200
+        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking, "allClasses": allClasses}, 200
 
 def retrieve_times(tut_email):
     """Get the times the tutor is available from the DB
@@ -152,6 +153,19 @@ def retrieve_classes(tut_email):
     
     conn.close()
     return classes
+
+def retrieve_allClasses():
+    """Gets all the classes stored in the DB"""
+
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    
+    #get the tutor information from the DB
+    cursor.execute("SELECT class_code FROM Classes;")
+    allClasses = cursor.fetchall()
+
+    conn.close()
+    return allClasses
 
 # Submit time slots to db for given weekday
 def post_timeSlot(times, tut_email):

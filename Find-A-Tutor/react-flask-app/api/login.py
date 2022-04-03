@@ -258,6 +258,11 @@ def getProfile():
     isTutor = request.args.get('view')
     return profile.retrieve_profile(token)
 
+
+# @app.route('/allClasses/', method=['POST'])
+# def allClasses():
+#     return profile.retrieve_allClasses
+
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():

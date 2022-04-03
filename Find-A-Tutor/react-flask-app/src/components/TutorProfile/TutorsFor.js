@@ -90,6 +90,7 @@ class TutorsFor extends React.Component {
                                     removeClass={() => { this.removeClass(this.props.classes.indexOf(item)) }}
                                     setCourseCode={this.setCourseCode}
                                     setRate={this.setRate}
+                                    allClasses={this.props.allClasses}
                                 />
                             )
                         ))}

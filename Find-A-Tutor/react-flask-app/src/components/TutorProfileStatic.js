@@ -137,7 +137,6 @@ class PayAndLoginPrefs extends React.Component {
 class TutorsFor extends React.Component {
     render() {
         let classes = this.props.classes;
-        console.log(classes);
         let classesList = [];
         for (let aClass in classes) {
             classesList.push(<>
