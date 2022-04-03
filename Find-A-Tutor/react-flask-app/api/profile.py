@@ -205,6 +205,24 @@ def remove_timeSlot(times, tut_email):
     
     return 'SUCCESS', 200
 
+def remove_classes(classes, tut_email):
+    """Remove classes that the tutor tutors for
+
+    """
+
+    #Connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #Check type of remove
+    #loop through times and run this query for each 15 minute slot
+    for cls in classes:
+        cursor.execute("delete from TutorClasses where tut_email=\'" + tut_email + "\' and class_code=\'" + cls['class_code'] + "\';")
+    conn.close()
+    
+    return 'SUCCESS', 200
+
 def contactMe_change(contactMe, tut_email):
     """ Send boolean value to DB for if the Tutor is able to be contacted to set up a Tutoring session.
     """

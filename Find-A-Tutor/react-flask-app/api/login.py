@@ -222,6 +222,8 @@ def myProfile():
         return profile.post_timeSlot(times, email)
     elif 'classesTaking' in submission.keys():
         return profile.edit_student_classes(submission, email)
+    elif 'removeClasses' in submission.keys():
+        return profile.remove_classes(submission['removeClasses'], email)
     #otherwise the user hit the apply button for other changes
     else:
         return profile.edit_profile(submission, email)

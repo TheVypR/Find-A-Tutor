@@ -21,7 +21,8 @@ class T_Profile extends React.Component {
             paymentUser: "",    //Username for choosen payment type (unless cash)
             loginPrefs: -1,     //Default profile that loads on login (student or tutor)
             classes: [],       //Classes the tutor tutors for
-            applyState: true
+            applyState: true,
+            removeClasses: []
         }//state
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -47,7 +48,8 @@ class T_Profile extends React.Component {
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
-            'classes': newClasses
+            'classes': newClasses,
+            'removeClasses': this.state.removeClasses
         }//post
 
         this.checkForEmptyState(post);
@@ -106,6 +108,9 @@ class T_Profile extends React.Component {
         //remove class from DOM
         let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
         this.setState({ classes: filteredClasses });
+
+        let removeClasses = classes.filter(aClass => aClass == classes[index]);
+        this.setState({removeClasses: removeClasses}, () => console.log(this.state.removeClasses))
     }//removeClass
 
     /**
@@ -177,7 +182,8 @@ class T_Profile extends React.Component {
             classesList.push({
                 'class_code': filledInClasses[aClass]['class_code'],
                 'rate': filledInClasses[aClass]['rate'],
-                'verification': filledInClasses[aClass]['verification']});
+                'verification': filledInClasses[aClass]['verification']
+            });
             this.setState({ classes: classesList });
             ;
         }
