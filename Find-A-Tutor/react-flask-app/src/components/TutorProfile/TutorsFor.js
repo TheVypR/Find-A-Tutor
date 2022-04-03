@@ -34,7 +34,6 @@ class TutorsFor extends React.Component {
     }
 
     requestVerify(classCode) {
-        console.log(classCode);
         fetch("/requestVerification/", {
             method: 'POST',
             headers: {
@@ -53,7 +52,6 @@ class TutorsFor extends React.Component {
      * @returns : map of rendered classes
      */
     renderClass() {
-        this.props.classes.forEach(item => console.log(item))
         return (<>
             <div className='d-flex '>
                 <Table size="small">
@@ -110,7 +108,6 @@ class TutorsFor extends React.Component {
      * @param {int} index index of class
      */
     setCourseCode(code, index) {
-        console.log(code)
         this.props.setCourseCode(code, index);
     }//setCourseCode
 

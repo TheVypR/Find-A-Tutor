@@ -153,7 +153,6 @@ class T_Profile extends React.Component {
         aClass['class_code'] = code;
         aClass['new'] = true;
         classes[index] = aClass;
-        this.setState({ classes: classes })
     }//setCourseCode
 
     /**

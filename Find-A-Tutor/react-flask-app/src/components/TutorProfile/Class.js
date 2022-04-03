@@ -26,15 +26,12 @@ class Class extends React.Component {
 	}
 
 	onlyNumbers(e) {
-		console.log(e)
 		if (!e.code.includes("Digit")) {
 			e.preventDefault();
-			console.log("Not a number")
 		}
 	}
 
 	requestVerify(e) {
-		console.log(this.props.courseCode);
 		fetch("/requestVerification/", {
 			method: 'POST',
 			headers: {
