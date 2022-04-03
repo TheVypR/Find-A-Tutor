@@ -129,7 +129,6 @@ class Weekday extends React.Component {
      * @param {int} index: the index of the given time slot to remove
      */
     fetchRemoveTimeSlot(index) {
-        console.log(this.state.startTime[index]);
         //time to remove
         let times = {
             'token': localStorage.getItem("token"),
@@ -335,8 +334,7 @@ class Weekday extends React.Component {
                     <></>
             }
         }
-        console.log(toReturn)
-        this.setState({filledOutTimes: [...this.state.filledOutTimes, toReturn]})
+        this.setState({children: [...this.state.children, toReturn]})
     }
 
     removeFilledOutTimes(slot, startTime, endTime, day) {
@@ -362,20 +360,18 @@ class Weekday extends React.Component {
     }//removePreFilledTime
 
     componentDidMount() {
-       // this.getFilledOutTimes(this.props.times, this.props.day)
+       this.getFilledOutTimes(this.props.times, this.props.day)
     }
 
     render() {
         const day = this.props.day;
 
-        let filledOutTimes = this.state.filledOutTimes;
-
         return (
             <>
                 <div className="day">
                     <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
-                    <hr classname="hr" />
-                    {filledOutTimes.map(time => time['render'])}
+                    <hr className="hr" />
+                    {/* {this.state.filledOutTimes.map(time => time['render'])} */}
                     {this.renderTimeSlot(day)}
                     <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />
                 </div>
