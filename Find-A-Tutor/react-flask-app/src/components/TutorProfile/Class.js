@@ -91,6 +91,7 @@ class Class extends React.Component {
 								<input type="text" placeholder="Class Code"{...params.inputProps} />
 							</div>
 						)}
+						onChange={e => {this.props.setCourseCode(e.target.textContent, index)}}
 					/>
 				</TableCell>
 				<TableCell>

@@ -39,13 +39,15 @@ class T_Profile extends React.Component {
      * Collects state values and sends them to the backend
      */
     handleSubmit() {
+        //get only new classes
+        let newClasses = this.state.classes.filter(cls => Object.keys(cls).includes("new"))
         //Collect state values
         let post = {
             'token': localStorage.getItem("token"),
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
-            'classes': this.state.classes
+            'classes': newClasses
         }//post
 
         this.checkForEmptyState(post);
@@ -149,6 +151,7 @@ class T_Profile extends React.Component {
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
         aClass['class_code'] = code;
+        aClass['new'] = true;
         classes[index] = aClass;
         this.setState({ classes: classes })
     }//setCourseCode
