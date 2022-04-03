@@ -85,7 +85,6 @@ class TutorsFor extends React.Component {
                                     setCourseCode={this.props.setCourseCode}
                                     setRate={this.props.setRate}
                                     allClasses={this.props.allClasses}
-                                    updateClasses={this.props.updateClasses}
                                 />
                             )
                         ))}

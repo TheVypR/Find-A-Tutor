@@ -18,23 +18,11 @@ class Class extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			courseCode: "",
-			rate: "",
 			allClasses: "",
 			error: ""
 		}
 
 		this.onlyNumbers = this.onlyNumbers.bind(this);
-		this.setCourseCode = this.setCourseCode.bind(this);
-		this.setRate = this.setRate.bind(this)
-	}
-
-	setCourseCode(code) {
-		this.setState({courseCode: code});
-	}
-
-	setRate(rate) {
-		this.setState({rate: rate})
 	}
 
 	onlyNumbers(e) {
@@ -84,8 +72,6 @@ class Class extends React.Component {
 		return (
 			<TableRow key={index} hover>
 				<TableCell>
-					<Button className="btn-success submitClass" onClick={() => 
-						this.props.updateClasses(this.state.courseCode, this.state.rate, index)}> Submit </Button>
 				</TableCell>
 				<TableCell>
 					<Autocomplete
@@ -102,7 +88,7 @@ class Class extends React.Component {
 								<input type="text" placeholder="Class Code"{...params.inputProps} required />
 							</div>
 						)}
-						onChange={e => {this.setCourseCode(e.target.textContent)}}
+						onChange={e => {this.props.setCourseCode(e.target.textContent, index)}}
 					/>
 				</TableCell>
 				<TableCell>
@@ -113,7 +99,7 @@ class Class extends React.Component {
 						min="0"
 						size="2"
 						onKeyPress={e => this.onlyNumbers(e)}
-						onChange={e => this.props.setRate(e.target.value)}
+						onChange={e => this.props.setRate(e.target.value, index)}
 						required
 					/>
 				</TableCell>
