@@ -41,7 +41,11 @@ class T_Profile extends React.Component {
      */
     handleSubmit() {
         //get only new classes
-        let newClasses = this.state.classes.filter(cls => Object.keys(cls).includes("new"))
+        let newClasses = this.state.classes.filter(cls => 
+            Object.keys(cls).includes("new") && 
+            Object.keys(cls).includes("class_code") &&
+            Object.keys(cls).includes("rate"))
+            
         //Collect state values
         let post = {
             'token': localStorage.getItem("token"),
