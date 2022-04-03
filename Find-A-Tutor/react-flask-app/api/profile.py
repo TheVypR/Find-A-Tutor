@@ -144,7 +144,9 @@ def retrieve_classes(tut_email):
         hasRequested = cursor.fetchone()
         newTuple = cls
         if hasRequested:
-            newTuple = ({"class_code": cls[0], "rate": cls[1], "5": 5})
+            newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": 5})
+        else :
+            newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": 1})
 
         classes.append(newTuple)
     

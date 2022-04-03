@@ -43,7 +43,9 @@ class Class extends React.Component {
     render() {
         let index = this.props.index;
         return (
-            <TableRow key={index} hover>				
+            <TableRow key={index} hover>	
+					<TableCell>
+					</TableCell>			
 					<TableCell>
 						<input name="courseCode"
 							id={index}
