@@ -175,9 +175,13 @@ class T_Profile extends React.Component {
         let filledInClasses = this.props.items['tutorsFor'];
         for (let aClass in filledInClasses) {
             var classesList = this.state.classes;
-            classesList.push({'class_code': filledInClasses[aClass]['class_code'], 'rate': filledInClasses[aClass]['rate']});
-            this.setState({classes: classesList});
-        ;}
+            classesList.push({
+                'class_code': filledInClasses[aClass]['class_code'],
+                'rate': filledInClasses[aClass]['rate'],
+                'verification': filledInClasses[aClass]['verification']});
+            this.setState({ classes: classesList });
+            ;
+        }
     }
 
     render() {

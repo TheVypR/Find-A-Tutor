@@ -143,11 +143,9 @@ def retrieve_classes(tut_email):
     for cls in classes_rates:
         cursor.execute("select tut_email from VerificationRequest where tut_email = (%s) and class_code = (%s)", (tut_email, cls[0]))
         hasRequested = cursor.fetchone()
-        newTuple = cls
+        newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": cls[2]})
         if hasRequested:
             newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": 5})
-        else :
-            newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": 1})
 
         classes.append(newTuple)
     
