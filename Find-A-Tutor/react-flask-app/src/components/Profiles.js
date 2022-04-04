@@ -117,6 +117,7 @@ class Profiles extends React.Component {
         var profile = isTutor ?
             staticOrEditTutor :
             staticOrEditStudent
+
         return (
             <>
             <div style={{margin: '75px'}}><NavBar /></div>

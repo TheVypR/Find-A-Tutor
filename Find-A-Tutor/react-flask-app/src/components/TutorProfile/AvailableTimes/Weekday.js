@@ -81,7 +81,6 @@ class Weekday extends React.Component {
      */
     renderTimeSlot(day) {
         return this.state.children.map(item => {
-            //Otherwise add a timeslot
             let index = this.state.children.indexOf(item);
             return <TimeSlot day={day}
                 index={index}
@@ -130,6 +129,7 @@ class Weekday extends React.Component {
      */
     fetchRemoveTimeSlot(index) {
         //time to remove
+        console.log(this.state.startTime[index].toString());
         let times = {
             'token': localStorage.getItem("token"),
             "remove": {
@@ -311,44 +311,86 @@ class Weekday extends React.Component {
      * @param {string} day given day
      * @returns array of timeslots to be rendered
      */
-    getFilledOutTimes(times, day) {
+    getFilledOutTimes(day) {
+        let times = this.props.times;
         let toReturn = []   //array of timeslots to be rendered
 
         //format day
         day = day[0].toUpperCase() + day.slice(1)
-        times[day].forEach(slot => toReturn.push({"render": null, "shouldRender": true}));
-        //Go through given times
-        for (let slot in times[day]) {
-            //if there is a time filled out for that day display it
-            if (slot.length > 0) {
-                let startTime = times[day][slot]['startTime'];
-                let endTime = times[day][slot]['endTime'];
-                toReturn[slot]['render'] =  toReturn[slot]['shouldReturn'] ? 
-                    <>
-                        <p> {startTime} to {endTime} </p>
-                        <Button className="removeTime" variant="danger" onClick={() => this.removeFilledOutTimes(slot, startTime, endTime, day)}>
-                            <BsFillTrashFill size="14" />
-                        </Button> <br />
-                        <hr />
-                    </>:
-                    <></>
-            }
-        }
-        this.setState({children: [...this.state.children, toReturn]})
+        toReturn = (times[day].map(slot =>
+        ({
+            "startTime": slot['startTime'],
+            "endTime": slot['endTime'],
+            "shouldRender": true
+        })
+        ));
+        this.setState({ filledOutTimes: [...this.state.filledOutTimes, toReturn] })
     }
 
     removeFilledOutTimes(slot, startTime, endTime, day) {
+        //stop displaying the timeslot
         let filledOutTimes = this.state.filledOutTimes;
-        filledOutTimes[slot] = false;
-        this.setState({filledOutTimes: filledOutTimes})
+        filledOutTimes[0][slot]['shouldRender'] = false;
+        this.setState({ filledOutTimes: filledOutTimes })
+
+        //find where the moment and time are the same day
+        let moments = this.props.moments.map(item => moment(item['startTime']));
+        let todaysMoments = []
+        moments.forEach(slot => {
+            //console.log((new Date(slot.format().slice(0,10))).getDay()+1 + " " + this.getISO(day));
+            if ((new Date(slot.format().slice(0,10))).getDay()+1 == this.getISO(day)) {
+                todaysMoments.push(slot)
+            }
+        });
+
+        //get the moment that has the same starttime as the timeslot
+        let dateOfTimeSlot = null;
+        let test = ""
+        todaysMoments.forEach(slot => {
+            if (startTime.length >= 8) {
+                test = slot.format('hh:mm a')
+            } else {
+                test = slot.format('hh:mm a').slice(1)
+            }
+            if (test == startTime) {
+                dateOfTimeSlot = slot.format("YYYY-MM-DD");
+            }
+        })
+
+
+        //format into moment
+        let start = moment(startTime, 'h:mm a').format('HH:mm:ss');
+        let end = moment(endTime, 'h:mm a').format('HH:mm:ss');
+        //combine date and time
+        start = dateOfTimeSlot + "T" + start;
+        end =  dateOfTimeSlot + "T" + end;
+        //remove comma from date
+        start = (new Date(start).toString()).replace(',', '').replace('(Eastern Daylight Time)', '');
+        end = (new Date(end).toString()).replace(',', '').replace('(Eastern Daylight Time)', '');
+        console.log(start + "\n" + end);
+        //put the month and date in the right spot
+        // let dayStr = start.slice(4,7);
+        // let month = start.slice(7,11);
+        // let dayAndMonth = start.slice(4,11);
+        // start = start.replace(dayAndMonth, month + dayStr);
+        // //do the same for end
+        // let dayStrE = end.slice(4,7);
+        // let monthE = end.slice(7,11);
+        // let dayAndMonthE = end.slice(4,11);
+        // end = end.replace(dayAndMonthE, monthE + dayStrE);
+
+        console.log(start + "\n" + end);
+
+
         let times = {
             'token': localStorage.getItem("token"),
             "remove": {
-                "startTime": moment(startTime, 'hh:mm :a').toString(),
-                "endTime": moment(endTime, 'hh:mm :a').toString(),
+                "startTime": start,
+                "endTime": end,
                 "day": this.getISO(day)
             }
         };
+        console.log(times);
 
         const response = fetch("/myProfile/", {
             method: "POST",
@@ -360,18 +402,36 @@ class Weekday extends React.Component {
     }//removePreFilledTime
 
     componentDidMount() {
-       this.getFilledOutTimes(this.props.times, this.props.day)
+        this.getFilledOutTimes(this.props.day)
     }
 
     render() {
         const day = this.props.day;
 
+        let filledOutTimes = this.state.filledOutTimes.map(time =>
+            time.map(slot =>
+                slot['shouldRender'] ?
+                    <>
+                        <p> {slot['startTime']} to {slot['endTime']} </p>
+                        <Button className="removeTime" variant="danger" onClick={() =>
+                            this.removeFilledOutTimes(
+                                time.indexOf(slot),
+                                slot['startTime'],
+                                slot['endTime'],
+                                day)}>
+                            <BsFillTrashFill size="14" />
+                        </Button> <br />
+                        <hr />
+                    </> :
+                    <></>
+            )
+        )
         return (
             <>
                 <div className="day">
                     <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
                     <hr className="hr" />
-                    {/* {this.state.filledOutTimes.map(time => time['render'])} */}
+                    {filledOutTimes}
                     {this.renderTimeSlot(day)}
                     <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />
                 </div>

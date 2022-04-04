@@ -87,7 +87,7 @@ def retrieve_profile(token):
     return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking, "allClasses": allClasses}, 200
+        'times': times,'moments': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking, "allClasses": allClasses}, 200
 
 def retrieve_times(tut_email):
     """Get the times the tutor is available from the DB
@@ -107,7 +107,7 @@ def retrieve_times(tut_email):
     #get the times
     cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
-    
+
     #put times in dict {'start', 'end'}
     if len(times) != 0:
         for time in times:
@@ -191,6 +191,7 @@ def remove_timeSlot(times, tut_email):
     Timeslots are either added during the current session by the user or
     are retrieved from the DB.
     """
+    print(times)
 
     #Connect to DB
     conn = mysql.connect()

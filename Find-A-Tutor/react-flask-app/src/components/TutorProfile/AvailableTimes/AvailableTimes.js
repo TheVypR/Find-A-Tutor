@@ -44,7 +44,7 @@ class AvailableTimes extends React.Component {
                         <input type="checkbox" id="contactMe" onChange={this.contactMe} />
                         <label htmlFor="contactMe"> Contact Me For Availability </label>
                     </div>
-                    <Week times={times} />
+                    <Week times={times} moments={this.props.moments} />
                 </div>
             </>
         );//Return

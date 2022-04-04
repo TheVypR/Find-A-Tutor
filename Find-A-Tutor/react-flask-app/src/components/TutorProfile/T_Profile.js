@@ -227,7 +227,7 @@ class T_Profile extends React.Component {
                             login_pref={items['login_pref']}
                         />
 
-                        <AvailableTimes times={items['times']} />
+                        <AvailableTimes times={items['times']} moments={items['moments']} />
 
                         <TutorsFor
                             classes={this.state.classes}
