@@ -6,62 +6,41 @@ from adminRoutes import verifyRequestRetrieval
 #flask setup
 app = Flask(__name__)
 
-#DB setup
-mysql = MySQL()
+#def sendEmail():
+#for SSL
+port = 465
+smtp_server = "smtp.gmail.com"
 
-#toggle for accessing the DB on a local machine
-locality = 1 # Have locality set to 1 if you want to test on your local machine
-if (locality == 1):
-    app.config['MYSQL_DATABASE_HOST'] = '10.18.110.181'
-    app.config['MYSQL_DATABASE_USER'] = 'test'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'C0dePr0j$'
-    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
-else:
-    app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-    app.config['MYSQL_DATABASE_USER'] = 'trwarner00'
-    app.config['MYSQL_DATABASE_PASSWORD'] = 'Timothy21!'
-    app.config['MYSQL_DATABASE_DB'] = 'findatutor'
+#may eventually change this
+sender_email = "fnadatutor@gmail.com" 
 
-mysql.init_app(app)
+#This will change to query required email from professor
+#or pass in as parameter when queried in another file
 
+#password input
+password = "3mbara$$inglyParallel"
 
+#get the requests
+requests = verifyRequestRetrieval()[0]
 
-def sendEmail():
-
-    #connect to DB
-    conn = mysql.connect()
-    conn.autocommit(True)
-    cursor = conn.cursor() 
-
-    #for SSL
-    port = 465
-    smtp_server = "smtp@gmail.com"
-
-    #may eventually change this
-    sender_email = "FnadATutor@gmail.com" 
-
-    #This will change to query required email from professor
-    #or pass in as parameter when queried in another file
+#go through and send email for each request
+for request in requests['requests']:
+    #who to send email to
+    receiver_email = request['prof_email']
     
-   # receiver_email = verifyRequestRetrieval[0]
-    receiver_email = "findatutorexampleprofessor@gmail.com"
-
-    #password input
-    password = "3mbara$$inglyParallel" 
-
     #body of email
-    message = "Hello, a student {verifyRequestRetrieval[2]}, has requested your verification to tutor for {verifyRequestRetrieval[3]}, please click the link below to accept this verification"
+    message = "Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please click the link below to accept this verification"
 
     #Look into adding subject header
     #Subject: "Verification Request - Find a Tutor"
 
     #send mail
     context = ssl.create_default_context()
-    with smtplib.SMTP(smtp_server, port) as server:
+    with smtplib.SMTP_SSL(smtp_server) as server:
         #Identify yourself to server
         server.ehlo()
 
-        server.starttls(context=context)
+        #server.starttls(context=context)
 
         #Identify yourself to server
         server.ehlo()  
