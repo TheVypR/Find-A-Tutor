@@ -1,7 +1,6 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
 import random                                               #used for random string generation
-from datetime import datetime, timedelta                    #used to compare dates
 from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication, timeManager   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
@@ -204,10 +203,10 @@ def myProfile():
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
         submittedTime = submission['remove']
-        startTime = dateParse(submittedTime['startTime'])
-        endTime = dateParse(submittedTime['endTime'])
+        startTime = timeManager.dateParse(submittedTime['startTime'])
+        endTime = timeManager.dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
-        splitTimeVals = splitTimes(timeSlot)
+        splitTimeVals = timeManager.splitTimes(timeSlot)
         return profile.remove_timeSlot(splitTimeVals, email)
     #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
@@ -215,10 +214,10 @@ def myProfile():
     #check to see if it's an addition to available times
     elif 'submitTimes' in submission.keys() :
         #parse timeslot and divide it into 15 min chunks for storage
-        startTime = dateParse(submission['startTime'])
-        endTime = dateParse(submission['endTime'])
+        startTime = timeManager.dateParse(submission['startTime'])
+        endTime = timeManager.dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
-        times = splitTimes(timeSlot)
+        times = timeManager.splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
     #check is this is removing a time populated by the db
     elif 'removePrefilledTime' in submission.keys():
@@ -268,11 +267,11 @@ def addAppointment():
   token = data['token']
   
   #combine times and a day to make a datetime
-  newStart = createDateFromTime(data['day'], data['start'])
-  newEnd = createDateFromTime(data['day'], data['end'])
+  newStart = timeManager.createDateFromTime(data['day'], data['start'])
+  newEnd = timeManager.createDateFromTime(data['day'], data['end'])
   
   #split the datetimes into 15 minute intervals for storage
-  slots = splitTimes({'start':newStart, 'end':newEnd})
+  slots = timeManager.splitTimes({'start':newStart, 'end':newEnd})
   #add the appointment and mark tutor time as taken
   return appointment.addAppointment(data, token, newStart, newEnd, slots)
 
@@ -300,7 +299,7 @@ def getTimes():
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
         if type(unmerged) == type([]):
-            times = mergeTimes(unmerged)
+            times = timeManager.mergeTimes(unmerged)
         else:
             print(unmerged)
             return "No times found", 401
@@ -323,7 +322,7 @@ def deleteAppointment():
     newDate = {'start': data['start'], 'end': data['end']}
     
     #split the datetimes into 15 minute intervals
-    slots = splitTimes({'start':data['start'], 'end':data['end']})
+    slots = timeManager.splitTimes({'start':data['start'], 'end':data['end']})
   
     return appointment.removeAppointment(email, data, newDate, slots, view)
 
@@ -405,7 +404,21 @@ def professorUpload():
     
     #send to the database
     return adminRoutes.professorUploading(parseCSVData(file_content))
+
+@app.route('/classUpload/', methods=['POST'])
+def professorUpload():    
+    #get the data from the given file
+    try:
+        file = request.files['files']
+        filename = file.filename
+        file_bytes = file.read()
+        file_content = file_bytes.decode("utf-8") #str(BytesIO(file_bytes).readlines())
+    except:
+        return "ERROR: Problem Reading File", 400
     
+    #send to the database
+    return adminRoutes.classUploading(parseCSVData(file_content))
+
 #parse the data from a CSV file
 def parseCSVData(data):
     parsedData = []

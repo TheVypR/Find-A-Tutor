@@ -379,13 +379,41 @@ def professorUploading(data):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
+        
+    #go through all the data
+    for row in data:
+        try:
+            #check if the professor is in the DB
+            cursor.execute("select prof_email from Professor where prof_email = (%s) or office_location = (%s)", (row[1], row[2]))
+            profFound = cursor.fetchone()
+            if profFound:
+                cursor.execute("update Professor set prof_name = (%s), prof_email = (%s), office_location = (%s)", (row[0], row[1], row[2]))
+            #if not, enter them into it
+            else:
+                cursor.execute("insert into Professor(prof_name, prof_email, office_location) values((%s), (%s), (%s))", (row[0], row[1], row[2]))
+        except:
+            return "SQL Error", 400
+
+    conn.close()
+            
+    return "SUCCESS", 200
     
-    #delete the entire Professor table
-    #cursor.execute("delete from Professor")
+def classUploading(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
     
     for row in data:
         try:
-            cursor.execute("insert into Professor(prof_name, office_location, prof_email) values((%s), (%s), (%s))", (row[0], row[1], row[2]))
+            #check if the professor is in the DB
+            cursor.execute("select class_code from Classes where class_code = (%s)", (row[0]))
+            profFound = cursor.fetchone()
+            if profFound:
+                cursor.execute("update Classes set class_code = (%s), prof_email = (%s)", (row[0], row[1]))
+            #if not, enter them into it
+            else:
+                cursor.execute("insert into Classes(class_code, prof_email) values((%s), (%s))", (row[0], row[1]))  
         except:
             return "SQL Error", 400
 
