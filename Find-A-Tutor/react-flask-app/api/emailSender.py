@@ -31,6 +31,7 @@ for request in requests['requests']:
     #body of email
     message = "Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please click the link below to accept this verification"
 
+    message['Subject'] = "Find-A-Tutor Verification Request"
     #Look into adding subject header
     #Subject: "Verification Request - Find a Tutor"
 
