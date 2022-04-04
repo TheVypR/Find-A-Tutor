@@ -42,7 +42,7 @@ def sendEmail():
 
     #This will change to query required email from professor
     #or pass in as parameter when queried in another file
-    
+
    # receiver_email = verifyRequestRetrieval[0]
     receiver_email = "findatutorexampleprofessor@gmail.com"
 
@@ -52,6 +52,7 @@ def sendEmail():
     #body of email
     message = "Hello, a student {verifyRequestRetrieval[2]}, has requested your verification to tutor for {verifyRequestRetrieval[3]}, please click the link below to accept this verification"
 
+    message['Subject'] = "Find-A-Tutor Verification Request"
     #Look into adding subject header
     #Subject: "Verification Request - Find a Tutor"
 
