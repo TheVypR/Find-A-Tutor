@@ -37,8 +37,18 @@ class TutorsFor extends React.Component {
         this.props.addClass(aClass);
     }
 	
-	requestVerify() {
-		
+	requestVerify(classCode) {
+		console.log(classCode);
+		fetch("/requestVerification/", {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+			body:JSON.stringify({
+				token: localStorage.getItem("token"),
+				class_code: classCode
+			})
+		})
 	}
 	
     /**
@@ -62,7 +72,7 @@ class TutorsFor extends React.Component {
 						{this.props.classes.map((item) => (
 							((typeof(item[0]) === 'string') ?
 								<TableRow key={item[0]} hover>
-									<TableCell>{(item[2] ? <VerifiedIcon sx={{color: 'green'}}/> : <Button onClick={() => {this.requestVerify()}}>Request</Button>)}</TableCell>
+									<TableCell>{(item[2] === 5 ? <VerifiedIcon sx={{color: 'red'}}/> : (item[2] === 1 ? <VerifiedIcon sx={{color: 'green'}}/> : <Button onClick={() => {this.requestVerify(item[0])}}>Request</Button>))}</TableCell>
 									<TableCell>{item[0]} </TableCell>
 									<TableCell>${item[1]} </TableCell>
 									<TableCell><Button id={this.props.classes.indexOf(item)} className="removeClass" variant="danger" onClick={() => this.props.removeClass(this.props.classes.indexOf(item))}>

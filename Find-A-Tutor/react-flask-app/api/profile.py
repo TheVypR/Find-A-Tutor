@@ -141,8 +141,14 @@ def retrieve_classes(tut_email):
     classes_rates = cursor.fetchall()
     
     #put the classes in an array of dicts [{'class_code', 'rate'}, ]
-    for pair in classes_rates:
-        classes.append(pair)
+    for cls in classes_rates:
+        cursor.execute("select tut_email from VerificationRequest where tut_email = (%s) and class_code = (%s)", (tut_email, cls[0]))
+        hasRequested = cursor.fetchone()
+        newTuple = cls
+        if hasRequested:
+            newTuple = (cls[0], cls[1], 5)
+
+        classes.append(newTuple)
     
     conn.close()
     return classes
