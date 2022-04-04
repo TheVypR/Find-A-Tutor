@@ -406,7 +406,7 @@ def professorUpload():
     return adminRoutes.professorUploading(parseCSVData(file_content))
 
 @app.route('/classUpload/', methods=['POST'])
-def professorUpload():    
+def classUpload():    
     #get the data from the given file
     try:
         file = request.files['files']
