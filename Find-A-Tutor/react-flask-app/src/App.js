@@ -17,6 +17,7 @@ import GroupTutoring from './components/GroupTutoring';
 import FileUpload from './components/FileUpload';
 import { AuthContext } from './components/AuthContext';
 import ProfessorUpload from './components/ProfessorUpload';
+import ClassUpload from './components/ClassUpload';
 
 export default function App() {
 	
@@ -64,6 +65,7 @@ export default function App() {
             <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
 			      <Route path='/FileUpload' element={<FileUpload />} />
             <Route path='/ProfessorUpload' element={<ProfessorUpload />} />
+            <Route path='/ClassAndSyllabi' element={<ClassUpload />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

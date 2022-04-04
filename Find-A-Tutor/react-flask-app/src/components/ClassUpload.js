@@ -14,7 +14,7 @@ import AdminNavBar from './AdminNavBar';
 //making styles and themes
 const theme = createTheme();
 
-export default function ProfessorUpload() {
+export default function ClassUpload() {
     //authentication
 	const authContext = useContext(AuthContext);
 
@@ -26,7 +26,7 @@ export default function ProfessorUpload() {
             if (files[i] != null) {
               const data = new FormData();
               data.append('file', files[i]);
-              let response = await fetch('/professorCSV/',
+              let response = await fetch('/classUpload/',
                 {
                   method: 'post',
                   body: data,
@@ -50,7 +50,7 @@ export default function ProfessorUpload() {
                     <Grid item xs={6}>
                         <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                             <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                Professor CSV Upload
+                                Class CSV Upload
                             </Typography>
                             <Input  id="instructions" 
                                     label="Instructions" 
@@ -59,11 +59,11 @@ export default function ProfessorUpload() {
                                     fullWidth
                                     multiline 
                                     disableUnderline
-                                    value={"Instructions:\nUpload a CSV file containing name, email, and office location of all professors in that order."}
+                                    value={"Instructions:\nUpload a CSV file containing class code and the first and last name of the professor that teaches it."}
                             />
                             <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
                                 <form>
-                                    <input type="file" onChange={(e) => uploadFile(e)} accept=".csv"  style={{color: 'black', textAlign: 'center'}} />
+                                    <input type="file" onChange={(e) => uploadFile(e)} accept=".csv" style={{color: 'black', textAlign: 'center'}} />
                                 </form>
                             </Grid>
                         </Paper>
@@ -71,16 +71,16 @@ export default function ProfessorUpload() {
                     <Grid item xs={6}>
                         <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                             <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                Office Hours Upload
+                                Syllabi Files Upload
                             </Typography>
                             <Input  id="instructions" 
                                     label="Instructions" 
                                     readOnly 
                                     variant='outlined' 
-                                    fullWidth
+                                    fullWidth 
                                     multiline 
                                     disableUnderline
-                                    value={"Instructions:\nSelect and upload all office hours documents. Do not enter a folder or zip of syllabi documents."}
+                                    value={"Instructions:\nSelect and upload all syllabi documents. Do not enter a folder or zip of syllabi documents."}
                             />
                             <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
                                 <form>
