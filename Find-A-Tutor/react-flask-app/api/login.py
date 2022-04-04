@@ -424,8 +424,12 @@ def parseCSVData(data):
     parsedData = []
     rowAry = []
     rows = data.split('\n')
-    print(rows)
+    first = True#used to ignore the first row (header)
+    #go through all the rows (except the first) in the csv file
     for row in rows:
+        if first:
+            first = False
+            continue
         columns = row.split(",")
         print(row)
         parsedData.append(columns)
