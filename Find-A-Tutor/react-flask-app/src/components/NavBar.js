@@ -21,11 +21,11 @@ const theme = createTheme({
 });
 
 export default function NavBar() {
+	const [isTutor, setIsTutor] = useState(false);
 	useEffect (() => {
 		fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => {console.log(result);setIsTutor(result)});
 	}, []);
-	
-    const [isTutor, setIsTutor] = useState(false);
+    
     function AddTutor() {
         fetch('/AddTutor/', {
             method: 'POST',
@@ -38,10 +38,10 @@ export default function NavBar() {
     const auth = useContext(AuthContext);
     
     let buttons;
-    if(!isTutor){
-        buttons = <Button onClick={() => {localStorage.setItem("view", "tutor");AddTutor()}} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
-    }else if (localStorage.getItem("view") === "tutor"){
-        buttons = <Button onClick={() => localStorage.setItem("view", "student")} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
+    if(!isTutor) {
+        buttons = <Button onClick={() => {localStorage.setItem("view", "tutor"); AddTutor()}} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+    }else if (localStorage.getItem("view") === "tutor") {
+        buttons = <Button onClick={() => {localStorage.setItem("view", "student")}} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
     } else {
 		buttons = <Button onClick={() => localStorage.setItem("view", "tutor")} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Tutor View</Button>
 	}
