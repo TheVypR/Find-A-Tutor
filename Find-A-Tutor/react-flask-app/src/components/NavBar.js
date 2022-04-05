@@ -62,6 +62,9 @@ export default function NavBar() {
                         <MenuItem component='a' href='./GroupTutoring'>
                             <Typography textAlign='center'>Group Tutoring</Typography>
                         </MenuItem>
+                        <MenuItem component='a' href='./ProfessorInfo'>
+                            <Typography textAlign='center'>Professor Info</Typography>
+                        </MenuItem>
                         <MenuItem component='a' href='./TutoringHistory'>
                             <Typography textAlign='center'>Tutoring History</Typography>
                         </MenuItem>

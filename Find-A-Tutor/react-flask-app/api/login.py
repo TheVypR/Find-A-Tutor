@@ -415,6 +415,10 @@ def classUpload():
     #send to the database
     return adminRoutes.classUploading(parseCSVData(file_content))
 
+@app.route('/getProfessors/', methods=['GET'])
+def getProfessors():
+    return adminRoutes.getProfessors()
+
 @app.route('/isTutor/', methods=['GET'])
 def isTutor():
     token=request.args.get("token")

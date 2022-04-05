@@ -428,3 +428,19 @@ def classUploading(data):
     conn.close()
             
     return "SUCCESS", 200
+
+def getProfessors():
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #add student to Tutor table
+    cursor.execute("select * from Professor")
+    data = cursor.fetchall()
+
+    #close the connection
+    conn.close()
+    
+    #return success
+    return jsonify(data), 200
