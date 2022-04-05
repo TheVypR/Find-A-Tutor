@@ -105,7 +105,6 @@ class Profiles extends React.Component {
     render() {
         let items = this.props.items;
         let isTutor = (localStorage.getItem("view")=== "tutor");
-        console.log(isTutor);
 
         let staticOrEditTutor = this.props.isEdit ?
             <TutorProfile items={items} edit={this.edit} /> :
@@ -118,6 +117,7 @@ class Profiles extends React.Component {
         var profile = isTutor ?
             staticOrEditTutor :
             staticOrEditStudent
+
         return (
             <>
             <div style={{margin: '75px'}}><NavBar /></div>

@@ -19,6 +19,8 @@ import { AuthContext } from './components/AuthContext';
 import ProfessorUpload from './components/ProfessorUpload';
 import ClassUpload from './components/ClassUpload';
 
+//the core function
+//calls all other pages and manages authentication
 export default function App() {
 	
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") !== null ? true : false);

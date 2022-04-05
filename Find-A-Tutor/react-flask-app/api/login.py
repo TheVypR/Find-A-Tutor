@@ -219,9 +219,6 @@ def myProfile():
         timeSlot = {'start': startTime, 'end': endTime}
         times = timeManager.splitTimes(timeSlot)
         return profile.post_timeSlot(times, email)
-    #check is this is removing a time populated by the db
-    elif 'removePrefilledTime' in submission.keys():
-        return profile.remove_timeSlot(submission['removePrefilledTime'], email)
     elif 'classesTaking' in submission.keys():
         return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
@@ -259,6 +256,11 @@ def getProfile():
     #determine what profile is being populated
     isTutor = request.args.get('view')
     return profile.retrieve_profile(token)
+
+
+# @app.route('/allClasses/', method=['POST'])
+# def allClasses():
+#     return profile.retrieve_allClasses
 
 #add appointments to DB
 @app.route('/addAppointment/', methods=['POST'])
@@ -301,7 +303,6 @@ def getTimes():
         if type(unmerged) == type([]):
             times = timeManager.mergeTimes(unmerged)
         else:
-            print(unmerged)
             return "No times found", 401
     else:
         #return empty times array
@@ -377,16 +378,11 @@ def fileUpload():
     d = {}
     try:
         file = request.files['file']
-        print(file)
         filename = file.filename
-        print(f"Uploading file {filename}")
         file_bytes = file.read()
         file_content = file_bytes.decode('utf-8')
-        print(file_content)
         d['status'] = 1
-
     except Exception as e:
-        print(f"Couldn't upload file {e}")
         d['status'] = 0
 
     return jsonify(d), 200
@@ -419,6 +415,12 @@ def classUpload():
     #send to the database
     return adminRoutes.classUploading(parseCSVData(file_content))
 
+@app.route('/isTutor/', methods=['GET'])
+def isTutor():
+    token=request.args.get("token")
+    email = authentication.getEmail(token)[0]
+    return profile.isTutor(email)
+    
 #parse the data from a CSV file
 def parseCSVData(data):
     parsedData = []
@@ -431,7 +433,5 @@ def parseCSVData(data):
             first = False
             continue
         columns = row.split(",")
-        print(row)
         parsedData.append(columns)
-    print(parsedData)
     return parsedData
