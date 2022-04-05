@@ -10,19 +10,19 @@ class Week extends React.Component {
         return (
             <>
                 <div className="d-flex justify-content-center availableTimes">
-                    <Weekday day="sunday" times={times} />
+                    <Weekday day="sunday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
-                    <Weekday day="monday" times={times} />
+                    <Weekday day="monday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
-                    <Weekday day="tuesday" times={times} />
+                    <Weekday day="tuesday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
-                    <Weekday day="wednesday" times={times} />
+                    <Weekday day="wednesday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
-                    <Weekday day="thursday" times={times} />
+                    <Weekday day="thursday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
-                    <Weekday day="friday" times={times} />
+                    <Weekday day="friday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
-                    <Weekday day="saturday" times={times} />
+                    <Weekday day="saturday" times={times} moments={this.props.moments}/>
                     <div className="vr"></div>
                 </div>
             </>

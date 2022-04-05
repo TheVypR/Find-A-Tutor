@@ -138,15 +138,15 @@ class TutorsFor extends React.Component {
     render() {
         let classes = this.props.classes;
         let classesList = [];
-        classes.map(aClass => {
+        for (let aClass in classes) {
             classesList.push(<>
                 <div className='d-flex '>
 					<p> {(aClass[2] ? <VerifiedIcon /> : null)} </p>
-                    <p> {aClass[0]} </p>
-                    <p className='hourlyRate'> Hourly Rate: ${aClass[1]} </p>
+                    <p> {classes[aClass]['class_code']} </p>
+                    <p className='hourlyRate'> Hourly Rate: ${classes[aClass]['rate']} </p>
                 </div>
             </>)
-        })
+        }
 
         return (
             <>
