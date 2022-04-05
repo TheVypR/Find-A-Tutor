@@ -71,6 +71,7 @@ function FullCalendarApp() {
   const [filterAppts, setFilterAppts] = useState(true);
   const [filterClass, setFilterClass] = useState("All Classes");
   const [studentClasses, setStudentClasses] = useState();
+  const [isTutor, setIsTutor] = useState(false);
   
   //set time options
   var options = {
@@ -99,7 +100,7 @@ function FullCalendarApp() {
   const [wrongClass, setWrongClass] = useState(false);
   
   useEffect (() => {
-	if(localStorage.getItem("view") == "tutor"){
+	if(localStorage.getItem("view") == "tutor") {
 		TutLoad();
 	} else {
 		StuLoad();
@@ -137,6 +138,9 @@ function FullCalendarApp() {
 						console.log(error);
 					}
 				)
+
+	//check if the student is also a tutor
+	fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => setIsTutor(result));
 
 	fetch("/getGroupTutoring/?token=" + localStorage.getItem("token"))
 				.then(res => res.json())
@@ -497,6 +501,7 @@ function FullCalendarApp() {
 	
 
 		<div className="filter">
+		
 		<div className='switchViews'>
 			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
 		</div>

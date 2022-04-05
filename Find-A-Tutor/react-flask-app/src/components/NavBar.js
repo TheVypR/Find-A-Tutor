@@ -1,5 +1,4 @@
-import * as React from 'react';
-
+import {useState, useEffect} from 'react';
 import { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,9 +20,11 @@ const theme = createTheme({
     }
 });
 
-
-
 export default function NavBar() {
+	useEffect (() => {
+		fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => {console.log(result);setIsTutor(result)});
+	}, []);
+	
     const [isTutor, setIsTutor] = useState(false);
     function AddTutor() {
         fetch('/AddTutor/', {
@@ -35,24 +36,15 @@ export default function NavBar() {
         });
     }
     const auth = useContext(AuthContext);
-
-    useEffect(() => {
-        if(localStorage.getItem("view") === "tutor"){
-            setIsTutor(false);
-           
-        }
-        else{
-            setIsTutor(true);
-        
-        }
-        }, []);
     
-    let button;
-    if(isTutor){
-        button = <Button onClick={() => AddTutor()} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
-    }else{
-        button = <Button onClick={() => this.nextPath('/studentProfile')} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
-    }
+    let buttons;
+    if(!isTutor){
+        buttons = <Button onClick={() => {localStorage.setItem("view", "tutor");AddTutor()}} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
+    }else if (localStorage.getItem("view") === "tutor"){
+        buttons = <Button onClick={() => localStorage.setItem("view", "student")} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
+    } else {
+		buttons = <Button onClick={() => localStorage.setItem("view", "tutor")} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Tutor View</Button>
+	}
    
     return auth.isLoggedIn && (
         <ThemeProvider theme={theme}>
@@ -62,7 +54,7 @@ export default function NavBar() {
                     <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex'}}>
                         Find-A-Tutor
                     </Typography>
-                    {button}   
+                    {buttons}   
                     <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>

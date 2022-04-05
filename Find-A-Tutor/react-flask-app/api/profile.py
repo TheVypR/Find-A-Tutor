@@ -1,5 +1,5 @@
 #FIND-A-TUTOR ~ Profile Backend ~ Authors: Tim W., Isaac A.
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_wtf import FlaskForm
 from flask_wtf import Form
 from pymysql import NULL
@@ -13,7 +13,7 @@ from wtforms import BooleanField
 #Database stuff
 from flaskext.mysql import MySQL
 import json
-import login
+import login,timeManager
 
 app = Flask(__name__)
 
@@ -116,7 +116,7 @@ def retrieve_times(tut_email):
             availTimes.append(startAndEnd)
 
         #Condense times
-        availTimes = login.mergeTimes(availTimes)
+        availTimes = timeManager.mergeTimes(availTimes)
     else:
         availTimes = []
     
@@ -284,3 +284,22 @@ def remove_tutor(tutor):
     
     conn.close()
     return 'SUCCESS', 200
+
+def isTutor(email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    tutor = False
+    try:
+        print(email)
+        cursor.execute("select tut_email from Tutor where tut_email = \"" + email + "\"")
+        isTutor = cursor.fetchone()
+        print(isTutor)
+        if isTutor:
+            tutor = True
+        else:
+            tutor = False
+    except:
+        return "SQL ERROR", 400
+        
+    return jsonify(tutor), 200
