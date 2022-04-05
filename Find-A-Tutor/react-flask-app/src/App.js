@@ -16,7 +16,10 @@ import AddGroupTutoring from './components/AddGroupTutoring';
 import GroupTutoring from './components/GroupTutoring';
 import FileUpload from './components/FileUpload';
 import { AuthContext } from './components/AuthContext';
+import ProfessorUpload from './components/ProfessorUpload';
 
+//the core function
+//calls all other pages and manages authentication
 export default function App() {
 	
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") !== null ? true : false);
@@ -61,7 +64,8 @@ export default function App() {
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
             <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
-			<Route path='/FileUpload' element={<FileUpload />} />
+			      <Route path='/FileUpload' element={<FileUpload />} />
+            <Route path='/ProfessorUpload' element={<ProfessorUpload />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

@@ -13,6 +13,9 @@ export default function AdminNavBar() {
                 <Typography component="h1" variant="h4" color="inherit" sx={{px: 5, flexGrow: 1, display: 'flex'}}>
                     Admin View
                 </Typography>
+                <MenuItem component='a' href='./ProfessorUpload'>
+                    <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Professor Upload</Typography>
+                </MenuItem>
                 <MenuItem component='a' href='./AddGroupTutoring'>
                     <Typography variant="button" align="center" color="inherit" sx={{my: 1, mx: 1}}>Group Tutoring</Typography>
                 </MenuItem>
