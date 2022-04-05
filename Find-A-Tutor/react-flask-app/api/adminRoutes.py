@@ -379,11 +379,15 @@ def professorUploading(data):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
+
+    print(data)
         
     #go through all the data
     for row in data:
         try:
             #check if the professor is in the DB
+            if len(row) < 3:
+                continue
             cursor.execute("select prof_email from Professor where prof_email = (%s)", (row[1]))
             profFound = cursor.fetchone()
             if profFound:
@@ -406,11 +410,15 @@ def classUploading(data):
     
     for row in data:
         try:
+            if len(row) < 2:
+                continue
             #check if the professor is in the DB
             cursor.execute("select class_code from Classes where class_code = (%s)", (row[0]))
             profFound = cursor.fetchone()
             if profFound:
+                print("thing")
                 cursor.execute("update Classes set class_code = (%s), prof_email = (select prof_email from Professor where prof_name = (%s))", (row[0], row[1]))
+                print("thing")
             #if not, enter them into it
             else:
                 cursor.execute("insert into Classes(class_code, prof_email) values((%s), (%s))", (row[0], row[1]))  
