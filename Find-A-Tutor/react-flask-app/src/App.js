@@ -4,8 +4,8 @@ import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Calendar from './components/calendar'
-import SignIn from "./components/SignIn"
-import SignUp from "./components/SignUp"
+import SignIn from "./components/Login/SignIn"
+import SignUp from "./components/Login/SignUp"
 import { createContext } from 'react';
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
