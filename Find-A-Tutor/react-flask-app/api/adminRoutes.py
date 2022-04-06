@@ -464,12 +464,9 @@ def saveOfficeHours(filename):
             print(names[1])
             matchingProf.append(prof)
     if len(matchingProf) > 1:
-        print("too many")
         return "Too many professors match", 500
     else:
-        print("check")
         cursor.execute("update Professor set office_hours = (%s) where prof_name = (%s)", (filename, matchingProf[0]))
-        print("test")
 
     return "SUCCESS", 200
 
@@ -484,8 +481,8 @@ def saveSyllabi(filename):
     classes = cursor.fetchall()
     matchingClasses = []
     for cls in classes:
-        if cls in filename:
-            matchingClasses.append(cls)
+        if cls[0] in filename:
+            matchingClasses.append(cls[0])
     if len(matchingClasses) > 1:
         return "Too many classes match", 500
     else:
