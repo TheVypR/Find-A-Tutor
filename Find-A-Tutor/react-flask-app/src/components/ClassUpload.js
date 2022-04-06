@@ -18,7 +18,29 @@ export default function ClassUpload() {
     //authentication
 	const authContext = useContext(AuthContext);
 
-    const uploadFile = async (e) => {
+    const uploadSyllabi = async (e) => {
+        const files = e.target.files;
+        console.log(files)
+        for (var i = 0; i < files.length; i++) {
+            console.log(files[i])
+            if (files[i] != null) {
+              const data = new FormData();
+              data.append('file', files[i]);
+              let response = await fetch('/syllabiUpload/',
+                {
+                  method: 'post',
+                  body: data,
+                }
+              );
+              let res = await response.json();
+              if (res.status !== 1) {
+                alert('Error uploading file');
+              }
+            }
+        }
+      };
+
+    const uploadClass = async (e) => {
         const files = e.target.files;
         console.log(files)
         for (var i = 0; i < files.length; i++) {
@@ -63,7 +85,7 @@ export default function ClassUpload() {
                             />
                             <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
                                 <form>
-                                    <input type="file" onChange={(e) => uploadFile(e)} accept=".csv" style={{color: 'black', textAlign: 'center'}} />
+                                    <input type="file" onChange={(e) => uploadClass(e)} accept=".csv" style={{color: 'black', textAlign: 'center'}} />
                                 </form>
                             </Grid>
                         </Paper>
@@ -84,7 +106,7 @@ export default function ClassUpload() {
                             />
                             <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
                                 <form>
-                                    <input type="file" multiple onChange={(e) => uploadFile(e)} style={{color: 'black', textAlign: 'center'}} />
+                                    <input type="file" multiple onChange={(e) => uploadSyllabi(e)} style={{color: 'black', textAlign: 'center'}} />
                                 </form>
                             </Grid>
                         </Paper>
