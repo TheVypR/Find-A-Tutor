@@ -40,11 +40,13 @@ class AvailableTimes extends React.Component {
         return (
             <>
                 <div className="d-flex flex-column">
-                    <div className="d-flex justify-content-end contactMe">
-                        <input type="checkbox" id="contactMe" onChange={this.contactMe} />
-                        <label htmlFor="contactMe"> Contact Me For Availability </label>
+                    <div className="d-flex justify-content-start contactMe">
+                        <input type="checkbox"  id="contactMe" onChange={this.contactMe} />
+                        <label htmlFor="contactMe"  id="contactMeLabel"> Contact Me For Availability </label>
                     </div>
-                    <Week times={times} moments={this.props.moments} />
+                    <div className="d-flex justify-content-center"> 
+                        <Week times={times} moments={this.props.moments} />
+                    </div>
                 </div>
             </>
         );//Return

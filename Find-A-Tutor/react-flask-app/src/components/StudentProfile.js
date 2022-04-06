@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
-
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import "./TutorProfile.css"
 
 class StudentProfile extends React.Component {
@@ -12,6 +16,7 @@ class StudentProfile extends React.Component {
 
         this.state = {
             classesList: [],
+            removeClasses: [],
             isLoaded: false,
             isTutorView: true
         }
@@ -22,9 +27,16 @@ class StudentProfile extends React.Component {
     }
 
     handleSubmit = () => {
+        let newClasses = this.state.classesList.filter(cls =>
+            Object.keys(cls).includes("new") &&
+            Object.keys(cls).includes("class_code"));
+        let removeClasses = this.state.removeClasses.filter(cls =>
+            Object.keys(cls).includes("class_code"));
+
         const values = {
             'token': localStorage.getItem("token"),
-            "classesTaking": this.state.classesList
+            "classesTaking": newClasses,
+            'removeClassesTaking': removeClasses
         };
 
         const response = fetch("/myProfile/", {
@@ -33,17 +45,16 @@ class StudentProfile extends React.Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(values)
-        })
-        this.props.edit();
+        }).then(this.props.edit());
     }
 
     AddNewClass() {
         this.setState({
             classesList: [
                 ...this.state.classesList,
-                ""
+                { "new": true, "fromDB": false }
             ]
-        });
+        }, () => console.log(this.state.classesList));
     }
 
     /**
@@ -55,28 +66,38 @@ class StudentProfile extends React.Component {
     setCourseCode(code, index) {
         let classes = this.state.classesList;
         let aClass = { ...classes[index] };
-        aClass = code;
+        aClass['class_code'] = code;
+        aClass['new'] = true;
         classes[index] = aClass;
-        this.setState({ classesList: classes })
     }//setCourseCode
 
-    RemoveClass = index => {
-        this.state.classesList.splice(index, 1);
+    /**
+     * Removes class from DOM
+     * 
+     * @param {int} index index of class to be removed
+     */
+    RemoveClass(index) {
+        var classes = this.state.classesList;
+        //remove class from DOM
+        let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
+        let removeClasses = classes.filter(aClass => aClass == classes[index]);
 
-        this.setState({
-            classesList: this.state.classesList
+        this.setState({ classesList: filteredClasses });
+        this.setState({ removeClasses: removeClasses })
+    }//removeClass
+
+    componentDidMount() {
+        let filledInClasses = this.props.items['classesTaking'];
+        filledInClasses.forEach(aClass => {
+            var classesList = this.state.classesList;
+            classesList.push({ "fromDB": true, "class_code": aClass[0] })
+            this.setState({ classesList: classesList })
         })
     }
 
     render() {
         var items = this.props.items;
-        let filledInClasses = items['classesTaking'];
-        let classesList = [];
-        filledInClasses.forEach(aClass => {
-            classesList.push(<>
-                    <p style={{ margin: "10px" }} > {aClass} </p>
-            </>)
-        })
+        console.log(this.state.classesList);
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
@@ -91,27 +112,46 @@ class StudentProfile extends React.Component {
                     <div className="p-2 studentClasses">
                         <p style={{ fontWeight: "bold" }}> Classes </p>
                         <div id="classes">
-                            {classesList}
-                            {this.state.classesList.map((thisClass, index) => {
-                                return (
-                                    <div className="input-group mb-3">
-                                        <input
-                                            name="courseCode"
-                                            id={index}
-                                            className="courseCode"
-                                            onChange={e => this.setCourseCode(e.target.value, index)}
-                                            type="text"
-                                            placeholder='HUMA 200 A'
-                                            size="8">
-                                        </input>
-                                        <div className="input-group-append">
-                                            <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
-                                                <BsFillTrashFill />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            <Table size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><strong>Class Code</strong></TableCell>
+                                        <TableCell><strong>Remove</strong></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {this.state.classesList.map((item, index = this.state.classesList.indexOf(item)) => (
+                                        item['fromDB'] ?
+                                            <TableRow key={item['class_code']} hover>
+                                                <TableCell> {item['class_code']} </TableCell>
+                                                <TableCell>
+                                                    <Button id={item['class_code']} className="removeClass" variant="danger" onClick={() => this.RemoveClass(this.state.classesList.indexOf(item))}>
+                                                        <BsFillTrashFill />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow> :
+                                            <TableRow key={item['class_code']} hover>
+                                                <TableCell>
+                                                    <input
+                                                        name="courseCode"
+                                                        id={index}
+                                                        className="courseCode"
+                                                        onChange={e => this.setCourseCode(e.target.value, index)}
+                                                        type="text"
+                                                        placeholder='HUMA 200 A'
+                                                        size="8">
+                                                    </input>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>
+                                                        <BsFillTrashFill />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+
 
                         </div>
                         <Button type="button" id="AddClass" variant="primary" onClick={this.AddNewClass}> Add Class </Button>

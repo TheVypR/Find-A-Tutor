@@ -204,6 +204,7 @@ def myProfile():
     submission = request.get_json()
     token = submission['token']
     email = authentication.getEmail(token)[0]
+    print(submission)
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
@@ -378,6 +379,15 @@ def verifyRequest():
     #return the success or failure
     return adminRoutes.submitVerifyRequest(email, class_code)
 
+@app.route('/approveOrDeny/', methods=['GET'])
+def approveDenyRequest():
+    approve = request.args.get("approve")
+    code = request.args.get("approve_code")
+    if(approve):
+        return adminRoutes.approveVerification(code)
+    else:
+        return adminRoutes.denyVerification(code)
+    
 @app.route('/fileUpload/', methods=['POST'])
 def fileUpload():
     d = {}

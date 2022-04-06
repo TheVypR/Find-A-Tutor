@@ -21,14 +21,19 @@ class LoadProfile extends React.Component {
         this.editStudent = this.editStudent.bind(this);
         this.doFetch = this.doFetch.bind(this);
         this.convertToMoment = this.convertToMoment.bind(this);
+        this.updateProfiles = this.updateProfiles.bind(this);
     }//constructor
+
+    updateProfiles() {
+        this.forceUpdate();
+    }
 
     /**
      * Toggles isEdit
      * then fetches any changes from the db
      */
     edit() {
-        this.setState({ isEdit: !this.state.isEdit }, function () {
+        this.setState({ isEdit: !this.state.isEdit }, () => {
             this.doFetch();
         });
     }//edit
@@ -38,7 +43,7 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     editStudent() {
-        this.setState({ isEditStudent: !this.state.isEditStudent }, function () {
+        this.setState({ isEditStudent: !this.state.isEditStudent }, () => {
             this.doFetch();
         });
     }//editStudent
@@ -109,6 +114,7 @@ class LoadProfile extends React.Component {
     render() {
         let profiles = this.state.isLoaded ?
             <Profiles
+                updateProfiles={this.updateProfiles}
                 items={this.state.items}
                 edit={this.edit}
                 editStudent={this.editStudent}
