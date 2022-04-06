@@ -1,10 +1,5 @@
 #FIND-A-TUTOR ~ Profile Backend ~ Authors: Tim W., Isaac A.
 from flask import Flask, request, jsonify
-from flask_wtf import FlaskForm
-from flask_wtf import Form
-from pymysql import NULL
-from wtforms import BooleanField
-
 #from MySQLdb import escape_string as thwart
 
 #error constants
@@ -12,8 +7,7 @@ from wtforms import BooleanField
 
 #Database stuff
 from flaskext.mysql import MySQL
-import json
-import login,timeManager
+import timeManager
 
 app = Flask(__name__)
 

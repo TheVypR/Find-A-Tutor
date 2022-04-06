@@ -19,6 +19,7 @@ import { AuthContext } from './components/AuthContext';
 import ProfessorUpload from './components/ProfessorUpload';
 import ClassUpload from './components/ClassUpload';
 import ProfessorInfo from './components/ProfessorInfo';
+import ClassInfo from './components/ClassInfo';
 
 //the core function
 //calls all other pages and manages authentication
@@ -62,6 +63,7 @@ export default function App() {
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/GroupTutoring' element={<GroupTutoring />} />
             <Route path='/ProfessorInfo' element={<ProfessorInfo />} />
+            <Route path='/ClassInfo' element={<ClassInfo />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />

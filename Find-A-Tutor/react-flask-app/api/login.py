@@ -5,7 +5,6 @@ from flask import Flask, request, jsonify                   #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication, timeManager   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS                                 #used to ignore CORS
-from io import BytesIO                                      #used for file upload
 import os
 
 #setup flask
@@ -457,6 +456,10 @@ def saveSyllabi():
 @app.route('/getProfessors/', methods=['GET'])
 def getProfessors():
     return adminRoutes.getProfessors()
+
+@app.route('/getClasses/', methods=['GET'])
+def getClasses():
+    return adminRoutes.getClasses()
 
 @app.route('/isTutor/', methods=['GET'])
 def isTutor():

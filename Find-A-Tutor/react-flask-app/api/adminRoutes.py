@@ -446,3 +446,19 @@ def getProfessors():
     
     #return success
     return jsonify(data), 200
+
+def getClasses():
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #add student to Tutor table
+    cursor.execute("select class_code, p.prof_name, syllabus from Classes c, Professor p where c.prof_email = p.prof_email")
+    data = cursor.fetchall()
+
+    #close the connection
+    conn.close()
+    
+    #return success
+    return jsonify(data), 200
