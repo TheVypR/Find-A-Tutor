@@ -89,7 +89,6 @@ export default function SignIn(props) {
         <form onSubmit={handleSubmit}>
           <div className="d-flex justify-content-around align-items-center">
             <div className="d-flex align-items-center">
-              <h1> Welcome to <br /> Find-A-Tutor</h1>
               <img
                 src={`${Logo}?w=50&h=50&fit=crop&auto=format`}
                 srcSet={`${Logo}?w=50&h=50&fit=crop&auto=format&dpr=2 15x`}
@@ -97,6 +96,7 @@ export default function SignIn(props) {
                 loading="lazy"
                 className='logo'
               />
+              <h1> Find-A-Tutor</h1>
             </div>
             <div className="d-flex justify-content-center Login">
               {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
