@@ -18,7 +18,29 @@ export default function ProfessorUpload() {
     //authentication
 	const authContext = useContext(AuthContext);
 
-    const uploadFile = async (e) => {
+    const uploadHours = async (e) => {
+        const files = e.target.files;
+        console.log(files)
+        for (var i = 0; i < files.length; i++) {
+            console.log(files[i])
+            if (files[i] != null) {
+              const data = new FormData();
+              data.append('file', files[i]);
+              let response = await fetch('/officeHoursUpload/',
+                {
+                  method: 'post',
+                  body: data,
+                }
+              );
+              let res = await response.json();
+              if (res.status !== 1) {
+                alert('Error uploading file');
+              }
+            }
+        }
+      };
+
+    const uploadProfessor = async (e) => {
         const files = e.target.files;
         console.log(files)
         for (var i = 0; i < files.length; i++) {
@@ -63,7 +85,7 @@ export default function ProfessorUpload() {
                             />
                             <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
                                 <form>
-                                    <input type="file" onChange={(e) => uploadFile(e)} accept=".csv"  style={{color: 'black', textAlign: 'center'}} />
+                                    <input type="file" onChange={(e) => uploadProfessor(e)} accept=".csv"  style={{color: 'black', textAlign: 'center'}} />
                                 </form>
                             </Grid>
                         </Paper>
@@ -84,7 +106,7 @@ export default function ProfessorUpload() {
                             />
                             <Grid justifyContent="center" sx={{py: 4, ml: 12}}>
                                 <form>
-                                    <input type="file" multiple onChange={(e) => uploadFile(e)} style={{color: 'black', textAlign: 'center'}} />
+                                    <input type="file" multiple onChange={(e) => uploadHours(e)} style={{color: 'black', textAlign: 'center'}} />
                                 </form>
                             </Grid>
                         </Paper>

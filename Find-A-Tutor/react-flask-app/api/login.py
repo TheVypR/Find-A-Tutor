@@ -6,6 +6,7 @@ import profile, signup, appointment, history, adminRoutes, authentication, timeM
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS                                 #used to ignore CORS
 from io import BytesIO                                      #used for file upload
+import os
 
 #setup flask
 app = Flask(__name__)
@@ -13,6 +14,10 @@ CORS(app)
 
 #setup DB
 mysql = MySQL()
+
+#directory paths
+office_hours_dir = './office_hours/'
+syllabi_dir = './syllabi/'
 
 #toggle for accessing the DB on a local machine
 locality = 1 # have locality set to 1 if you want to test on your local machine
@@ -408,12 +413,36 @@ def classUpload():
         file = request.files['file']
         filename = file.filename
         file_bytes = file.read()
-        file_content = file_bytes.decode("utf-8") #str(BytesIO(file_bytes).readlines())
+        file_content = file_bytes.decode("utf-8")
     except:
         return "ERROR: Problem Reading File", 400
     
     #send to the database
     return adminRoutes.classUploading(parseCSVData(file_content))
+
+@app.route('/officeHoursUpload/', methods=['POST'])
+def saveOfficeHours():
+    d = {}
+    try:
+        file = request.files['file']
+        file.save(os.path.join(office_hours_dir, file.filename))
+        d['status'] = 1
+    except Exception as e:
+        d['status'] = 0
+
+    return jsonify(d), 200
+
+@app.route('/syllabiUpload/', methods=['POST'])
+def saveSyllabi():
+    d = {}
+    try:
+        file = request.files['file']
+        file.save(os.path.join(syllabi_dir, file.filename))
+        d['status'] = 1
+    except Exception as e:
+        d['status'] = 0
+
+    return jsonify(d), 200
 
 @app.route('/getProfessors/', methods=['GET'])
 def getProfessors():
