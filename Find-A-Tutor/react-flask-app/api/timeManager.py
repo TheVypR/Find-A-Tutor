@@ -212,4 +212,11 @@ def makeRecurring(date, endPeriod):
             curDate = curDate + timedelta(weeks=1)
     else:
         #default endPeriod to 12 weeks (about 3 months)
-        endPeriod = startDate + timedelta(weeks=12)
+        endPeriod = curDate + timedelta(weeks=12)
+        endDate = datetime.strptime(endPeriod, '%Y-%m-%dT%H:%M:%S')
+        #continue making iterations of the date until it is greater than the endPeriod
+        while curDate < endDate:
+            dateArray.append(curDate)
+            curDate = curDate + timedelta(weeks=1)
+
+    return dateArray 
