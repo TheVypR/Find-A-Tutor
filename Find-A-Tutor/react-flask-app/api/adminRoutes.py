@@ -1,5 +1,4 @@
 #FIND-A-TUTOR ~ Admin Backend ~ Authors: Aaron S., Isaac A.
-from nis import match
 import random
 import string
 from flask import Flask, jsonify   #used for Flask API
@@ -455,15 +454,24 @@ def saveOfficeHours(filename):
     #check what professor the office hours are for
     cursor.execute("select prof_name from Professor")
     profs = cursor.fetchall()
+    print(profs)
     matchingProf = []
     for prof in profs:
-        names = prof.split(' ')
+        print(prof)
+        names = prof[0].split()
+        print(names)
         if names[0] in filename and names[1] in filename:
+            print(names[1])
             matchingProf.append(prof)
     if len(matchingProf) > 1:
+        print("too many")
         return "Too many professors match", 500
     else:
+        print("check")
         cursor.execute("update Professor set office_hours = (%s) where prof_name = (%s)", (filename, matchingProf[0]))
+        print("test")
+
+    return "SUCCESS", 200
 
 def saveSyllabi(filename):
     #connect to DB

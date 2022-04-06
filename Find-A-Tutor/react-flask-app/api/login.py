@@ -434,7 +434,7 @@ def saveOfficeHours():
     return jsonify(d), 200
 
 @app.route('/downloadOfficeHours/', methods=['GET'])
-def loadSyllabus():
+def loadOfficeHours():
     file = request.args.get("filename")
     return send_file(os.path.join(office_hours_dir, file), attachment_filename=file)
 
