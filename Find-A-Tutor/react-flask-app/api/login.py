@@ -391,7 +391,7 @@ def fileUpload():
 def professorUpload():    
     #get the data from the given file
     try:
-        file = request.files['files']
+        file = request.files['file']
         filename = file.filename
         file_bytes = file.read()
         file_content = file_bytes.decode("utf-8") #str(BytesIO(file_bytes).readlines())
@@ -405,7 +405,7 @@ def professorUpload():
 def classUpload():    
     #get the data from the given file
     try:
-        file = request.files['files']
+        file = request.files['file']
         filename = file.filename
         file_bytes = file.read()
         file_content = file_bytes.decode("utf-8") #str(BytesIO(file_bytes).readlines())
@@ -414,6 +414,10 @@ def classUpload():
     
     #send to the database
     return adminRoutes.classUploading(parseCSVData(file_content))
+
+@app.route('/getProfessors/', methods=['GET'])
+def getProfessors():
+    return adminRoutes.getProfessors()
 
 @app.route('/isTutor/', methods=['GET'])
 def isTutor():

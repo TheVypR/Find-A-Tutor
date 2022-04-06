@@ -55,8 +55,6 @@ export default function TutoringHistory() {
 	useEffect(() => {setRating(appts['rating']);}, []);
 	
 	const onRatingChange = (event) => {
-		console.log(event.target.value)
-		console.log(target)
 		fetch("/submitRating/", {
 			method: 'POST',
 			headers: {
@@ -72,9 +70,6 @@ export default function TutoringHistory() {
 	}
 	
 	const handleReport = () => {
-		console.log(reason)
-		console.log(target)
-		console.log(report)
 		fetch("/submitReport/", {
 			method: 'POST',
 			headers: {
