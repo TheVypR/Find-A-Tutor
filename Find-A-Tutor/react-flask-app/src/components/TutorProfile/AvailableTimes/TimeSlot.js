@@ -55,7 +55,7 @@ class SubmitRemoveTime extends React.Component {
                 {submitBtn}
 
                 <Button className="removeTime" variant="danger" onClick={() => { this.removeTimeSlot(index, this.props.day) }}>
-                    <BsFillTrashFill size="14" />
+                    <BsFillTrashFill size="12" />
                 </Button> <br />
             </>
         );//return

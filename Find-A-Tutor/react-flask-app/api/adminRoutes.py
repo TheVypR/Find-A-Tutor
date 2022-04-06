@@ -362,6 +362,8 @@ def denyVerification(deny_code):
     
     #delete request from DB
     removeVerificationRequest(request[0], request[1])
+
+    return "SUCCESS", 200
     
 #remove request from table
 def removeVerificationRequest(tut_email, class_code):

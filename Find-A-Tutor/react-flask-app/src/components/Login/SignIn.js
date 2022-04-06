@@ -90,11 +90,12 @@ export default function SignIn(props) {
           <div className="d-flex justify-content-around align-items-center">
             <div className="d-flex align-items-center">
               <img
-                src={`${Logo}?w=50&h=50&fit=crop&auto=format`}
-                srcSet={`${Logo}?w=50&h=50&fit=crop&auto=format&dpr=2 15x`}
+                src={`${Logo}`}
+                width="100"
+                height="80"
                 alt="Find-A-Tutor Logo"
-                loading="lazy"
-                className='logo'
+              loading="lazy"
+              className='logo'
               />
               <h1> Find-A-Tutor</h1>
             </div>
@@ -148,7 +149,7 @@ export default function SignIn(props) {
                     disableUnderline: true, // <== added this
                   }}
                 />
-                <Link to='/signup' variant="body2" style={{ display: "inline-block" }} >
+                <Link className="signup" to='/signup' variant="body2" style={{ display: "inline-block" }} >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </div>
