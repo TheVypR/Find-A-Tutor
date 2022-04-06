@@ -269,9 +269,10 @@ def edit_profile(submission, tut_email):
     classes = submission['classes']
 
     #check if any classes were removed
-    print(len(submission['removeClasses']))
     if len(submission['removeClasses']) > 0:
         remove_classes(submission['removeClasses'], tut_email)
+    
+
 
     #Loop through the Tutor's classes 
     #if the class has a class_code add it to the DB
@@ -281,6 +282,24 @@ def edit_profile(submission, tut_email):
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 
     conn.close()
+    return 'SUCCESS', 200
+
+def remove_student_classes(classes, tut_email):
+    """Remove classes that the student is taking
+
+    """
+
+    #Connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #Check type of remove
+    #loop through times and run this query for each 15 minute slot
+    for cls in classes:
+        cursor.execute("delete from StudentClasses where stu_email=\'" + tut_email + "\' and class_code=\'" + cls['class_code'] + "\';")
+    conn.close()
+    
     return 'SUCCESS', 200
 
 def edit_student_classes(submission, tut_email) :
@@ -294,7 +313,12 @@ def edit_student_classes(submission, tut_email) :
 
     #loop through each class added and insert it into the db
     for aClass in classes:
-        cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass))
+        cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass['class_code']))
+
+    print(submission['removeClassesTaking'])
+    #Check if any student classes were removed
+    if len(submission['removeClassesTaking']) > 0:
+        remove_student_classes(submission['removeClassesTaking'], tut_email)
 
     conn.close()
     return 'SUCCESS', 200

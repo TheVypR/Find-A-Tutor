@@ -2,23 +2,36 @@ import React from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill, BsFillPlusCircleFill, BsPatchCheckFill } from "react-icons/bs";
 import "./TutorProfile.css"
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 class ClassesStudying extends React.Component {
     render() {
         let classes = this.props.classes;
         let classesList = [];
         classes.forEach(aClass => {
-            classesList.push(<>
-                <p style={{ margin: "10px" }} > {aClass} </p>
-            </>)
+            classesList.push(aClass)
         })
         return (
             <>
                 <div className="p-2 studentClasses">
-                    <p style={{ fontWeight: "bold" }}> Current Classes </p>
-                    <div id="classes">
-                        {classesList}
-                    </div>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell><strong>Class Code</strong></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {classesList.map((item) => (
+                                <TableRow key={item} hover>
+                                    <TableCell>{item} </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </div>
             </>
         );//return
