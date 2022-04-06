@@ -49,11 +49,11 @@ export default function ProfessorInfo() {
                             <Grid item xs={8}> </Grid>
                             <Grid item xs={8}>
                                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                    Professor Info
+                                    Professor Information
                                 </Typography>
                             </Grid>
                             <Grid  item xs={8}>
-                                <TextField margin="normal" id="search" label="Search Professors" variant='outlined' style={{ width: 400 }} value={filter} onChange={(newValue) => { setFilter(newValue.target.value); }} />
+                                <TextField margin="normal" id="search" label="Search Professors" variant='outlined' style={{ width: 350 }} value={filter} onChange={(newValue) => { setFilter(newValue.target.value); }} />
                             </Grid>
                         </Grid>
                         <Table size="large">

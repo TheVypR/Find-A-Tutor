@@ -13,7 +13,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import '../adminView.css';
-import { AuthContext } from '../AuthContext';
 import DateAdapter from '@mui/lab/AdapterMoment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
@@ -22,8 +21,6 @@ import TextField from '@mui/material/TextField';
 const theme = createTheme();
 
 export default function GroupTutoring() {
-    //authentication
-    const authContext = useContext(AuthContext);
 
     //list of group tutoring
     const [allGroup, setAllGroup] = useState([]);
