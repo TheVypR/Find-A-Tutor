@@ -75,6 +75,9 @@ export default function NavBar() {
                         <MenuItem component='a' href='./ProfessorInfo'>
                             <Typography textAlign='center'>Professor Info</Typography>
                         </MenuItem>
+                        <MenuItem component='a' href='./ClassInfo'>
+                            <Typography textAlign='center'>Class Info</Typography>
+                        </MenuItem>
                         <MenuItem component='a' href={(localStorage.getItem("view") == "tutor" ? './TutoringHistory' : './StudentHistory')}>
                             <Typography textAlign='center'>Tutoring History</Typography>
                         </MenuItem>

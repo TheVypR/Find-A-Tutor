@@ -48,12 +48,12 @@ export default function ClassInfo() {
                 <CssBaseline />
                 <NavBar />
                 <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3, pl: 6}}>
-                    <TextField margin="normal" id="search" label="Search Professors" variant='outlined' style={{width: 400}} value={filter} onChange={(newValue) => {setFilter(newValue.target.value);}}/>
+                    <TextField margin="normal" id="search" label="Search Classes" variant='outlined' style={{width: 400}} value={filter} onChange={(newValue) => {setFilter(newValue.target.value);}}/>
                 </Grid>
-                <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
+                <Container maxWidth="lg" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                         <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                            Professor Information
+                            Class Information
                         </Typography>
                         <Table size="large">
                             <TableHead>
