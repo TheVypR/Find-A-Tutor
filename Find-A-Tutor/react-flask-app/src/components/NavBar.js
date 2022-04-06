@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,6 +10,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import Logo from '../images/logo.png';
+
 
 
 const theme = createTheme({
@@ -21,11 +23,11 @@ const theme = createTheme({
 });
 
 export default function NavBar() {
-	const [isTutor, setIsTutor] = useState(false);
-	useEffect (() => {
-		fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => {console.log(result);setIsTutor(result)});
-	}, []);
-    
+    const [isTutor, setIsTutor] = useState(false);
+    useEffect(() => {
+        fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => { console.log(result); setIsTutor(result) });
+    }, []);
+
     function AddTutor() {
         fetch('/AddTutor/', {
             method: 'POST',
@@ -36,26 +38,33 @@ export default function NavBar() {
         });
     }
     const auth = useContext(AuthContext);
-    
+
     let buttons;
-    if(!isTutor) {
-        buttons = <Button onClick={() => {localStorage.setItem("view", "tutor"); AddTutor()}} href="./myProfile" color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Become A Tutor</Button>
-    }else if (localStorage.getItem("view") === "tutor") {
-        buttons = <Button onClick={() => {localStorage.setItem("view", "student")}} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Student View</Button>
+    if (!isTutor) {
+        buttons = <Button onClick={() => { localStorage.setItem("view", "tutor"); AddTutor() }} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
+    } else if (localStorage.getItem("view") === "tutor") {
+        buttons = <Button onClick={() => { localStorage.setItem("view", "student") }} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Student View</Button>
     } else {
-		buttons = <Button onClick={() => localStorage.setItem("view", "tutor")} color="inherit" variant="outlined" sx={{my: 1, mx: 1}}>Switch To Tutor View</Button>
-	}
-   
+        buttons = <Button onClick={() => localStorage.setItem("view", "tutor")} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Tutor View</Button>
+    }
+
     return auth.isLoggedIn && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <AppBar postion="static" color="primary" sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
-                <Toolbar sx={{flexwrap: 'wrap'}}>
-                    <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex'}}>
+            <AppBar postion="static" color="primary" sx={{ borderTheme: (theme) => `1px solid ${theme.palette.divider}` }}>
+                <Toolbar sx={{ flexwrap: 'wrap' }}>
+                    <img
+                        src={`${Logo}?w=10&h=10&fit=crop&auto=format`}
+                        srcSet={`${Logo}?w=10&h=10&fit=crop&auto=format&dpr=2 25x`}
+                        alt="Find-A-Tutor Logo"
+                        loading="lazy"
+                        className='logo'
+                    />
+                    <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex' }}>
                         Find-A-Tutor
                     </Typography>
-                    {buttons}   
-                    <Toolbar sx={{flexwrap: 'wrap', margin: 'auto', display: 'flex'}}>
+                    {buttons}
+                    <Toolbar sx={{ flexwrap: 'wrap', margin: 'auto', display: 'flex' }}>
                         <MenuItem component='a' href='./Calendar'>
                             <Typography textAlign='center'>Calendar</Typography>
                         </MenuItem>
@@ -69,8 +78,8 @@ export default function NavBar() {
                             <Typography textAlign='center'>Tutoring History</Typography>
                         </MenuItem>
                     </Toolbar>
-                    <Link to={"/myProfile"}><AccountBoxOutlinedIcon sx={{fontSize: 60}} color='secondary' /></Link>
-                    <Button onClick={auth.logout} href='./' color='inherit' variant='outlined' sx={{my:1,mx:1}}>Logout</Button>
+                    <Link to={"/myProfile"}><AccountBoxOutlinedIcon sx={{ fontSize: 60 }} color='secondary' /></Link>
+                    <Button onClick={auth.logout} href='./' color='inherit' variant='outlined' sx={{ my: 1, mx: 1 }}>Logout</Button>
                 </Toolbar>
             </AppBar>
         </ThemeProvider>
