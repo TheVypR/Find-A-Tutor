@@ -18,9 +18,8 @@ import { AuthContext } from '../AuthContext';
 import GroupTutoring from './GroupTutoring'
 import './LoginCSS.css'
 import AppBar from '@mui/material/AppBar';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
-import Logo from '../../images/logo.png'
+import Logo from '../../images/logo.png';
+import ProfessorInfo from './ProfessorInfo';
 
 
 const theme = createTheme();
@@ -125,6 +124,7 @@ export default function SignIn(props) {
                   type="submit"
                   style={{ width: '100px', marginTop: "5px", marginLeft: "5px", marginRight: "5px", display: "inline-block" }}
                   variant="contained"
+                  color="success"
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Sign In
@@ -165,6 +165,7 @@ export default function SignIn(props) {
       <div className="groupTutoring">
         <GroupTutoring />
       </div>
+      <ProfessorInfo />
     </>
   );
 }
