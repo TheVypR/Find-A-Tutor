@@ -149,7 +149,7 @@ export default function SignIn(props) {
                     disableUnderline: true, // <== added this
                   }}
                 />
-                <Link to='/signup' variant="body2" style={{ display: "inline-block" }} >
+                <Link className="signup" to='/signup' variant="body2" style={{ display: "inline-block" }} >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </div>
