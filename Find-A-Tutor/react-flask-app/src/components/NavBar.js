@@ -54,8 +54,9 @@ export default function NavBar() {
             <AppBar postion="static" color="primary" sx={{ borderTheme: (theme) => `1px solid ${theme.palette.divider}` }}>
                 <Toolbar sx={{ flexwrap: 'wrap' }}>
                     <img
-                        src={`${Logo}?w=10&h=10&fit=crop&auto=format`}
-                        srcSet={`${Logo}?w=10&h=10&fit=crop&auto=format&dpr=2 25x`}
+                        src={`${Logo}`}
+                        width="50"
+                        height="40"
                         alt="Find-A-Tutor Logo"
                         loading="lazy"
                         className='logo'

@@ -36,7 +36,12 @@
 }
 
 .contactMe {
-    margin-right: 10px;
+    margin-top: 20px;
+    margin-left: 100px;
+}
+
+#contactMeLabel{
+    margin-left: 5px;
 }
 
 #bottom {
@@ -48,7 +53,8 @@
 }
 
 .AddTimeSlot {
-    margin-top: 5px;
+    padding: 3px 3px;
+    font-size: 50%;
 }
 
 .removeTime{
@@ -115,6 +121,7 @@
 }
 
 .availableTimes {
+    width: fit-content;
     margin-top: 12px;
     border: thin solid black;
     border-radius: 5px;
