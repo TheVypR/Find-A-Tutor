@@ -199,6 +199,7 @@ def myProfile():
     submission = request.get_json()
     token = submission['token']
     email = authentication.getEmail(token)[0]
+    print(submission)
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
