@@ -4,23 +4,22 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
+import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import moment from 'moment'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import * as React from 'react';
-import { useState, useEffect, useContext } from 'react';
-import '../adminView.css';
-import DateAdapter from '@mui/lab/AdapterMoment';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateAdapter from '@mui/lab/AdapterMoment';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import './LoginCSS.css';
 import TextField from '@mui/material/TextField';
 
 //making styles and themes
 const theme = createTheme();
 
-export default function GroupTutoring() {
+export default function ProfessorInfo() {
 
     //list of group tutoring
     const [allGroup, setAllGroup] = useState([]);
@@ -28,18 +27,9 @@ export default function GroupTutoring() {
     //filter
     const [filter, setFilter] = useState("");
 
-    const filtering = (value) => {
-        if (value.nativeEvent.data === null) {
-            setFilter(filter.slice(0, filter.length - 1));
-        }
-        else {
-            setFilter(filter + value.nativeEvent.data);
-        }
-    };
-
     //Get list of group tutoring sessions
     useEffect(() => {
-        fetch("/GroupTutoring/")
+        fetch("/getProfessors/")
             .then(res => res.json())
             .then(result => {
                 setAllGroup(result);
@@ -59,32 +49,30 @@ export default function GroupTutoring() {
                             <Grid item xs={8}> </Grid>
                             <Grid item xs={8}>
                                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                                    Group Tutoring
+                                    Professor Information
                                 </Typography>
                             </Grid>
-                            <Grid item xs={8}>
-                                <TextField margin="normal" id="search" label="Search Department" variant='outlined' style={{ width: 350 }} value={filter} onChange={(newValue) => filtering(newValue)} />
+                            <Grid  item xs={8}>
+                                <TextField margin="normal" id="search" label="Search Professors" variant='outlined' style={{ width: 350 }} value={filter} onChange={(newValue) => { setFilter(newValue.target.value); }} />
                             </Grid>
                         </Grid>
                         <Table size="large">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><strong>Title</strong></TableCell>
-                                    <TableCell><strong>Location</strong></TableCell>
-                                    <TableCell><strong>Department</strong></TableCell>
-                                    <TableCell><strong>Start Time</strong></TableCell>
-                                    <TableCell><strong>End Time</strong></TableCell>
+                                    <TableCell><strong>Professor Name</strong></TableCell>
+                                    <TableCell><strong>Office Hours</strong></TableCell>
+                                    <TableCell><strong>Office Location</strong></TableCell>
+                                    <TableCell><strong>Professor Email</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {allGroup.map((session) => (
-                                    (session[3].includes(filter.toUpperCase()) ?
-                                        <TableRow key={session[0]}>
-                                            <TableCell>{session[1]}</TableCell>
-                                            <TableCell>{session[2]}</TableCell>
-                                            <TableCell>{session[3]}</TableCell>
-                                            <TableCell>{moment(session[4]).format('MM/DD/YYYY h:mm a')}</TableCell>
-                                            <TableCell>{moment(session[5]).format('MM/DD/YYYY h:mm a')}</TableCell>
+                                {allGroup.map((professor) => (
+                                    (professor[0].toUpperCase().includes(filter.toUpperCase()) ?
+                                        <TableRow key={professor[0]}>
+                                            <TableCell>{professor[0]}</TableCell>
+                                            <TableCell><a href={professor[1]}>{professor[1]}</a></TableCell>
+                                            <TableCell>{professor[2]}</TableCell>
+                                            <TableCell>{professor[3]}</TableCell>
                                         </TableRow>
                                         : null)
                                 ))}
