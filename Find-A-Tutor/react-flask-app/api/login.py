@@ -449,6 +449,10 @@ def saveSyllabi():
 def getProfessors():
     return adminRoutes.getProfessors()
 
+@app.route('/getClasses/', methods=['GET'])
+def getClasses():
+    return adminRoutes.getClasses()
+
 @app.route('/isTutor/', methods=['GET'])
 def isTutor():
     token=request.args.get("token")
