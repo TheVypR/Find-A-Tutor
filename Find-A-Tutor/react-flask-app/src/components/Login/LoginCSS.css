@@ -1,3 +1,21 @@
-.Login {
-    margin-bottom: 0px;
+.groupTutoring {
+    margin-top: 200px;
+}
+
+a {
+    color: white;
+}
+
+.username {
+    border-radius: 5px;
+    background: white;
+}
+
+.password {
+    border-radius: 5px;
+    background: white;
+}
+
+.logo {
+    margin: 20px;
 }
