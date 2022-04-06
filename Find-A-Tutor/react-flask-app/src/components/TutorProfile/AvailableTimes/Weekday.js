@@ -19,7 +19,7 @@ class AddTimeSlot extends React.Component {
         return (
             <>
                 <Button className="AddTimeSlot" onClick={this.props.handleAddTimeSlot}>
-                    <BsFillPlusCircleFill />
+                    <BsFillPlusCircleFill className="plus" size="14" />
                 </Button>
             </>
         );//return
@@ -338,7 +338,7 @@ class Weekday extends React.Component {
         let todaysMoments = []
         moments.forEach(slot => {
             //console.log((new Date(slot.format().slice(0,10))).getDay()+1 + " " + this.getISO(day));
-            if ((new Date(slot.format().slice(0,10))).getDay()+1 == this.getISO(day)) {
+            if ((new Date(slot.format().slice(0, 10))).getDay() + 1 == this.getISO(day)) {
                 todaysMoments.push(slot)
             }
         });
@@ -363,7 +363,7 @@ class Weekday extends React.Component {
         let end = moment(endTime, 'h:mm a').format('HH:mm:ss');
         //combine date and time
         start = dateOfTimeSlot + "T" + start;
-        end =  dateOfTimeSlot + "T" + end;
+        end = dateOfTimeSlot + "T" + end;
         //remove comma from date
         start = (new Date(start).toString()).replace(',', '').replace('(Eastern Daylight Time)', '');
         end = (new Date(end).toString()).replace(',', '').replace('(Eastern Daylight Time)', '');
@@ -430,10 +430,10 @@ class Weekday extends React.Component {
             <>
                 <div className="day">
                     <h6 className={day + "Label"}> {day[0].toUpperCase() + day.slice(1)} </h6>
+                    <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />
                     <hr className="hr" />
                     {filledOutTimes}
                     {this.renderTimeSlot(day)}
-                    <AddTimeSlot handleAddTimeSlot={this.handleAddTimeSlot} />
                 </div>
             </>
         );//return
