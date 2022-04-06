@@ -86,13 +86,17 @@ def submitRating(data):
     cursor = conn.cursor()
     
     #get the current rating a tutor has
-    cursor.execute("select rating from Tutor where tut_email = \"" + data['target'] + "\"")
-    rating = cursor.fetchone()[0]
+    cursor.execute("select rating, rating_count from Tutor where tut_email = \"" + data['target'] + "\"")
+    rating_tuple = cursor.fetchone()
+    rating = 0
+    rate_count = 0
     
-    #average the rating for the tutor !!!!TERRIBLE METHOD OF CALCULATING RATING!!!!FIX!!!!!
-    if type(rating) == type(None):
-        rating = 0
-    newRate = int((rating + int(data['rating'])) / 2)
+    if len(rating_tuple) == 2:
+        rating = rating_tuple[0]
+        rate_count = rating_tuple[1]
+
+    #average the rating for the tutor
+    newRate = int(((rating * rate_count) + data['rate']) / rate_count)
     
     #put the updated rating in the table
     cursor.execute("update Tutor set rating = " + str(newRate) + " where tut_email = \"" + data['target'] + "\"")
