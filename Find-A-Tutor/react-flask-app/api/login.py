@@ -426,6 +426,7 @@ def saveOfficeHours():
     try:
         file = request.files['file']
         file.save(os.path.join(office_hours_dir, file.filename))
+        adminRoutes.saveOfficeHours(file.filename)
         d['status'] = 1
     except Exception as e:
         d['status'] = 0
@@ -443,6 +444,7 @@ def saveSyllabi():
     try:
         file = request.files['file']
         file.save(os.path.join(syllabi_dir, file.filename))
+        adminRoutes.saveOfficeHours(file.filename)
         d['status'] = 1
     except Exception as e:
         d['status'] = 0
