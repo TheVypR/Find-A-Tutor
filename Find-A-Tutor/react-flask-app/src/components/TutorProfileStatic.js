@@ -3,6 +3,11 @@ import { Button, Modal } from 'react-bootstrap';
 import './TutorProfile.css';
 import TutorProfile from './TutorProfile/T_Profile'
 import VerifiedIcon from '@mui/icons-material/Verified';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 /**
  * Render a timeslot with given times
@@ -141,7 +146,7 @@ class TutorsFor extends React.Component {
         for (let aClass in classes) {
             classesList.push(<>
                 <div className='d-flex '>
-					<p> {(aClass[2] ? <VerifiedIcon /> : null)} </p>
+                    <p> {(aClass[2] ? <VerifiedIcon /> : null)} </p>
                     <p> {classes[aClass]['class_code']} </p>
                     <p className='hourlyRate'> Hourly Rate: ${classes[aClass]['rate']} </p>
                 </div>
@@ -151,10 +156,24 @@ class TutorsFor extends React.Component {
         return (
             <>
                 <div className="p-2" id="fieldset">
-                    <p id="header"> Tutoring For </p>
-                    <div id="classes">
-                        {classesList}
-                    </div>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell><strong>Verified</strong></TableCell>
+                                <TableCell><strong>Class Code</strong></TableCell>
+                                <TableCell><strong>Rate</strong></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {classes.map((item) => (
+                                <TableRow key={item['class_code']} hover>
+                                    <TableCell>{(item["verification"] === 5 ? <VerifiedIcon sx={{ color: 'red' }} /> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <Button onClick={() => { this.requestVerify(item[0]) }}>Request</Button>))}</TableCell>
+                                    <TableCell>{item['class_code']} </TableCell>
+                                    <TableCell>${item['rate']} </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </div>
             </>
         );//return
