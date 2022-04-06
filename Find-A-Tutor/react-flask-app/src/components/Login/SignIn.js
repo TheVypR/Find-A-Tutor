@@ -15,25 +15,29 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
+import GroupTutoring from './GroupTutoring'
+import './LoginCSS.css'
+import AppBar from '@mui/material/AppBar';
+
 
 const theme = createTheme();
 
 export default function SignIn(props) {
   const nav = useNavigate();
   const [wrongLogin, setWrongLogin] = useState(false);
-  
+
   //authentication information
   const authContext = useContext(AuthContext);
 
   const loginHandler = function () {
-	  authContext.login();
-      console.log(authContext);
-      nav('/calendar');
+    authContext.login();
+    console.log(authContext);
+    nav('/calendar');
   };
 
   const logoutHandler = function () {
-      authContext.logout();
-      nav('/');
+    authContext.logout();
+    nav('/');
   };
 
 
@@ -43,107 +47,106 @@ export default function SignIn(props) {
     const info = [data.get('email'), data.get('password')]
     fetch("/login/", {
       method: 'POST',
-      headers: {'Content-Type' : 'application/json'},
-      body:JSON.stringify(info)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(info)
     }).then(resp => resp.json())
-    .then(result => {
-      if (result['email'] === info[0]) {
-        if (result['isAdmin'] === 1) {
-          authContext.login();
-          nav('/Reports');
+      .then(result => {
+        if (result['email'] === info[0]) {
+          if (result['isAdmin'] === 1) {
+            authContext.login();
+            nav('/Reports');
+          }
+          else {
+            if (result['isTutor']) {
+              localStorage.setItem("view", true);
+            }
+            loginHandler();
+          }
+          localStorage.setItem("token", result['token']);
+          localStorage.setItem("view", (result['loginPref'] == 1 ? "tutor" : "student"));
         }
         else {
-          if (result['isTutor']) {
-            localStorage.setItem("view", true);
-          }
-          loginHandler();
+          setWrongLogin(true)
+          logoutHandler();
         }
-		localStorage.setItem("token", result['token']);
-		localStorage.setItem("view", (result['loginPref'] == 1 ? "tutor" : "student"));
-      }
-      else {
-		setWrongLogin(true)
-        logoutHandler();
-      }
-    })
+      })
   };
-  
-  
+
+
   const WrongSignIn = () => {
-	return (
-		<div style={{color : 'red'}}>
-			Incorrect Email or Password
-		</div>
-	)
+    return (
+      <div style={{ color: 'red' }}>
+        Incorrect Email or Password
+      </div>
+    )
   }
-  
+
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-		  {wrongLogin ? <WrongSignIn /> : null}
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            {/* <FormControlLabel
+    <>
+      <AppBar postion="static" color="primary" sx={{ borderTheme: (theme) => `1px solid ${theme.palette.divider}` }}>
+        <p> test </p>
+      </AppBar>
+
+      <div className="Login">
+        <Container component="main" maxWidth="xs">
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            {wrongLogin ? <WrongSignIn /> : null}
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             /> */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}>
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link to='/' variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link to='/signup' variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}>
+                Sign In
+              </Button>
+
+              <Link to='/signup' variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Box>
           </Box>
-        </Box>
-        {/*<Copyright sx={{ mt: 8, mb: 4 }} />*/}
-      </Container>
-    </ThemeProvider>
+          {/*<Copyright sx={{ mt: 8, mb: 4 }} />*/}
+        </Container>
+      </div>
+
+      <GroupTutoring />
+    </>
   );
 }
