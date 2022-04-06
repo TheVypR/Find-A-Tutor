@@ -212,7 +212,14 @@ def myProfile():
         endTime = timeManager.dateParse(submittedTime['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         splitTimeVals = timeManager.splitTimes(timeSlot)
-        return profile.remove_timeSlot(splitTimeVals, email)
+        reoccuring = []
+        for time in times:
+            pair = {}
+            print(time)
+            pair['start'] = (timeManager.makeRecurring(time['start'], 12))
+            pair['end'] = (timeManager.makeRecurring(time['end'], 12))
+            reoccuring.append(pair)        
+        return profile.remove_timeSlot(reoccuring, email)
     #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
@@ -223,7 +230,14 @@ def myProfile():
         endTime = timeManager.dateParse(submission['endTime'])
         timeSlot = {'start': startTime, 'end': endTime}
         times = timeManager.splitTimes(timeSlot)
-        return profile.post_timeSlot(times, email)
+        reoccuring = []
+        for time in times:
+            print(type(time['start']))
+            pair = {}
+            pair['start'] = (timeManager.makeRecurring(str(time['start']),"12"))
+            pair['end'] = (timeManager.makeRecurring(str(time['end']), "12"))
+            reoccuring.append(pair)
+        return profile.post_timeSlot(reoccuring, email)
     elif 'classesTaking' in submission.keys():
         return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes

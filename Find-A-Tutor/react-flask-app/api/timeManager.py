@@ -200,7 +200,7 @@ def dateParse(date):
 #take a time and make it happen weekly until it is greater than the end period
 def makeRecurring(date, endPeriod):
     #make the date into a datetime
-    curDate = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+    curDate = datetime.strptime(str(date), '%Y-%m-%dT%H:%M:%S')
     dateArray = []
     
     #check the endPeriod if there is none, create for 3 months
