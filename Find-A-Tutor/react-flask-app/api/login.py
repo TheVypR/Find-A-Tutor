@@ -379,6 +379,15 @@ def verifyRequest():
     #return the success or failure
     return adminRoutes.submitVerifyRequest(email, class_code)
 
+@app.route('/approveOrDeny/', methods=['GET'])
+def approveDenyRequest():
+    approve = request.args.get("approve")
+    code = request.args.get("approve_code")
+    if(approve):
+        return adminRoutes.approveVerification(code)
+    else:
+        return adminRoutes.denyVerification(code)
+    
 @app.route('/fileUpload/', methods=['POST'])
 def fileUpload():
     d = {}
