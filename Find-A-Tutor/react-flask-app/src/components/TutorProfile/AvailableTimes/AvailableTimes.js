@@ -43,7 +43,9 @@ class AvailableTimes extends React.Component {
                     <div className="d-flex justify-content-start contactMe">
                         <input type="checkbox"  id="contactMe" onChange={this.contactMe} />
                         <label htmlFor="contactMe"  id="contactMeLabel"> Contact Me For Availability </label>
+                        
                     </div>
+                    <h5> Available Times </h5>
                     <div className="d-flex justify-content-center"> 
                         <Week times={times} moments={this.props.moments} />
                     </div>
