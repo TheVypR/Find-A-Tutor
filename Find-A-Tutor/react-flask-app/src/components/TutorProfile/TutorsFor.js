@@ -128,7 +128,7 @@ class TutorsFor extends React.Component {
         let classes = this.props.classes
         return (
             <>
-                <div className="p-2" id="fieldset">
+                <div className="p-2 TutorsFor" id="fieldset">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
                         {this.renderClass()}

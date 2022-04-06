@@ -102,9 +102,13 @@
     min-width: 75px;
 }
 
-#day {
-    width: 200px;
-    max-width: 200px;
+.editDay {
+    width: 150px;
+    max-width: 150px;
+}
+
+.TutorsFor {
+    width:400px;
 }
 
 .vr {
