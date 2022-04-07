@@ -32,7 +32,7 @@ for request in requests['requests']:
     message['To'] = request['prof_email']
 
     message = f"""\
-Subject: Hello Subject
+Subject: Find-A-Tutor Verification Request
 To: {receiver_email}
 From: {request['prof_email']}
 
