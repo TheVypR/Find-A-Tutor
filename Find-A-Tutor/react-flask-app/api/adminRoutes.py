@@ -221,11 +221,9 @@ def BecomeATutor(email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    
+    print("HELLO")
     #add student to Tutor table
-    cursor.execute("insert into Tutor values(\""+ email 
-                    + "\", (select stu_name from Student where stu_email = \"" + email 
-                    + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
+    cursor.execute("insert into Tutor values((%s), (select stu_name from Student where stu_email = (%s)),(%s), \"\", 0, 0, 0, 0)", (email, email, pay))
     #close the connection
     conn.close()
     
@@ -300,7 +298,7 @@ def submitVerifyRequest(email, class_code):
                     + email + "\", \""
                     + class_code + "\", "
                     +"(select prof_email from Classes where class_code = \"" + class_code + "\"), \""
-                    + code + "\"")
+                    + code + "\")")
     
     #close the connection
     conn.close()
@@ -362,6 +360,8 @@ def denyVerification(deny_code):
     
     #delete request from DB
     removeVerificationRequest(request[0], request[1])
+
+    return "SUCCESS", 200
     
 #remove request from table
 def removeVerificationRequest(tut_email, class_code):
@@ -373,3 +373,135 @@ def removeVerificationRequest(tut_email, class_code):
     cursor.execute("delete from VerificationRequest where tut_email = \"" + tut_email + "\" and class_code = \"" + class_code + "\"")
     
     return 'SUCCESS', 200
+
+def professorUploading(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    print(data)
+        
+    #go through all the data
+    for row in data:
+        try:
+            #check if the professor is in the DB
+            if len(row) < 3:
+                continue
+            cursor.execute("select prof_email from Professor where prof_email = (%s)", (row[1]))
+            profFound = cursor.fetchone()
+            if profFound:
+                cursor.execute("update Professor set prof_name = (%s), prof_email = (%s), office_location = (%s) where prof_email = (%s)", (row[0], row[1], row[2], row[1]))
+            #if not, enter them into it
+            else:
+                cursor.execute("insert into Professor(prof_name, prof_email, office_location) values((%s), (%s), (%s))", (row[0], row[1], row[2]))
+        except:
+            return "SQL Error", 400
+
+    conn.close()
+            
+    return "SUCCESS", 200
+    
+def classUploading(data):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    for row in data:
+        try:
+            if len(row) < 2:
+                continue
+            #check if the professor is in the DB
+            cursor.execute("select class_code from Classes where class_code = (%s)", (row[0]))
+            profFound = cursor.fetchone()
+            if profFound:
+                print("thing")
+                cursor.execute("update Classes set class_code = (%s), prof_email = (select prof_email from Professor where prof_name = (%s))", (row[0], row[1]))
+                print("thing")
+            #if not, enter them into it
+            else:
+                cursor.execute("insert into Classes(class_code, prof_email) values((%s), (%s))", (row[0], row[1]))  
+        except:
+            return "SQL Error", 400
+
+    conn.close()
+            
+    return "SUCCESS", 200
+
+def getProfessors():
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #add student to Tutor table
+    cursor.execute("select * from Professor")
+    data = cursor.fetchall()
+
+    #close the connection
+    conn.close()
+    
+    #return success
+    return jsonify(data), 200
+
+def getClasses():
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #add student to Tutor table
+    cursor.execute("select class_code, p.prof_name, syllabus from Classes c, Professor p where c.prof_email = p.prof_email")
+    data = cursor.fetchall()
+
+    #close the connection
+    conn.close()
+    
+    #return success
+    return jsonify(data), 200
+
+def saveOfficeHours(filename):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #check what professor the office hours are for
+    cursor.execute("select prof_name from Professor")
+    profs = cursor.fetchall()
+    print(profs)
+    matchingProf = []
+    for prof in profs:
+        print(prof)
+        names = prof[0].split()
+        print(names)
+        if names[0] in filename and names[1] in filename:
+            print(names[1])
+            matchingProf.append(prof)
+    if len(matchingProf) > 1:
+        return "Too many professors match", 500
+    else:
+        cursor.execute("update Professor set office_hours = (%s) where prof_name = (%s)", (filename, matchingProf[0]))
+
+    return "SUCCESS", 200
+
+def saveSyllabi(filename):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #check what class this is for
+    cursor.execute("select class_code from Classes")
+    classes = cursor.fetchall()
+    matchingClasses = []
+    for cls in classes:
+        if cls[0] in filename:
+            matchingClasses.append(cls[0])
+    if len(matchingClasses) > 1:
+        return "Too many classes match", 500
+    else:
+        cursor.execute("update Classes set syllabus = (%s) where class_code = (%s)", (filename, matchingClasses[0]))
+    
+    return "SUCCESS", 200

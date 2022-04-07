@@ -105,19 +105,19 @@ class Profiles extends React.Component {
     render() {
         let items = this.props.items;
         let isTutor = (localStorage.getItem("view")=== "tutor");
-        console.log(isTutor);
 
         let staticOrEditTutor = this.props.isEdit ?
-            <TutorProfile items={items} edit={this.edit} /> :
-            <TutorProfileStatic items={items} edit={this.edit} />
+            <TutorProfile items={items} edit={this.edit} updateProfiles={this.props.updateProfiles} /> :
+            <TutorProfileStatic items={items} edit={this.edit} updateProfiles={this.props.updateProfiles} />
 
         let staticOrEditStudent = this.props.isEditStudent ?
-            <StudentProfile items={items} edit={this.editStudent} /> :
-            <StudentProfileStatic items={items} edit={this.editStudent} />
+            <StudentProfile items={items} edit={this.editStudent} updateProfiles={this.props.updateProfiles} /> :
+            <StudentProfileStatic items={items} edit={this.editStudent} updateProfiles={this.props.updateProfiles} />
 
         var profile = isTutor ?
             staticOrEditTutor :
             staticOrEditStudent
+
         return (
             <>
             <div style={{margin: '75px'}}><NavBar /></div>

@@ -17,10 +17,9 @@ class TutorsFor extends React.Component {
         super(props);
 
         this.handleAddClass = this.handleAddClass.bind(this);
-        this.renderClass = this.renderClass.bind(this);
-        this.removeClass = this.removeClass.bind(this);
-        this.setCourseCode = this.setCourseCode.bind(this);
+        this.setCourseCode = this.setCourseCode.bind(this)
         this.setRate = this.setRate.bind(this);
+        this.removeClass = this.removeClass.bind(this);
     }
 
     /**
@@ -36,53 +35,69 @@ class TutorsFor extends React.Component {
         }
         this.props.addClass(aClass);
     }
-	
-	requestVerify() {
-		
-	}
-	
+
+    requestVerify(classCode) {
+        const post = {
+            "token": localStorage.getItem("token"),
+            "class_code": classCode
+        }
+
+        console.log(post)
+
+        fetch("/requestVerification/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+                post
+            )
+        })
+    }
+
     /**
      * Maps the filled in classes from the DB and any new classes added by the user
      * 
      * @returns : map of rendered classes
      */
-    renderClass() {    
-		return (<>
-			<div className='d-flex '>
-				<Table size="small">
-					<TableHead>
-						<TableRow>
-							<TableCell><strong>Verified</strong></TableCell>
-							<TableCell><strong>Class Code</strong></TableCell>
-							<TableCell><strong>Rate</strong></TableCell>
-							<TableCell><strong>Delete</strong></TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{this.props.classes.map((item) => (
-							((typeof(item[0]) === 'string') ?
-								<TableRow key={item[0]} hover>
-									<TableCell>{(item[2] ? <VerifiedIcon sx={{color: 'green'}}/> : <Button onClick={() => {this.requestVerify()}}>Request</Button>)}</TableCell>
-									<TableCell>{item[0]} </TableCell>
-									<TableCell>${item[1]} </TableCell>
-									<TableCell><Button id={this.props.classes.indexOf(item)} className="removeClass" variant="danger" onClick={() => this.props.removeClass(this.props.classes.indexOf(item))}>
-											<BsFillTrashFill />
-										</Button>
-									</TableCell>
-								</TableRow>
-							: 
-								<Class
-									index={this.props.classes.indexOf(item)}
-									removeClass={() => { this.removeClass(this.props.classes.indexOf(item)) }}
-									setCourseCode={this.setCourseCode}
-									setRate={this.setRate}
-								/>
-							)
-						))}
-					</TableBody>
-				</Table>
-			</div>
-		</>)
+    renderClass() {
+        return (<>
+            <div className='d-flex '>
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><strong>Verified</strong></TableCell>
+                            <TableCell><strong>Class Code</strong></TableCell>
+                            <TableCell><strong>Rate</strong></TableCell>
+                            <TableCell><strong>Delete</strong></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {this.props.classes.map((item) => (
+                            ((typeof (item['class_code']) === 'string') ?
+                                <TableRow key={item['class_code']} hover>
+                                    <TableCell>{(item["verification"] === 5 ? <VerifiedIcon sx={{ color: 'red' }} /> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <Button onClick={() => { this.requestVerify(item['class_code']) }}>Request</Button>))}</TableCell>
+                                    <TableCell>{item['class_code']} </TableCell>
+                                    <TableCell>${item['rate']} </TableCell>
+                                    <TableCell><Button id={this.props.classes.indexOf(item)} className="removeClass" variant="danger" onClick={() => this.props.removeClass(this.props.classes.indexOf(item))}>
+                                        <BsFillTrashFill />
+                                    </Button>
+                                    </TableCell>
+                                </TableRow>
+                                :
+                                <Class
+                                    index={this.props.classes.indexOf(item)}
+                                    removeClass={() => { this.props.removeClass(this.props.classes.indexOf(item)) }}
+                                    setCourseCode={this.props.setCourseCode}
+                                    setRate={this.props.setRate}
+                                    allClasses={this.props.allClasses}
+                                />
+                            )
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </>)
         //return
     }//renderClass
 
@@ -117,9 +132,10 @@ class TutorsFor extends React.Component {
 
     render() {
         let classes = this.props.classes
+
         return (
             <>
-                <div className="p-2" id="fieldset">
+                <div className="p-2 TutorsFor" id="fieldset">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
                         {this.renderClass()}

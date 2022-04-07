@@ -8,7 +8,6 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import moment from 'moment'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
@@ -22,7 +21,7 @@ import TextField from '@mui/material/TextField';
 //making styles and themes
 const theme = createTheme();
 
-export default function GroupTutoring() {
+export default function ClassInfo() {
     //authentication
 	const authContext = useContext(AuthContext);
 
@@ -33,7 +32,7 @@ export default function GroupTutoring() {
 	const [filter, setFilter] = useState("");
 
     //Get list of group tutoring sessions
-    useEffect(() => { fetch("/GroupTutoring/")
+    useEffect(() => { fetch("/getClasses/")
         .then(res => res.json())
         .then(result => {
             setAllGroup(result);
@@ -49,32 +48,28 @@ export default function GroupTutoring() {
                 <CssBaseline />
                 <NavBar />
                 <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3, pl: 6}}>
-                    <TextField margin="normal" id="search" label="Search Department" variant='outlined' style={{width: 400}} value={filter} onChange={(newValue) => {setFilter(newValue.target.value);}}/>
+                    <TextField margin="normal" id="search" label="Search Classes" variant='outlined' style={{width: 400}} value={filter} onChange={(newValue) => {setFilter(newValue.target.value);}}/>
                 </Grid>
-                <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
+                <Container maxWidth="lg" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                         <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                            Group Tutoring
+                            Class Information
                         </Typography>
                         <Table size="large">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><strong>Title</strong></TableCell>
-                                    <TableCell><strong>Location</strong></TableCell>
-                                    <TableCell><strong>Department</strong></TableCell>
-                                    <TableCell><strong>Start Time</strong></TableCell>
-                                    <TableCell><strong>End Time</strong></TableCell>
+                                    <TableCell><strong>Class Code</strong></TableCell>
+                                    <TableCell><strong>Professor Name</strong></TableCell>
+                                    <TableCell><strong>Syllabus</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {allGroup.map((session) => (
-									(session[3].includes(filter.toUpperCase()) ?
-                                    <TableRow key={session[0]}>
-                                        <TableCell>{session[1]}</TableCell>
-                                        <TableCell>{session[2]}</TableCell>
-                                        <TableCell>{session[3]}</TableCell>
-                                        <TableCell>{moment(session[4]).format('MM/DD/YYYY h:mm a')}</TableCell>
-                                        <TableCell>{moment(session[5]).format('MM/DD/YYYY h:mm a')}</TableCell>
+                                {allGroup.map((classes) => (
+									(classes[0].toUpperCase().includes(filter.toUpperCase()) ?
+                                    <TableRow key={classes[0]}>
+                                        <TableCell>{classes[0]}</TableCell>
+                                        <TableCell>{classes[1]}</TableCell>
+                                        <TableCell><a href={classes[2]}>{classes[2]}</a></TableCell>
                                     </TableRow>
 									: null )
                                 ))}

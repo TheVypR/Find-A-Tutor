@@ -21,7 +21,8 @@ class T_Profile extends React.Component {
             paymentUser: "",    //Username for choosen payment type (unless cash)
             loginPrefs: -1,     //Default profile that loads on login (student or tutor)
             classes: [],       //Classes the tutor tutors for
-            applyState: true
+            applyState: true,
+            removeClasses: []
         }//state
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,14 +40,28 @@ class T_Profile extends React.Component {
      * Collects state values and sends them to the backend
      */
     handleSubmit() {
+        //get only new classes
+        let newClasses = this.state.classes.filter(cls =>
+        (Object.keys(cls).includes("new") &&
+            Object.keys(cls).includes("class_code") &&
+            Object.keys(cls).includes("rate"))
+        )
+
+        let removeClasses = this.state.removeClasses.filter(cls =>
+            Object.keys(cls).includes("class_code") &&
+            Object.keys(cls).includes("rate"));
+
         //Collect state values
         let post = {
             'token': localStorage.getItem("token"),
             'pay_type': this.state.paymentType,
             'pay_info': this.state.paymentUser,
             'login_pref': this.state.loginPrefs,
-            'classes': this.state.classes
+            'classes': newClasses,
+            'removeClasses': removeClasses
         }//post
+
+        console.log(post['classes']);
 
         this.checkForEmptyState(post);
 
@@ -103,7 +118,11 @@ class T_Profile extends React.Component {
         var classes = this.state.classes;
         //remove class from DOM
         let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
+        let removeClasses = classes.filter(aClass => aClass == classes[index]);
+        console.log(filteredClasses)
+
         this.setState({ classes: filteredClasses });
+        this.setState({ removeClasses: removeClasses })
     }//removeClass
 
     /**
@@ -149,8 +168,8 @@ class T_Profile extends React.Component {
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
         aClass['class_code'] = code;
+        aClass['new'] = true;
         classes[index] = aClass;
-        this.setState({ classes: classes })
     }//setCourseCode
 
     /**
@@ -160,28 +179,31 @@ class T_Profile extends React.Component {
      * @param {int} index given index
      */
     setRate(rate, index) {
-        this.setState({ applyState: true })
         let classes = this.state.classes;
         let aClass = { ...classes[index] };
         aClass['rate'] = rate;
         classes[index] = aClass;
-        this.setState({ classes: classes });
     }//setRate
 
     componentDidMount() {
         let filledInClasses = this.props.items['tutorsFor'];
-        filledInClasses.forEach(aClass => {
+        for (let aClass in filledInClasses) {
             var classesList = this.state.classes;
-            classesList.push(aClass);
-            this.setState({classes: classesList});
-        });
+            classesList.push({
+                'class_code': filledInClasses[aClass]['class_code'],
+                'rate': filledInClasses[aClass]['rate'],
+                'verification': filledInClasses[aClass]['verification']
+            });
+            this.setState({ classes: classesList });
+            ;
+        }
     }
 
     render() {
         let items = this.props.items;
 
         let apply = this.state.applyState ?
-            <Button type="submit" id="save" onClick={this.handleSubmit}> Apply </Button> :
+            <Button type="submit" id="save" > Apply </Button> :
             <Button type="submit" id="save" disabled> Apply </Button>
 
         return (
@@ -193,32 +215,36 @@ class T_Profile extends React.Component {
                     <p id="email"> {items['email']} </p>
                 </div>
 
-                {/* Render top two sections */}
-                <div id="center" className="d-flex justify-content-around">
-                    <PayAndLoginPrefs
-                        setPaymentType={this.setPaymentType}
-                        setLoginPrefs={this.setLoginPrefs}
-                        setPaymentUser={this.setPaymentUser}
-                        pay_type={items['pay_type']}
-                        pay_info={items['pay_info']}
-                        login_pref={items['login_pref']}
-                    />
+                <form onSubmit={this.handleSubmit}>
+                    {/* Render top two sections */}
+                    <div id="center" className="d-flex justify-content-around">
+                        <PayAndLoginPrefs
+                            setPaymentType={this.setPaymentType}
+                            setLoginPrefs={this.setLoginPrefs}
+                            setPaymentUser={this.setPaymentUser}
+                            pay_type={items['pay_type']}
+                            pay_info={items['pay_info']}
+                            login_pref={items['login_pref']}
+                        />
 
-                    <AvailableTimes times={items['times']} />
+                        <TutorsFor
+                            classes={this.state.classes}
+                            addClass={this.addClass}
+                            removeClass={this.removeClass}
+                            setCourseCode={this.setCourseCode}
+                            setRate={this.setRate}
+                            allClasses={this.props.items['allClasses']}
+                            updateClasses={this.updateClasses}
+                        />
+                    </div>
 
-                    <TutorsFor
-                        classes={this.state.classes}
-                        addClass={this.addClass}
-                        removeClass={this.removeClass}
-                        setCourseCode={this.setCourseCode}
-                        setRate={this.setRate}
-                    />
-                </div>
+                    <AvailableTimes times={items['times']} moments={items['moments']} />
 
-                <div id="bottom">
-                    {apply}
-                    <Button type="submit" id="stopTutoring" variant="danger"> Stop Tutoring </Button>
-                </div>
+                    <div id="bottom">
+                        {apply}
+                        <Button id="stopTutoring" variant="danger"> Stop Tutoring </Button>
+                    </div>
+                </form>
             </>
         );//return
     }//render

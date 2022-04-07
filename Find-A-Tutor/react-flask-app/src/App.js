@@ -4,8 +4,8 @@ import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Calendar from './components/calendar'
-import SignIn from "./components/SignIn"
-import SignUp from "./components/SignUp"
+import SignIn from "./components/Login/SignIn"
+import SignUp from "./components/Login/SignUp"
 import { createContext } from 'react';
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
@@ -14,8 +14,12 @@ import CurrentAndBan from './components/CurrentAndBan';
 import LoadProfile from './components/LoadProfile';
 import AddGroupTutoring from './components/AddGroupTutoring';
 import GroupTutoring from './components/GroupTutoring';
-
-import { AuthContext } from './components/AuthContext'
+import FileUpload from './components/FileUpload';
+import { AuthContext } from './components/AuthContext';
+import ProfessorUpload from './components/ProfessorUpload';
+import ClassUpload from './components/ClassUpload';
+import ProfessorInfo from './components/ProfessorInfo';
+import ClassInfo from './components/ClassInfo';
 
 //the core function
 //calls all other pages and manages authentication
@@ -58,11 +62,16 @@ export default function App() {
             <Route path='/myProfile' element={<LoadProfile />} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/GroupTutoring' element={<GroupTutoring />} />
+            <Route path='/ProfessorInfo' element={<ProfessorInfo />} />
+            <Route path='/ClassInfo' element={<ClassInfo />} />
             <Route path='/TutoringHistory' element={<TutoringHistory />} />
             <Route path='/StudentHistory' element={<StudentHistory />} />
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
             <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
+			      <Route path='/FileUpload' element={<FileUpload />} />
+            <Route path='/ProfessorUpload' element={<ProfessorUpload />} />
+            <Route path='/ClassAndSyllabi' element={<ClassUpload />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

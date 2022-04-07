@@ -36,7 +36,12 @@
 }
 
 .contactMe {
-    margin-right: 10px;
+    margin-top: 20px;
+    margin-left: 100px;
+}
+
+#contactMeLabel{
+    margin-left: 5px;
 }
 
 #bottom {
@@ -48,7 +53,8 @@
 }
 
 .AddTimeSlot {
-    margin-top: 5px;
+    padding: 3px 3px;
+    font-size: 50%;
 }
 
 .removeTime{
@@ -96,9 +102,13 @@
     min-width: 75px;
 }
 
-#day {
-    width: 200px;
-    max-width: 200px;
+.editDay {
+    width: 150px;
+    max-width: 150px;
+}
+
+.TutorsFor {
+    width:400px;
 }
 
 .vr {
@@ -115,6 +125,7 @@
 }
 
 .availableTimes {
+    width: fit-content;
     margin-top: 12px;
     border: thin solid black;
     border-radius: 5px;
@@ -131,7 +142,7 @@
 }
 
 .day {
-    margin: 15px
+    margin: 10px
 }
 
 .paymentType {

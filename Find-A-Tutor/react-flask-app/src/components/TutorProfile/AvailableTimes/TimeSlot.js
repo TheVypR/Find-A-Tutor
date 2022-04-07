@@ -18,6 +18,9 @@ const format = 'h:mm a';    //Format for TimePicker
 class SubmitRemoveTime extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isSubmitted: false
+        }
 
         this.onSubmitClick = this.onSubmitClick.bind(this);
         this.removeTimeSlot = this.removeTimeSlot.bind(this);
@@ -28,6 +31,7 @@ class SubmitRemoveTime extends React.Component {
      */
     onSubmitClick() {
         this.props.submitTimes();
+        this.setState({ isSubmitted: true });
     }//onSubmitClick
 
     /**
@@ -41,16 +45,17 @@ class SubmitRemoveTime extends React.Component {
     }//removeTImeSlot
 
     render() {
-        let index = this.props.index;   //given index of the TimeSlot
-
+        let index = this.props.index;
+        let submitBtn = this.state.isSubmitted ? <></> :
+            <Button className="submitTime btn-success" onClick={this.onSubmitClick}>
+                Submit
+            </Button>
         return (
             <>
-                <Button className="submitTime btn-success" onClick={this.onSubmitClick}>
-                    Submit
-                </Button>
+                {submitBtn}
 
                 <Button className="removeTime" variant="danger" onClick={() => { this.removeTimeSlot(index, this.props.day) }}>
-                    <BsFillTrashFill size="14" />
+                    <BsFillTrashFill size="12" />
                 </Button> <br />
             </>
         );//return

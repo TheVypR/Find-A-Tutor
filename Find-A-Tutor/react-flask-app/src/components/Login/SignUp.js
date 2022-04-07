@@ -11,7 +11,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import TutorProfile from './TutorProfile/T_Profile.js';
+import TutorProfile from '../TutorProfile/T_Profile.js';
 
 import { useNavigate, Link } from 'react-router-dom';
 

@@ -1,10 +1,5 @@
 #FIND-A-TUTOR ~ Profile Backend ~ Authors: Tim W., Isaac A.
-from flask import Flask, request
-from flask_wtf import FlaskForm
-from flask_wtf import Form
-from pymysql import NULL
-from wtforms import BooleanField
-
+from flask import Flask, request, jsonify
 #from MySQLdb import escape_string as thwart
 
 #error constants
@@ -12,8 +7,7 @@ from wtforms import BooleanField
 
 #Database stuff
 from flaskext.mysql import MySQL
-import json
-import login
+import timeManager
 
 app = Flask(__name__)
 
@@ -76,6 +70,7 @@ def retrieve_profile(token):
 
     times = retrieve_times(email)
     tutorsFor = retrieve_classes(email)
+    allClasses = retrieve_allClasses()
 
     #login prefs are an array, make it just a single int
     if loginPref == None:
@@ -88,7 +83,7 @@ def retrieve_profile(token):
     return {'name': name, 'email':email, 'isTutor': True,
         'login_pref':loginPref, 'contact':contactable,
         'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking}, 200
+        'times': times,'moments': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking, "allClasses": allClasses}, 200
 
 def retrieve_times(tut_email):
     """Get the times the tutor is available from the DB
@@ -108,7 +103,7 @@ def retrieve_times(tut_email):
     #get the times
     cursor.execute("select start_date, end_date from TutorTimes where tut_email = (%s)", (tut_email))
     times = cursor.fetchall()
-    
+
     #put times in dict {'start', 'end'}
     if len(times) != 0:
         for time in times:
@@ -116,11 +111,11 @@ def retrieve_times(tut_email):
             availTimes.append(startAndEnd)
 
         #Condense times
-        availTimes = login.mergeTimes(availTimes)
+        availTimes = timeManager.mergeTimes(availTimes)
     else:
         availTimes = []
     
-    return availTimes, 200
+    return availTimes
 
 
 def retrieve_classes(tut_email):
@@ -141,11 +136,30 @@ def retrieve_classes(tut_email):
     classes_rates = cursor.fetchall()
     
     #put the classes in an array of dicts [{'class_code', 'rate'}, ]
-    for pair in classes_rates:
-        classes.append(pair)
+    for cls in classes_rates:
+        cursor.execute("select tut_email from VerificationRequest where tut_email = (%s) and class_code = (%s)", (tut_email, cls[0]))
+        hasRequested = cursor.fetchone()
+        newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": cls[2]})
+        if hasRequested:
+            newTuple = ({"class_code": cls[0], "rate": cls[1], "verification": 5})
+
+        classes.append(newTuple)
     
     conn.close()
     return classes
+
+def retrieve_allClasses():
+    """Gets all the classes stored in the DB"""
+
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    
+    #get the tutor information from the DB
+    cursor.execute("SELECT class_code FROM Classes;")
+    allClasses = cursor.fetchall()
+
+    conn.close()
+    return allClasses
 
 # Submit time slots to db for given weekday
 def post_timeSlot(times, tut_email):
@@ -173,6 +187,7 @@ def remove_timeSlot(times, tut_email):
     Timeslots are either added during the current session by the user or
     are retrieved from the DB.
     """
+    print(times)
 
     #Connect to DB
     conn = mysql.connect()
@@ -180,12 +195,27 @@ def remove_timeSlot(times, tut_email):
     cursor = conn.cursor()
     
     #Check type of remove
-    if ('removePrefilledTime' not in times.keys()): #remove TimesSlots added during current session
-        #loop through times and run this query for each 15 minute slot
-        for time in times:
-            cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
-    #TODO: Implement removal of db populated times
+    #loop through times and run this query for each 15 minute slot
+    for time in times:
+        cursor.execute("delete from TutorTimes where tut_email=\'" + tut_email + "\' and start_date=\'" + time['start'] + "\';")
+    conn.close()
+    
+    return 'SUCCESS', 200
 
+def remove_classes(classes, tut_email):
+    """Remove classes that the tutor tutors for
+
+    """
+
+    #Connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #Check type of remove
+    #loop through times and run this query for each 15 minute slot
+    for cls in classes:
+        cursor.execute("delete from TutorClasses where tut_email=\'" + tut_email + "\' and class_code=\'" + cls['class_code'] + "\';")
     conn.close()
     
     return 'SUCCESS', 200
@@ -232,6 +262,12 @@ def edit_profile(submission, tut_email):
     #update the tutor classes
     classes = submission['classes']
 
+    #check if any classes were removed
+    if len(submission['removeClasses']) > 0:
+        remove_classes(submission['removeClasses'], tut_email)
+    
+
+
     #Loop through the Tutor's classes 
     #if the class has a class_code add it to the DB
     #There can be empty elements in the array so these are not added to the DB
@@ -240,6 +276,24 @@ def edit_profile(submission, tut_email):
             cursor.execute("insert into TutorClasses Values(%s, %s, %s, %s);", (tut_email, aClass['class_code'], aClass['rate'], 0))
 
     conn.close()
+    return 'SUCCESS', 200
+
+def remove_student_classes(classes, tut_email):
+    """Remove classes that the student is taking
+
+    """
+
+    #Connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #Check type of remove
+    #loop through times and run this query for each 15 minute slot
+    for cls in classes:
+        cursor.execute("delete from StudentClasses where stu_email=\'" + tut_email + "\' and class_code=\'" + cls['class_code'] + "\';")
+    conn.close()
+    
     return 'SUCCESS', 200
 
 def edit_student_classes(submission, tut_email) :
@@ -253,7 +307,12 @@ def edit_student_classes(submission, tut_email) :
 
     #loop through each class added and insert it into the db
     for aClass in classes:
-        cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass))
+        cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass['class_code']))
+
+    print(submission['removeClassesTaking'])
+    #Check if any student classes were removed
+    if len(submission['removeClassesTaking']) > 0:
+        remove_student_classes(submission['removeClassesTaking'], tut_email)
 
     conn.close()
     return 'SUCCESS', 200
@@ -278,3 +337,22 @@ def remove_tutor(tutor):
     
     conn.close()
     return 'SUCCESS', 200
+
+def isTutor(email):
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    tutor = False
+    try:
+        print(email)
+        cursor.execute("select tut_email from Tutor where tut_email = \"" + email + "\"")
+        isTutor = cursor.fetchone()
+        print(isTutor)
+        if isTutor:
+            tutor = True
+        else:
+            tutor = False
+    except:
+        return "SQL ERROR", 400
+        
+    return jsonify(tutor), 200
