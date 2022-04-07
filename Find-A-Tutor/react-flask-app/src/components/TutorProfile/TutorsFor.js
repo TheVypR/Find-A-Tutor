@@ -37,15 +37,21 @@ class TutorsFor extends React.Component {
     }
 
     requestVerify(classCode) {
+        const post = {
+            "token": localStorage.getItem("token"),
+            "class_code": classCode
+        }
+
+        console.log(post)
+
         fetch("/requestVerification/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                token: localStorage.getItem("token"),
-                class_code: classCode
-            })
+            body: JSON.stringify(
+                post
+            )
         })
     }
 
@@ -70,7 +76,7 @@ class TutorsFor extends React.Component {
                         {this.props.classes.map((item) => (
                             ((typeof (item['class_code']) === 'string') ?
                                 <TableRow key={item['class_code']} hover>
-                                    <TableCell>{(item["verification"] === 5 ? <VerifiedIcon sx={{ color: 'red' }} /> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <Button onClick={() => { this.requestVerify(item[0]) }}>Request</Button>))}</TableCell>
+                                    <TableCell>{(item["verification"] === 5 ? <VerifiedIcon sx={{ color: 'red' }} /> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <Button onClick={() => { this.requestVerify(item['class_code']) }}>Request</Button>))}</TableCell>
                                     <TableCell>{item['class_code']} </TableCell>
                                     <TableCell>${item['rate']} </TableCell>
                                     <TableCell><Button id={this.props.classes.indexOf(item)} className="removeClass" variant="danger" onClick={() => this.props.removeClass(this.props.classes.indexOf(item))}>
@@ -126,9 +132,10 @@ class TutorsFor extends React.Component {
 
     render() {
         let classes = this.props.classes
+
         return (
             <>
-                <div className="p-2" id="fieldset">
+                <div className="p-2 TutorsFor" id="fieldset">
                     <p id="header"> Tutoring For </p>
                     <div id="classes">
                         {this.renderClass()}
