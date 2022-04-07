@@ -443,12 +443,6 @@ def saveOfficeHours():
 
     return jsonify(d), 200
 
-@app.route('/downloadFile/', methods=['GET'])
-def downloadFile():
-    filename = request.args.get['filename']
-    url_for('loadOfficeHours', filename)
-    return "SUCCESS", 200
-
 @app.route('/office_hours/', methods=['GET', 'POST'])
 def loadOfficeHours():
     filename = request.args.get("filename")
@@ -467,11 +461,10 @@ def saveSyllabi():
 
     return jsonify(d), 200
 
-@app.route('/syllabi/<path:filename>', methods=['GET', 'POST'])
-def loadSyllabus(file):
-    print(file)
-    print(os.path.join(syllabi_dir, file))
-    return send_file(os.path.join(syllabi_dir, file), attachment_filename=file)
+@app.route('/syllabi/', methods=['GET', 'POST'])
+def loadSyllabus():
+    filename = request.args.get("filename")
+    return send_file(os.path.join(syllabi_dir, filename), attachment_filename=filename, as_attachment=True)
 
 @app.route('/getProfessors/', methods=['GET'])
 def getProfessors():
