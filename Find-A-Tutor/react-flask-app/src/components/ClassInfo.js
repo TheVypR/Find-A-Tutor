@@ -69,7 +69,7 @@ export default function ClassInfo() {
                                     <TableRow key={classes[0]}>
                                         <TableCell>{classes[0]}</TableCell>
                                         <TableCell>{classes[1]}</TableCell>
-                                        <TableCell><a href={'http://localhost:5000/office_hours/?filename='+classes[2]}>{classes[2]}</a></TableCell>
+                                        <TableCell><a href={'http://10.18.110.181:5000/syllabi/?filename='+classes[2]}>{classes[2]}</a></TableCell>
                                     </TableRow>
 									: null )
                                 ))}
