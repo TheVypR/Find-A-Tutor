@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, Switch } from 'react-router-dom';
 import './components/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Calendar from './components/calendar'
 import SignIn from "./components/Login/SignIn"
 import SignUp from "./components/Login/SignUp"
-import { createContext } from 'react';
 import TutoringHistory from './components/TutoringHistory';
 import StudentHistory from './components/StudentHistory';
 import Reports from './components/Reports';
@@ -46,8 +45,8 @@ export default function App() {
   
   //changes the user to be logged out
   const logout = () => {
-	setLoggedIn(false);
-	localStorage.setItem("token", "");
+	  setLoggedIn(false);
+	  localStorage.setItem("token", "");
   };
 
   //renders the correct screen based on navs in other .js files
