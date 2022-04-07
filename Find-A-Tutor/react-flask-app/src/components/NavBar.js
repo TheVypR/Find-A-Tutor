@@ -53,14 +53,6 @@ export default function NavBar() {
             <CssBaseline />
             <AppBar postion="static" color="primary" sx={{ borderTheme: (theme) => `1px solid ${theme.palette.divider}` }}>
                 <Toolbar sx={{ flexwrap: 'wrap' }}>
-                    <img
-                        src={`${Logo}`}
-                        width="50"
-                        height="40"
-                        alt="Find-A-Tutor Logo"
-                        loading="lazy"
-                        className='logo'
-                    />
                     <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex' }}>
                         Find-A-Tutor
                     </Typography>
