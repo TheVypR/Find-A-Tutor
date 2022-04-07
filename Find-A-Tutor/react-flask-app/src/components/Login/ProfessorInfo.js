@@ -70,7 +70,7 @@ export default function ProfessorInfo() {
                                     (professor[0].toUpperCase().includes(filter.toUpperCase()) ?
                                         <TableRow key={professor[0]}>
                                             <TableCell>{professor[0]}</TableCell>
-                                            <TableCell><a href={'http://10.18.110.181:5000/office_hours/?filename='+professor[1]}>{professor[1]}</a></TableCell>
+                                            <TableCell><a href={'/office_hours/?filename='+professor[1]} target="_blank">{professor[1]}</a></TableCell>
                                             <TableCell>{professor[2]}</TableCell>
                                             <TableCell>{professor[3]}</TableCell>
                                         </TableRow>
