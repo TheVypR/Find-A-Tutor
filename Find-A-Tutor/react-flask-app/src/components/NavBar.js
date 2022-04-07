@@ -41,7 +41,7 @@ export default function NavBar() {
 
     let buttons;
     if (!isTutor) {
-        buttons = <Button onClick={() => { localStorage.setItem("view", "tutor"); AddTutor() }} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
+        buttons = <Button onClick={() => {AddTutor(); localStorage.setItem("view", "tutor");  }} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
     } else if (localStorage.getItem("view") === "tutor") {
         buttons = <Button onClick={() => { localStorage.setItem("view", "student") }} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Student View</Button>
     } else {
@@ -53,14 +53,6 @@ export default function NavBar() {
             <CssBaseline />
             <AppBar postion="static" color="primary" sx={{ borderTheme: (theme) => `1px solid ${theme.palette.divider}` }}>
                 <Toolbar sx={{ flexwrap: 'wrap' }}>
-                    <img
-                        src={`${Logo}`}
-                        width="50"
-                        height="40"
-                        alt="Find-A-Tutor Logo"
-                        loading="lazy"
-                        className='logo'
-                    />
                     <Typography variant="h6" noWrap component="div" sx={{ mr: 2, display: 'flex' }}>
                         Find-A-Tutor
                     </Typography>
