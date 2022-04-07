@@ -462,3 +462,48 @@ def getClasses():
     
     #return success
     return jsonify(data), 200
+
+def saveOfficeHours(filename):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #check what professor the office hours are for
+    cursor.execute("select prof_name from Professor")
+    profs = cursor.fetchall()
+    print(profs)
+    matchingProf = []
+    for prof in profs:
+        print(prof)
+        names = prof[0].split()
+        print(names)
+        if names[0] in filename and names[1] in filename:
+            print(names[1])
+            matchingProf.append(prof)
+    if len(matchingProf) > 1:
+        return "Too many professors match", 500
+    else:
+        cursor.execute("update Professor set office_hours = (%s) where prof_name = (%s)", (filename, matchingProf[0]))
+
+    return "SUCCESS", 200
+
+def saveSyllabi(filename):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+
+    #check what class this is for
+    cursor.execute("select class_code from Classes")
+    classes = cursor.fetchall()
+    matchingClasses = []
+    for cls in classes:
+        if cls[0] in filename:
+            matchingClasses.append(cls[0])
+    if len(matchingClasses) > 1:
+        return "Too many classes match", 500
+    else:
+        cursor.execute("update Classes set syllabus = (%s) where class_code = (%s)", (filename, matchingClasses[0]))
+    
+    return "SUCCESS", 200

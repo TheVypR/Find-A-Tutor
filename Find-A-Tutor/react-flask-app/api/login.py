@@ -1,7 +1,7 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
 import random                                               #used for random string generation
-from flask import Flask, request, jsonify                   #used for Flask API
+from flask import Flask, request, jsonify, send_file        #used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication, timeManager   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS                                 #used to ignore CORS
@@ -15,8 +15,8 @@ CORS(app)
 mysql = MySQL()
 
 #directory paths
-office_hours_dir = './office_hours/'
-syllabi_dir = './syllabi/'
+office_hours_dir = 'C:/Users/ApelIA18/Documents/GitHub/Find-A-Tutor/Find-A-Tutor/react-flask-app/src/office_hours'
+syllabi_dir = 'C:/Users/ApelIA18/Documents/GitHub/Find-A-Tutor/Find-A-Tutor/react-flask-app/src/syllabi'
 
 #toggle for accessing the DB on a local machine
 locality = 1 # have locality set to 1 if you want to test on your local machine
@@ -435,11 +435,18 @@ def saveOfficeHours():
     try:
         file = request.files['file']
         file.save(os.path.join(office_hours_dir, file.filename))
+        adminRoutes.saveOfficeHours(file.filename)
         d['status'] = 1
     except Exception as e:
         d['status'] = 0
 
     return jsonify(d), 200
+
+@app.route('/office_hours/<path:filename>', methods=['GET', 'POST'])
+def loadOfficeHours(file):
+    print(file)
+    print(os.path.join(office_hours_dir, file))
+    return send_file(os.path.join(office_hours_dir, file), attachment_filename=file)
 
 @app.route('/syllabiUpload/', methods=['POST'])
 def saveSyllabi():
@@ -447,11 +454,18 @@ def saveSyllabi():
     try:
         file = request.files['file']
         file.save(os.path.join(syllabi_dir, file.filename))
+        adminRoutes.saveOfficeHours(file.filename)
         d['status'] = 1
     except Exception as e:
         d['status'] = 0
 
     return jsonify(d), 200
+
+@app.route('/syllabi/<path:filename>', methods=['GET', 'POST'])
+def loadSyllabus(file):
+    print(file)
+    print(os.path.join(syllabi_dir, file))
+    return send_file(os.path.join(syllabi_dir, file), attachment_filename=file)
 
 @app.route('/getProfessors/', methods=['GET'])
 def getProfessors():
