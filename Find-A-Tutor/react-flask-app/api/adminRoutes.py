@@ -221,11 +221,9 @@ def BecomeATutor(email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    
+    print("HELLO")
     #add student to Tutor table
-    cursor.execute("insert into Tutor values(\""+ email 
-                    + "\", (select stu_name from Student where stu_email = \"" + email 
-                    + "\"), \""+pay+"\", \"""\", 0, 0, 0 )")
+    cursor.execute("insert into Tutor values((%s), (select stu_name from Student where stu_email = (%s)),(%s), \"\", 0, 0, 0, 0)", (email, email, pay))
     #close the connection
     conn.close()
     

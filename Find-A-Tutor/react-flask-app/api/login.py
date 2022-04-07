@@ -134,6 +134,7 @@ def currentTutors():
 def addTutor():
     token = request.get_json()
     email = authentication.getEmail(token)[0]
+    print("HELLO")
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -372,6 +373,7 @@ def report():
 def verifyRequest():
     data = request.get_json()           #get the data
     token = data["token"]               #get the token from the data
+    
     class_code = data["class_code"]     #get the class code from the data
     email = authentication.getEmail(token)[0]#use token to get email
     

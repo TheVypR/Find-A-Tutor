@@ -41,7 +41,7 @@ export default function NavBar() {
 
     let buttons;
     if (!isTutor) {
-        buttons = <Button onClick={() => { localStorage.setItem("view", "tutor"); AddTutor() }} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
+        buttons = <Button onClick={() => {AddTutor(); localStorage.setItem("view", "tutor");  }} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
     } else if (localStorage.getItem("view") === "tutor") {
         buttons = <Button onClick={() => { localStorage.setItem("view", "student") }} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Student View</Button>
     } else {
