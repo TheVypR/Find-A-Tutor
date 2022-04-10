@@ -70,7 +70,7 @@ export default function ProfessorInfo() {
                                     (professor[0].toUpperCase().includes(filter.toUpperCase()) ?
                                         <TableRow key={professor[0]}>
                                             <TableCell>{professor[0]}</TableCell>
-                                            <TableCell><a href={'/office_hours/?filename=' + professor[1]}>{professor[1]}</a></TableCell>
+                                            <TableCell onClick={() => {console.log("click"); fetch('/office_hours/?filename=' + professor[1])}}><a href="">{professor[1]}</a></TableCell>
                                             <TableCell>{professor[2]}</TableCell>
                                             <TableCell>{professor[3]}</TableCell>
                                         </TableRow>
