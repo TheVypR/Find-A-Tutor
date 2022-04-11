@@ -14,8 +14,8 @@ CORS(app)
 mysql = MySQL()
 
 #directory paths
-office_hours_dir = '/home/comp452/FindATutor/Find-A-Tutor/Find-A-Tutor/react-flask-app/src/office_hours'
-syllabi_dir = '/home/comp452/FindATutor/Find-A-Tutor/Find-A-Tutor/react-flask-app/src/syllabi'
+office_hours_dir = 'C:\\Users\\ApelIA18\\Documents\\GitHub\\Find-A-Tutor\\Find-A-Tutor\\react-flask-app\\public\\office_hours'
+syllabi_dir = 'C:\\Users\\ApelIA18\\Documents\\GitHub\\Find-A-Tutor\\Find-A-Tutor\\react-flask-app\\public\\syllabi'
 
 #toggle for accessing the DB on a local machine
 locality = 1 # have locality set to 1 if you want to test on your local machine
@@ -387,20 +387,6 @@ def approveDenyRequest():
         return adminRoutes.approveVerification(code)
     else:
         return adminRoutes.denyVerification(code)
-    
-@app.route('/fileUpload/', methods=['POST'])
-def fileUpload():
-    d = {}
-    try:
-        file = request.files['file']
-        filename = file.filename
-        file_bytes = file.read()
-        file_content = file_bytes.decode('utf-8')
-        d['status'] = 1
-    except Exception as e:
-        d['status'] = 0
-
-    return jsonify(d), 200
 
 @app.route('/professorCSV/', methods=['POST'])
 def professorUpload():    
