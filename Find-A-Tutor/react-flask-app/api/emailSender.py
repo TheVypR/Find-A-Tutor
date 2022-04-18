@@ -22,7 +22,7 @@ password = "8aa42ef7a4fbf5"
 for request in requests['requests']:
     #who to send email to
     receiver_email = request['prof_email']
-    verifyLink = "localhost:3000/" + request['approve_code']
+    verifyLink = "http://10.18.110.181:3000/approveOrDeny"
     
     #body of email
     message = MIMEText("Hello, a student " + request['tut_name'] + ", has requested your verification to tutor for " + request['class_code'] + ", please click the link below to accept this verification")
@@ -36,7 +36,7 @@ Subject: Find-A-Tutor Verification Request
 To: {receiver_email}
 From: {request['prof_email']}
 
-Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please click the link below to accept this verification
+Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please navigate to the link below to accept this verification
 
 {verifyLink}
  """
