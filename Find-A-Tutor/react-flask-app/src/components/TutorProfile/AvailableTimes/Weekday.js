@@ -181,12 +181,12 @@ class Weekday extends React.Component {
 
             if (this.state.startTime[index] == null) {
                 //set state to default 12:00 AM on the given day
-                let defaultStart = moment().isoWeekday(day).set({ hour: 12, minute: 0, second: 0 });
+                let defaultStart = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
                 this.setStartTime(defaultStart, index);
             }//if
             if (this.state.endTime[index] == null) {
                 //set state to default 12:00 AM
-                let defaultEnd = moment().isoWeekday(day).set({ hour: 12, minute: 0, second: 0 });
+                let defaultEnd = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
                 this.setEndTime(defaultEnd, index);
             }//if
             this.setShowTimePickers(false, index);
