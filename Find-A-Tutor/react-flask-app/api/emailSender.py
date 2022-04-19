@@ -1,56 +1,30 @@
-import smtplib, ssl
-from email.mime.text import MIMEText
-from flask import Flask         #used for Flask API
-from flaskext.mysql import MySQL#used for DB connection
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from adminRoutes import verifyRequestRetrieval
 
-
-#may eventually change this
-sender_email = "fnadatutor@gmail.com" 
-
-#This will change to query required email from professor
-#or pass in as parameter when queried in another file
-
-
+key = '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'
 #get the requests
 requests = verifyRequestRetrieval()[0]
 
-user = "444ac41e260bc8"
-password = "8aa42ef7a4fbf5"
 
 #go through and send email for each request
 for request in requests['requests']:
-    #who to send email to
-    receiver_email = request['prof_email']
-    verifyLink = "http://10.18.110.181:3000/approveOrDeny"
-    
+    verify_link = "http://10.18.110.181:3000/approveOrDeny"
+    message = Mail(
+        from_email='fnadatutor@gmail.com',
+        to_emails=request['prof_email'],
+        subject='Find-A-Tutor Verification Request for {}'.format(request['tut_email']),
+        html_content = '<a href="{}">Click here to verify</a>'.format(verify_link))
+        #html_content='Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please navigate to the link below to accept this verification <a>{verifyLink}</a>')
+    try:
+        sg=SendGridAPIClient(key)
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
+       
     #body of email
-    message = MIMEText("Hello, a student " + request['tut_name'] + ", has requested your verification to tutor for " + request['class_code'] + ", please click the link below to accept this verification")
-
-    message['Subject'] = 'Find-A-Tutor Verification Request'
-    message['From'] = 'fnadatutor@gmail.com'
-    message['To'] = request['prof_email']
-
-    message = f"""\
-Subject: Find-A-Tutor Verification Request
-To: {receiver_email}
-From: {request['prof_email']}
-
-Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please navigate to the link below to accept this verification
-
-{verifyLink}
- """
-
-    #send mail
-try:
-    with smtplib.SMTP("smtp.mailtrap.io", 2525) as server: 
-
-        server.login(user, password)
-        server.sendmail(sender_email, receiver_email, message)
-        server.quit()
-except (gaierror, ConnectionRefusedError):
-    print('Failed to connect to the server. Bad connection settings?')
-except smtplib.SMTPServerDisconnected:
-    print('Failed to connect to the server. Wrong user/password?')
-except smtplib.SMTPException as e:
-    print('SMTP error occurred: ' + str(e))
+    #message = MIMEText("Hello, a student " + request['tut_name'] + ", has requested your verification to tutor for " + request['class_code'] + ", please click the link below to accept this verification")
