@@ -1,7 +1,6 @@
 #FIND-A-TUTOR ~ Login Backend + All routes + conversion functions ~ Author: Isaac A., Aaron S., Tim W., Nathan B.
 import hashlib                                              #used to hash pw to check against pw in DB
-import random                                               #used for random string generation
-from flask import Flask, request, jsonify                   #used for Flask API
+from flask import Flask, request, jsonify, send_file, url_for#used for Flask API
 import profile, signup, appointment, history, adminRoutes, authentication, timeManager   #used to call functions
 from flaskext.mysql import MySQL                            #used to connect to DB
 from flask_cors import CORS                                 #used to ignore CORS
@@ -15,8 +14,8 @@ CORS(app)
 mysql = MySQL()
 
 #directory paths
-office_hours_dir = './office_hours/'
-syllabi_dir = './syllabi/'
+office_hours_dir = 'C:\\Users\\ApelIA18\\Documents\\GitHub\\Find-A-Tutor\\Find-A-Tutor\\react-flask-app\\public\\office_hours'
+syllabi_dir = 'C:\\Users\\ApelIA18\\Documents\\GitHub\\Find-A-Tutor\\Find-A-Tutor\\react-flask-app\\public\\syllabi'
 
 #toggle for accessing the DB on a local machine
 locality = 1 # have locality set to 1 if you want to test on your local machine
@@ -134,6 +133,7 @@ def currentTutors():
 def addTutor():
     token = request.get_json()
     email = authentication.getEmail(token)[0]
+    print("HELLO")
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -319,7 +319,9 @@ def getTimes():
     #if there are times returned
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
+        print(type(unmerged))
         if type(unmerged) == type([]):
+            print("fit")
             times = timeManager.mergeTimes(unmerged)
         else:
             return "No times found", 401
@@ -386,6 +388,7 @@ def report():
 def verifyRequest():
     data = request.get_json()           #get the data
     token = data["token"]               #get the token from the data
+    
     class_code = data["class_code"]     #get the class code from the data
     email = authentication.getEmail(token)[0]#use token to get email
     
@@ -400,20 +403,6 @@ def approveDenyRequest():
         return adminRoutes.approveVerification(code)
     else:
         return adminRoutes.denyVerification(code)
-    
-@app.route('/fileUpload/', methods=['POST'])
-def fileUpload():
-    d = {}
-    try:
-        file = request.files['file']
-        filename = file.filename
-        file_bytes = file.read()
-        file_content = file_bytes.decode('utf-8')
-        d['status'] = 1
-    except Exception as e:
-        d['status'] = 0
-
-    return jsonify(d), 200
 
 @app.route('/professorCSV/', methods=['POST'])
 def professorUpload():    
@@ -449,11 +438,17 @@ def saveOfficeHours():
     try:
         file = request.files['file']
         file.save(os.path.join(office_hours_dir, file.filename))
+        adminRoutes.saveOfficeHours(file.filename)
         d['status'] = 1
     except Exception as e:
         d['status'] = 0
 
     return jsonify(d), 200
+
+@app.route('/office_hours/', methods=['GET', 'POST'])
+def loadOfficeHours():
+    filename = request.args.get("filename")
+    return send_file(os.path.join(office_hours_dir, filename), attachment_filename=filename, as_attachment=True)
 
 @app.route('/syllabiUpload/', methods=['POST'])
 def saveSyllabi():
@@ -461,11 +456,17 @@ def saveSyllabi():
     try:
         file = request.files['file']
         file.save(os.path.join(syllabi_dir, file.filename))
+        adminRoutes.saveSyllabi(file.filename)
         d['status'] = 1
     except Exception as e:
         d['status'] = 0
 
     return jsonify(d), 200
+
+@app.route('/syllabi/', methods=['GET', 'POST'])
+def loadSyllabus():
+    filename = request.args.get("filename")
+    return send_file(os.path.join(syllabi_dir, filename), attachment_filename=filename, as_attachment=True)
 
 @app.route('/getProfessors/', methods=['GET'])
 def getProfessors():
