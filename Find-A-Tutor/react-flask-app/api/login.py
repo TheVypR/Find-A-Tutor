@@ -305,7 +305,9 @@ def getTimes():
     #if there are times returned
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
+        print(type(unmerged))
         if type(unmerged) == type([]):
+            print("fit")
             times = timeManager.mergeTimes(unmerged)
         else:
             return "No times found", 401
