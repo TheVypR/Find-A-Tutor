@@ -7,6 +7,8 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Autocomplete from '@mui/material/Autocomplete';
+import Popper from '@mui/material/Popper';
 import "./TutorProfile.css"
 
 class StudentProfile extends React.Component {
@@ -97,7 +99,10 @@ class StudentProfile extends React.Component {
 
     render() {
         var items = this.props.items;
-        console.log(this.state.classesList);
+        const PopperMy = function (props) {
+			return <Popper {...props} style={{width: 'fit-content'}} placement="bottom-start" />;
+		};
+        var allClasses = this.props.items['allClasses'].map(cls => cls.toString());
         return (
             <>
                 <p className="text-end pe-2"><i> Logged in as a Student </i></p>
@@ -132,15 +137,22 @@ class StudentProfile extends React.Component {
                                             </TableRow> :
                                             <TableRow key={item['class_code']} hover>
                                                 <TableCell>
-                                                    <input
-                                                        name="courseCode"
-                                                        id={index}
-                                                        className="courseCode"
-                                                        onChange={e => this.setCourseCode(e.target.value, index)}
-                                                        type="text"
-                                                        placeholder='HUMA 200 A'
-                                                        size="8">
-                                                    </input>
+                                                    <Autocomplete
+                                                        PopperComponent={PopperMy}
+                                                        sx={{
+                                                            display: 'inline-block',
+                                                            '& input': {
+                                                                width: 100,
+                                                            },
+                                                        }}
+                                                        options={allClasses}
+                                                        renderInput={(params) => (
+                                                            <div ref={params.InputProps.ref}>
+                                                                <input type="text" placeholder="Class Code"{...params.inputProps} required />
+                                                            </div>
+                                                        )}
+                                                        onChange={e => { this.setCourseCode(e.target.textContent, index) }}
+                                                    />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Button id={index} className="removeClass" variant="danger" onClick={() => this.RemoveClass(index)}>

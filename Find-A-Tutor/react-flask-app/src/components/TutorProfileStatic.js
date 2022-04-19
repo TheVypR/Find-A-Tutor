@@ -118,7 +118,7 @@ class PayAndLoginPrefs extends React.Component {
         if (pay_info === "") {
             pay_info = "None"
         }
-        var pay_info_conditional = <p> Username: {pay_info} </p>
+        var pay_info_conditional = <p> Username {pay_info} </p>
         if (items['pay_type'] === "Cash") {
             pay_info_conditional = <></>
         }
