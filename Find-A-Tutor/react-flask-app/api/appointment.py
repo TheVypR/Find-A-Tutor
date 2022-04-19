@@ -141,9 +141,9 @@ def getTimes(email):
         conn.close()
                 
         #return the times
-        return availTimes, 200
+        return availTimes
     else:
-        return "No times found", 401
+        return "No times found"
 
 #get the appointments for a student or tutor
 #isTutor -> whether the person is a student or tutor

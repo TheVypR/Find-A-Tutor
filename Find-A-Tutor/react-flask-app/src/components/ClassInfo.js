@@ -69,7 +69,7 @@ export default function ClassInfo() {
                                     <TableRow key={classes[0]}>
                                         <TableCell>{classes[0]}</TableCell>
                                         <TableCell>{classes[1]}</TableCell>
-                                        <TableCell><a href={classes[2]}>{classes[2]}</a></TableCell>
+                                        <TableCell><a href={process.env.PUBLIC_URL +"/syllabi/" + classes[2]} target="_blank">{classes[2]}</a></TableCell>
                                     </TableRow>
 									: null )
                                 ))}

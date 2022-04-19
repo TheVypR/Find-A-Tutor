@@ -31,7 +31,7 @@ export default function ProfessorInfo() {
 	//filter
 	const [filter, setFilter] = useState("");
 
-    //Get list of group tutoring sessions
+    //Get list of professors
     useEffect(() => { fetch("/getProfessors/")
         .then(res => res.json())
         .then(result => {
@@ -41,6 +41,10 @@ export default function ProfessorInfo() {
             console.log(error);
         })
     }, []);
+
+    const requestFile = (filename) => {
+        fetch('/office_hours/?filename='+filename).then(res => res.json()).then(result => console.log(result))
+    }
 
     return authContext.isLoggedIn && (
         <LocalizationProvider dateAdapter={DateAdapter}>
@@ -69,7 +73,7 @@ export default function ProfessorInfo() {
 									(professor[0].toUpperCase().includes(filter.toUpperCase()) ?
                                     <TableRow key={professor[0]}>
                                         <TableCell>{professor[0]}</TableCell>
-                                        <TableCell><a href="{{url_for('loadOfficeHours', filename={professor[1]})}}">{professor[1]}</a></TableCell>
+                                        <TableCell><a href={process.env.PUBLIC_URL +"/office_hours/" + professor[1]} target="_blank">{professor[1]}</a></TableCell>
                                         <TableCell>{professor[2]}</TableCell>
                                         <TableCell>{professor[3]}</TableCell>
                                     </TableRow>

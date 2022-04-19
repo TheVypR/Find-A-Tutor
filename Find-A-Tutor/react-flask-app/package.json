@@ -23,6 +23,7 @@
     "date-fns": "^2.28.0",
     "daypilot-pro-angular": "https://npm.daypilot.org/daypilot-pro-angular/trial/2022.1.5188.tar.gz",
     "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/trial/2022.1.5188.tar.gz",
+    "http-proxy-middleware": "^2.0.4",
     "moment": "^2.29.1",
     "negotiator": "^0.6.3",
     "rc-time-picker": "^3.7.3",
@@ -63,5 +64,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:5000/"
+  "proxy": "http://0.0.0.0:5000/"
 }

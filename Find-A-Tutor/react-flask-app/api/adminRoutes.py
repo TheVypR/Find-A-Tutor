@@ -470,14 +470,10 @@ def saveOfficeHours(filename):
     #check what professor the office hours are for
     cursor.execute("select prof_name from Professor")
     profs = cursor.fetchall()
-    print(profs)
     matchingProf = []
     for prof in profs:
-        print(prof)
         names = prof[0].split()
-        print(names)
         if names[0] in filename and names[1] in filename:
-            print(names[1])
             matchingProf.append(prof)
     if len(matchingProf) > 1:
         return "Too many professors match", 500
