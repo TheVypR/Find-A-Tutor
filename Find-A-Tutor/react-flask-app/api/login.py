@@ -203,16 +203,18 @@ def myProfile():
     submission = request.get_json()
     token = submission['token']
     email = authentication.getEmail(token)[0]
-    print(submission)
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
         submittedTime = submission['remove']
         startTime = timeManager.dateParse(submittedTime['startTime'])
         endTime = timeManager.dateParse(submittedTime['endTime'])
-        timeSlot = {'start': startTime, 'end': endTime}
-        splitTimeVals = timeManager.splitTimes(timeSlot)
-        return profile.remove_timeSlot(splitTimeVals, email)
+        splitTimes = timeManager.splitTimes({'start':startTime, 'end':endTime})
+        for split in splitTimes:
+            recurringTimes = timeManager.makeRecurring(split['start'], None)
+            #for time in recurringTimes:
+            profile.remove_timeSlot(recurringTimes, email)
+        return "SUCCESS", 200
     #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
@@ -221,9 +223,13 @@ def myProfile():
         #parse timeslot and divide it into 15 min chunks for storage
         startTime = timeManager.dateParse(submission['startTime'])
         endTime = timeManager.dateParse(submission['endTime'])
-        timeSlot = {'start': startTime, 'end': endTime}
-        times = timeManager.splitTimes(timeSlot)
-        return profile.post_timeSlot(times, email)
+        splitTimes = timeManager.splitTimes({'start':startTime, 'end':endTime})
+        for split in splitTimes:
+            recurringTimes = timeManager.makeRecurring(split['start'], None)
+            #for time in recurringTimes:
+            profile.post_timeSlot(recurringTimes, email)
+        
+        return "SUCCESS", 200
     elif 'classesTaking' in submission.keys():
         return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
