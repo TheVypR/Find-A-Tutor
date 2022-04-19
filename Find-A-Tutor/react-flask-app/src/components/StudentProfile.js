@@ -137,15 +137,6 @@ class StudentProfile extends React.Component {
                                             </TableRow> :
                                             <TableRow key={item['class_code']} hover>
                                                 <TableCell>
-                                                    {/* <input
-                                                        name="courseCode"
-                                                        id={index}
-                                                        className="courseCode"
-                                                        onChange={e => this.setCourseCode(e.target.value, index)}
-                                                        type="text"
-                                                        placeholder='HUMA 200 A'
-                                                        size="8">
-                                                    </input> */}
                                                     <Autocomplete
                                                         PopperComponent={PopperMy}
                                                         sx={{
