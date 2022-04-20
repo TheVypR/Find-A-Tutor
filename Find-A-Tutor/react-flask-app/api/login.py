@@ -265,8 +265,8 @@ def getProfile():
     token = request.args.get('token')
     
     #determine what profile is being populated
-    isTutor = request.args.get('view')
-    return profile.retrieve_profile(token)
+    isTutor = request.args.get('view') == "tutor"
+    return profile.retrieve_profile(token, isTutor)
 
 
 # @app.route('/allClasses/', method=['POST'])

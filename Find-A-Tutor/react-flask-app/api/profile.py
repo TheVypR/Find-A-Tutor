@@ -1,5 +1,6 @@
 #FIND-A-TUTOR ~ Profile Backend ~ Authors: Tim W., Isaac A.
 from flask import Flask, request, jsonify
+from datetime import datetime, timedelta                    
 #from MySQLdb import escape_string as thwart
 
 #error constants
@@ -31,7 +32,7 @@ mysql.init_app(app)
 
 
 #retrieve profile details
-def retrieve_profile(token):
+def retrieve_profile(token, view):
     conn = mysql.connect()
     cursor = conn.cursor()
     
@@ -48,35 +49,36 @@ def retrieve_profile(token):
     classesTaking = cursor.fetchall()
     #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
 
-    #get the login preference
-    cursor.execute("select login_pref from Tutor where tut_email = (%s)", (email))
-    loginPref = cursor.fetchone()
-    
-    #get the contactability
-    cursor.execute("select contactable from Tutor where tut_email = (%s)", (email))
-    contactable = cursor.fetchone()
-    
-    #get the payment
-    cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (email))
-    payment = cursor.fetchone()
-    
-    #split the payment details
-    if payment == None:
-        payment_method = "Cash"
-        payment_details = ""
-    else:
-        payment_method = payment[0]  #payment_type
-        payment_details = payment[1] #payment_info
+    if view:
+        #get the login preference
+        cursor.execute("select login_pref from Tutor where tut_email = (%s)", (email))
+        loginPref = cursor.fetchone()
+        
+        #get the contactability
+        cursor.execute("select contactable from Tutor where tut_email = (%s)", (email))
+        contactable = cursor.fetchone()
+        
+        #get the payment
+        cursor.execute("select pay_type, pay_info from Tutor where tut_email = (%s)", (email))
+        payment = cursor.fetchone()
+        
+        #split the payment details
+        if payment == None:
+            payment_method = "Cash"
+            payment_details = ""
+        else:
+            payment_method = payment[0]  #payment_type
+            payment_details = payment[1] #payment_info
 
-    times = retrieve_times(email)
-    tutorsFor = retrieve_classes(email)
-    allClasses = retrieve_allClasses()
+        times = retrieve_times(email)
+        tutorsFor = retrieve_classes(email)
+        allClasses = retrieve_allClasses()
 
-    #login prefs are an array, make it just a single int
-    if loginPref == None:
-        loginPref = 1
-    else:
-        loginPref = loginPref[0]
+        #login prefs are an array, make it just a single int
+        if loginPref == None:
+            loginPref = 1
+        else:
+            loginPref = loginPref[0]
   
     conn.close()
 
@@ -93,7 +95,9 @@ def retrieve_times(tut_email):
     return the result of mergeTimes
     If the Tutor does not have any available times return an empty array
     """
-
+    #checked recurring
+    checkedTime = []
+    
     #Connect to Db
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -107,8 +111,13 @@ def retrieve_times(tut_email):
     #put times in dict {'start', 'end'}
     if len(times) != 0:
         for time in times:
-            startAndEnd = {'start': time[0], 'end': time[1]}
-            availTimes.append(startAndEnd)
+            earlyTime = datetime.strftime(datetime.strptime(time[0], '%Y-%m-%dT%H:%M:%S') - timedelta(weeks = 1), '%Y-%m-%dT%H:%M:%S')
+            if earlyTime in checkedTime:
+                checkedTime.append(time[0])
+            else:
+                checkedTime.append(time[0])
+                startAndEnd = {'start': time[0], 'end': time[1]}
+                availTimes.append(startAndEnd)
 
         #Condense times
         availTimes = timeManager.mergeTimes(availTimes)
