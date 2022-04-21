@@ -76,7 +76,7 @@ class TutorsFor extends React.Component {
                         {this.props.classes.map((item) => (
                             ((typeof (item['class_code']) === 'string') ?
                                 <TableRow key={item['class_code']} hover>
-                                    <TableCell>{(item["verification"] === 5 ? <VerifiedIcon sx={{ color: 'red' }} /> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <Button onClick={() => { this.requestVerify(item['class_code']) }}>Request</Button>))}</TableCell>
+                                    <TableCell>{(item["verification"] === 5 ? <b>Pending...</b> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <Button onClick={() => { this.requestVerify(item['class_code']) }}>Request</Button>))}</TableCell>
                                     <TableCell>{item['class_code']} </TableCell>
                                     <TableCell>${item['rate']} </TableCell>
                                     <TableCell><Button id={this.props.classes.indexOf(item)} className="removeClass" variant="danger" onClick={() => this.props.removeClass(this.props.classes.indexOf(item))}>

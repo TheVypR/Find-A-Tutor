@@ -177,20 +177,21 @@ def getAppointments(token, isTutor):
 
         #put appointments in a dictionary and add to array
         for appt in appts:
-            availAppts.append({
-                'stu_email':appt[1],
-                'stu_name':appt[9],
-                'tut_email':appt[2],
-                'tut_name':appt[10],
-                'class_code':appt[3], 
-                'start':appt[4],
-                'end':appt[5],
-                'title':appt[6],
-                'block_s':appt[7],
-                'block_e':appt[8],
-                'type':"appt",
-                'backgroundColor':'blue',   #changes the event's color on the calendar
-                })  
+            if datetime.strptime(appt[4], "%Y-%m-%dT%H:%M:%S") > datetime.now():
+                availAppts.append({
+                    'stu_email':appt[1],
+                    'stu_name':appt[9],
+                    'tut_email':appt[2],
+                    'tut_name':appt[10],
+                    'class_code':appt[3], 
+                    'start':appt[4],
+                    'end':appt[5],
+                    'title':appt[6],
+                    'block_s':appt[7],
+                    'block_e':appt[8],
+                    'type':"appt",
+                    'backgroundColor':'blue',   #changes the event's color on the calendar
+                    })
     else:
         #get the appointments for a given tutor
         cursor.execute("select " 
@@ -212,20 +213,21 @@ def getAppointments(token, isTutor):
                         
         #put appointments in a dictionary and add to array
         for appt in appts:
-            availAppts.append({
-                'stu_email':appt[1],
-                'stu_name':appt[9],
-                'tut_email':appt[2],
-                'tut_name':appt[10],
-                'class_code':appt[3], 
-                'start':appt[4],
-                'end':appt[5],
-                'title':appt[6] + appt[9],
-                'block_s':appt[7],
-                'block_e':appt[8],
-                'type':"appt",
-                'backgroundColor':'blue',   #changes the event's color on the calendar
-                })
+            if datetime.strptime(appt[4], "%Y-%m-%dT%H:%M:%S") > datetime.now():
+                availAppts.append({
+                    'stu_email':appt[1],
+                    'stu_name':appt[9],
+                    'tut_email':appt[2],
+                    'tut_name':appt[10],
+                    'class_code':appt[3], 
+                    'start':appt[4],
+                    'end':appt[5],
+                    'title':appt[6] + appt[9],
+                    'block_s':appt[7],
+                    'block_e':appt[8],
+                    'type':"appt",
+                    'backgroundColor':'blue',   #changes the event's color on the calendar
+                    })
     
     #close the connection
     conn.close()
