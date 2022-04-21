@@ -48,6 +48,7 @@ def retrieve_profile(token, view):
     cursor.execute("select class_code from StudentClasses where stu_email=(%s)", (email))
     classesTaking = cursor.fetchall()
     #select class_code from StudentClasses where stu_email="apelia18@gcc.edu";
+    allClasses = retrieve_allClasses()
 
     if view:
         #get the login preference
@@ -72,20 +73,22 @@ def retrieve_profile(token, view):
 
         times = retrieve_times(email)
         tutorsFor = retrieve_classes(email)
-        allClasses = retrieve_allClasses()
 
         #login prefs are an array, make it just a single int
         if loginPref == None:
             loginPref = 1
         else:
             loginPref = loginPref[0]
-  
-    conn.close()
+            
+        conn.close()
+        return {'name': name, 'email':email, 'isTutor': True,
+            'login_pref':loginPref, 'contact':contactable,
+            'pay_type':payment_method, 'pay_info':payment_details,
+            'times': times,'moments': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking, "allClasses": allClasses}, 200
+    else:
+        conn.close()
 
-    return {'name': name, 'email':email, 'isTutor': True,
-        'login_pref':loginPref, 'contact':contactable,
-        'pay_type':payment_method, 'pay_info':payment_details,
-        'times': times,'moments': times, 'tutorsFor': tutorsFor, 'classesTaking': classesTaking, "allClasses": allClasses}, 200
+        return {'name': name, 'email':email, 'classesTaking': classesTaking, 'allClasses':allClasses}, 200
 
 def retrieve_times(tut_email):
     """Get the times the tutor is available from the DB

@@ -251,7 +251,7 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify(e.extendedProps.tut_email)
+		body:JSON.stringify({'tutor':e.extendedProps.tut_email, 'student':localStorage.getItem("token")})
 		},).then(
 			res => res.json()
 		).then(

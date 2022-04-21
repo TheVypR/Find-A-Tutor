@@ -61,7 +61,7 @@ def addAppointment(data, token, start, end, timeslots):
 
 #get the rates for a tutor
 #data -> tutor email
-def getRates(data):
+def getRates(tutor, email):
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -71,9 +71,9 @@ def getRates(data):
     tutorRates = {}
     
     #get the rates for the tutor's classes
-    cursor.execute("select class_code, rate from TutorClasses where tut_email = \"" + data +"\"")
+    cursor.execute("select T.class_code, T.rate from TutorClasses T, StudentClasses S where T.tut_email = (%s) and S.stu_email = (%s) and T.class_code = S.class_code", (tutor, email))
     classRates = cursor.fetchall()
-    
+    print(classRates)
     #put the rates into the dictionary (key -> class_code, value -> rate)
     for clss in classRates:
         tutorRates[clss[0]] = clss[1]
@@ -129,7 +129,7 @@ def getTimes(email):
                 availTimes.append({'tut_email':time[0],
                                    'start':time[1],
                                    'end':time[2],
-                                   'classes':list(getRates(time[0])[0].keys()),
+                                   'classes':list(getRates(time[0], email)[0].keys()),
                                    'title': "Available Session with " + time[4],
                                    'tut_name':time[4],
                                    'rating':time[5],
