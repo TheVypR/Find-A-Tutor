@@ -5,12 +5,21 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { createTheme } from '@mui/material/styles';
 import * as React from 'react';
+import Logo from '../images/logo.png';
 
 export default function AdminNavBar() {
     return (
         <AppBar postion="static" color="primary" elevation={0} sx={{borderTheme: (theme) => `1px solid ${theme.palette.divider}`}}>
             <Toolbar sx={{flexwrap: 'wrap'}}>
-                <Typography component="h1" variant="h4" color="inherit" sx={{px: 5, flexGrow: 1, display: 'flex'}}>
+                <img
+                    src={`${Logo}`}
+                    width="80"
+                    height="60"
+                    alt="Find-A-Tutor Logo"
+                    loading="lazy"
+                    className='logo'
+                />
+                <Typography component="h1" variant="h4" color="inherit" sx={{px: 2, flexGrow: 1, display: 'flex'}}>
                     Admin View
                 </Typography>
                 <MenuItem component='a' href='./Reports'>
