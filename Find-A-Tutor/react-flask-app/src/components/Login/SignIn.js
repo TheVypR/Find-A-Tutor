@@ -53,7 +53,9 @@ export default function SignIn(props) {
       body: JSON.stringify(info)
     }).then(resp => resp.json())
       .then(result => {
+		console.log(result['email'])
         if (result['email'] === info[0]) {
+		  console.log(result['email'])
           if (result['isAdmin'] === 1) {
             authContext.login();
             nav('/Reports');
@@ -67,26 +69,28 @@ export default function SignIn(props) {
           localStorage.setItem("token", result['token']);
           localStorage.setItem("view", (result['loginPref'] == 1 ? "tutor" : "student"));
         }
-        else {
+      }).catch(error => {
+		console.log("wrong");
           setWrongLogin(true)
           logoutHandler();
-        }
-      })
+	  })
   };
 
 
   const WrongSignIn = () => {
+	console.log("wrong")
     return (
-      <div style={{ color: 'red' }}>
-        Incorrect Email or Password
-      </div>
+      <label style={{ marginTop: '25px', color: '#FC6A03', "font-size": '20px' }}>
+        Incorrect Login
+      </label>
     )
   }
 
   return (
+  
     <>
       <AppBar postion="static" color="primary" sx={{ borderTheme: (theme) => `1px solid ${theme.palette.divider}` }}>
-        <form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit}>
           <div className="d-flex justify-content-around align-items-center">
             <div className="d-flex align-items-center">
               <img
@@ -103,7 +107,7 @@ export default function SignIn(props) {
               {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar> */}
-              {wrongLogin ? <WrongSignIn /> : null}
+              
               <div className="d-flex flex-column align-items-center">
                 <TextField
                   margin="normal"
@@ -121,17 +125,16 @@ export default function SignIn(props) {
                     disableUnderline: true, // <== added this
                   }}
                 />
-                <Button
-                  type="submit"
-                  style={{ width: '100px', marginTop: "5px", marginLeft: "5px", marginRight: "5px", display: "inline-block" }}
-                  variant="contained"
-                  color="success"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign In
-                </Button>
-              </div>
-
+				<Button
+			    type="submit"
+				style={{ height: '50px',width: '100px', marginTop: "5px", marginLeft: "5px", marginRight: "5px", display: "inline-block" }}
+				variant="contained"
+				color="success"
+				sx={{ mt: 3, mb: 2 }}
+			    >
+				  Sign In
+			    </Button>
+              </div>			  
               <div className="d-flex flex-column">
                 <TextField
                   margin="normal"
@@ -149,10 +152,12 @@ export default function SignIn(props) {
                     disableUnderline: true, // <== added this
                   }}
                 />
-                <Link className="signup" to='/signup' variant="body2" style={{ display: "inline-block" }} >
+				
+				<Link className="signup" to='/signup' variant="body2" style={{ display: "inline-block" }} >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </div>
+			  {wrongLogin ? <WrongSignIn /> : null}
               {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
