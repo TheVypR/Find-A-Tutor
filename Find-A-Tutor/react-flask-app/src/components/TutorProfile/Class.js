@@ -97,7 +97,7 @@ class Class extends React.Component {
 						id={index}
 						className='hourlyRate'
 						min="0"
-						size="2"
+						style={{width: "50px"}}
 						onKeyPress={e => this.onlyNumbers(e)}
 						onChange={e => this.props.setRate(e.target.value, index)}
 						required
