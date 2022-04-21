@@ -41,11 +41,11 @@ export default function NavBar() {
 
     let buttons;
     if (!isTutor) {
-        buttons = <Button onClick={() => {AddTutor(); localStorage.setItem("view", "tutor");  }} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
+        buttons = <Button onClick={() => {AddTutor(); localStorage.setItem("view", "tutor"); document.location.reload()}} href="./myProfile" color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Become A Tutor</Button>
     } else if (localStorage.getItem("view") === "tutor") {
-        buttons = <Button onClick={() => { localStorage.setItem("view", "student") }} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Student View</Button>
+        buttons = <Button onClick={() => { localStorage.setItem("view", "student");document.location.reload()}} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Student View</Button>
     } else {
-        buttons = <Button onClick={() => localStorage.setItem("view", "tutor")} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Tutor View</Button>
+        buttons = <Button onClick={() => {localStorage.setItem("view", "tutor");document.location.reload()}} color="inherit" variant="outlined" sx={{ my: 1, mx: 1 }}>Switch To Tutor View</Button>
     }
 
     return auth.isLoggedIn && (
