@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill } from "react-icons/bs";
-import VerifiedIcon from '@mui/icons-material/Verified';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
