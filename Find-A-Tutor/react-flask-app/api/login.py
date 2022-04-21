@@ -102,7 +102,7 @@ def login():
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
     tutor = request.get_json()
-    tutor = authentication.getEmail(tutor)
+    tutor = authentication.getEmail(tutor)[0]
     return profile.remove_tutor(tutor)
 
 @app.route('/authCheck/', methods=['GET'])
@@ -133,7 +133,6 @@ def currentTutors():
 def addTutor():
     token = request.get_json()
     email = authentication.getEmail(token)[0]
-    print("HELLO")
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -277,8 +276,11 @@ def getProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  token = data['token']
-  
+  if data['token']:
+    token = data['token']
+    email = authentication.getEmail(token)
+  else:
+    email = data['email']
   #combine times and a day to make a datetime
   newStart = timeManager.createDateFromTime(data['day'], data['start'])
   newEnd = timeManager.createDateFromTime(data['day'], data['end'])
@@ -286,7 +288,7 @@ def addAppointment():
   #split the datetimes into 15 minute intervals for storage
   slots = timeManager.splitTimes({'start':newStart, 'end':newEnd})
   #add the appointment and mark tutor time as taken
-  return appointment.addAppointment(data, token, newStart, newEnd, slots)
+  return appointment.addAppointment(data, email, newStart, newEnd, slots)
 
 #get the rates for all classes for a specific tutor
 @app.route('/getRates/', methods=['POST'])
@@ -313,9 +315,7 @@ def getTimes():
     #if there are times returned
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        print(type(unmerged))
         if type(unmerged) == type([]):
-            print("fit")
             times = timeManager.mergeTimes(unmerged)
         else:
             return "No times found", 401

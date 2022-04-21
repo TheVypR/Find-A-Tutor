@@ -25,7 +25,7 @@ const theme = createTheme({
 export default function NavBar() {
     const [isTutor, setIsTutor] = useState(false);
     useEffect(() => {
-        fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => { console.log(result); setIsTutor(result) });
+        fetch("/isTutor/?token=" + localStorage.getItem("token")).then(res => res.json()).then(result => { console.log(result); setIsTutor(result)});
     }, []);
 
     function AddTutor() {

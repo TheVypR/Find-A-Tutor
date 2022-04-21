@@ -30,15 +30,15 @@ mysql.init_app(app)
 #start -> appointment start time
 #end -> appointment end time
 #timeslots -> array of 15 minute time blocks that are being taken
-def addAppointment(data, token, start, end, timeslots):
+def addAppointment(data, email, start, end, timeslots):
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
     #create the entry in the Appointment table
-    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(" 
-                    + "(select stu_email from Student where token = \"" + token + "\")," " \"" 
+    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(\""
+                    + email + "\", \"" 
                     + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + start + "', '"
@@ -73,7 +73,6 @@ def getRates(tutor, email):
     #get the rates for the tutor's classes
     cursor.execute("select T.class_code, T.rate from TutorClasses T, StudentClasses S where T.tut_email = (%s) and S.stu_email = (%s) and T.class_code = S.class_code", (tutor, email))
     classRates = cursor.fetchall()
-    print(classRates)
     #put the rates into the dictionary (key -> class_code, value -> rate)
     for clss in classRates:
         tutorRates[clss[0]] = clss[1]
@@ -253,7 +252,6 @@ def getGroupTutoring(email):
     for session in groupTutSes:
         for ses in session:
             tutoringAry.append({'title':ses[0], 'location':ses[1], 'department':ses[2], 'start':ses[3], 'end':ses[4], 'backgroundColor':'purple'})
-    print(tutoringAry)
     return {'groupTut':tutoringAry}, 200
     
 #cancel an appointment with a tutor

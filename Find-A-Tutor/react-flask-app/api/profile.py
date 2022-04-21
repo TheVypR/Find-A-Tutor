@@ -199,7 +199,6 @@ def remove_timeSlot(times, tut_email):
     Timeslots are either added during the current session by the user or
     are retrieved from the DB.
     """
-    print(times)
 
     #Connect to DB
     conn = mysql.connect()
@@ -321,7 +320,6 @@ def edit_student_classes(submission, tut_email) :
     for aClass in classes:
         cursor.execute("insert into StudentClasses Values(%s, %s);", (tut_email, aClass['class_code']))
 
-    print(submission['removeClassesTaking'])
     #Check if any student classes were removed
     if len(submission['removeClassesTaking']) > 0:
         remove_student_classes(submission['removeClassesTaking'], tut_email)
@@ -343,6 +341,7 @@ def remove_tutor(tutor):
     else:
         cursor.execute("delete from ReportedTutors where tut_email = \""+ tutor +"\" ")
         cursor.execute("delete from TutorTimes where tut_email = \""+ tutor + "\" ")
+        cursor.execute("delete from VerificationRequest where tut_email = (%s)", tutor)
         cursor.execute("delete from TutorClasses where tut_email = \""+ tutor + "\" ")
         cursor.execute("delete from Tutor where tut_email = \""+ tutor + "\" ")
         retStr = 'Done'

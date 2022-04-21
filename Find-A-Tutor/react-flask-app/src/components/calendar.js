@@ -312,7 +312,7 @@ function FullCalendarApp() {
 	//edit apppointment
 	const editAppt = function () {
 		const myEvent = {
-		  token:localStorage.getItem("token"),
+		  email:stuEmail,
 		  view:localStorage.getItem("view"),
 		  class_code: classCode,
 		  start: startTime,
@@ -388,7 +388,6 @@ function FullCalendarApp() {
 	}, [times, appts]);
 	
 //list of appointments to add to calendar
-//TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
     <div className="App">
 		<NavBar />
@@ -497,13 +496,7 @@ function FullCalendarApp() {
 		</form>
       </Modal>	
 	
-
 		<div className="filter">
-		
-		<div className='switchViews'>
-			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
-		</div>
-		{/* tab to filter calendar */}
 		<Paper
 		 variant="outlined"
 		 style={{
