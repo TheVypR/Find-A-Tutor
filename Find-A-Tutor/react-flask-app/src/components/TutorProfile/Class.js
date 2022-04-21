@@ -93,13 +93,14 @@ class Class extends React.Component {
 				</TableCell>
 				<TableCell>
 					<input name="rate"
-						type="number"
+						type="text"
 						id={index}
 						className='hourlyRate'
 						min="0"
 						style={{width: "50px"}}
 						onKeyPress={e => this.onlyNumbers(e)}
 						onChange={e => this.props.setRate(e.target.value, index)}
+						maxLength="3"
 						required
 					/>
 				</TableCell>
