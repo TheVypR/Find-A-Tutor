@@ -349,11 +349,9 @@ function FullCalendarApp() {
 	}
 	
 	function verifyTimes(isNew) {
-		console.log(blockStart)
+		setWrongClass(false)
 		if (endTime <= startTime || startTime < blockStart || endTime > blockEnd) {
 			setWrongTimes(true)
-			console.log("Start:" + startTime + ":" + blockStart);
-			console.log("End:" + endTime + ":" + blockEnd);
 		} else {
 			if(isNew){
 				addEvent();
@@ -453,7 +451,7 @@ function FullCalendarApp() {
 		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" onClick={handleShowEdit}>
+          <Button variant="primary" onClick={()=>{setClassCode("");handleShowEdit();}}>
             Edit Appointment
           </Button>
         </Modal.Footer>
