@@ -13,8 +13,8 @@ export default function AdminNavBar() {
             <Toolbar sx={{flexwrap: 'wrap'}}>
                 <img
                     src={`${Logo}`}
-                    width="80"
-                    height="60"
+                    width="60"
+                    height="40"
                     alt="Find-A-Tutor Logo"
                     loading="lazy"
                     className='logo'
