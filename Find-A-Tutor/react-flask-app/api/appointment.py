@@ -249,8 +249,10 @@ def getGroupTutoring(email):
     classes = cursor.fetchall()
     for cls in classes:
         cursor.execute("select title, location, department, start_time, end_time from GroupTutoring where department like CONCAT('%', SUBSTRING('" + cls[0] + "', 1, 4) , '%')")
-        groupTutSes.append(cursor.fetchall())
-    
+        results = cursor.fetchall()
+        if results not in groupTutSes:
+            groupTutSes.append(results)
+    print(groupTutSes)
     for session in groupTutSes:
         for ses in session:
             tutoringAry.append({'title':ses[0], 'location':ses[1], 'department':ses[2], 'start':ses[3], 'end':ses[4], 'backgroundColor':'purple'})

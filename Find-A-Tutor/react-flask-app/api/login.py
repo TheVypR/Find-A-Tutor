@@ -278,7 +278,7 @@ def addAppointment():
   data = request.get_json()[0]
   if data['token']:
     token = data['token']
-    email = authentication.getEmail(token)
+    email = authentication.getEmail(token)[0]
   else:
     email = data['email']
   #combine times and a day to make a datetime
