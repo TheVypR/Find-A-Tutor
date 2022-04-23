@@ -339,8 +339,10 @@ def approveVerification(approve_code):
     request = cursor.fetchone()
     
     #mark the tutor as verified for that class
-    cursor.execute("update TutorClasses set verified = true where tut_email = \"" + request[0] + "\" and class_code = \"" + request[1] + "\"")
-    
+    try:
+        cursor.execute("update TutorClasses set verified = true where tut_email = \"" + request[0] + "\" and class_code = \"" + request[1] + "\"")
+    except:
+        return "FAILURE", 400
     #remove the request
     removeVerificationRequest(request[0], request[1])
     

@@ -24,7 +24,7 @@ const theme = createTheme();
 export default function ClassInfo() {
     //authentication
 	const authContext = useContext(AuthContext);
-
+	
     //list of group tutoring
     const [allGroup, setAllGroup] = useState([]);
 	

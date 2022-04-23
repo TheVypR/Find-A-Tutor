@@ -99,6 +99,14 @@ def login():
   #return email, permissions, and login preference
   return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
+@app.route('/isAdmin/', methods=['GET'])
+def isAdmin():
+    try:
+        email = authentication.getEmail(request.args.get("token"))[0]
+    except:
+        return jsonify(False), 200
+    return jsonify(authentication.isAdmin(email)), 200
+
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
     tutor = request.get_json()
@@ -393,7 +401,7 @@ def verifyRequest():
 def approveDenyRequest():
     approve = request.args.get("approve")
     code = request.args.get("approve_code")
-    if(approve):
+    if(approve==1):
         return adminRoutes.approveVerification(code)
     else:
         return adminRoutes.denyVerification(code)
