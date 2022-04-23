@@ -306,6 +306,13 @@ def getRates():
     email = authentication.getEmail(data['student'])[0]
     return appointment.getRates(tutor, email)
 
+@app.route('/getVerification/', methods=['POST'])
+def getVerification():
+    data = request.get_json()           #get tutor token
+    tutor = data['tutor']
+    email = authentication.getEmail(data['student'])[0]
+    return appointment.getVerification(tutor, email)
+
 #get all classes a student is taking
 @app.route('/getStuClasses/', methods=['GET'])
 def getStuClasses():
