@@ -251,7 +251,7 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify(e.extendedProps.tut_email)
+		body:JSON.stringify({'tutor':e.extendedProps.tut_email, 'student':localStorage.getItem("token")})
 		},).then(
 			res => res.json()
 		).then(
@@ -312,7 +312,7 @@ function FullCalendarApp() {
 	//edit apppointment
 	const editAppt = function () {
 		const myEvent = {
-		  token:localStorage.getItem("token"),
+		  email:stuEmail,
 		  view:localStorage.getItem("view"),
 		  class_code: classCode,
 		  start: startTime,
@@ -349,11 +349,9 @@ function FullCalendarApp() {
 	}
 	
 	function verifyTimes(isNew) {
-		console.log(blockStart)
+		setWrongClass(false)
 		if (endTime <= startTime || startTime < blockStart || endTime > blockEnd) {
 			setWrongTimes(true)
-			console.log("Start:" + startTime + ":" + blockStart);
-			console.log("End:" + endTime + ":" + blockEnd);
 		} else {
 			if(isNew){
 				addEvent();
@@ -390,7 +388,6 @@ function FullCalendarApp() {
 	}, [times, appts]);
 	
 //list of appointments to add to calendar
-//TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
     <div className="App">
 		<NavBar />
@@ -453,7 +450,7 @@ function FullCalendarApp() {
 		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" onClick={handleShowEdit}>
+          <Button variant="primary" onClick={()=>{setClassCode("");handleShowEdit();}}>
             Edit Appointment
           </Button>
         </Modal.Footer>
@@ -499,13 +496,7 @@ function FullCalendarApp() {
 		</form>
       </Modal>	
 	
-
 		<div className="filter">
-		
-		<div className='switchViews'>
-			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
-		</div>
-		{/* tab to filter calendar */}
 		<Paper
 		 variant="outlined"
 		 style={{

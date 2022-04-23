@@ -112,7 +112,7 @@ export default function AddGroupTutoring() {
                             </Grid>
                         </Grid>
                     </Modal.Header>
-                    <Box component="form" noValidate sx={{ mt: 1 }} onSubmit={handleEditSubmit}>
+                    <Box component="form" sx={{ mt: 1 }} onSubmit={handleEditSubmit}>
                         <Modal.Body>
                             <TextField margin="normal" required id="title" label="Title" name="title" autoComplete="title" autoFocus defaultValue={singleGroup[1]} sx={{ mx: 1}} />
                             <TextField margin="normal" required id="location" label="Location" name="location" autoComplete="location" autoFocus defaultValue={singleGroup[2]} sx={{ mx: 1}} />
@@ -135,7 +135,7 @@ export default function AddGroupTutoring() {
                 <CssBaseline />
                 <AdminNavBar />
                 <Grid container justifyContent="right" sx={{pt: 11, pr: 6, pb: 3}}>
-                    <Button variant="contained" onClick={() => {setIsNew(true); setEnableGroup(true);}} style={{backgroundColor: "#1565c0"}}>Create New</Button>
+                    <Button variant="contained" onClick={() => {setIsNew(true); setSingleGroup(["", "", "", "", "Pick a Time", "Pick a Time"]); setEnableGroup(true);}} style={{backgroundColor: "#1565c0"}}>Create New</Button>
                 </Grid>
                 <Container maxWidth="xl" disableGutters component="main" sx={{px: 6}}>
                     <Paper sx={{p: 2, position: 'relative', backgroundColor: 'white', color: '#fff', mb: 4, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>

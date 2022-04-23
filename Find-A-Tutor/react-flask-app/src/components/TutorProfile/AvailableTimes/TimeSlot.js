@@ -93,6 +93,8 @@ class Times extends React.Component {
         if (showTimePickers) {
             return <TimePickers timeSlotChange={(time, timepicker) => { this.onChangeTimes(time, timepicker) }} />
         } else {
+            console.log(typeof(this.props.startTime[index]));
+            console.log(this.props.endTime[index]);
             const startTime = this.props.startTime[index].format(format).toString();
             const endTime = this.props.endTime[index].format(format).toString();
             return <p> {startTime} to {endTime} </p>

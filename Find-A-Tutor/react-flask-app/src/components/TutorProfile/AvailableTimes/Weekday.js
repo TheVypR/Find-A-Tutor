@@ -173,14 +173,25 @@ class Weekday extends React.Component {
      * @param {string} day  given week day being added to
      */
     submitTimes(index, day) {
-        if (this.state.startTime[index] == null || this.state.endTime[index] == null) {
-            console.log("Please enter all times");
-        } else {
+        if (this.state.startTime[index] != null && this.state.endTime[index] != null) {
+            console.log(this.state.startTime[index]);
             this.setShowTimePickers(false, index);
-
             this.submitFetch(index, day);
+        } else {
 
-        }//else
+            if (this.state.startTime[index] == null) {
+                //set state to default 12:00 AM on the given day
+                let defaultStart = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
+                this.setStartTime(defaultStart, index);
+            }//if
+            if (this.state.endTime[index] == null) {
+                //set state to default 12:00 AM
+                let defaultEnd = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
+                this.setEndTime(defaultEnd, index);
+            }//if
+            this.setShowTimePickers(false, index);
+            this.submitFetch(index, day);
+        }
     }//submitTimes
 
     /**
@@ -216,14 +227,14 @@ class Weekday extends React.Component {
      * @param {string} day  weekday being added to
      */
     submitFetch(index, day) {
-        //convert string day to in 1=monday 7=sunday
-        let date = this.getISO(day)
         //setup timeslot dict
+        let startTime = this.state.startTime[index];
+        let endTime = this.state.endTime[index];
         let timeSlot = {
             'submitTimes': true,
             "token": localStorage.getItem("token"),
-            "startTime": this.state.startTime[index].day(day).toString(),
-            "endTime": this.state.endTime[index].day(day).toString()
+            "startTime": startTime.day(day).toString(),
+            "endTime": endTime.day(day).toString()
         };
 
         const response = fetch("/myProfile/", {
