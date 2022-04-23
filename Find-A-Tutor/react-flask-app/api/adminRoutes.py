@@ -317,7 +317,7 @@ def verifyRequestRetrieval():
     cursor = conn.cursor()
     
     #get the tutor name, tutor email, code, class code, and professor email
-    cursor.execute("select R.prof_email, R.tut_email, T.tut_name, R.class_code, R.approve_code from VerificationRequest R, Tutor T")
+    cursor.execute("select R.professor_email, R.tut_email, T.tut_name, R.class_code, R.approve_code from VerificationRequest R, Tutor T where T.tut_email = R.tut_email")
     requests = cursor.fetchall()
     
     #put requests in an array of dictionaries
