@@ -401,9 +401,13 @@ def verifyRequest():
 def approveDenyRequest():
     approve = request.args.get("approve")
     code = request.args.get("approve_code")
-    if(approve==1):
+    print(approve)
+    if approve == "1":
+        print("approve")
         return adminRoutes.approveVerification(code)
     else:
+        print("deny")
+        print(approve)
         return adminRoutes.denyVerification(code)
 
 @app.route('/professorCSV/', methods=['POST'])
