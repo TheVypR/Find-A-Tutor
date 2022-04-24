@@ -25,7 +25,7 @@ class LoadProfile extends React.Component {
     }//constructor
 
     updateProfiles() {
-        this.forceUpdate();
+        this.doFetch();
     }
 
     /**
@@ -33,8 +33,9 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     edit() {
+        console.log("edit");
         this.setState({ isEdit: !this.state.isEdit }, () => {
-            this.doFetch();
+            this.doFetch()
         });
     }//edit
 
@@ -43,9 +44,10 @@ class LoadProfile extends React.Component {
      * then fetches any changes from the db
      */
     editStudent() {
-        this.setState({ isEditStudent: !this.state.isEditStudent }, () => {
-            this.doFetch();
-        });
+        console.log("edit");
+        this.doFetch();
+        console.log("done get")
+        this.setState({ isEditStudent: !this.state.isEditStudent }, () => {this.doFetch()});
     }//editStudent
 
     /**
@@ -78,7 +80,7 @@ class LoadProfile extends React.Component {
                         error
                     });
                 }
-            )
+            ).then(console.log(this.state.items))
     }//doFetch
 
     /**

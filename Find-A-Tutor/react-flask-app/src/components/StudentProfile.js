@@ -40,14 +40,15 @@ class StudentProfile extends React.Component {
             "classesTaking": newClasses,
             'removeClassesTaking': removeClasses
         };
+        console.log(values['removeClassesTaking'])
 
-        const response = fetch("/myProfile/", {
+        fetch("/myProfile/", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(values)
-        }).then(this.props.edit());
+        }).then(console.log("done post")).then(this.props.edit());
     }
 
     AddNewClass() {
@@ -70,6 +71,7 @@ class StudentProfile extends React.Component {
         let aClass = { ...classes[index] };
         aClass['class_code'] = code;
         aClass['new'] = true;
+        aClass['fromDB'] = true;
         classes[index] = aClass;
     }//setCourseCode
 
@@ -82,7 +84,9 @@ class StudentProfile extends React.Component {
         var classes = this.state.classesList;
         //remove class from DOM
         let filteredClasses = classes.filter(aClass => aClass !== classes[index]);
-        let removeClasses = classes.filter(aClass => aClass == classes[index]);
+        let removeClasses = this.state.removeClasses;
+        let classToRemove = classes.filter(aClass => aClass == classes[index])
+        removeClasses.push(classToRemove[0]);
 
         this.setState({ classesList: filteredClasses });
         this.setState({ removeClasses: removeClasses })
