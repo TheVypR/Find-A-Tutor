@@ -327,6 +327,7 @@ def getTimes():
     token = request.args.get("token")
     email = authentication.getEmail(token)[0]
     unmerged = appointment.getTimes(email)
+    times = []
     #if there are times returned
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
@@ -336,7 +337,7 @@ def getTimes():
             return "No times found", 401
     else:
         #return empty times array
-        []
+        times = []
         
     return {'times':times}
 

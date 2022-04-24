@@ -173,25 +173,30 @@ class Weekday extends React.Component {
      * @param {string} day  given week day being added to
      */
     submitTimes(index, day) {
-        if (this.state.startTime[index] != null && this.state.endTime[index] != null) {
-            console.log(this.state.startTime[index]);
-            this.setShowTimePickers(false, index);
-            this.submitFetch(index, day);
-        } else {
+        if(this.state.startTime[index].isBefore(this.state.endTime[index])) {
+			if (this.state.startTime[index] != null && this.state.endTime[index] != null) {
+				console.log(this.state.startTime[index]);
+				this.setShowTimePickers(false, index);
+				this.submitFetch(index, day);
+			} else {
 
-            if (this.state.startTime[index] == null) {
-                //set state to default 12:00 AM on the given day
-                let defaultStart = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
-                this.setStartTime(defaultStart, index);
-            }//if
-            if (this.state.endTime[index] == null) {
-                //set state to default 12:00 AM
-                let defaultEnd = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
-                this.setEndTime(defaultEnd, index);
-            }//if
-            this.setShowTimePickers(false, index);
-            this.submitFetch(index, day);
-        }
+				if (this.state.startTime[index] == null) {
+					//set state to default 12:00 AM on the given day
+					let defaultStart = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
+					this.setStartTime(defaultStart, index);
+				}//if
+				if (this.state.endTime[index] == null) {
+					//set state to default 12:00 AM
+					let defaultEnd = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
+					this.setEndTime(defaultEnd, index);
+				}//if
+				this.setShowTimePickers(false, index);
+				this.submitFetch(index, day);
+			}
+		} else {
+			alert("Invalid Times");
+		}
+		
     }//submitTimes
 
     /**
@@ -418,12 +423,14 @@ class Weekday extends React.Component {
 
     render() {
         const day = this.props.day;
+		var uniqueKey = 1;
+
 
         let filledOutTimes = this.state.filledOutTimes.map(time =>
             time.map(slot =>
                 slot['shouldRender'] ?
                     <>
-                        <p> {slot['startTime']} to {slot['endTime']} </p>
+                        <p key = {slot['startTime']}> {slot['startTime']} to {slot['endTime']} </p>
                         <Button className="removeTime" variant="danger" onClick={() =>
                             this.removeFilledOutTimes(
                                 time.indexOf(slot),

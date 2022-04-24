@@ -31,7 +31,7 @@ class SubmitRemoveTime extends React.Component {
      */
     onSubmitClick() {
         this.props.submitTimes();
-        this.setState({ isSubmitted: true });
+		//this.setState({ isSubmitted: true });
     }//onSubmitClick
 
     /**
