@@ -70,6 +70,7 @@ class StudentProfile extends React.Component {
         let aClass = { ...classes[index] };
         aClass['class_code'] = code;
         aClass['new'] = true;
+        aClass['fromDB'] = true;
         classes[index] = aClass;
     }//setCourseCode
 
