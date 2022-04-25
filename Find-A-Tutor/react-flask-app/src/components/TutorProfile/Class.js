@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import { BsFillTrashFill } from "react-icons/bs";
-import VerifiedIcon from '@mui/icons-material/Verified';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -93,13 +92,14 @@ class Class extends React.Component {
 				</TableCell>
 				<TableCell>
 					<input name="rate"
-						type="number"
+						type="text"
 						id={index}
 						className='hourlyRate'
 						min="0"
-						size="2"
+						style={{width: "50px"}}
 						onKeyPress={e => this.onlyNumbers(e)}
 						onChange={e => this.props.setRate(e.target.value, index)}
+						maxLength="3"
 						required
 					/>
 				</TableCell>

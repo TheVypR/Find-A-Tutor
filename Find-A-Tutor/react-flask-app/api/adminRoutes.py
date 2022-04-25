@@ -298,7 +298,7 @@ def submitVerifyRequest(email, class_code):
                     + email + "\", \""
                     + class_code + "\", "
                     +"(select prof_email from Classes where class_code = \"" + class_code + "\"), \""
-                    + code + "\")")
+                    + code + "\", 0)")
     
     #close the connection
     conn.close()
@@ -317,12 +317,14 @@ def verifyRequestRetrieval():
     cursor = conn.cursor()
     
     #get the tutor name, tutor email, code, class code, and professor email
-    cursor.execute("select R.prof_email, R.tut_email, T.tut_name, R.class_code, R.approve_code from VerificationRequest R, Tutor T")
+    cursor.execute("select R.professor_email, R.tut_email, T.tut_name, R.class_code, R.approve_code, R.emailed from VerificationRequest R, Tutor T where T.tut_email = R.tut_email")
     requests = cursor.fetchall()
     
     #put requests in an array of dictionaries
     for request in requests:
-        requestArray.append({'prof_email':request[0], 'tut_email':request[1], 'tut_name':request[2], 'class_code':request[3], 'approve_code':request[4]})
+        if request[5] == 0:
+            cursor.execute("update VerificationRequest set emailed = 1 where approve_code = (%s)", (request[4],))
+            requestArray.append({'prof_email':request[0], 'tut_email':request[1], 'tut_name':request[2], 'class_code':request[3], 'approve_code':request[4]})
     
     #return the array of requests
     return {'requests':requestArray}, 200
@@ -337,10 +339,12 @@ def approveVerification(approve_code):
     #get the tutor and class to approve
     cursor.execute("select tut_email, class_code from VerificationRequest where approve_code = \"" + approve_code + "\"")
     request = cursor.fetchone()
-    
+    print(request)
     #mark the tutor as verified for that class
-    cursor.execute("update TutorClasses set verified = true where tut_email = \"" + request[0] + "\" and class_code = \"" + request[1] + "\"")
-    
+    try:
+        cursor.execute("update TutorClasses set verified = 1 where tut_email = \"" + request[0] + "\" and class_code = \"" + request[1] + "\"")
+    except:
+        return "FAILURE", 400
     #remove the request
     removeVerificationRequest(request[0], request[1])
     

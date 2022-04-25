@@ -5,6 +5,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import moment from 'moment'
 import './App.css';
 import TimePicker from 'react-time-picker';
+import VerifiedIcon from '@mui/icons-material/Verified';
 import React, { useState, useEffect, useContext, Component } from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -53,6 +54,7 @@ function FullCalendarApp() {
   const [stuEmail, setStuEmail] = useState("");
   const [stuName, setStuName] = useState("");
   const [rates, setRates] = useState({});
+  const [verified, setVerified] = useState({});
   const [classCode, setClassCode] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -147,7 +149,6 @@ function FullCalendarApp() {
 				.then(
 					result => {
 						setGroupTut(result['groupTut']);
-						console.log(result['groupTut']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -177,7 +178,6 @@ function FullCalendarApp() {
 				.then(
 					result => {
 						setAppts(result['appts']);
-						console.log(result['appts']);
 					},
 					// Note: it's important to handle errors here
 					// instead of a catch() block so that we don't swallow
@@ -251,12 +251,27 @@ function FullCalendarApp() {
 			headers: {
 			'Content-Type' : 'application/json'
 			},
-			body:JSON.stringify(e.extendedProps.tut_email)
+		body:JSON.stringify({'tutor':e.extendedProps.tut_email, 'student':localStorage.getItem("token")})
 		},).then(
 			res => res.json()
 		).then(
 			result => {
 				setRates(result)
+			}
+		)
+		
+		//get tutor verification status
+		fetch('/getVerification/', {
+			method: 'POST',
+			headers: {
+			'Content-Type' : 'application/json'
+			},
+		body:JSON.stringify({'tutor':e.extendedProps.tut_email, 'student':localStorage.getItem("token")})
+		},).then(
+			res => res.json()
+		).then(
+			result => {
+				setVerified(result)
 			}
 		)
 		
@@ -312,7 +327,7 @@ function FullCalendarApp() {
 	//edit apppointment
 	const editAppt = function () {
 		const myEvent = {
-		  token:localStorage.getItem("token"),
+		  email:stuEmail,
 		  view:localStorage.getItem("view"),
 		  class_code: classCode,
 		  start: startTime,
@@ -349,11 +364,9 @@ function FullCalendarApp() {
 	}
 	
 	function verifyTimes(isNew) {
-		console.log(blockStart)
+		setWrongClass(false)
 		if (endTime <= startTime || startTime < blockStart || endTime > blockEnd) {
 			setWrongTimes(true)
-			console.log("Start:" + startTime + ":" + blockStart);
-			console.log("End:" + endTime + ":" + blockEnd);
 		} else {
 			if(isNew){
 				addEvent();
@@ -390,7 +403,6 @@ function FullCalendarApp() {
 	}, [times, appts]);
 	
 //list of appointments to add to calendar
-//TODO: dynamically load appointments into list via database
   return authContext.isLoggedIn && (
     <div className="App">
 		<NavBar />
@@ -405,6 +417,7 @@ function FullCalendarApp() {
 				Make Appointment With: {tutName} <br/>
 				Tutor Rating: <Rating value={rating} readOnly/><br/>
 				Rate: $<strong>{rates[classCode]}</strong>/hr<br/>
+				{(verified[classCode] == 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : null)}<br/>
 					Choose Class:
 					<select onChange={(e) => {setClassCode(e.target.value)}} required>
 						<option key="null" value="NONE">NONE</option>
@@ -440,6 +453,7 @@ function FullCalendarApp() {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+			{(verified[classCode] == 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : null)}<br/>
 			Meeting with: {tutName}<br/>
 			For: {classCode}<br/>
 			From: {origStartDate}<br/>
@@ -453,7 +467,7 @@ function FullCalendarApp() {
 		  <Button variant="danger" type="submit" onClick={cancelAppt}>
 		    Cancel Appointment
 		  </Button>
-          <Button variant="primary" onClick={handleShowEdit}>
+          <Button variant="primary" onClick={()=>{setClassCode("");handleShowEdit();}}>
             Edit Appointment
           </Button>
         </Modal.Footer>
@@ -469,6 +483,7 @@ function FullCalendarApp() {
 				{wrongClass ? <ClassError /> : null}
 				Edit Appointment With: {tutName}<br/>
 					Rate: ${rates[classCode]}/hr<br/>
+					{(verified[classCode] == 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : null)}<br/>
 					Choose Class: 
 					<select onChange={(e) => {setClassCode(e.target.value)}} required>
 						<option key="null" value="NONE">NONE</option>
@@ -499,13 +514,7 @@ function FullCalendarApp() {
 		</form>
       </Modal>	
 	
-
 		<div className="filter">
-		
-		<div className='switchViews'>
-			<Button color="blue" type="submit" onClick={() => {ToggleView(localStorage.getItem("view")); document.location.reload()}} >Switch Views</Button>
-		</div>
-		{/* tab to filter calendar */}
 		<Paper
 		 variant="outlined"
 		 style={{

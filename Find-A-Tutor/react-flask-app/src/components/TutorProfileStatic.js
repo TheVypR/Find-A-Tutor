@@ -8,7 +8,6 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-
 /**
  * Render a timeslot with given times
  */
@@ -167,7 +166,7 @@ class TutorsFor extends React.Component {
                         <TableBody>
                             {classes.map((item) => (
                                 <TableRow key={item['class_code']} hover>
-                                    <TableCell>{(item["verification"] === 5 ? <VerifiedIcon sx={{ color: 'red' }} /> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <></>))}</TableCell>
+                                    <TableCell>{(item["verification"] === 5 ? <b>Pending...</b> : (item["verification"] === 1 ? <VerifiedIcon sx={{ color: 'green' }} /> : <></>))}</TableCell>
                                     <TableCell>{item['class_code']} </TableCell>
                                     <TableCell>${item['rate']} </TableCell>
                                 </TableRow>
@@ -227,6 +226,7 @@ class TutorProfileStatic extends React.Component {
                     this.setState({ showModal: true });
                 }
             })
+			localStorage.setItem("view", "student");
     }
 
     handleClose() {

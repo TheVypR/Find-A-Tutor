@@ -19,7 +19,7 @@ import ProfessorUpload from './components/ProfessorUpload';
 import ClassUpload from './components/ClassUpload';
 import ProfessorInfo from './components/ProfessorInfo';
 import ClassInfo from './components/ClassInfo';
-
+import ApproveDenySubmission from './components/ApproveDenySubmission';
 //the core function
 //calls all other pages and manages authentication
 export default function App() {
@@ -68,9 +68,9 @@ export default function App() {
             <Route path='/Reports' element={<Reports />} />
             <Route path='/CurrentAndBan' element={<CurrentAndBan />} />
             <Route path='/AddGroupTutoring' element={<AddGroupTutoring />} />
-			      <Route path='/FileUpload' element={<FileUpload />} />
             <Route path='/ProfessorUpload' element={<ProfessorUpload />} />
             <Route path='/ClassAndSyllabi' element={<ClassUpload />} />
+			<Route path='/ApproveDenySubmission' element={<ApproveDenySubmission />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

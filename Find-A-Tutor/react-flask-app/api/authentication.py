@@ -55,3 +55,17 @@ def getEmail(token):
         return email[0], 200
     else:
         return 'Token Not Found', 401
+        
+def isAdmin(email):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    cursor.execute("select isAdmin from Student where stu_email = (%s)", (email,))
+    isAdmin = cursor.fetchone()
+    print(isAdmin)
+    if isAdmin:
+        return True
+    else:
+        return False

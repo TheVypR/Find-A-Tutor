@@ -30,15 +30,15 @@ mysql.init_app(app)
 #start -> appointment start time
 #end -> appointment end time
 #timeslots -> array of 15 minute time blocks that are being taken
-def addAppointment(data, token, start, end, timeslots):
+def addAppointment(data, email, start, end, timeslots):
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()  
     
     #create the entry in the Appointment table
-    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(" 
-                    + "(select stu_email from Student where token = \"" + token + "\")," " \"" 
+    cursor.execute("insert into Appointment(stu_email, tut_email, class_code, start_date, end_date, title, block_start, block_end) values(\""
+                    + email + "\", \"" 
                     + data['tut_email'] + "\", \"" 
                     + data['class_code'] + "\",'" 
                     + start + "', '"
@@ -61,7 +61,7 @@ def addAppointment(data, token, start, end, timeslots):
 
 #get the rates for a tutor
 #data -> tutor email
-def getRates(data):
+def getRates(tutor, email):
     #connect to DB
     conn = mysql.connect()
     conn.autocommit(True)
@@ -71,15 +71,34 @@ def getRates(data):
     tutorRates = {}
     
     #get the rates for the tutor's classes
-    cursor.execute("select class_code, rate from TutorClasses where tut_email = \"" + data +"\"")
+    cursor.execute("select T.class_code, T.rate from TutorClasses T, StudentClasses S where T.tut_email = (%s) and S.stu_email = (%s) and T.class_code = S.class_code", (tutor, email))
     classRates = cursor.fetchall()
-    
     #put the rates into the dictionary (key -> class_code, value -> rate)
     for clss in classRates:
         tutorRates[clss[0]] = clss[1]
     
     #return the class_code -> rate dictionary
     return tutorRates, 200
+
+#get verification status
+def getVerification(tutor, email):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #init the dictionary for rates
+    tutorVerify = {}
+    
+    #get the rates for the tutor's classes
+    cursor.execute("select T.class_code, T.verified from TutorClasses T, StudentClasses S where T.tut_email = (%s) and S.stu_email = (%s) and T.class_code = S.class_code", (tutor, email))
+    classRates = cursor.fetchall()
+    #put the rates into the dictionary (key -> class_code, value -> verified status)
+    for clss in classRates:
+        tutorVerify[clss[0]] = clss[1]
+    
+    #return the class_code -> rate dictionary
+    return tutorVerify, 200    
 
 #get the classes a student is taking
 def getStuClasses(token):
@@ -129,7 +148,7 @@ def getTimes(email):
                 availTimes.append({'tut_email':time[0],
                                    'start':time[1],
                                    'end':time[2],
-                                   'classes':list(getRates(time[0])[0].keys()),
+                                   'classes':list(getRates(time[0], email)[0].keys()),
                                    'title': "Available Session with " + time[4],
                                    'tut_name':time[4],
                                    'rating':time[5],
@@ -178,20 +197,21 @@ def getAppointments(token, isTutor):
 
         #put appointments in a dictionary and add to array
         for appt in appts:
-            availAppts.append({
-                'stu_email':appt[1],
-                'stu_name':appt[9],
-                'tut_email':appt[2],
-                'tut_name':appt[10],
-                'class_code':appt[3], 
-                'start':appt[4],
-                'end':appt[5],
-                'title':appt[6],
-                'block_s':appt[7],
-                'block_e':appt[8],
-                'type':"appt",
-                'backgroundColor':'blue',   #changes the event's color on the calendar
-                })  
+            if datetime.strptime(appt[4], "%Y-%m-%dT%H:%M:%S") > datetime.now():
+                availAppts.append({
+                    'stu_email':appt[1],
+                    'stu_name':appt[9],
+                    'tut_email':appt[2],
+                    'tut_name':appt[10],
+                    'class_code':appt[3], 
+                    'start':appt[4],
+                    'end':appt[5],
+                    'title':appt[6],
+                    'block_s':appt[7],
+                    'block_e':appt[8],
+                    'type':"appt",
+                    'backgroundColor':'blue',   #changes the event's color on the calendar
+                    })
     else:
         #get the appointments for a given tutor
         cursor.execute("select " 
@@ -213,20 +233,21 @@ def getAppointments(token, isTutor):
                         
         #put appointments in a dictionary and add to array
         for appt in appts:
-            availAppts.append({
-                'stu_email':appt[1],
-                'stu_name':appt[9],
-                'tut_email':appt[2],
-                'tut_name':appt[10],
-                'class_code':appt[3], 
-                'start':appt[4],
-                'end':appt[5],
-                'title':appt[6] + appt[9],
-                'block_s':appt[7],
-                'block_e':appt[8],
-                'type':"appt",
-                'backgroundColor':'blue',   #changes the event's color on the calendar
-                })
+            if datetime.strptime(appt[4], "%Y-%m-%dT%H:%M:%S") > datetime.now():
+                availAppts.append({
+                    'stu_email':appt[1],
+                    'stu_name':appt[9],
+                    'tut_email':appt[2],
+                    'tut_name':appt[10],
+                    'class_code':appt[3], 
+                    'start':appt[4],
+                    'end':appt[5],
+                    'title':appt[6] + appt[9],
+                    'block_s':appt[7],
+                    'block_e':appt[8],
+                    'type':"appt",
+                    'backgroundColor':'blue',   #changes the event's color on the calendar
+                    })
     
     #close the connection
     conn.close()
@@ -248,12 +269,13 @@ def getGroupTutoring(email):
     classes = cursor.fetchall()
     for cls in classes:
         cursor.execute("select title, location, department, start_time, end_time from GroupTutoring where department like CONCAT('%', SUBSTRING('" + cls[0] + "', 1, 4) , '%')")
-        groupTutSes.append(cursor.fetchall())
-    
+        results = cursor.fetchall()
+        if results not in groupTutSes:
+            groupTutSes.append(results)
+    print(groupTutSes)
     for session in groupTutSes:
         for ses in session:
             tutoringAry.append({'title':ses[0], 'location':ses[1], 'department':ses[2], 'start':ses[3], 'end':ses[4], 'backgroundColor':'purple'})
-    print(tutoringAry)
     return {'groupTut':tutoringAry}, 200
     
 #cancel an appointment with a tutor

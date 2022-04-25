@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Input from '@mui/material/Input';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './adminView.css';
 import {AuthContext} from './AuthContext';
 import AdminNavBar from './AdminNavBar';
@@ -17,6 +17,8 @@ const theme = createTheme();
 export default function ClassUpload() {
     //authentication
 	const authContext = useContext(AuthContext);
+
+	const [isAdmin, setIsAdmin] = useState(false)
 
     const uploadSyllabi = async (e) => {
         const files = e.target.files;
@@ -62,7 +64,18 @@ export default function ClassUpload() {
         }
       };
 
-    return authContext.isLoggedIn && (
+	useEffect(() => { fetch("/isAdmin/?token=" + localStorage.getItem("token"))
+        .then(res => res.json())
+        .then(result => {
+            setIsAdmin(result);
+			console.log(isAdmin);
+        },
+        (error) => {
+            console.log(error);
+        })
+    }, []);
+
+    return authContext.isLoggedIn && isAdmin == true && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <AdminNavBar />

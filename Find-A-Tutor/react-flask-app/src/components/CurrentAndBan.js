@@ -24,6 +24,8 @@ export default function CurrentAndBan() {
 	//authentication
 	const authContext = useContext(AuthContext);
 	
+	const [isAdmin, setIsAdmin] = useState(false)
+	
     const [allTutors, setAllTutors] = useState([]);
     const [bannedUsers, setBannedUsers] = useState([]);
 
@@ -49,7 +51,18 @@ export default function CurrentAndBan() {
         })
     }, []);
 
-    return authContext.isLoggedIn && (
+	useEffect(() => { fetch("/isAdmin/?token=" + localStorage.getItem("token"))
+        .then(res => res.json())
+        .then(result => {
+            setIsAdmin(result);
+			console.log(isAdmin);
+        },
+        (error) => {
+            console.log(error);
+        })
+    }, []);
+
+    return authContext.isLoggedIn && isAdmin == true && (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <AdminNavBar />

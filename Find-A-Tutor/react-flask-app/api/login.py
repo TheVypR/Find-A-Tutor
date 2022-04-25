@@ -99,10 +99,18 @@ def login():
   #return email, permissions, and login preference
   return jsonify({'email': user[0], 'token':user[1],'isAdmin': user[2], 'isTutor': isTutor, 'loginPref':loginPref}), 200
 
+@app.route('/isAdmin/', methods=['GET'])
+def isAdmin():
+    try:
+        email = authentication.getEmail(request.args.get("token"))[0]
+    except:
+        return jsonify(False), 200
+    return jsonify(authentication.isAdmin(email)), 200
+
 @app.route('/removeTutor/', methods=['POST'])
 def removeTutor():
     tutor = request.get_json()
-    tutor = authentication.getEmail(tutor)
+    tutor = authentication.getEmail(tutor)[0]
     return profile.remove_tutor(tutor)
 
 @app.route('/authCheck/', methods=['GET'])
@@ -133,7 +141,6 @@ def currentTutors():
 def addTutor():
     token = request.get_json()
     email = authentication.getEmail(token)[0]
-    print("HELLO")
     return adminRoutes.BecomeATutor(email)
 
 #retrieve a dictionary of all relevant tutors who are available on call
@@ -203,23 +210,18 @@ def myProfile():
     submission = request.get_json()
     token = submission['token']
     email = authentication.getEmail(token)[0]
-    print(submission)
     #Check to see if this is a removal
     if 'remove' in submission.keys():
         #remove timeslot from TutorTimes
         submittedTime = submission['remove']
         startTime = timeManager.dateParse(submittedTime['startTime'])
         endTime = timeManager.dateParse(submittedTime['endTime'])
-        timeSlot = {'start': startTime, 'end': endTime}
-        splitTimeVals = timeManager.splitTimes(timeSlot)
-        reoccuring = []
-        for time in times:
-            pair = {}
-            print(time)
-            pair['start'] = (timeManager.makeRecurring(time['start'], 12))
-            pair['end'] = (timeManager.makeRecurring(time['end'], 12))
-            reoccuring.append(pair)        
-        return profile.remove_timeSlot(reoccuring, email)
+        splitTimes = timeManager.splitTimes({'start':startTime, 'end':endTime})
+        for split in splitTimes:
+            recurringTimes = timeManager.makeRecurring(split['start'], None)
+            #for time in recurringTimes:
+            profile.remove_timeSlot(recurringTimes, email)
+        return "SUCCESS", 200
     #check to see if it is a change in the contact me checkbox
     elif 'contactMe' in submission.keys():
         return profile.contactMe_change(submission['contactMe'], email)
@@ -228,16 +230,13 @@ def myProfile():
         #parse timeslot and divide it into 15 min chunks for storage
         startTime = timeManager.dateParse(submission['startTime'])
         endTime = timeManager.dateParse(submission['endTime'])
-        timeSlot = {'start': startTime, 'end': endTime}
-        times = timeManager.splitTimes(timeSlot)
-        reoccuring = []
-        for time in times:
-            print(type(time['start']))
-            pair = {}
-            pair['start'] = (timeManager.makeRecurring(str(time['start']),"12"))
-            pair['end'] = (timeManager.makeRecurring(str(time['end']), "12"))
-            reoccuring.append(pair)
-        return profile.post_timeSlot(reoccuring, email)
+        splitTimes = timeManager.splitTimes({'start':startTime, 'end':endTime})
+        for split in splitTimes:
+            recurringTimes = timeManager.makeRecurring(split['start'], None)
+            #for time in recurringTimes:
+            profile.post_timeSlot(recurringTimes, email)
+        
+        return "SUCCESS", 200
     elif 'classesTaking' in submission.keys():
         return profile.edit_student_classes(submission, email)
     #otherwise the user hit the apply button for other changes
@@ -273,8 +272,8 @@ def getProfile():
     token = request.args.get('token')
     
     #determine what profile is being populated
-    isTutor = request.args.get('view')
-    return profile.retrieve_profile(token)
+    isTutor = request.args.get('view') == "tutor"
+    return profile.retrieve_profile(token, isTutor)
 
 
 # @app.route('/allClasses/', method=['POST'])
@@ -285,8 +284,11 @@ def getProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  token = data['token']
-  
+  if data['token']:
+    token = data['token']
+    email = authentication.getEmail(token)[0]
+  else:
+    email = data['email']
   #combine times and a day to make a datetime
   newStart = timeManager.createDateFromTime(data['day'], data['start'])
   newEnd = timeManager.createDateFromTime(data['day'], data['end'])
@@ -294,13 +296,22 @@ def addAppointment():
   #split the datetimes into 15 minute intervals for storage
   slots = timeManager.splitTimes({'start':newStart, 'end':newEnd})
   #add the appointment and mark tutor time as taken
-  return appointment.addAppointment(data, token, newStart, newEnd, slots)
+  return appointment.addAppointment(data, email, newStart, newEnd, slots)
 
 #get the rates for all classes for a specific tutor
 @app.route('/getRates/', methods=['POST'])
 def getRates():
     data = request.get_json()           #get tutor token
-    return appointment.getRates(data)
+    tutor = data['tutor']
+    email = authentication.getEmail(data['student'])[0]
+    return appointment.getRates(tutor, email)
+
+@app.route('/getVerification/', methods=['POST'])
+def getVerification():
+    data = request.get_json()           #get tutor token
+    tutor = data['tutor']
+    email = authentication.getEmail(data['student'])[0]
+    return appointment.getVerification(tutor, email)
 
 #get all classes a student is taking
 @app.route('/getStuClasses/', methods=['GET'])
@@ -316,18 +327,17 @@ def getTimes():
     token = request.args.get("token")
     email = authentication.getEmail(token)[0]
     unmerged = appointment.getTimes(email)
+    times = []
     #if there are times returned
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
-        print(type(unmerged))
         if type(unmerged) == type([]):
-            print("fit")
             times = timeManager.mergeTimes(unmerged)
         else:
             return "No times found", 401
     else:
         #return empty times array
-        []
+        times = []
         
     return {'times':times}
 
@@ -399,9 +409,13 @@ def verifyRequest():
 def approveDenyRequest():
     approve = request.args.get("approve")
     code = request.args.get("approve_code")
-    if(approve):
+    print(approve)
+    if approve == "1":
+        print("approve")
         return adminRoutes.approveVerification(code)
     else:
+        print("deny")
+        print(approve)
         return adminRoutes.denyVerification(code)
 
 @app.route('/professorCSV/', methods=['POST'])

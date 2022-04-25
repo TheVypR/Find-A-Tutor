@@ -34,6 +34,19 @@ export default function Reports() {
 
 	//authentication
 	const authContext = useContext(AuthContext);
+	const [isAdmin, setIsAdmin] = useState(false)
+	
+	
+	useEffect(() => { fetch("/isAdmin/?token=" + localStorage.getItem("token"))
+        .then(res => res.json())
+        .then(result => {
+            setIsAdmin(result);
+			console.log(isAdmin);
+        },
+        (error) => {
+            console.log(error);
+        })
+    }, []);
 
     //get data from server
     useEffect(() => {
@@ -121,7 +134,7 @@ export default function Reports() {
         handleBanConfirm();
     }
 
-    return authContext.isLoggedIn && (
+    return authContext.isLoggedIn && isAdmin == true && (
         <ThemeProvider theme={theme}>
 
             <Modal show={banConfirm} size="md" aria-labelledby="contained-title-vcenter" centered onHide={handleClose}>
