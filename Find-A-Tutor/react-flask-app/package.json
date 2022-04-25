@@ -36,6 +36,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "^5.0.0",
     "react-time-picker": "^4.5.0",
+    "sendgrid": "^5.2.3",
     "strip-json-comments": "^4.0.0"
   },
   "scripts": {
