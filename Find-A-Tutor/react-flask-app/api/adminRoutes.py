@@ -101,7 +101,6 @@ def CurrentTutors():
 
 #retrieve all tutors who can be contacted for times not shown on calendar
 def Contactable(token):
-    print(token)
     #connect to DB
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -221,7 +220,6 @@ def BecomeATutor(email):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-    print("HELLO")
     #add student to Tutor table
     cursor.execute("insert into Tutor values((%s), (select stu_name from Student where stu_email = (%s)),(%s), \"\", 0, 0, 0, 0)", (email, email, pay))
     #close the connection
@@ -339,7 +337,6 @@ def approveVerification(approve_code):
     #get the tutor and class to approve
     cursor.execute("select tut_email, class_code from VerificationRequest where approve_code = \"" + approve_code + "\"")
     request = cursor.fetchone()
-    print(request)
     #mark the tutor as verified for that class
     try:
         cursor.execute("update TutorClasses set verified = 1 where tut_email = \"" + request[0] + "\" and class_code = \"" + request[1] + "\"")
@@ -383,8 +380,6 @@ def professorUploading(data):
     conn = mysql.connect()
     conn.autocommit(True)
     cursor = conn.cursor()
-
-    print(data)
         
     #go through all the data
     for row in data:
@@ -420,9 +415,7 @@ def classUploading(data):
             cursor.execute("select class_code from Classes where class_code = (%s)", (row[0]))
             profFound = cursor.fetchone()
             if profFound:
-                print("thing")
                 cursor.execute("update Classes set class_code = (%s), prof_email = (select prof_email from Professor where prof_name = (%s))", (row[0], row[1]))
-                print("thing")
             #if not, enter them into it
             else:
                 cursor.execute("insert into Classes(class_code, prof_email) values((%s), (%s))", (row[0], row[1]))  

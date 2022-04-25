@@ -355,10 +355,8 @@ def isTutor(email):
     cursor = conn.cursor()
     tutor = False
     try:
-        print(email)
         cursor.execute("select tut_email from Tutor where tut_email = \"" + email + "\"")
         isTutor = cursor.fetchone()
-        print(isTutor)
         if isTutor:
             tutor = True
         else:

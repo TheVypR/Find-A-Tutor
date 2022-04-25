@@ -33,15 +33,12 @@ def splitTimes(timeToSplit):
 #input must be an array of datetimes formatted like this
 ##### YYYY-MM-DDThh:mm:ss #####
 def mergeTimes(timeArray):
-    print("merge")
     #make sure to exclude the first and include the last block
     first = True
     left = len(timeArray)
     #set the expected difference between timeblocks
     minDif = timedelta(minutes=15)
-    
-    print("setup")
-    
+        
     #management vars
     curTime = datetime.now()        #the last time (for comparing)
     timeBlockArray = []             #the new array of merged timeblocks
@@ -49,12 +46,8 @@ def mergeTimes(timeArray):
     curBlockEnd = datetime.now()    #the current end time for a merged block
     lastTutorInfo = timeArray[0]    #the information for the first tutor block (needed to make sure the last block for a user doesn't take the next user's info)
 
-    print("go")
-
     #go through every in the timeArray
     for time in timeArray:
-        print(type(time['start']))
-
         #get the start and end times for the entry
         startTime = datetime.strptime(time['start'], '%Y-%m-%dT%H:%M:%S')
         endTime = datetime.strptime(time['end'], '%Y-%m-%dT%H:%M:%S')
