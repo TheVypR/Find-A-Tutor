@@ -64,13 +64,16 @@ class Weekday extends React.Component {
      */
     handleAddTimeSlot = (e) => {
         e.preventDefault();
-        const slot = {};
-        this.setState({ children: [...this.state.children, slot] })
+        const slot = {"notRemoved": true};
+        this.setState({ children: [...this.state.children, slot] }, () => console.log(this.state.children))
 
         //update related states
+        let showPickers = this.state.showTimePickers;
+        showPickers.push(true);
+        this.setState({showTimePickers: showPickers}, () => console.log(this.state.showTimePickers));
+
         this.state.startTime.push(null);
         this.state.endTime.push(null);
-        this.state.showTimePickers.push(true);
     }//handleAddTimeSlot
 
     /**
@@ -82,7 +85,11 @@ class Weekday extends React.Component {
     renderTimeSlot(day) {
         return this.state.children.map(item => {
             let index = this.state.children.indexOf(item);
-            return <TimeSlot day={day}
+            console.log(index);
+            console.log(item);
+            console.log(this.state.showTimePickers);
+            
+            return item['notRemoved'] && this.state.showTimePickers.length > 0 ? <TimeSlot day={day}
                 index={index}
                 removeTimeSlot={this.removeTimeSlot}
 
@@ -92,7 +99,8 @@ class Weekday extends React.Component {
 
                 timeSlotChange={this.timeSlotChange}
                 submitTimes={this.submitTimes}
-            />
+            /> :
+            <></>
         })
     }//renderTimeSlot
 
@@ -103,6 +111,11 @@ class Weekday extends React.Component {
      * @param {string} day: given week day, only used for debugging
      */
     removeTimeSlot(index, day) {
+        console.log(index)
+        let timeSlots = this.state.children;
+        timeSlots[index]['notRemoved'] = false;
+        this.setState({children: timeSlots}) 
+
         //remove timeslot from DOM
         let filteredChildren = this.state.children.filter(child => child !== this.state.children[index]);
         this.setState({ children: filteredChildren });
@@ -115,11 +128,32 @@ class Weekday extends React.Component {
         let filteredEnd = this.state.endTime.filter(child => child !== this.state.endTime[index]);
         this.setState({ endTime: filteredEnd });
         //showTimePickers
-        let filteredPickers = this.state.showTimePickers.filter(child => child !== this.state.showTimePickers[index]);
+
+
+
+
+
+
+        //TODO: Fix this line
+        let filteredPickers = this.state.showTimePickers.splice(index,1);
+        
+        
+        
+
+        
+        
+        console.log(this.state.showTimePickers);
         this.setState({ showTimePickers: filteredPickers });
 
         //remove timeslot from db
-        this.fetchRemoveTimeSlot(index);
+        let startTime = this.state.startTime[index];
+        let endTime = this.state.endTime[index];
+        if (startTime != null && endTime != null) {
+            this.fetchRemoveTimeSlot(index);
+        } else {
+            //don't do fetch
+            console.log(this.state.children)
+        }
     }//renoveTimeSlot
 
     /**
@@ -129,7 +163,6 @@ class Weekday extends React.Component {
      */
     fetchRemoveTimeSlot(index) {
         //time to remove
-        console.log(this.state.startTime[index].toString());
         let times = {
             'token': localStorage.getItem("token"),
             "remove": {
@@ -173,30 +206,30 @@ class Weekday extends React.Component {
      * @param {string} day  given week day being added to
      */
     submitTimes(index, day) {
-        if(this.state.startTime[index].isBefore(this.state.endTime[index])) {
-			if (this.state.startTime[index] != null && this.state.endTime[index] != null) {
-				console.log(this.state.startTime[index]);
-				this.setShowTimePickers(false, index);
-				this.submitFetch(index, day);
-			} else {
+        if (this.state.startTime[index].isBefore(this.state.endTime[index])) {
+            if (this.state.startTime[index] != null && this.state.endTime[index] != null) {
+                console.log(this.state.startTime[index]);
+                this.setShowTimePickers(false, index);
+                this.submitFetch(index, day);
+            } else {
 
-				if (this.state.startTime[index] == null) {
-					//set state to default 12:00 AM on the given day
-					let defaultStart = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
-					this.setStartTime(defaultStart, index);
-				}//if
-				if (this.state.endTime[index] == null) {
-					//set state to default 12:00 AM
-					let defaultEnd = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
-					this.setEndTime(defaultEnd, index);
-				}//if
-				this.setShowTimePickers(false, index);
-				this.submitFetch(index, day);
-			}
-		} else {
-			alert("Invalid Times");
-		}
-		
+                if (this.state.startTime[index] == null) {
+                    //set state to default 12:00 AM on the given day
+                    let defaultStart = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
+                    this.setStartTime(defaultStart, index);
+                }//if
+                if (this.state.endTime[index] == null) {
+                    //set state to default 12:00 AM
+                    let defaultEnd = moment().isoWeekday(day).set({ hour: 0, minute: 0, second: 0 });
+                    this.setEndTime(defaultEnd, index);
+                }//if
+                this.setShowTimePickers(false, index);
+                this.submitFetch(index, day);
+            }
+        } else {
+            alert("Invalid Times");
+        }
+
     }//submitTimes
 
     /**
@@ -422,15 +455,17 @@ class Weekday extends React.Component {
     }
 
     render() {
+        console.log("render");
         const day = this.props.day;
-		var uniqueKey = 1;
+        var uniqueKey = 1;
 
+        this.state.filledOutTimes.forEach(time => time.forEach(slot => console.log(slot)));
 
         let filledOutTimes = this.state.filledOutTimes.map(time =>
             time.map(slot =>
                 slot['shouldRender'] ?
                     <>
-                        <p key = {slot['startTime']}> {slot['startTime']} to {slot['endTime']} </p>
+                        <p key={slot['startTime']}> {slot['startTime']} to {slot['endTime']} </p>
                         <Button className="removeTime" variant="danger" onClick={() =>
                             this.removeFilledOutTimes(
                                 time.indexOf(slot),
