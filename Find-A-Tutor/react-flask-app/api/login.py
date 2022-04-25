@@ -284,6 +284,7 @@ def getProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
+  email = ""
   try:
     token = data['token']
     email = authentication.getEmail(token)[0]
