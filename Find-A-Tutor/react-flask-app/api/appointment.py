@@ -143,7 +143,7 @@ def getTimes(email):
         for time in times:
             classes = []            
             #if the time isn't already taken by an appointment
-            if time[3] == 0 and datetime.strptime(time[2], "%Y-%m-%dT%H:%M:%S") > datetime.now() && email != time[0]:
+            if time[3] == 0 and datetime.strptime(time[2], "%Y-%m-%dT%H:%M:%S") > datetime.now() and email != time[0]:
                 #add a dictionary to the array
                 availTimes.append({'tut_email':time[0],
                                    'start':time[1],
