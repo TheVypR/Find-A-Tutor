@@ -89,6 +89,8 @@ class Times extends React.Component {
         const index = this.props.index;                             //index of Timeslot
         const showTimePickers = this.props.showTimePickers[index];  //boolean that determines if Timepickers are shown
 
+        console.log(index);
+
         //Display either Timepickers or user selected times 
         if (showTimePickers) {
             return <TimePickers timeSlotChange={(time, timepicker) => { this.onChangeTimes(time, timepicker) }} />

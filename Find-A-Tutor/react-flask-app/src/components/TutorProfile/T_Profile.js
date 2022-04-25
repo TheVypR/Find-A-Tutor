@@ -75,8 +75,8 @@ class T_Profile extends React.Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(post)
-        })//fetch
-        this.props.edit();
+        }).then(this.props.edit())//fetch
+        
     }//handleSubmit
 
     /**
