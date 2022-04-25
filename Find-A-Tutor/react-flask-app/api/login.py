@@ -284,11 +284,14 @@ def getProfile():
 @app.route('/addAppointment/', methods=['POST'])
 def addAppointment():
   data = request.get_json()[0]
-  if data['token']:
+  try:
     token = data['token']
     email = authentication.getEmail(token)[0]
-  else:
-    email = data['email']
+  except:
+    try:
+      email = data['email']
+    except:
+        return "ERROR", 405
   #combine times and a day to make a datetime
   newStart = timeManager.createDateFromTime(data['day'], data['start'])
   newEnd = timeManager.createDateFromTime(data['day'], data['end'])
@@ -409,13 +412,9 @@ def verifyRequest():
 def approveDenyRequest():
     approve = request.args.get("approve")
     code = request.args.get("approve_code")
-    print(approve)
     if approve == "1":
-        print("approve")
         return adminRoutes.approveVerification(code)
     else:
-        print("deny")
-        print(approve)
         return adminRoutes.denyVerification(code)
 
 @app.route('/professorCSV/', methods=['POST'])

@@ -272,7 +272,6 @@ def getGroupTutoring(email):
         results = cursor.fetchall()
         if results not in groupTutSes:
             groupTutSes.append(results)
-    print(groupTutSes)
     for session in groupTutSes:
         for ses in session:
             tutoringAry.append({'title':ses[0], 'location':ses[1], 'department':ses[2], 'start':ses[3], 'end':ses[4], 'backgroundColor':'purple'})
