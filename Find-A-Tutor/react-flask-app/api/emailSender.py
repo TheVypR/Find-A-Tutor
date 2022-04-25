@@ -16,9 +16,8 @@ for request in requests['requests']:
     message = Mail(
         from_email='fnadatutor@gmail.com',
         to_emails='njbeam@gmail.com',
-        subject='Find-A-Tutor Verification Request for {}'.format(request['tut_email']),
+        subject='Find-A-Tutor Verification Request for %s for class %s' % (request['tut_email'], request['class_code']),
         html_content = '<a href=%s>Click here to accept verification</a> <a href=%s>Click here to deny verification</a>' % (verify_link, deny_link))
-        #html_content='Hello, a student {request['tut_name']}, has requested your verification to tutor for {request['class_code']}, please navigate to the link below to accept this verification <a>{verifyLink}</a>')
     try:
         sg=SendGridAPIClient(key)
         response = sg.send(message)
