@@ -80,6 +80,26 @@ def getRates(tutor, email):
     #return the class_code -> rate dictionary
     return tutorRates, 200
 
+#get verification status
+def getVerification(tutor, email):
+    #connect to DB
+    conn = mysql.connect()
+    conn.autocommit(True)
+    cursor = conn.cursor()
+    
+    #init the dictionary for rates
+    tutorVerify = {}
+    
+    #get the rates for the tutor's classes
+    cursor.execute("select T.class_code, T.verified from TutorClasses T, StudentClasses S where T.tut_email = (%s) and S.stu_email = (%s) and T.class_code = S.class_code", (tutor, email))
+    classRates = cursor.fetchall()
+    #put the rates into the dictionary (key -> class_code, value -> verified status)
+    for clss in classRates:
+        tutorVerify[clss[0]] = clss[1]
+    
+    #return the class_code -> rate dictionary
+    return tutorVerify, 200    
+
 #get the classes a student is taking
 def getStuClasses(token):
     #connect to DB

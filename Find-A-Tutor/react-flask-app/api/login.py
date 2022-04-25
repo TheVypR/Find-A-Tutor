@@ -306,6 +306,13 @@ def getRates():
     email = authentication.getEmail(data['student'])[0]
     return appointment.getRates(tutor, email)
 
+@app.route('/getVerification/', methods=['POST'])
+def getVerification():
+    data = request.get_json()           #get tutor token
+    tutor = data['tutor']
+    email = authentication.getEmail(data['student'])[0]
+    return appointment.getVerification(tutor, email)
+
 #get all classes a student is taking
 @app.route('/getStuClasses/', methods=['GET'])
 def getStuClasses():
@@ -320,6 +327,7 @@ def getTimes():
     token = request.args.get("token")
     email = authentication.getEmail(token)[0]
     unmerged = appointment.getTimes(email)
+    times = []
     #if there are times returned
     if len(unmerged) != 0:
         #merge 15 minute intervals into time blocks for displaying
@@ -329,7 +337,7 @@ def getTimes():
             return "No times found", 401
     else:
         #return empty times array
-        []
+        times = []
         
     return {'times':times}
 
@@ -401,9 +409,13 @@ def verifyRequest():
 def approveDenyRequest():
     approve = request.args.get("approve")
     code = request.args.get("approve_code")
-    if(approve==1):
+    print(approve)
+    if approve == "1":
+        print("approve")
         return adminRoutes.approveVerification(code)
     else:
+        print("deny")
+        print(approve)
         return adminRoutes.denyVerification(code)
 
 @app.route('/professorCSV/', methods=['POST'])

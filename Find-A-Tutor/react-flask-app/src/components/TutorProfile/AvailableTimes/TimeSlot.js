@@ -31,7 +31,7 @@ class SubmitRemoveTime extends React.Component {
      */
     onSubmitClick() {
         this.props.submitTimes();
-        this.setState({ isSubmitted: true });
+		//this.setState({ isSubmitted: true });
     }//onSubmitClick
 
     /**
@@ -88,6 +88,8 @@ class Times extends React.Component {
     render() {
         const index = this.props.index;                             //index of Timeslot
         const showTimePickers = this.props.showTimePickers[index];  //boolean that determines if Timepickers are shown
+
+        console.log(index);
 
         //Display either Timepickers or user selected times 
         if (showTimePickers) {

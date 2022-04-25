@@ -32,6 +32,7 @@ const theme = createTheme();
 export default function AddGroupTutoring() {
     //authentication
 	const authContext = useContext(AuthContext);
+	const [isAdmin, setIsAdmin] = useState(false)
 
     //list of group tutoring
     const [allGroup, setAllGroup] = useState([]);
@@ -100,7 +101,18 @@ export default function AddGroupTutoring() {
         .then(window.location.reload())
     };
 
-    return authContext.isLoggedIn && (
+	useEffect(() => { fetch("/isAdmin/?token=" + localStorage.getItem("token"))
+        .then(res => res.json())
+        .then(result => {
+            setIsAdmin(result);
+			console.log(isAdmin);
+        },
+        (error) => {
+            console.log(error);
+        })
+    }, []);
+
+    return authContext.isLoggedIn && isAdmin == true && (
         <LocalizationProvider dateAdapter={DateAdapter}>
             <ThemeProvider theme={theme}>
 

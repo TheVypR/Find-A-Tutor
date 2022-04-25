@@ -10,14 +10,13 @@ requests = verifyRequestRetrieval()[0]
 
 #go through and send email for each request
 for request in requests['requests']:
-    verify_link = "http://10.18.110.181:3000/approveOrDeny?approve_code={}&approve=1".format(request['approve_code'])
-    deny_link = "http://10.18.110.181:3000/approveOrDeny?approve_code={}&approve=0".format(request['approve_code'])
-    print(verify_link)
+    verify_link = "http://localhost:3000/approveDenySubmission?approve_code={}&approve=1".format(request['approve_code'])
+    deny_link = "http://localhost:3000/approveDenySubmission?approve_code={}&approve=0".format(request['approve_code'])
     message = Mail(
         from_email='fnadatutor@gmail.com',
-        to_emails='njbeam@gmail.com',
+        to_emails='iaa.main1@gmail.com',#request['prof_email'],
         subject='Find-A-Tutor Verification Request for %s for class %s' % (request['tut_email'], request['class_code']),
-        html_content = '<a href=%s>Click here to accept verification</a> <a href=%s>Click here to deny verification</a>' % (verify_link, deny_link))
+        html_content = '<a href=%s>Click here to accept verification</a> <br/> <a href=%s>Click here to deny verification</a>' % (verify_link, deny_link))
     try:
         sg=SendGridAPIClient(key)
         response = sg.send(message)
